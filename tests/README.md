@@ -8,10 +8,10 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-02 | LSTM alignment: unique valid timestamps | — | stage 9 (smoke) |
 | T-03 | DM with HLN matches a manual example | `unit/test_stats_tests.py` | ✅ stage 8 |
 | T-04 | y_true identical across models | `unit/test_evaluate_helpers.py` | ✅ stage 8 |
-| T-05 | DST transitions to UTC | — | stage 2 |
+| T-05 | DST transitions to UTC | `unit/test_time_conversion.py`, `contracts/test_ingest_output.py` | ✅ stage 2 |
 | T-06 | Site coordinates consistent | `unit/test_daytime_mask.py` (indirectly) | stage 2 |
 | T-07 | Daytime mask counts (2,580; 2,510/2,512/2,514) | `unit/test_daytime_mask.py` | ✅ stage 1 |
-| T-08 | Production centroid at solar noon | — | stage 2 |
+| T-08 | Production centroid at solar noon (±30 min) | `contracts/test_ingest_output.py` | ✅ stage 2 (tighter ±2 min after D-19) |
 | T-09 | Rolling features horizon-safe (perturbation) | — | stage 6 |
 | T-10 | Feature contract (75) | `unit/test_feature_contract.py` | ✅ stage 1 |
 | T-11 | k ↔ kW inversion exact | — | stage 6 |
