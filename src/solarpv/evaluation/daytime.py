@@ -3,7 +3,7 @@
 An hourly row labelled t (UTC, start of hour) is daytime when the true solar elevation at
 t + 30 min exceeds 5 deg. With the Ketura coordinates this reproduces the original n exactly:
 2,580 test hours, and 2,510 / 2,512 / 2,514 on the surviving LSTM timestamps. The counts are the
-same for the solar field centre and for the old kibbutz point ~700 m away.
+same at the 40 MW field centre, at the nearby 4.95 MW field and at the old kibbutz point.
 """
 
 import numpy as np

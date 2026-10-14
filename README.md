@@ -1,7 +1,8 @@
 # Solar PV Forecasting Capstone — Ktora plant (rebuild)
 
-Day-ahead (D+1 to D+3) hourly forecasting of AC power for a 3.45 MW PV plant in the Southern Arava,
-comparing a direct kW target with a clear-sky performance-index target.
+Day-ahead (D+1 to D+3) hourly forecasting of AC power for a 3.45 MW section (2 of 25 inverters) of the
+40 MW Ketura Solar park in the Southern Arava, comparing a direct kW target with a clear-sky
+performance-index target.
 
 This repository rebuilds the original project after its source code was lost. It is a corrected
 rebuild, not a one-to-one reproduction: every bug found on the way is fixed and listed in
