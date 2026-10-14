@@ -1,0 +1,49 @@
+{
+  "orientation": {
+    "tilt": 20.0,
+    "azimuth": 180.0
+  },
+  "polled_source": {
+    "first_day": "2025-02-26",
+    "era_start": "2025-03-03",
+    "inverter_meteo_gap_min": 0.36,
+    "dc_bias_min": 1.4,
+    "single_clock": true
+  },
+  "steps": [
+    {
+      "kind": "delta",
+      "day": "2023-05-09"
+    },
+    {
+      "kind": "delta",
+      "day": "2024-01-21"
+    }
+  ],
+  "anchors": {
+    "data start": {
+      "from": "2021-09-01",
+      "n_days": 19,
+      "median_offset_min": -0.56
+    },
+    "meteo resync 2023-05": {
+      "from": "2023-05-09",
+      "n_days": 4,
+      "median_offset_min": -1.98
+    }
+  },
+  "validation_max_abs_monthly_after": {
+    "minute": {
+      "tau_met_after": 1.74,
+      "delta_after": 0.7
+    },
+    "polled": {
+      "tau_met_after": 0.37,
+      "dc_clock_gap_after": 0.41
+    }
+  },
+  "passed": {
+    "anchors": true,
+    "internal": true
+  }
+}

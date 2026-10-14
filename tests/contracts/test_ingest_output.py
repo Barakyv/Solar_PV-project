@@ -70,7 +70,8 @@ def test_manifest_consistent(data):
 def test_production_centred_on_solar_noon(data):
     """T-08: clear-day DC centroid within +-30 min of solar noon in every month (F-01).
 
-    The drift of up to ~13 min is a logger-clock effect (F-15), corrected in stage 4.
+    The drift of up to ~16 min is a logger-clock effect (F-15), corrected in stage 4 (D-19);
+    the tightened version runs on the stage-4 output (test_preprocess_output.py).
     """
     from solarpv.data.qa import production_centroid_offsets
 

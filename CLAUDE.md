@@ -9,3 +9,5 @@ Read `PROJECT_MASTER.md` before doing anything. It is the single source of truth
 - All processing is in true UTC (F-01). The indirect target is never clipped at 1.2, and k ↔ kW must invert exactly (F-06).
 - `submission_evidence/`, `old files/` and `Raw data/` are read-only.
 - At the end of each session update `PROJECT_MASTER.md`: §1 status table and next action, any changed D/C/R/Q rows, and a dated line in §17.
+- Edit text files (especially the Hebrew `PROJECT_MASTER.md`) only with UTF-8-aware tools, never with PowerShell `Get-Content`/`Set-Content`: a cp1252 round trip once turned the whole document into mojibake (`tests/contracts/test_docs_encoding.py` guards this).
+- Before committing, check `git status --ignored`: an unanchored `.gitignore` pattern once kept `src/solarpv/data/` out of git.

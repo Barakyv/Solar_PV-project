@@ -14,6 +14,8 @@ IDs refer to PROJECT_MASTER.md.
 | C-18 | `theoretical_power` (listed as leakage) was a model input | Removed | pending |
 | C-07 | Ablation baseline contained leaky features and reanalysis NWP | Rerun on the leak-free contract; no_nwp row removed | pending |
 | C-08 | Skill score vs persistence reported as 90–96 % | Recomputed against horizon-matched persistence (old pipeline: ~22 %) | pending |
+| F-15 | Logger clock drift not detected: two logger clocks drifting up to −16 min with separate resyncs (2023-05-09, 2024-01-21), so production and irradiance were misaligned with solar geometry and with each other | Per-day clock offsets per source and clock group, estimated on clear days (irradiance vs clear-sky POA) and by DC/irradiance cross-correlation; residual ≤ 2 min (D-19) | pending |
+| F-18 | From 2025-02-26 the export switches to a second source: 15-min instantaneous snapshots held for 15 min (≈ 7.5 min lag, hourly means from 4 stale samples) on its own clock, mixed hour by hour with the old 1-min source during the transition; the old pipeline used it as 1-min data | Source detected per tag-hour; polled tags rebuilt at their poll instants and interpolated; each source corrected with its own clock | pending (affects ~35 % of the test period) |
 
 ## Old vs new results
 

@@ -1,6 +1,6 @@
 # --- data (never in git; backed up separately, see PROJECT_MASTER.md §5.3) ---
-Raw data/
-data/
+/Raw data/
+/data/
 *.parquet
 *.grib2
 *.grb2

@@ -13,8 +13,6 @@ Rules:
 
 import argparse
 import json
-import shutil
-import subprocess
 import sys
 from collections.abc import Iterable
 from pathlib import Path
@@ -30,6 +28,7 @@ from solarpv.config.constants import (
     mean_daytime_k,
 )
 from solarpv.config.paths import LSTM_FIXTURE, OUTPUTS_DIR, REPO_ROOT
+from solarpv.config.provenance import git_commit
 from solarpv.config.site import Site, load_site
 from solarpv.evaluation.daytime import daytime_mask
 from solarpv.evaluation.metrics import bootstrap_nrmse_ci, point_metrics, rmse
@@ -238,15 +237,6 @@ def common_mask_table(preds: pd.DataFrame, mean_k: float) -> pd.DataFrame:
 # ── run ────────────────────────────────────────────────────────────────────
 
 
-def _git_commit() -> str:
-    git = shutil.which("git") or r"C:\Program Files\Git\cmd\git.exe"
-    try:
-        return subprocess.run([git, "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT,
-                              capture_output=True, text=True, check=True).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return "unknown"
-
-
 def run(
     files: Iterable[Path],
     out_dir: Path,
@@ -283,7 +273,7 @@ def run(
     manifest = {
         "inputs": [f.relative_to(REPO_ROOT).as_posix() if f.is_relative_to(REPO_ROOT)
                    else f.as_posix() for f in files],
-        "git_commit": _git_commit(),
+        "git_commit": git_commit(),
         "mean_daytime_k": mean_k,
         "dm_reference": reference,
         "truth": "feature file" if truth is not None else "prediction files (fixture mode)",

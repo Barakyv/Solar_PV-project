@@ -24,6 +24,8 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# read-only legacy material (PROJECT_MASTER.md §14)
+extend-exclude = ["old files", "submission_evidence", "Raw data"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
