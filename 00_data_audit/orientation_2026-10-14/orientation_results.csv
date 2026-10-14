@@ -1,0 +1,5 @@
+method,series,tilt,azimuth,nrmse
+sensor vs clear-sky POA,pyranometer,20,178,0.0438425718209968
+sensor vs clear-sky POA,irrad,20,174,0.04612706696384433
+"DC vs clear-sky POA, one scale",dc,22,180,0.053073632705639244
+"DC vs clear-sky POA, scale per day",dc,12,178,0.034845819311467865

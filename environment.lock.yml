@@ -146,13 +146,13 @@ dependencies:
   - libgoogle-cloud-storage=3.7.0
   - libgrpc=1.82.1
   - libharfbuzz=14.6.0
-  - libhwloc=2.15.0
   - libiconv=1.18
   - libintl=0.22.5
   - libjpeg-turbo=3.2.0
   - liblapack=3.11.0
   - liblzma=5.8.3
   - libnetcdf=4.10.1
+  - libopenblas=0.3.34
   - libopentelemetry-cpp=1.27.0
   - libopentelemetry-cpp-headers=1.27.0
   - libparquet=25.0.0
@@ -170,7 +170,6 @@ dependencies:
   - libutf8proc=2.11.3
   - libvulkan-loader=1.4.357.0
   - libwebp-base=1.6.0
-  - libwinpthread=12.0.0.r4.gg4f2fc60ca
   - libxgboost=3.4.2
   - libxml2=2.15.4
   - libxml2-16=2.15.4
@@ -186,7 +185,6 @@ dependencies:
   - matplotlib-base=3.11.2
   - matplotlib-inline=0.2.2
   - mistune=3.3.4
-  - mkl=2026.1.0
   - munkres=1.1.4
   - narwhals=2.27.1
   - nbclient=0.11.0
@@ -267,7 +265,6 @@ dependencies:
   - sqlalchemy=2.1.4
   - stack_data=0.6.3
   - statsmodels=0.15.0
-  - tbb=2023.1.0
   - terminado=0.18.1
   - threadpoolctl=3.7.0
   - tinycss2=1.4.0

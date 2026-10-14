@@ -8,6 +8,7 @@ dependencies:
   - pip
   # data
   - numpy
+  - libblas=*=*openblas  # MKL build crashed on this AMD machine (missing intel-openmp), 2026-10-14
   - pandas>=2.2
   - pyarrow
   - pyyaml
