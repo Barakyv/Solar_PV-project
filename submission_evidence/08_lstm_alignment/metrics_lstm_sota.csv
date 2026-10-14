@@ -1,0 +1,7 @@
+target,horizon,model,nRMSE_pct,MAE,R2,RMSE
+indirect,1,lstm_sota,19.554,0.0351,0.9233,0.1228
+indirect,2,lstm_sota,20.175,0.0363,0.9183,0.1267
+indirect,3,lstm_sota,20.299,0.0367,0.9173,0.1275
+direct,1,lstm_sota,8.412,105.4369,0.8977,290.1378
+direct,2,lstm_sota,8.652,109.6734,0.8918,298.4149
+direct,3,lstm_sota,8.671,110.6361,0.8914,299.0607

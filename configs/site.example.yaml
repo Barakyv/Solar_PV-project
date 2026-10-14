@@ -1,0 +1,11 @@
+# Anonymised placeholder site, used only when configs/site.private.yaml is absent.
+# Results computed with these values are NOT valid for the study.
+site:
+  name: Ktora (anonymised)
+  latitude: 31.5
+  longitude: 34.9
+  altitude_m: 60
+  surface_tilt: 30
+  surface_azimuth: 180
+  albedo: 0.2
+  timezone: Asia/Jerusalem

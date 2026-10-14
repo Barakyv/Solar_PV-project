@@ -1,0 +1,34 @@
+# --- data (never in git; backed up separately, see PROJECT_MASTER.md §5.3) ---
+Raw data/
+data/
+*.parquet
+*.grib2
+*.grb2
+
+# --- secrets / private config ---
+configs/site.private.yaml
+.env
+
+# --- heavy model artifacts (Git LFS or OneDrive) ---
+outputs/**/models/
+outputs/**/*.db
+outputs/**/lightning_logs/
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# --- notebooks / editors ---
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# --- OS ---
+Thumbs.db
+desktop.ini

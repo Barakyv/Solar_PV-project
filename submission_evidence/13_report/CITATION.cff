@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this code or results, please cite as below."
+title: "Target Definition Changes the Effective Forecasting Problem: A Solar Power Forecasting Benchmark"
+authors:
+  - family-names: "Barak"
+    given-names: "Yonatan"
+    email: barakyv@gmail.com
+type: software
+repository-code: "https://github.com/placeholder/solar-ds-capstone"
+keywords:
+  - solar power forecasting
+  - clear-sky performance index
+  - XGBoost
+  - BiLSTM
+  - Temporal Fusion Transformer
+  - Diebold-Mariano test
+  - SHAP
+  - feature importance
+  - walk-forward cross-validation
+license: MIT
+date-released: 2026-04-23
+version: "1.0.0"
+abstract: >
+  This repository benchmarks seven forecasting approaches for day-ahead solar
+  power prediction at a single 3.45 MW site over horizons D+1–D+3. Models are
+  evaluated on two target formulations: the clear-sky performance index k and
+  direct AC power. After a leakage audit and timestamp-alignment correction for
+  LSTM predictions, XGBoost SOTA achieves the lowest nRMSE on both targets
+  (indirect: 29.1%, direct: 12.1% at D+1). The indirect forecasting route
+  (predict k, reconstruct power) outperforms direct AC-power forecasting by
+  1.7–2.1 pp nRMSE at the operational scale for both model families. SHAP
+  group analysis reveals that clear-sky geometry (15% of importance for indirect,
+  <1% for direct) and rolling production statistics (52% vs 75%) swap hierarchy
+  depending on target choice.

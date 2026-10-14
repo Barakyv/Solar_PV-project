@@ -1,0 +1,36 @@
+file_path,stage,purpose,is_current_output,referenced_in_report,evidence_for_claim,notes
+outputs/07_evaluation/benchmark_summary.csv,7,All-model nRMSE MAE R2 RMSE CI bootstrap,TRUE,TRUE,All performance metrics,AUTHORITATIVE eval output from evaluate.py
+outputs/07_evaluation/dm_tests.csv,7,DM statistics p-values n_pairs,TRUE,TRUE,DM significance claims,NW lags=24 HAC corrected
+outputs/07_evaluation/dm_tests_extended.csv,7,Extended DM with n_eff CI %MDE,TRUE,TRUE,Power analysis underpowered claims,Key for pct_MDE values
+outputs/07_evaluation/route_comparison.csv,7,Indirect-to-power vs direct at kW scale,TRUE,TRUE,1.7-2.1 pp route advantage claim,n differs by model and route
+outputs/07_evaluation/common_mask_summary.csv,7,Shared-timestamp nRMSE n values,TRUE,TRUE,Common-mask n=2116 and nRMSE values,Only XGB+LSTM+TFT baseline overlap
+outputs/07_evaluation/seed_variability_summary.csv,7,nRMSE across seeds per model,TRUE,TRUE,XGB seed stability claims,WARNING: LSTM rows are training-set metrics NOT daytime-eval
+outputs/07_evaluation/seasonal_metrics.csv,7,Seasonal nRMSE per model season horizon,TRUE,TRUE,Seasonal performance claims,Winter/Spring/Fall only (no Summer)
+outputs/07_evaluation/shap_group_importance.csv,7,SHAP importance pct by feature group,TRUE,TRUE,Rolling-stats 70.7% clearsky 11.3% etc,Direct and indirect separately
+outputs/07_evaluation/shap_horizon_corr.csv,7,Cross-horizon SHAP rank Spearman rho,TRUE,Partial,SHAP stability claims,rho values 0.51-0.80
+outputs/07_evaluation/shap_rank_stability.csv,7,Per-feature SHAP values by horizon,TRUE,Partial,Feature importance ranking,78 features
+outputs/07_evaluation/ablation_seed_variability.csv,7,Ablation delta nRMSE across seeds,TRUE,TRUE,Ablation table claims,3 seeds averaged
+outputs/07_evaluation/FINDINGS.md,7,Narrative findings and corrections,TRUE,Partial,Context for corrections,Documents all post-hoc fixes
+outputs/06_lstm_sota/predictions_lstm_sota_aligned.csv,6,LSTM aligned day-ahead predictions,TRUE,TRUE,LSTM evaluation,AUTHORITATIVE aligned version
+outputs/06_lstm_sota/predictions_lstm_sota.csv,6,LSTM unaligned predictions,TRUE,FALSE,NOT for evaluation,Timestamp bug present
+outputs/06_lstm_sota/metrics_lstm_sota.csv,6,LSTM training-set metrics,TRUE,WARNING,NOT comparable to benchmark,Training-set only NOT daytime-eval
+outputs/06_lstm_sota/metrics_lstm_sota_seed123.csv,6,LSTM seed123 training metrics,TRUE,WARNING,NOT comparable to benchmark,Training-set only
+outputs/06_lstm_sota/metrics_lstm_sota_seed777.csv,6,LSTM seed777 training metrics,TRUE,WARNING,NOT comparable to benchmark,Training-set only
+outputs/06_xgb_sota/predictions_xgb_sota.csv,6,XGB seed42 predictions,TRUE,TRUE,XGB evaluation,No alignment issue
+outputs/06_xgb_sota/metrics_xgb_sota.csv,6,XGB seed42 per-horizon metrics,TRUE,Partial,XGB per-seed metrics,Verify against benchmark_summary
+artifacts/05_feature_selection/final_features_indirect_D1.json,05e,Official indirect D+1 feature set,TRUE,TRUE,Feature selection 40 features,Contains leakage features excluded at training time via EXCL list
+artifacts/05_feature_selection/final_features_direct_D1.json,05e,Official direct D+1 feature set,TRUE,TRUE,Feature selection,Contains leakage features excluded at training time
+artifacts/05_feature_selection/refined_features_indirect_D1_05f.json,05f,Post-hoc audit indirect D+1,TRUE,TRUE,05f tier audit CORE=15 SUPPORTED=8,NOT used for training - post-hoc only
+artifacts/05_feature_selection/refined_features_direct_D1_05f.json,05f,Post-hoc audit direct D+1,TRUE,TRUE,05f tier audit,NOT used for training
+artifacts/05_feature_selection/_pre_leakage_fix_backup/,05e,Pre-leakage-fix backup,FALSE,FALSE,,SUPERSEDED - do not cite
+docs/leakage_audit.md,audit,Leakage feature list 19 features,TRUE,TRUE,17 leakage features claim (CONTRADICTED - actual is 19),Cat1:7 Cat2:10 Cat3:2 total=19
+production/00_config/constants.py,0,Project constants AC_CAPACITY MEAN_DAYTIME_K seeds splits,TRUE,TRUE,Normalization denominators and dates,Single source of truth
+configs/split_manifest.yaml,config,Official train/val/test boundaries,TRUE,TRUE,Data split claims,Canonical source
+submission_package/split_manifest.yaml,submission,Submission copy of split manifest,TRUE,TRUE,Reproducibility,Verify matches configs/ version
+outputs/06_lstm_sota/align_seed42.log,6,LSTM timestamp alignment log,TRUE,Partial,LSTM bug before/after values,Key evidence for timestamp bug disclosure
+docs/Solar_PV_Forecasting_Report.docx,8,Main report project copy,TRUE,N/A,,Verify vs. audited version
+submission_package/Solar_Forecasting_Report_Sharon.docx,submission,Submission copy of report,TRUE,N/A,,Verify vs. audited version
+reports/Feature_Selection_Report.docx,5,Feature selection supplementary report,TRUE,TRUE,Feature selection depth,Companion document
+environment.yml,0,Conda environment specification,TRUE,Partial,Reproducibility,
+CITATION.cff,repro,Citation metadata,TRUE,Partial,Reproducibility,
+outputs/07_evaluation/shap_group_importance.csv,7,SHAP group percentages,TRUE,TRUE,Interpretability claims,

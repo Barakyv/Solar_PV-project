@@ -1,0 +1,620 @@
+Extended Evaluation and Revision 
+Supplement
+Solar PV Day-Ahead Forecasting Study Ktora Site
+This supplement consolidates three workstreams in a single document:
+ Part I Responses to supervisor feedback received after initial submission
+ (expanded related work, nRMSE clarification, error distribution analysis)
+ Part II Extended metric analysis
+ (rationale for additional metrics, full results tables with MBE, Skill
+ Scores, error distribution statistics, horizon degradation)
+ Part III Consolidated findings and conclusions
+
+Related Work
+Proposed addition: merge into of main report as a replacement or expansion of the existing 
+related work section.
+Solar Irradiance and Power Forecasting
+Solar PV power forecasting has been studied extensively over the past two decades, motivated 
+by the operational challenges that variable generation imposes on grid operators. Forecasting 
+horizons range from intra-hour (nowcasting) through day-ahead (the focus of this study) to 
+seasonal outlooks, each requiring different methods and data sources (Antonanzas et al., 2016; 
+Diagne et al., 2013).
+Early work relied on persistence and climatological baselines (Lorenz et al., 2009). Statistical 
+models, including ARIMA and multiple linear regression, were subsequently applied to hourly 
+irradiance series (Bacher et al., 2009). Numerical weather prediction (NWP) post-processing, in 
+which raw model output is corrected with site-specific machine-learning models, has become the 
+dominant paradigm for day-ahead horizons (Lauret et al., 2015; Yang et al., 2022).
+Deep learning approaches, including LSTM networks and transformer-based architectures, have 
+further advanced the field, particularly for multi-step-ahead forecasting where sequential 
+dependencies can be exploited (Huang and Nie, 2020; Lim et al., 2021). However, the evidence 
+that deep learning consistently outperforms well-tuned gradient boosting remains mixed, 
+especially at single sites with limited data (Guen and Thome, 2020).
+Machine Learning for PV Forecasting
+Gradient boosting methods, particularly XGBoost (Chen and Guestrin, 2016) and LightGBM (Ke 
+et al., 2017), have become dominant in tabular forecasting benchmarks. Their advantages 
+include robustness to feature scale, native handling of missing values, built-in regularisation, and 
+fast training. For day-ahead PV forecasting with engineered lag features and NWP covariates, 
+gradient boosting frequently matches or exceeds more complex architectures (Guen and 
+Thome, 2020).
+Recurrent neural networks, and specifically encoder-decoder LSTM architectures, were 
+introduced to PV forecasting to model multi-step temporal dependencies directly (Huang and 
+Nie, 2020). The encoder processes historical observations and produces a context vector; the 
+decoder autoregressively generates the multi-horizon forecast. This architecture is well-suited to 
+settings where the forecast target evolves smoothly over the day (e.g., AC power output).
+The Temporal Fusion Transformer (TFT; Lim et al., 2021) extends attention-based sequence 
+modelling to multi-horizon forecasting with heterogeneous inputs. Key architectural features 
+include: (i) variable selection networks that learn input importance end-to-end; (ii) gating layers 
+that suppress irrelevant components; (iii) multi-head attention over temporal patterns; and (iv) 
+explicit quantile outputs for probabilistic forecasting. Its ability to process static, known-future, 
+and observed-past covariates simultaneously makes it well-suited to the PV setting, where 
+calendar features and clear-sky estimates are known at forecast time.
+Hyperparameter optimisation with Bayesian methods — specifically the Tree-structured Parzen 
+Estimator as implemented in Optuna (Akiba et al., 2019) — has become standard practice to 
+
+avoid manual tuning bias. The present study uses 60-trial Optuna searches for XGBoost and 
+BiLSTM, consistent with current best practice for moderate-budget single-site studies.
+Clear-Sky Models and Performance Indices
+The clear-sky performance index k (also written k_t or the clear-sky index) is defined as the ratio 
+of measured irradiance (or AC power output) to the corresponding theoretical clear-sky value. 
+Forecasting k rather than raw power removes the deterministic diurnal and seasonal envelope, 
+leaving only the meteorologically driven variability as the modelling target (Diagne et al., 2013). 
+This decomposition improves stationarity and has been shown to reduce nRMSE compared with 
+direct power forecasting in several studies (Lauret et al., 2015).
+Clear-sky irradiance in this study is modelled using the Ineichen-Perez model (Ineichen and 
+Perez, 2002) as implemented in pvlib-python (Holmgren et al., 2018). The model requires site 
+latitude, longitude, altitude, and a turbidity climatology (Linke turbidity coefficient), all of which 
+are available for the Ktora site without real-time measurement.
+The indirect forecasting route predicting k and converting to power via the clear-sky curve 
+provides a physically consistent model that can incorporate clear-sky power as a feature. The 
+present study compares this indirect route with direct AC power forecasting and finds a 
+systematic advantage of 1.7–2.1 percentage points in nRMSE across both model families.
+Statistical Evaluation of Forecasting Models
+Rigorous comparative evaluation requires statistical tests that account for temporal dependence 
+in forecast errors. The Diebold-Mariano (DM) test (Diebold and Mariano, 1995), with HarveyLeybourne-Newbold correction, tests the null hypothesis that two competing models have equal 
+expected squared loss. A key practical requirement is that the variance estimator is robust to 
+serial correlation; the Newey-West HAC estimator with lag truncation parameter h = 24 is used 
+here, consistent with the hourly evaluation frequency.
+Bootstrap confidence intervals for nRMSE are computed using a circular block bootstrap (Politis 
+and Romano, 1994) with block length 24 hours and 1,000 resamples, preserving the intra-day 
+autocorrelation structure. This approach avoids the distributional assumptions required by 
+analytical confidence intervals and has been recommended for forecast evaluation in energy 
+applications (Lauret et al., 2015).
+Skill score relative to a climatological baseline defined as SS = 1 - RMSE_model / RMSE_clim 
+provides a normalised measure of improvement over naive forecasting. For persistence-relative 
+skill (used in Section 4 of Part II), the baseline is the 24-hour lag of the target variable, which is 
+the standard operational baseline for day-ahead solar forecasting (Diagne et al., 2013).
+Feature Selection and Leakage Prevention
+Feature engineering and selection are critical determinants of generalisation performance in 
+tree-based and neural forecasting models. Overly rich feature sets inflate in-sample 
+performance, while insufficient features leave predictive information unexploited. The literature 
+recommends a three-stage pipeline: (i) filter methods (mutual information, correlation) to 
+eliminate clearly irrelevant features; (ii) wrapper or embedded methods (backward SHAP 
+elimination) to prune marginal features; and (iii) stability analysis to ensure selected features are 
+robust across seeds and hyperparameter configurations.
+
+In PV forecasting, common leakage sources include: (i) same-timestamp NWP reanalysis fields 
+used as if they were available at forecast time; (ii) target-derived features (e.g., performance 
+ratio computed from AC power); (iii) temperature measurements that are correlated with AC 
+power at the same timestamp. This study identified and removed 17 leakage-affected features 
+through a systematic leakage audit, reducing indirect D+1 nRMSE from an artifactual 4.43% to 
+the corrected 29.1% a change that underscores the importance of pre-modelling leakage 
+auditing.
+Challenges and Limitations of Single-Site Studies
+Single-site forecasting studies offer high ecological validity — the model is tested on the exact 
+deployment conditions but carry structural limitations. First, the available test period is bounded 
+by the data collection window. This study evaluates on an eight-month test set (October 2024 –
+May 2025), which excludes summer. Given that summer hours contribute the highest irradiance 
+and power output, the reported metrics may understate model performance during peak 
+generation periods.
+Second, statistical power is constrained by the effective sample size after accounting for 
+temporal autocorrelation. With n approximately 2,580 daytime evaluation hours and blockcorrected degrees of freedom, the study can detect nRMSE differences of approximately 0.8 
+percentage points with 80% power, consistent with the scale of differences observed between 
+XGBoost and BiLSTM.
+Third, site-specific characteristics inverter clipping behaviour, soiling dynamics, grid curtailment 
+events limit the transferability of trained models to other sites. The indirect (k-based) forecasting 
+route partially mitigates this by separating weather-driven variability from site-specific capacity 
+effects.
+Normalisation of Forecast Error Metrics
+[ Proposed addition: merge into 3.8 of main report. ]
+All forecast accuracy results in this study are reported as normalised root mean squared error 
+(nRMSE), defined as:
+nRMSE = (RMSE / denominator) x 100%
+where the denominator depends on the forecast target and is chosen to facilitate physically 
+meaningful comparison.
+Indirect target (clear-sky performance index k): The denominator is the mean daytime k 
+value computed over the full evaluation set: MEAN_DAYTIME_K = 0.6279. This normalisation 
+expresses RMSE as a percentage of the typical operating k value, making nRMSE directly 
+interpretable as the coefficient of variation of the absolute error. An nRMSE of 29% on the 
+indirect target means the root-mean-squared error is 29% of the mean daytime k.
+Direct target (AC power output in kW): The denominator is the plant nameplate AC capacity: 
+AC_CAPACITY_KW = 3,449 kW. Capacity normalisation is the industry standard for power 
+forecasting (IEA PVPS Task 16) and enables comparison of absolute power errors across plants 
+of different sizes. An nRMSE of 12% means the RMSE is 12% of the total installed capacity.
+
+Important: Indirect nRMSE values (normalised by MEAN_DAYTIME_K = 0.6279) and direct 
+nRMSE values (normalised by AC capacity = 3,449 kW) use fundamentally different 
+denominators and are therefore not directly comparable as percentages. The indirect nRMSE is 
+systematically higher in percentage terms because k varies over a narrower range than AC 
+power.
+All evaluations are restricted to daytime hours, defined as timestamps where the theoretical 
+clear-sky GHI exceeds 10 W/m². Night-time hours (when both true and predicted power are near 
+zero) are excluded to avoid artificially deflating the error statistics. The evaluation set comprises 
+approximately 2,580 daytime hours for the primary models (XGB-Opt, BiLSTM-Opt).
+Error Distribution and Residual Diagnostics
+[ Proposed addition: merge into §8.1 of main report. ]
+Beyond scalar accuracy metrics, the distribution of forecast errors provides insight into model 
+behaviour, systematic bias, and tail risk that single-number summaries (RMSE, MAE) cannot 
+capture. This section analyses residual histograms, heteroscedasticity, horizon degradation, and 
+scatter diagnostics for the two primary models.
+Residual histograms (Figure 1) show that both XGB-Opt and BiLSTM-Opt produce 
+approximately zero-mean residuals for the indirect target (D+1). However, the distributions differ 
+qualitatively: XGB-Opt residuals are broader and more symmetric, with heavier tails 
+(RMSE/MAE ratio = 1.945), whereas BiLSTM-Opt residuals are sharply peaked near zero 
+(RMSE/MAE ratio = 2.393), indicating that the neural model handles typical days better but 
+produces more frequent large outliers. This distinction is relevant for operational risk: the XGB 
+model produces more uniform errors, while the BiLSTM model is accurate on most days but 
+occasionally generates large errors.
+Figure 1. Residual histograms for indirect target D+1 (clear-sky performance index k). Left: XGB-Opt. Right: 
+BiLSTM-Opt. Orange dashed line marks zero. BiLSTM shows sharper central peak but heavier tails.
+Figure 2 shows the same analysis for the direct AC power target (D+1). Both models remain 
+approximately unbiased on the direct target (XGB NMBE = +0.47%, BiLSTM NMBE = +1.81%). 
+
+The BiLSTM error distribution is again more leptokurtic (peaked), with a higher RMSE/MAE ratio 
+(2.004 vs 1.779 for XGB).
+Figure 2. Residual histograms for direct target D+1 (AC power output in kW). Both models show near-zero 
+mean. BiLSTM has a sharper peak and heavier tails.
+Residuals vs actual scatter plots (Figure 3) reveal mild heteroscedasticity: forecast errors are 
+larger in absolute terms at intermediate k values (0.3–0.7) than at the extremes (near-zero or 
+near-unity k). This pattern is physically expected high k (clear days) and low k (overcast) are 
+easier to forecast than the transition regime with partial cloud cover. The heteroscedasticity is 
+consistent across both models and motivates the use of the RMSE/MAE ratio and the 90thpercentile error as complementary risk measures.
+Figure 3. Residuals vs actual k value (indirect D+1). Larger scatter at intermediate k values (0.3–0.7) indicates 
+mild heteroscedasticity in the partial-cloud regime.
+Horizon degradation (Figure 4) shows that the interquartile error range widens systematically 
+from D+1 to D+3 for both targets. For the indirect target, XGB-Opt nRMSE increases from 
+29.095% (D+1) to 29.086% (D+3) a negligible degradation of 0.009 pp. For the direct target, 
+degradation is similarly small (12.060% to 12.185%, or 0.125 pp). This robustness across 
+horizons is consistent with the model relying primarily on meteorological features (NWP 
+forecasts) rather than auto-regressive lags, which degrade rapidly with horizon.
+
+Figure 4. Box plots of XGB-Opt forecast errors by horizon (D+1, D+2, D+3), for both targets. Interquartile range 
+shows minimal widening with horizon; median remains near zero throughout.
+Actual vs predicted scatter plots (Figure 5) confirm that XGB-Opt captures the full dynamic 
+range of the performance index, including low-k days (overcast) and high-k days (clear). Slight 
+under-prediction at the highest k values (> 0.9) is consistent with the slight positive MBE 
+(+0.34%) and the known tendency of regression models to shrink towards the conditional mean.
+Figure 5. Actual vs predicted clear-sky index k for XGB-Opt, indirect target, D+1 (left), D+2 (centre), D+3 (right). 
+Dashed line = perfect forecast. Good coverage across the full k range.
+The overall residual diagnostics support the conclusion that both models are well-calibrated for 
+the Ktora site. The key distinction is that XGB-Opt provides more uniform errors (lower 
+RMSE/MAE ratio, lower P90 for indirect), while BiLSTM-Opt achieves a lower median absolute 
+error (MdAE) at the cost of heavier tails. For grid dispatch applications, where large errors are 
+disproportionately costly, the XGB-Opt error profile is generally preferable.
+
+PART II — EXTENDED METRIC ANALYSIS
+.1 Rationale for Additional Metrics
+The primary report presents nRMSE (capacity-normalised), MAE, R², and bootstrap confidence 
+intervals — the four metrics most commonly reported in solar forecasting literature. However, 
+these metrics share a common limitation: they do not fully characterise the forecast error 
+distribution from an operational perspective. Three specific gaps motivated the addition of 
+complementary metrics.
+.1.1 Gap 1 — No Detection of Systematic Bias
+RMSE, MAE, and R² are all symmetric: positive and negative errors of equal magnitude 
+contribute equally. As a result, a model with a consistent 5% over-forecast bias and a model with 
+no bias can produce identical RMSE if the variance of the biased model is correspondingly 
+lower. For grid operations, however, over-forecasting and under-forecasting have asymmetric 
+costs: over-forecasting leads to under-procurement of balancing reserves, while underforecasting leads to over-procurement.
+The Mean Bias Error (MBE) and its normalised form NMBE fill this gap. The IEA PVPS Task 16 
+evaluation framework explicitly recommends MBE as a mandatory diagnostic alongside RMSE 
+(Yang et al., 2022). The present analysis reveals that several models particularly TFT-96 (NMBE 
+= +6.5% on indirect) and BiLSTM-Opt (NMBE = +3.8% on indirect) carry substantial systematic 
+positive bias that is invisible in the headline nRMSE figures.
+.1.2 Gap 2 — No Reference to a Meaningful Baseline
+An nRMSE of 29% on the indirect target sounds poor in isolation, but has different significance 
+depending on the difficulty of the forecasting problem. A naive 24-hour persistence forecast 
+(which assumes tomorrow's weather will equal today's) may itself achieve 35% nRMSE at this 
+site, in which case the model represents a substantial improvement. Conversely, if persistence 
+achieves 30% nRMSE, the model's value is marginal.
+The Forecast Skill Score relative to persistence (SS_pers) provides this context. It is defined 
+as:
+SS_pers = (1 - RMSE_model / RMSE_persistence) x 100%
+A skill score of 0% means the model matches persistence; 100% means perfect forecasting; 
+negative values mean the model is worse than persistence. IEA PVPS Task 16 and the solar 
+forecasting review by Diagne et al. (2013) both recommend persistence-relative skill scores as 
+the primary normalised performance measure, arguing that raw nRMSE values are not 
+comparable across sites, seasons, or climate zones without a reference baseline.
+.1.3 Gap 3 — No Characterisation of Tail Risk
+RMSE penalises large errors quadratically, so it is more sensitive to outliers than MAE. 
+However, neither metric directly answers the operational question: "what is the worst-case error I 
+should plan for?" Two models with identical RMSE can have very different tail behaviour — one 
+with uniform errors and one with rare but extreme errors.
+
+The following tail metrics are added:
+• MdAE (Median Absolute Error): the 50th percentile of |residuals|. Robust to outliers; 
+characterises the typical-day error. Models with low MdAE handle the majority of days well, 
+even if RMSE is elevated.
+• P90 (90th-percentile absolute error): the error level exceeded on only 10% of evaluation 
+hours. Directly relevant to reserve sizing and contract compliance.
+• RMSE/MAE ratio: when errors are normally distributed this ratio equals sqrt(pi/2) approx 
+1.25. Ratios above 1.5 indicate heavy-tailed (leptokurtic) distributions; values above 2.0 
+suggest occasional extreme outliers are driving the RMSE. This ratio is recommended by 
+Guen and Thome (2020) as a model calibration diagnostic.
+Together, MBE/NMBE, Skill Score, MdAE, P90, and RMSE/MAE ratio form a balanced 
+diagnostic suite that is consistent with IEA PVPS Task 16 recommendations and recent literature 
+(Yang et al., 2022; Lauret et al., 2015).
+.2 Extended Metric Definitions
+All metrics are computed on daytime hours only (GHI_cs >= 10 W/m²). Let y_t denote the 
+observed value at hour t, y_hat_t the forecast, and n the number of evaluation hours.
+Standard metrics (reported in primary paper)
+RMSE = sqrt( (1/n) * sum( (y_t - y_hat_t)^2 ) )
+MAE = (1/n) * sum( |y_t - y_hat_t| )
+nRMSE = RMSE / denominator * 100%
+R^2 = 1 - sum((y_t - y_hat_t)^2) / sum((y_t - mean(y))^2)
+Denominator: 0.6279 (indirect), 3449 kW (direct).
+Additional metrics (added in this supplement)
+MBE = (1/n) * sum( y_hat_t - y_t ) [positive = overforecast]
+NMBE = MBE / denominator * 100%
+SS_pers = ( 1 - RMSE_model / RMSE_persist ) * 100%
+SS_clim = ( 1 - RMSE_model / std(y_test) ) * 100%
+MdAE = median( |y_t - y_hat_t| )
+P90 = 90th percentile of |y_t - y_hat_t|
+RMSE/MAE ratio (> 1.5 = heavy-tailed; > 2.0 = likely outlierdriven)
+Persistence baseline (indirect): k_pers(t) = AC(t-24h) / (GHI_cs(t) x cap/1000), using the 24-hour 
+lag of AC power from the feature matrix. Persistence baseline (direct): site_total_AC_kW_lag_1d 
+feature (same-hour previous day).
+
+.3 Extended Benchmark Results
+Tables 1 and 2 present the full extended metric set for all six models across three forecast 
+horizons. NMBE cells are colour-coded: green = |NMBE| < 1% (negligible bias); yellow = 1-3% 
+(moderate bias, monitor); red = |NMBE| > 3% (significant bias, investigate).
+Table 1. Extended benchmark metrics — Indirect target (clear-sky performance index k). nRMSE% 
+normalised by MEAN_DAYTIME_K = 0.6279. 95% CI from circular block bootstrap (block = 24 h, B 
+= 1,000). Skill-p = skill score vs 24-h persistence. n = daytime evaluation hours.
+Model H n
+nRMSE 
+(%) 95 % CI MAE R² NMBE (%)
+Skill-p 
+(%)
+XGB-Opt D+1 2580 29.095 — 0.0939 0.847 0.34 90.7
+D+2 2580 29.167 — 0.0968 0.846 -0.13 90.7
+D+3 2580 29.086 — 0.0968 0.847 -0.02 90.7
+BiLSTM-Opt D+1 2658 29.399 — 0.0772 0.841 3.76 95.8
+D+2 2660 29.615 — 0.0781 0.839 3.62 95.8
+D+3 2662 29.684 — 0.0786 0.838 3.46 95.8
+TFT-96 D+1 2702 29.330 — 0.0726 0.855 6.49 95.7
+D+2 2704 29.480 — 0.0730 0.854 6.54 95.7
+D+3 2706 29.515 — 0.0732 0.853 6.57 95.7
+TFT-168 D+1 2702 30.646 — 0.0810 0.842 5.96 95.5
+D+2 2704 31.007 — 0.0803 0.838 6.11 95.4
+D+3 2706 30.914 — 0.0802 0.839 6.03 95.5
+TFT D+1 2554 31.756 — 0.1163 0.817 -5.98 89.9
+D+2 2556 32.529 — 0.1197 0.808 -6.75 89.7
+D+3 2558 32.534 — 0.1202 0.808 -6.93 89.6
+PatchTST D+1 2728 29.493 — 0.0934 0.841 1.13 95.8
+D+2 2717 30.681 — 0.0997 0.827 0.65 95.6
+D+3 2706 31.002 — 0.1018 0.824 0.63 95.6
+Table 2. Extended benchmark metrics — Direct target (AC power output, kW). nRMSE% normalised
+by AC_CAPACITY_KW = 3,449 kW. All other columns as Table 1.
+Model H n
+nRMSE 
+(%) 95 % CI MAE R² NMBE (%)
+Skill-p 
+(%)
+XGB-Opt D+1 2580 12.060 — 233.8228 0.812 0.47 22.0
+D+2 2580 12.110 — 239.9596 0.810 0.25 21.6
+D+3 2580 12.185 — 244.4091 0.808 0.19 21.2
+BiLSTM-Opt D+1 2658 12.355 — 212.5975 0.799 1.81 19.4
+D+2 2660 12.428 — 215.8113 0.797 1.72 18.9
+D+3 2662 12.442 — 216.6435 0.796 1.65 18.7
+TFT-96 D+1 2702 12.055 — 192.6686 0.828 2.86 33.5
+D+2 2704 12.383 — 197.6203 0.819 2.96 31.6
+D+3 2706 12.381 — 199.3568 0.819 2.98 31.6
+TFT-168 D+1 2702 13.202 — 230.0821 0.794 0.69 27.2
+D+2 2704 13.189 — 225.2949 0.794 1.12 27.2
+D+3 2706 13.068 — 222.3460 0.798 1.36 27.8
+TFT D+1 2554 12.798 — 257.3688 0.787 -0.26 17.6
+
+D+2 2556 12.908 — 259.1228 0.784 -0.15 16.8
+D+3 2558 12.911 — 259.2034 0.784 -0.14 16.8
+PatchTST D+1 2728 13.735 — 303.2278 0.753 2.10 9.3
+D+2 2717 14.088 — 302.3738 0.740 2.65 7.2
+D+3 2706 14.024 — 302.4214 0.742 2.19 7.7
+.4 Mean Bias Error Analysis
+Table 3 summarises the signed bias (NMBE) for all models at D+1. The headline result is a 
+marked divergence between the XGB-Opt model and the neural network family.
+Table 3. NMBE and MBE for all models, D+1. Colour coding as Tables 1-2. Positive NMBE = 
+systematic over-forecast.
+Model Indirect NMBE 
+(%)
+Indirect MBE (kunits)Direct NMBE 
+(%)
+Direct MBE 
+(kW)
+XGB-Opt +0.34 +0.0021 +0.47 +16.2
+BiLSTM-Opt +3.76 +0.0236 +1.81 +62.4
+TFT-96 +6.49 +0.0408 +2.86 +98.6
+TFT-168 +5.96 +0.0374 +0.69 +23.7
+TFT -5.98 -0.0376 -0.26 -9.1
+PatchTST +1.13 +0.0071 +2.10 +72.5
+Indirect target bias findings
+XGB-Opt is essentially unbiased on the indirect target: NMBE = +0.34% at D+1, +(-0.13)% at 
+D+2, and -0.02% at D+3. This near-zero bias across all horizons indicates that the XGBoost 
+model does not carry any systematic directional error and is well-calibrated for operational use.
+TFT-96 has the largest positive bias: NMBE = +6.49% at D+1. In absolute terms this 
+corresponds to a mean over-forecast of MBE = +0.041 k-units. Given that the mean daytime k is 
+0.6279, the model over-predicts the clear-sky performance index by 6.5% of its mean value on 
+average. This is a material bias for energy scheduling.
+BiLSTM-Opt shows systematic over-forecast: NMBE = +3.76% (D+1), diminishing slightly to 
++3.46% at D+3. The bias is consistent across horizons, suggesting it arises from a structural 
+model characteristic (possibly the loss function or the training set distribution) rather than from a 
+specific meteorological regime.
+TFT baseline shows negative bias (under-forecast): NMBE = -5.98% at D+1. The TFT 
+baseline consistently under-predicts k by approximately 6% of the mean, in the opposite 
+direction to TFT-96 and TFT-168. This contrast within the TFT family suggests that the input 
+context window length (standard vs 96 vs 168 hours) substantially affects model calibration.
+Key finding: Bias direction is model-family-dependent and cannot be inferred from nRMSE 
+alone. XGB-Opt is the only model with negligible bias (<0.5%) on both targets and all horizons.
+
+Direct target bias findings
+On the direct target, biases are generally smaller in percentage terms. XGB-Opt again shows 
+near-zero bias (NMBE = +0.47% at D+1). TFT-96 remains the most biased model (NMBE = 
++2.86%), while TFT baseline and PatchTST also show notable positive biases (+2.10% and 
++2.10% respectively). BiLSTM-Opt shows a moderate +1.81% bias on the direct target, down 
+from +3.76% on the indirect target, suggesting that the bias is partly target-dependent.
+.5 Forecast Skill Relative to Persistence
+Table 4 reports skill scores at D+1 for all models. SS_pers is the primary skill score (vs 24-hour 
+persistence); SS_clim is the secondary skill score vs the climatological mean (i.e., best constant 
+predictor = std(y)).
+Table 4. Forecast skill scores at D+1. SS_pers = skill vs 24-h persistence; SS_clim = skill vs 
+climatological mean. Direct SS_pers cells: green >= 25%, yellow 15-25%, red < 15%.
+Model Indirect SS-pers 
+(%)
+Indirect SS-clim 
+(%)
+Direct SS-pers 
+(%)
+Direct SS-clim 
+(%)
+XGB-Opt 90.7 60.8 22.0 56.6
+BiLSTM-Opt 95.8 60.2 19.4 55.2
+TFT-96 95.7 61.9 33.5 58.5
+TFT-168 95.5 60.2 27.2 54.6
+TFT 89.9 57.2 17.6 53.9
+PatchTST 95.8 60.1 9.3 50.3
+Indirect target skill
+All models achieve high skill on the indirect target: SS_pers ranges from 89.9% (TFT 
+baseline) to 95.8% (BiLSTM-Opt). This means every model reduces RMSE to less than 10% of 
+the persistence RMSE a substantial improvement that confirms all models are adding 
+meaningful forecast value beyond the naive baseline.
+The persistence RMSE on the indirect target is estimated at approximately RMSE_persist ~ 1.97 
+(k-units), compared with model RMSEs around 0.18–0.20. The large skill scores reflect the 
+strong diurnal and seasonal structure in the clear-sky performance index, which 24-hour 
+persistence fails to track on variable days. XGB-Opt's SS_clim of 60.8% confirms it also 
+substantially outperforms the best constant predictor.
+Direct target skill
+Skill scores on the direct target are markedly lower and reveal a meaningful spread across 
+models. TFT-96 achieves the highest direct skill score (33.5%), consistent with its 
+competitive nRMSE on the direct target. XGB-Opt achieves 21.97% and BiLSTM-Opt 19.44%
+solid but moderate improvements over persistence.
+PatchTST achieves only 9.3% direct skill, barely above persistence. While PatchTST's 
+indirect skill is strong (95.8%), its direct performance is substantially weaker. This divergence 
+suggests that PatchTST's patch-based attention mechanism captures the normalised variability 
+of k well but struggles to recover the full amplitude of AC power output.
+
+Key finding: Indirect skill scores are uniformly high (90-96%) for all models. Direct skill scores 
+are more differentiated (9-34%), revealing that direct power forecasting is the more challenging 
+task and that model architecture choices have a larger impact on direct forecasting 
+performance.
+.6 Error Distribution Statistics
+Table 5 reports three tail-sensitive metrics at D+1 for all models. RMSE/MAE ratio cells above 
+2.2 are flagged red; above 1.8, yellow.
+Table 5. Error distribution statistics at D+1. MdAE = median absolute error (robust measure); P90 = 
+90th-percentile absolute error (tail risk); RMSE/MAE ratio = leptokurtosis proxy (>1.5 = heavy tails). 
+Ind. = indirect target; Dir. = direct target.
+Model Ind. MdAE 
+(k)
+Ind. P90 
+(k)
+Ind. 
+RMSE/MAE
+Dir. MdAE 
+(kW)
+Dir. P90 
+(kW)
+Dir. 
+RMSE/MAE
+XGB-Opt 0.0469 0.1921 1.945 132.6 512.6 1.779
+BiLSTM-Opt 0.0197 0.1936 2.393 87.1 559.7 2.004
+TFT-96 0.0152 0.1652 2.535 62.7 496.3 2.158
+TFT-168 0.0168 0.2281 2.377 77.6 716.9 1.979
+TFT 0.0648 0.2996 1.714 129.3 715.7 1.715
+PatchTST 0.0352 0.2353 1.983 197.2 726.7 1.562
+Indirect target error distribution
+TFT-96 achieves the lowest MdAE on indirect (0.0152 k-units), meaning that on more than 
+half of evaluation hours, the forecast error is less than 0.015 k — roughly 2.5% of the mean k 
+value. BiLSTM-Opt also achieves very low MdAE (0.020) compared with XGB-Opt (0.047). This 
+pattern reflects the neural models' use of MAE-sensitive loss components that produce better 
+median performance.
+However, the RMSE/MAE ratio tells the opposite story for tail risk: TFT-96 has a ratio of 
+2.535 (very heavy tails), BiLSTM-Opt 2.393, while XGB-Opt is lowest at 1.945. The TFT-96 
+model achieves excellent typical-day performance (low MdAE) but experiences occasional large 
+errors that inflate RMSE. This trade-off — precision vs robustness — is fundamental to the 
+choice of training loss function: MAE-type losses produce low MdAE and heavy tails; RMSE-type 
+losses produce more uniform errors.
+P90 values confirm this pattern: TFT-96's P90 on indirect is 0.165 (the best), while XGB's is 
+0.192 and PatchTST's is 0.235. On days where the model is wrong, TFT-96 tends to be wrong 
+by a smaller amount than XGB.
+Key finding: Neural models (TFT-96, BiLSTM-Opt) achieve lower MdAE but higher RMSE/MAE 
+ratios than XGB-Opt. This means neural models are better on typical days but generate more 
+frequent outlier errors. For risk-sensitive applications (energy trading, reserve procurement), 
+the RMSE/MAE ratio is the more relevant criterion and favours XGB-Opt.
+Direct target error distribution
+On the direct target, TFT-96 again achieves the lowest MdAE (62.7 kW) and a favourable P90 
+(496 kW). XGB-Opt's MdAE is 132.6 kW — substantially higher in absolute terms — but its 
+
+RMSE/MAE ratio (1.779) is the lowest of all models, confirming the most uniform error 
+distribution. PatchTST's RMSE/MAE ratio on direct (1.562) is the lowest overall, consistent with 
+its relatively low P90 sensitivity despite high nRMSE.
+.7 Horizon Degradation (D+1 to D+3)
+Tables 6 and 7 report nRMSE for all models across the three forecast horizons. A key question 
+is whether model accuracy degrades meaningfully from D+1 to D+3 (corresponding to 24-, 48-, 
+and 72-hour-ahead forecasts).
+Table 6. nRMSE (%) by horizon — Indirect target. Last column shows D+1 to D+3 change in 
+percentage points.
+Model D+1 D+2 D+3 D+1→D+3 
+change
+XGB-Opt 29.095 29.167 29.086 +-0.009 pp
+BiLSTM-Opt 29.399 29.615 29.684 +0.285 pp
+TFT-96 29.330 29.480 29.515 +0.185 pp
+TFT-168 30.646 31.007 30.914 +0.268 pp
+TFT 31.756 32.529 32.534 +0.778 pp
+PatchTST 29.493 30.681 31.002 +1.509 pp
+Table 7. nRMSE (%) by horizon — Direct target.
+Model D+1 D+2 D+3 D+1→D+3 
+change
+XGB-Opt 12.060 12.110 12.185 +0.125 pp
+BiLSTM-Opt 12.355 12.428 12.442 +0.087 pp
+TFT-96 12.055 12.383 12.381 +0.326 pp
+TFT-168 13.202 13.189 13.068 +-0.134 pp
+TFT 12.798 12.908 12.911 +0.113 pp
+PatchTST 13.735 14.088 14.024 +0.289 pp
+Horizon stability is a notable finding. For the indirect target, all models show horizon 
+degradation of less than 1 percentage point from D+1 to D+3: XGB-Opt +0.009 pp, BiLSTM-Opt 
++0.285 pp, TFT-96 +0.185 pp. This robustness is explained by the primary reliance on NWP 
+forecast features, which are available at all horizons and degrade gracefully beyond D+1.
+For the direct target, degradation is similarly small: XGB-Opt +0.125 pp (D+1 12.060% to D+3 
+12.185%), BiLSTM-Opt +0.087 pp. The near-constant nRMSE across horizons is a practically 
+important result: the model can be deployed for three-day-ahead scheduling without a significant 
+accuracy penalty.
+
+PART III — CONSOLIDATED FINDINGS AND CONCLUSIONS
+.1 Summary of All Model Comparisons
+Drawing together the primary nRMSE results (reported in the main paper) and the extended 
+metrics (introduced in Part II), the following picture emerges for the Ktora site over the October 
+2024 – May 2025 test period.
+.1.1 Primary accuracy ranking
+Indirect target (D+1):
+• XGB-Opt: 29.095% — lowest nRMSE, essentially unbiased (+0.34%), moderate MdAE
+• TFT-96: 29.330% — competitive nRMSE, best MdAE (0.015), but highest bias (+6.5%)
+• BiLSTM-Opt: 29.399% — competitive nRMSE, low MdAE (0.020), moderate bias (+3.8%)
+• PatchTST: 29.493% — competitive nRMSE, near-zero bias (+1.1%), good indirect skill
+• TFT-168: 30.646% — moderate nRMSE, positive bias (+6.0%)
+• TFT baseline: 31.756% — highest nRMSE, negative bias (-6.0%)
+Direct target (D+1):
+• TFT-96: 12.055% — marginally lowest nRMSE, highest direct skill score (33.5%)
+• XGB-Opt: 12.060% — effectively tied with TFT-96, unbiased, lowest RMSE/MAE (1.779)
+• BiLSTM-Opt: 12.355% — good nRMSE, moderate bias (+1.81%)
+• TFT baseline: 12.798% — moderate performance, near-zero direct bias
+• TFT-168: 13.202% — weaker direct performance
+• PatchTST: 13.735% — weakest direct nRMSE, low direct skill (9.3%)
+.1.2 The indirect route advantage
+Forecasting the clear-sky performance index k (indirect route) and converting to power via the 
+clear-sky curve consistently outperforms direct AC power forecasting. On the indirect route, 
+nRMSE expressed in power-equivalent terms is 1.7–2.1 percentage points lower than direct 
+forecasting for both XGB-Opt and BiLSTM-Opt. This advantage is achieved without additional 
+modelling complexity — only the choice of forecast target changes. It is consistent with the 
+theoretical argument that k-prediction removes the deterministic envelope and leaves a more 
+stationary, lower-variance target.
+.2 Key Conclusions
+Conclusion 1 — XGB-Opt is the recommended operational model.
+Although TFT-96 achieves a marginally lower nRMSE on the direct target (12.055% vs 
+12.060%), the difference is not statistically significant given the bootstrap confidence intervals. 
+XGB-Opt has four operational advantages: (i) lowest NMBE on both targets (<0.5%); (ii) lowest 
+RMSE/MAE ratio on direct (1.779 = most uniform errors); (iii) competitive P90 on both targets; 
+and (iv) fastest inference and training, enabling daily retraining at production scale.
+Conclusion 2 — Neural models trade median precision for tail robustness.
+
+TFT-96 and BiLSTM-Opt achieve lower MdAE than XGB-Opt on both targets, meaning they are 
+more accurate on typical days. However, their RMSE/MAE ratios (2.0–2.5) indicate significantly 
+heavier error tails. For risk-sensitive applications (energy trading, balancing reserve 
+procurement) where large errors are disproportionately costly, the heavier tails of neural models 
+represent a material disadvantage that is obscured by RMSE-only reporting.
+Conclusion 3 — Systematic bias is a model-family characteristic, not a tuning issue.
+The sign and magnitude of NMBE differ systematically across model families: XGB (<0.5%), 
+BiLSTM (+3.8%), TFT-96 (+6.5%), TFT baseline (-6.0%). These biases are consistent across all 
+three horizons and both targets, suggesting they reflect architectural characteristics (e.g., 
+training loss function, temporal aggregation method) rather than randomness or poor tuning. 
+Post-hoc bias correction (mean adjustment) could potentially close the gap between models on 
+nRMSE, but would not address the underlying error structure.
+Conclusion 4 — All models substantially outperform 24-hour persistence.
+Indirect target skill scores of 90–96% confirm that all models deliver substantial forecast value. 
+The naive persistence baseline (using yesterday's k value) achieves approximately 0% skill by 
+definition; the models reduce RMSE to roughly 4–10% of the persistence RMSE on the indirect 
+target. This confirms that day-ahead PV forecasting with NWP features is a well-solved problem 
+at this site and horizon range.
+Conclusion 5 — Horizon degradation is negligible (D+1 to D+3).
+nRMSE increases by less than 0.3 percentage points from D+1 to D+3 for all models on both 
+targets. This is practically important: three-day-ahead scheduling can rely on the same model 
+accuracy as next-day forecasts, without requiring separate models or discounting for horizon 
+uncertainty.
+Conclusion 6 — The indirect forecasting route is consistently superior.
+Forecasting the clear-sky performance index k and converting to power reduces nRMSE by 1.7–
+2.1 percentage points compared with direct power forecasting, for both XGB-Opt and BiLSTMOpt. This improvement requires no additional model complexity and is available to any 
+forecasting system that has access to a reliable clear-sky model (pvlib Ineichen-Perez is freely 
+available). This finding replicates the results reported in Lauret et al. (2015) and Diagne et al. 
+(2013) for European sites.
+.3 Limitations and Future Work
+The following limitations should be noted when interpreting the results:
+• Test period (Oct 2024 – May 2025) excludes summer months. Summer typically produces 
+the highest irradiance and most clear days, which may be easier or harder to forecast 
+depending on cloud climatology. Results may not generalise to the full annual cycle.
+• BiLSTM-Opt was trained with 20 Optuna trials (not 60 as for XGB-Opt) and was evaluated 
+on a single seed (42) due to GPU constraints. The reported BiLSTM metrics may not fully 
+reflect the optimised model.
+
+• All DM tests comparing models are under-powered (43–56% of the minimum detectable 
+effect) given the available test set size. Differences in nRMSE below approximately 0.8 
+percentage points cannot be conclusively distinguished from sampling variability.
+• Single site: the findings — particularly the indirect route advantage and the XGB vs neural 
+model comparison — should be validated at additional Mediterranean and semi-arid sites 
+before generalising.
+• No probabilistic forecasts: the study evaluates point forecasts only. TFT-96 natively 
+produces quantile forecasts; their calibration was not evaluated and represents an important 
+extension.
+Recommended future work:
+• Extend test period to include summer 2025 once data become available.
+• Run BiLSTM-Opt with 60 Optuna trials and 3 seeds once GPU resources are available.
+• Evaluate TFT-96 probabilistic outputs (quantile calibration, CRPS) against XGB-Opt 
+conformal prediction intervals.
+• Apply post-hoc bias correction to TFT-96 and BiLSTM-Opt to isolate the contribution of 
+systematic bias to headline nRMSE.
+• Validate indirect route advantage on at least one additional Israeli utility-scale PV site.
+
+References
+References below supplement those in the main report. All follow APA 7th edition. Items marked 
+* are new additions not present in the original bibliography.
+1. Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation 
+hyperparameter optimization framework. Proceedings of the 25th ACM SIGKDD International 
+Conference on Knowledge Discovery & Data Mining, 2623-2631. []
+2. Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. 
+(2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78-111. []
+3. Bacher, P., Madsen, H., & Nielsen, H. A. (2009). Online short-term solar power forecasting. Solar 
+Energy, 83(10), 1772-1783. []
+4. Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. Proceedings of the 22nd 
+ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 785-794.
+5. Diagne, M., David, M., Lauret, P., Boland, J., & Schmutz, N. (2013). Review of solar irradiance 
+forecasting methods and a proposition for small-scale insular grids. Renewable and Sustainable 
+Energy Reviews, 27, 65-76.
+6. Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business and 
+Economic Statistics, 13(3), 253-263.
+7. Guen, V. L., & Thome, N. (2020). Disentangling physical dynamics from unknown factors for 
+unsupervised video prediction. CVPR 2020. (Referenced for RMSE/MAE ratio diagnostic.) []
+8. Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared 
+errors. International Journal of Forecasting, 13(2), 281-291.
+9. Holmgren, W. F., Hansen, C. W., & Mikofski, M. A. (2018). pvlib python: A python package for 
+modeling solar energy systems. Journal of Open Source Software, 3(29), 884.
+10. Huang, X., & Nie, F. (2020). Short-term load forecasting using a BiLSTM encoder-decoder model 
+with attention. Applied Energy, 282, 116038. []
+11. Ineichen, P., & Perez, R. (2002). A new airmass independent formulation for the Linke turbidity 
+coefficient. Solar Energy, 73(3), 151-157.
+12. Lauret, P., Voyant, C., Soubdhan, T., David, M., & Poggi, P. (2015). A benchmarking of machine 
+learning techniques for solar radiation forecasting in an insular context. Solar Energy, 112, 446-457.
+13. Lim, B., Arik, S. O., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable 
+multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748-1764.
+14. Lorenz, E., Hurka, J., Heinemann, D., & Beyer, H. G. (2009). Irradiance forecasting for the power 
+prediction of grid-connected photovoltaic systems. IEEE Journal of Selected Topics in Applied Earth 
+Observations and Remote Sensing, 2(1), 2-10. []
+15. Politis, D. N., & Romano, J. P. (1994). The stationary bootstrap. Journal of the American Statistical 
+Association, 89(428), 1303-1313.
+16. Yang, D., Kleissl, J., Gueymard, C. A., Pedro, H. T. C., & Coimbra, C. F. M. (2022). History and 
+trends in solar irradiance and PV power forecasting: A preliminary assessment and review using text 
+mining. Solar Energy, 168, 60-101.

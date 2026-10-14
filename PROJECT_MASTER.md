@@ -1,0 +1,674 @@
+# PROJECT_MASTER — בנייה מחדש ותיקון של Solar PV Forecasting Capstone (Ktora)
+
+> **מסמך המפתח של הפרויקט.** מקור אמת אחד לתוכנית, למפרט, לממצאים, להחלטות ולמצב העבודה.
+> מחליף את מסמך התוכנית ב-claude.ai (“תוכנית שחזור קוד המקור”, 13.10.2026), שנשאר כהיסטוריה בלבד.
+> מעדכנים אותו בסוף כל סשן עבודה (ראו §0). אסור למחוק היסטוריה, רק לסמן כ“הוחלף”.
+
+| שדה | ערך |
+|---|---|
+| גרסת מסמך | v1.2 |
+| עדכון אחרון | 2026-10-14 |
+| עקרון מנחה | **לא משחזרים אחד לאחד. כל באג שמתגלה מתוקן.** המספרים הישנים אינם יעד, אלא נקודת השוואה ל-errata בלבד (D-01) |
+| עקרון שני | **קודם סוגרים את כל ה-pipeline מקצה לקצה עם מודלים קלים, בלי דליפות ובלי הנחות לא מאומתות (שער G-1). רק אחר כך מריצים אימון סופי אחד על כל המודלים** (D-08) |
+| לוח זמנים | אין מועד הגנה. ההגנה תתואם אחרי סיום העבודה. איכות לפני מהירות |
+| שלב נוכחי | שלב 1 הושלם (14.10): סביבה, ריפו, שלד, 67 בדיקות ירוקות. שלב 0 הושלם חוץ מגיבוי חיצוני |
+| הפעולה הבאה | (1) המשתמש מאשר את שדה Ketura Sun כמיקום המפעל (A-03) ומגבה את `Raw data/` לשני מיקומים. (2) יצירת ריפו פרטי ב-GitHub ו-push. (3) שלב 8 חלק א' (evaluate.py, ו-T-15 על ה-fixture) |
+
+---
+
+## 0. איך משתמשים במסמך
+
+**בשיחה חדשה (Claude / ChatGPT / כל LLM):** מעלים את הקובץ הזה וכותבים:
+“זה מסמך המפתח של הפרויקט. קרא את §1, §2 ו-§3, והמשך מהפעולה הבאה שב-§1. בסוף הסשן עדכן את §1, את טבלאות הסטטוס ואת יומן השינויים ב-§17.”
+
+**ב-Claude Code:** הקובץ `CLAUDE.md` בשורש התיקייה מפנה לכאן, כך שכל סשן קורא אותו אוטומטית.
+
+**כללי עדכון**
+1. מזהים קבועים: ממצא `F-xx`, החלטה `D-xx`, סתירה `C-xx`, סיכון `R-xx`, שאלה `Q-xx`, בדיקה `T-xx`, הנחה `A-xx`. לא ממחזרים מזהה. כל הנחה חדשה נרשמת ב-§6.13 עם האופן שבו תאומת.
+2. כל שינוי בסטטוס (שלב, החלטה, סתירה) נרשם גם ב-§17 עם תאריך.
+3. מספר חדש שנכנס לדוח נרשם ב-§13 (traceability) עם הקובץ והסקריפט שמייצרים אותו.
+4. **באג חדש שמתגלה:** פותחים F-xx, מתקנים, מוסיפים בדיקה שמונעת חזרה, ורושמים ב-`docs/errata.md` (מה היה, מה תוקן, ההשפעה על המספרים).
+5. היררכיית מקורות להבנת **מה הקוד המקורי עשה**: אימות חוזר שבוצע בפועל (F-xx) > קוד ששרד > `benchmark_summary.csv` ו-`07_shap/*` > `constants.py` > דוח v6 > FINDINGS, Supplement ו-CITATION. **מה נכון לעשות** נקבע במפרט (§6), לא במקור.
+
+**תוכן:** 1 סטטוס · 2 ממצאים · 3 החלטות · 4 מטרה וקבלה · 5 סביבה · 6 מפרט קנוני · 7 שלבים · 8 בדיקות · 9 ערכים ישנים להשוואה · 10 סתירות · 11 הגנה · 12 סיכונים וסדר עבודה · 13 Traceability · 14 מצאי ראיות · 15 מילון · 16 שאלות · 17 יומן
+
+---
+
+## 1. לוח סטטוס
+
+| שלב | שם | סטטוס | הערה |
+|---|---|---|---|
+| 0 | קליטת דאטה וגיבוי | 🟡 כמעט | inventory ו-`raw_checksums.sha256` (50 קבצים) קיימים. חסר גיבוי לשני מיקומים (משתמש) |
+| 1 | תשתית, סביבה, קונפיג, leakage | ✅ 14.10 | Git 2.55, Miniforge, env `solar` (Python 3.11.17, pandas 3.0.6, pvlib 0.16.1). חבילה `solarpv`, חוזה 75, EXCL, 67 בדיקות ירוקות, ruff נקי. commit ראשון |
+| 2 | Ingest והמרה נכונה ל-UTC | ⬜ | תיקון F-01 |
+| 3 | EDA | ⬜ | כולל פיגורת “לפני ואחרי” של F-01 |
+| 4 | Preprocess (1min ← שעה) | ⬜ | |
+| 5 | ניקוי | ⬜ | כלל לילה על גאומטריה נכונה |
+| 6 | פיצ'רים ו-target | ⬜ | תיקון k (F-06, D-11), rolling לפי אופק (F-07) |
+| 6b | NWP אמיתי (GFS archive) | ⬜ | מקור חינמי בלי דליפה (F-11, D-12) |
+| 7 | בחירת פיצ'רים | ⬜ | רצה מחדש על דאטה מתוקן, כולל מועמדי NWP (D-13) |
+| 8 | evaluate.py | 🟢 המפרט אומת | F-02, F-03. DM עם HLN (D-14) |
+| 9 | מודלים קלים: baselines ו-XGB-Opt | ⬜ | פיתוח ובדיקה מקצה לקצה |
+| G-1 | 🚦 שער: ביקורת מקצה לקצה | ⬜ | כל ההנחות מאומתות, אין דליפות, הקוד קפוא |
+| 10 | אימון סופי לכל המודלים | ⬜ | XGB, PatchTST ו-BiLSTM, על pipeline קפוא (D-08) |
+| 11 | הערכה, דוח, traceability, errata | ⬜ | כל מספרי התוצאות בדוח מתעדכנים |
+
+**חוסם:** אין. שלבים 0–9 פתוחים לעבודה. שלב 10 נפתח רק אחרי G-1.
+
+---
+
+## 2. ממצאים מהסקירה (13.10.2026)
+
+הסקירה כללה את 8 הסקריפטים, את כל ה-CSVs, את מסמכי ה-audit, את מחברות 03, 04, 05 ו-07, את טקסט דוח v6 ואת הדאטה הגולמי. כמה טענות נבדקו בחישוב חוזר ב-PowerShell (אין Python במחשב).
+**שחזור הבדיקות:** `00_data_audit/verify_2026-10-13/verify_findings.ps1` מריץ את F-01, F-02, F-03 ו-F-01c בכ-2 דקות (`powershell -ExecutionPolicy Bypass -File …`).
+
+### F-01 🔴 באג אזור זמן: שעון מקומי טופל כ-UTC → **מתוקן (שלב 2)**
+- **ראיה:** בקובץ `predictions_lstm_sota_aligned.csv`, ה-y_true (direct) בתווית `2024-12-10 06:00+00:00` הוא 122.1 kW, בדיוק ממוצע השעה **06:00 מקומית** בגולמי. אותו דבר בכל שעות היום, בחורף (2024-12-10, 2025-01-15) ובקיץ (2024-10-15, 2025-05-14). ההיסט עוקב אחרי DST, כלומר לא הייתה המרה בכלל.
+- **סיבה בקוד:** `03_preprocessing_UNIFIED.ipynb`, תא 3: `if df.index.tz is None: df.index = df.index.tz_localize("UTC")`. מחברת 04 v4 ממירה מ-Asia/Jerusalem רק כשהאינדקס naive, ולכן דילגה על ההמרה.
+- **השלכות במקור:** גאומטריית השמש מוזזת בשעתיים בחורף ובשלוש בקיץ מול הייצור. `target_k` עולה לאורך היום גם ביום בהיר. מסנן היום כלל 03:00–05:59 מקומית ופספס ייצור של אחר הצהריים. **כל מספרי התוצאות בדוח v6 מבוססים על הדאטה הזה.**
+- **F-01b, איפוס אחר הצהריים:** ייצור אמיתי של 15:00–18:00 מקומית אופס. לדוגמה, ב-2025-05-14 בשעה 17 נרשמו 238.9 במקום 830 kW, ובשעה 18 נרשם 0 במקום 244. האיפוס מתחיל כ-45 דקות אחרי השקיעה האמיתית כשהתווית נקראת כ-UTC (גובה שמש של בערך ‎−8°), כלומר כלל “לילה” שהופעל על הגאומטריה השגויה.
+- **F-01c:** גילוי D1 בדוח (“13.5% inverter downtime”). המספר נכון, 339 מתוך 2,510 שעות יום עם y_true=0, אבל **כל 339 השעות הן 03–05 לפי התווית**, לפני הזריחה. אין אף השבתה של יום שלם. זה תוצר של F-01, לא תקלות ממיר.
+
+### F-02 🟢 המסכה של evaluate.py שוחזרה בדיוק
+שעה t (UTC, תווית תחילת שעה) היא “יום” אם גובה השמש **ב-t+30 דקות** במיקום **29.9697N, 35.0642E** גדול מ-5°. ההגדרה נותנת 2,580 שעות על חלון ה-test, ו-2,510, 2,512 ו-2,514 על חותמות ה-LSTM: 7 מתוך 7 התאמות מדויקות. **אומת שוב ב-pvlib** (T-07, 14.10). אותן ספירות מתקבלות גם במרכז שדה Ketura Sun (29.96476, 35.05972), שהוא המיקום החדש (A-03), וגם בשדה ה-40 MW. כלומר הנקודה הישנה הייתה במרחק של כ-700 מ' מהשדה, בתוך הקיבוץ, וההבדל לא משנה את המסכה. חלופות נפסלו: תחילת השעה נותנת 2,567, ממוצע רבעי שעה 2,585, ו-31.5/34.9 נותן 2,557–2,575. המסקנות: הקואורדינטות בפועל היו של קטורה, וההגדרה הזו נשמרת גם בגרסה המתוקנת.
+
+### F-03 🟢 קוד ההערכה אומת מול הפרדיקציות ששרדו
+| target, h | n | nRMSE מחושב | ב-benchmark |
+|---|---|---|---|
+| indirect 1/2/3 | 2,510/2,512/2,514 | 30.2373 / 30.4602 / 30.5303 | 30.2374 / 30.4602 / 30.5303 |
+| direct 1/2/3 | אותו דבר | 12.5762 / 12.6367 / 12.6472 | 12.5774 / 12.6371 / 12.6478 |
+
+ה-R² שלי גבוה ב-0.0002–0.0004, וב-direct יש פער של עד 0.0012 pp. **השערה:** evaluate.py לקח y_true מקובץ הפיצ'רים. **שימוש:** קובץ ה-LSTM ששרד משמש **fixture** לבדיקת נכונות של evaluate.py (T-15), לא יעד לתוצאות.
+
+### F-04 🟢 DM במקור חושב בלי HLN
+`dm_tests.csv` זהה עד 4 ספרות ל-`dm_tests_extended.csv`, שמחושב בשיטה: NW Bartlett 24, gamma0 עם ddof=1, ו-p נורמלי, **בלי HLN ובלי Bonferroni**. הדוח טוען שהם הופעלו. **מתוקן ב-D-14.**
+
+### F-05 🟢 קלט ה-XGB המקורי: 76 פיצ'רים
+`07_shap/shap_rank_stability.csv` מכיל 76 שורות. במקור לא היו fcst_*, ולא irradiance, mod_temp ו-ambient_temp באותה חותמת זמן. ה-rolling היה רק בחלונות 3d ו-7d, וה-lags ב-1, 2, 3, 7 ו-14 ימים. גם `theoretical_power` נכלל, עם חשיבות 0, למרות שהוא ברשימת ה-leakage. **מתוקן:** חוזה של 75 פיצ'רים עם rolling לפי אופק (§6.6).
+
+### F-06 🟢 באג 1.2 וההמרה ל-kW → **מתוקן (שלב 6)**
+- במקור, k חושב ברזולוציה של 15 דקות לפי `k = clip(AC/theo, 0, 1.2)` כש-theo > 50 kW, ואחרת 0. אחר כך **מוצע לשעה (ממוצע של יחסים)**. הקובץ ששרד מתאים למכנה GHI_cs: ה-“קרינה המשתמעת” עקבית, 560 W/m² ב-09 בדצמבר. מחברת v4 השתמשה ב-POA.
+- **הבאגים:** (א) **16.8%** משעות היום ב-test נחתכו בדיוק ב-1.2, ברובן בגלל F-01. (ב) ממוצע של יחסים, יחד עם הסף, שובר את ההיפוך: `AC ≠ k × GHI_cs × 3449/1000` בשעות השוליים. (ג) route comparison בנה את ה-“אמת” של ה-route העקיף מתוך k חתוך, ולא מ-AC אמיתי (C-16).
+- **התיקון:** §6.5. k שעתי כיחס של ממוצעים, היפוך מדויק, בלי חיתוך ב-1.2, ו-route שמשתמש ב-AC אמיתי בשני ה-routes.
+
+### F-07 🟢 פיצ'רי ה-rolling דולפים ב-D+2 וב-D+3 → **מתוקן (שלב 6)**
+בקוד v4, `rolling_mean_Nd_same_tod = mean(shift(1d), …, shift(Nd))`. ב-D+2 וב-D+3 זה כולל את T−24h, בעוד lag_1d עצמו מושמט שם. זה מסביר את ה-nRMSE השטוח בין האופקים.
+
+### F-08 🟢 בתיקיית 01_benchmark יש קבצים ישנים
+`global_metrics.csv`, `executive_summary.csv` ו-`02/bootstrap_ci.csv` הם הערכה ישנה: מכנה של בערך 0.7667, XGB indirect של 24.51%. לא לצטט.
+
+### F-09 🟢 מצב המחשב
+אין Python ואין conda. אין Git. ה-GPU הוא AMD משולב, בלי CUDA. Ryzen 5 7535U עם 12 threads ו-31.3 GB RAM. OneDrive קיים. המשתמש המקורי `204323141` לא קיים במחשב הזה.
+
+### F-10 🟢 שונות
+- **persistence ב-test (דאטה ישן, 2,499 שעות):** k-persistence נותן 37.76%, ו-AC-persistence נותן 15.67%. ה-skill של XGB היה בערך 22%, לא 90–96% (C-08).
+- **דאטה גולמי:** 45 קבצים, 1,971,360 שורות, 28 עמודות, שעון מקומי עם DST. 60 כפילויות בכל אוקטובר ו-60 חוסרים בכל מרץ. ac_max חריג ב-2202, 2212, 2302 ו-2305.
+- **מחברת 03 לא מבצעת resampling.** היא טוענת קבצים שנדגמו במחברות 01/02 שאבדו.
+- **מחברת 07 ששרדה** היא גרסת Keras ישנה. ה-lstm_sota.py הסופי היה PyTorch encoder-decoder.
+- **קבצים שלא הוזכרו בתוכנית:** `Raw data/Ktora.csv` (15 דקות, 2024), `example to data.xlsx`, `tagfile*.txt`.
+- **NWP (Open-Meteo archive):** reanalysis, כלומר מצב האטמוספרה בפועל ולא תחזית. לכן זו דליפה. הוצא מהמודל הסופי ולא תרם. **לא משחזרים אותו.** במקומו יש מקור חליפי (F-11).
+
+### F-11 🟢 מקור NWP חליפי, חינמי ובלי דליפה: ארכיון GFS של NOAA ב-AWS (נבדק 14.10.2026)
+| מקור | מה זה | כיסוי | מתאים? |
+|---|---|---|---|
+| Open-Meteo Historical Forecast API | תפירה של השעות הראשונות של כל ריצה | GFS ממרץ 2021 | ❌ lead קצר מדי, קרוב לתצפית. Open-Meteo עצמם מפנים ל-Previous Runs להערכת יום מראש |
+| Open-Meteo Previous Runs API | תחזיות ב-lead קבוע (previous_day1…7), כולל GHI, DNI, DHI וענן | רוב המודלים מינואר 2024. GFS: רק טמפרטורה ממרץ 2021 | ⚠️ לא מכסה את train (2021–2023). שימושי לאימות צולב על val ו-test. אפשר לבקש מהם שחזור היסטוריה |
+| Open-Meteo Single Runs API | ריצות בודדות | IFS ממרץ 2024, השאר מ-2026 | ❌ |
+| **NOAA GFS על AWS** (`s3://noaa-gfs-bdp-pds`, ציבורי, בלי הרשמה) | פלט GRIB2 מלא של כל ריצה (00, 06, 12, 18Z) | **אומת:** `gfs.20210901` ו-`gfs.20250531` קיימים | ✅ **המקור המומלץ** |
+| UCAR RDA ds084.1 | אותו GFS ברזולוציה 0.25° | מ-2015 | ✅ גיבוי (הרשמה חינמית) |
+
+פרטים שאומתו בארכיון:
+- **1p00:** קבצי `pgrb2.1p00.fXXX` כל 3 שעות, בערך 45 MB לקובץ. לכל קובץ יש `.idx` עם offset של כל הודעה, כך שמורידים **רק את המשתנים הדרושים** ב-HTTP Range. הודעה גלובלית של משתנה אחד היא בערך 70 KB.
+- **משתנים זמינים:** `DSWRF:surface` (ממוצע של בלוקים של 6 שעות, למשל "18-24 hour ave"), `TCDC:entire atmosphere` (רגעי וממוצע), שכבות ענן, `TMP:2 m`, `UGRD/VGRD:10 m`.
+- **מיקום:** לרשת 1° יש נקודה ב-30.0N 35.0E, כ-7 ק"מ מהאתר.
+- **נפח מוערך:** ריצה אחת ביום × בערך 26 קבצים × 5 משתנים × בערך 70 KB ≈ 9 MB ליום, כלומר בערך 12 GB לכל התקופה. זה אפשרי בלילה אחד או שניים.
+- **מלכודות ידועות:** (א) DSWRF הוא ממוצע מתחילת בלוק של 6 שעות, ולכן צריך לחלץ ממוצעים של 3 שעות (`avg(3–6) = 2·avg(0–6) − avg(0–3)`). (ב) צריך לבחור ריצה שהייתה **זמינה בפועל** לפני זמן ההנפקה (§6.12). (ג) GFS ידוע בהטיה בקרינה, וזה לא בעיה למודל שלומד ממנה.
+- **מקורות:** [Previous Runs](https://open-meteo.com/en/docs/previous-runs-api) · [Historical Forecast](https://open-meteo.com/en/docs/historical-forecast-api) · [Single Runs](https://open-meteo.com/en/docs/single-runs-api) · [UCAR ds084.1](https://rda.ucar.edu/datasets/ds084-1) · [bucket listing](https://noaa-gfs-bdp-pds.s3.amazonaws.com/?list-type=2&prefix=gfs.2021090&delimiter=/)
+
+---
+
+## 3. החלטות
+
+| ID | החלטה | הכרעה / המלצה | סטטוס |
+|---|---|---|---|
+| D-01 | שחזור 1:1 מול תיקון | **לא משחזרים 1:1.** בונים pipeline נכון ומתקנים כל באג. אין מצב legacy. המספרים הישנים משמשים רק להשוואה ב-errata | ✅ הוכרע (משתמש, 13.10) |
+| D-02 | מה עושים עם הדוח | כל מספרי התוצאות מתעדכנים לפי ה-pipeline המתוקן. מוסיפים עמוד “Reproduction & Correction note” ו-`docs/errata.md` עם טבלת “ישן מול חדש”. מומלץ לעדכן את המנחה מוקדם | ✅ נגזר מ-D-01 |
+| D-03 | `theoretical_power` בקלט | **מוסר** (ברשימת leakage, חשיבות 0). החוזה: 75 פיצ'רים | ✅ |
+| D-04 | rolling לפי אופק (F-07) | **מתקנים:** ב-D+h, ה-rolling בנוי מ-lag_h עד lag_(h+N−1) | ✅ |
+| D-05 | קואורדינטות | קוד: **מרכז שדה הסולארי עצמו**, Ketura Sun (29.96476, 35.05972, OSM way/142387694), מ-`site.private.yaml` (בקשת המשתמש, 14.10). בדוח: לפי Q-09, ו-§13.6 נכתב מחדש בכל מקרה | ✅ קוד (ממתין לאישור השדה, A-03) / ⏳ דוח |
+| D-06 | גרסת Python | 3.11 עם Miniforge | מוצע |
+| D-07 | מיקום הריפו | `C:\Users\baraky\Desktop\solar` הוא השורש. `Raw data/` ב-gitignore. `submission_evidence/` read-only | מוצע |
+| D-08 | מודלים נוירונים ותזמון האימון | **(ב): PatchTST ו-BiLSTM**, עם תקציב Optuna מוצהר. **רק בסוף**: אחרי שה-pipeline נסגר מקצה לקצה עם מודלים קלים ועבר את שער G-1. אז מתבצע **אימון סופי אחד לכל המודלים** (כולל XGB) על קוד קפוא. TFT לא נכלל. בדוח הוא מופיע כ-limitation, עם התוצאה הישנה רק ב-errata | ✅ הוכרע (משתמש, 14.10) |
+| D-09 | מקור irradiance ו-ambient_temp | meteo (`st01_irrad`, `st02_amb_temp`). לאמת בשלב 2 מול Pyranometer ו-SiteData | מוצע |
+| D-10 | refit סופי של XGB | train+val עם מספר הסבבים מ-early stopping. מתועד | מוצע |
+| D-11 | מכנה ה-k | GHI_cs (כמו בדוח) או POA_cs (tilt 30°, azimuth 180°, כמו v4). מכריעים בשלב 6 לפי שלושה קריטריונים: (1) % השעות עם k>1, (2) שטיחות k ביום בהיר לאורך העונות, (3) nRMSE ב-kW על val. **ציפייה: POA**, כי ב-GHI החורף נותן k≈1.1 בצהריים | ⏳ שלב 6 |
+| D-12 | NWP | ה-archive של Open-Meteo (reanalysis) לא משוחזר. **מקור חליפי: ארכיון GFS של NOAA ב-AWS** (F-11), עם ריצה שהייתה זמינה לפני זמן ההנפקה (§6.12). נכנס למודל רק אם: (1) T-17 מוכיח שאין דליפה, (2) הוא משפר את nRMSE על **val** (לא test), ו-(3) עבר את בחירת הפיצ'רים. אחרת מדווח כניסיון שלא תרם | ✅ כיוון הוכרע (משתמש, 14.10) / ⏳ תוצאה בשלב 6b |
+| D-13 | בחירת פיצ'רים (05c/05e/05f) | רצה מחדש על הדאטה המתוקן, עם מועמדי NWP-GFS. **הקלט של המודלים הוא חוזה 75 הפיצ'רים**, ועוד פיצ'רי GFS אם עברו את D-12. בחירת הפיצ'רים מתועדת כניתוח | מוצע |
+| D-16 | זמן הנפקת התחזית T0 | T0 הוא **00:00 שעון ישראל** של היום הראשון שחוזים (21:00Z בקיץ, 22:00Z בחורף). D+h הוא היום המקומי ה-h שמתחיל ב-T0. מידע מותר רק אם הוא ידוע עד T0. זה ההיגיון שמאחורי LAG_DROP במקור (“midnight issuance”), עכשיו מוגדר במפורש ב-UTC (A-01) | מוצע |
+| D-17 | היקף “מודלים קלים” בשלב הפיתוח | baselines (persistence, climatology, clear-sky × k̄) ו-XGB עם תקציב Optuna קטן (20 trials, seed אחד) לפיתוח. 60 trials ו-3 seeds רק באימון הסופי (שלב 10) | מוצע |
+| D-14 | DM | מממשים כמו שהדוח מתאר: NW Bartlett 24 עם תיקון HLN, t(n−1), ו-Bonferroni לפי מספר ההשוואות בכל target×h | מוצע |
+| D-15 | monotone constraints | רשימה מפורשת: ghi_clearsky, poa_global_clearsky, sun_elevation (כמו בדוח), ולא substring | מוצע |
+| D-18 | מבנה הקוד | חבילה `src/solarpv/` במקום `production/NN_*` (שמות שמתחילים בספרה לא ניתנים ל-import). §5.2 | ✅ (14.10) |
+
+---
+
+## 4. מטרה וקריטריוני הצלחה
+
+**מטרה:** pipeline נכון, מתועד ובדוק, מהדאטה הגולמי ועד טבלאות הדוח. כל מספר בדוח המתוקן ניתן לייצור מחדש מקוד שב-Git. את הפרויקט המקורי משחזרים ברמת השאלה, השיטה והמבנה, לא ברמת המספרים.
+
+**הצלחה להגנה**
+1. כל שלב (ingestion עד evaluation) קיים כקוד מתועד ורץ מקצה לקצה על הדאטה הגולמי.
+2. כל הבאגים שנמצאו (F-01, F-06, F-07, C-15, C-16 ו-C-18) מתוקנים, ולכל אחד יש בדיקה שמונעת חזרה (§8).
+3. קוד ההערכה מאומת מול fixture: evaluate.py משחזר את מדדי ה-LSTM הישנים מהפרדיקציות הישנות (T-15). זו ההוכחה שההבדלים במספרים נובעים מהדאטה ומהמודלים, ולא משינוי בהגדרת המדד.
+4. שער G-1 עבר: כל הנחה ב-§6.13 מאומתת או מוצהרת כמגבלה, כל בדיקות ה-leakage ירוקות, וה-pipeline רץ מקצה לקצה עם מודלים קלים.
+5. אימון סופי אחד (שלב 10) על קוד קפוא: XGB-Opt (60 trials, 3 seeds), PatchTST ו-BiLSTM. XGB עדיף בבירור על baselines ויציב בין seeds (<0.15 pp). ההשוואה כוללת רק מודלים מהאימון הזה.
+6. `docs/errata.md` מסביר כל הבדל בין המספרים הישנים לחדשים, ולכל טענה בדוח יש שורה ב-traceability (§13).
+
+---
+
+## 5. סביבה ותשתית
+
+### 5.1 התקנה (שלב 1)
+1. **Git for Windows** וריפו פרטי ב-GitHub. Push בסוף כל יום.
+2. **Miniforge** וסביבה `solar` עם Python 3.11 (D-06).
+3. **CPU env** (`environment.yml` נעול): pandas, numpy, pyarrow, pvlib, xgboost, optuna, shap, scikit-learn, scipy, statsmodels, matplotlib, seaborn, pyyaml, jupyter, pytest, ruff. אפשר להוסיף neuralforecast ל-PatchTST על CPU.
+4. **GPU env (Colab):** Python 3.12, torch עם CUDA, lightning, pytorch-forecasting 1.7.0, neuralforecast 3.1.7.
+5. `pip freeze > requirements.lock.txt` נכנס ל-Git.
+
+### 5.2 מבנה הריפו (D-07, D-18): נבנה בפועל ב-14.10
+```
+solar/                                   ← שורש הריפו (git, branch main)
+  PROJECT_MASTER.md, CLAUDE.md, README.md
+  pyproject.toml                         ← החבילה solarpv, הגדרות pytest ו-ruff
+  environment.yml, environment.lock.yml  ← CPU env "solar" (Python 3.11, conda-forge)
+  requirements-gpu.txt                   ← לאימון הסופי ב-Colab (neuralforecast 3.1.7)
+  .gitignore, .gitattributes
+  Raw data/                              ← לא ב-Git; גיבוי ב-OneDrive ובדיסק חיצוני
+  old files/  submission_evidence/       ← read-only (שמורים ב-git byte-for-byte)
+  00_data_audit/                         ← inventory, raw_checksums.sha256, verify_2026-10-13/
+  configs/  split_manifest.yaml, site.example.yaml, site.private.yaml (לא ב-Git), derived_constants.yaml (שלב 6)
+  src/solarpv/
+    config/      constants.py, paths.py, site.py
+    data/        ingest.py, preprocess.py, clean.py
+    features/    contract.py, leakage.py, build.py, target.py
+    nwp/         gfs.py
+    models/      baselines.py, xgb_sota.py, lstm_sota.py, patchtst_model.py
+    evaluation/  daytime.py, metrics.py, stats_tests.py, evaluate.py
+  scripts/       make_checksums.py; בשלב 8 גם הסקריפטים ששרדו, מותאמים ל-import מ-solarpv
+  notebooks/     README (רשימת המחברות לפי שלב)
+  data/processed/<NN>_<stage>/           ← לא ב-Git
+  outputs/<model or 07_evaluation>/
+  tests/  unit/ leakage/ contracts/ regression/  (מיפוי T-xx ב-tests/README.md)
+  docs/   errata.md, deviations.md, leakage_audit.md (v2)
+```
+- **D-18:** הקוד נמצא בחבילה `src/solarpv/` (מותקנת editable), ולא ב-`production/00_config/...`. שמות תיקייה שמתחילים בספרה אינם ניתנים ל-import ב-Python. הסקריפטים ששרדו יעברו ל-`from solarpv...` בשלב 8.
+- כל נתיב מוגדר במקום אחד: `solarpv/config/paths.py`. את מיקום הדאטה הגולמי אפשר לדרוס עם `SOLAR_RAW_DIR`.
+
+### 5.3 גיבוי
+הדאטה הגולמי בשני מיקומים: OneDrive ודיסק חיצוני. `raw_checksums.sha256` ב-Git. מודלים ופרדיקציות ב-Git LFS או ב-OneDrive. Tag לכל שלב שעבר קבלה (`stage-06-passed`).
+
+---
+
+## 6. מפרט קנוני
+
+### 6.1 דאטה גולמי
+- קבצים: `Raw data/YYMM.CSV`, 2109 עד 2505. כל הערכים במירכאות. עמודה ראשונה `t_stamp` בפורמט `"YYYY-MM-DD HH:MM:SS.000"`, **שעון מקומי ישראל עם DST**.
+- מיפוי tags. ✔ מסמן שם שמאומת מתוך רשימת הפיצ'רים המקורית.
+
+| # | tag (קיצור) | שם קנוני |
+|---|---|---|
+| 1–5 | `IEC/Mode, SP_W, SP_Q, SP_V, SP_PF` | iec_mode, iec_sp_w, iec_sp_q, iec_sp_v, iec_pf |
+| 6 | `meteo/amb_temp/st02_amb_temp/eu` | ambient_temp ✔ (D-09) |
+| 7 | `meteo/irrad/st01_irrad/eu` | irradiance ✔ (D-09) |
+| 8–9 | `meteo/mod_temp/st01_mod_temp1, st01_mod_temp2` | mod_temp1 ✔, mod_temp2 ✔ |
+| 10 | `meteo/precipitation/st05_precipitation` | precipitation |
+| 11–13 | `meteo/soil/soil_soil, soiling01_soil, soiling02_soil` | soil, soiling01, soiling02 |
+| 14–15 | `meteo/wind_direction/st05…, wind_speed/st05…` | wind_direction, wind_speed |
+| 16–19 | `…/inv1/AC_kW, AC_kVar, DC_kW, PF` | s01_inv1_AC_kW ✔, s01_inv1_AC_kVar, s01_inv1_DC_kW, s01_inv1_PF |
+| 20–23 | `…/inv2/…` | s01_inv2_AC_kW ✔, … |
+| 24–25 | `SiteData/Pyranometer, SiteData/AmbientTemp` | pyranometer, site_ambient_temp |
+| 26–27 | `…/inv1/operativestate, …/inv2/operativestate` | s01_inv1_state, s01_inv2_state |
+
+- נגזר: `site_total_AC_kW = s01_inv1_AC_kW + s01_inv2_AC_kW`.
+
+### 6.2 זמן (תיקון F-01)
+- ברזולוציית דקה: `tz_localize('Asia/Jerusalem', ambiguous='infer', nonexistent='raise')` ואז `tz_convert('UTC')`. **כל עיבוד, פיצ'ר וגאומטריה מחושבים ב-UTC אמיתי.**
+- טווח: 2021-08-31 21:00Z עד 2025-05-31 20:59Z, כלומר 1,971,360 דקות רציפות ו-32,856 שעות.
+- `hour_local` מחושב מ-UTC ל-Asia/Jerusalem, לצורך פרשנות בלבד.
+
+### 6.3 קבועי אתר
+| קבוע | ערך | הערה |
+|---|---|---|
+| lat, lon | **29.96476, 35.05972**, מרכז שדה Ketura Sun (Arava Power, 4.95 MWp, 2011) | OSM way/142387694 וגם GEM (29.9647, 35.0595). השדה הסמוך, Ketura Solar של 40 MW, נמצא ב-29.96523, 35.07446. הנקודה הישנה (29.9697, 35.0642) הייתה בתוך הקיבוץ. ב-`site.private.yaml` |
+| altitude | **111 מ'** | Open-Meteo elevation API (Copernicus DEM) במרכז השדה. החליף את 60 ו-150 (Q-04 נסגר) |
+| tilt, azimuth | 30°, 180° | ברירות מחדל ב-v4. **לאמת מהדאטה:** בימים בהירים, מרכז הייצור צריך ליפול על צהרי השמש אם azimuth=180 |
+| albedo, POA | 0.2, isotropic | |
+| clear-sky | pvlib `get_clearsky(model='ineichen')` | |
+| sun position | `get_solarposition`, עמודת `elevation` | |
+| AC_CAPACITY_KW | 3,449 | nameplate. המקסימום הנצפה הוא בערך 3,000 (C-04) |
+
+### 6.4 רזולוציות
+1-min (UTC) ← ניקוי ← **1H mean** (תווית שמאלית). את גאומטריית השמש ואת ה-clear-sky לשעה מחשבים **כממוצע של ערכי דקה בתוך השעה**, או לפחות 4 רבעי שעה ממורכזים, כך שהם תואמים לממוצע ה-AC באותה שעה. רזולוציית 15 דקות נשמרת רק ל-EDA. סף כיסוי: שעה תקפה אם יש לפחות 45 מתוך 60 דקות תקינות. אחרת NaN, ומטופל לפי מדיניות ה-imputation.
+**מסכת הערכה:** גובה השמש ב-t+30 דקות מעל 5°, מחושב ב-evaluate.py ישירות (F-02).
+
+### 6.5 Targets (תיקון F-06)
+- **direct:** `site_total_AC_kW`, ממוצע שעתי.
+- **indirect:**
+  ```
+  CS_t   = mean over hour t of clear-sky irradiance (GHI_cs או POA_cs לפי D-11) [W/m²]
+  theo_t = CS_t × 3449 / 1000                                   [kW]
+  k_t    = AC_t / theo_t        אם theo_t > 50 kW
+  k_t    = 0, k_valid_t = False  אחרת
+  ```
+  - **יחס של ממוצעים** ברמה השעתית, ולכן `AC_t = k_t × theo_t` הוא היפוך **מדויק** (T-11).
+  - **אין חיתוך ב-1.2.** ערכים עם k>1.5 מסומנים כחשד לתקלה בדאטה, נבדקים ונרשמים בלוג הניקוי. מדווחים על התפלגות k.
+  - שעות עם `k_valid=False` לא נכנסות לפונקציית ההפסד של מודלים ל-indirect. כל שעות היום בהערכה תקפות, כי בגובה 5° ומעלה theo גדול בהרבה מ-50.
+  - **תחזיות:** `k̂ ≥ 0`. ההמרה ל-kW היא `clip(k̂ × theo_t, 0, 3449)`.
+- **MEAN_DAYTIME_K** = ממוצע k בשעות היום (מסכת F-02) על train. מחושב מחדש ומתועד, ומחליף את 0.6279.
+
+### 6.6 חוזה הפיצ'רים: 75 (feature_contract.py)
+| קבוצה | פיצ'רים |
+|---|---|
+| clearsky (9) | ghi_clearsky, dhi_clearsky, dni_clearsky, sun_elevation, poa_global_clearsky, poa_direct_clearsky, poa_diffuse_clearsky, poa_sky_diffuse_clearsky, poa_ground_diffuse_clearsky |
+| rolling_stats (12) | {s01_inv1, s01_inv2, site_total}_rolling_{mean,std}_{3d,7d}_same_tod, **בגרסה לפי אופק** (למטה) |
+| lag_power (35) | {s01_inv1_AC_kW, s01_inv2_AC_kW, site_total_AC_kW, irradiance, mod_temp1, mod_temp2, ambient_temp}_lag_{1d,2d,3d,7d,14d} |
+| time_encodings (8) | hour_sin, hour_cos, month_sin, month_cos, month, season, is_weekend, hour_local |
+| other (11) | aoi, sun_azimuth, solar_azimuth, solar_zenith, airmass, doy_sin, doy_cos, day_length, time_to_solar_noon, daylight_fraction, day_of_week |
+
+- **LAG_DROP:** ב-h≥2 מושמט lag_1d. ב-h=3 גם lag_2d.
+- **rolling לפי אופק (D-04):** ב-D+h, `rolling_{stat}_{N}d_same_tod = stat(shift(h·24), …, shift((h+N−1)·24))` על הסדרה השעתית. השם נשאר אחיד לכל אופק, ומודל לכל אופק מקבל את הגרסה שלו.
+- **time_to_solar_noon:** מ-pvlib (transit), לא `hour_local − 12`. `hour_sin/cos` לפי שעת UTC.
+- `sun_azimuth` מול `solar_azimuth`: אם זהים, משאירים אחד ומעדכנים את החוזה ל-74 (Q-05).
+- **Imputation:** lag ו-rolling מקבלים `expanding().median()` ואז ffill (אין bfill, כי זה מידע עתידי). שורות ההתחלה, 14 הימים הראשונים, יוצאות מ-train.
+- **בזמן האימון:** NaN שנשאר מקבל 0 ב-XGB, ומסומן ונספר.
+
+### 6.7 EXCL (blocklist, מגן בבדיקות)
+איחוד של: leakage_audit.md (20), LEAKY_EXCL מהסקריפט (17), השמות החלופיים מ-REPORT_EVIDENCE_MAP (`site_total_AC_power_kW`, `inv1/2_AC_power_kW`, `ghi_measured`, `irradiance_proxy`, `mod_temp_forecast`), כל `fcst_*` ו-`*_forecast` (**חוץ מ-`fcst_gfs_*`**, שנבדקים ב-T-17), `theoretical_power`, וכל מדידה בחותמת הזמן של היעד: irradiance, pyranometer, mod_temp1/2, ambient_temp, DC, kVar, PF, state, iec_*, soil*, wind*, precipitation, efficiency, site_loading, site_power_per_irr. T-01 דורש שאף פיצ'ר במטריצה לא יהיה ב-EXCL.
+
+### 6.8 Splits (UTC)
+train עד 2024-01-31 23:59 · val 2024-02-01 עד 2024-09-30 (Optuna) · test 2024-10-01 עד 2025-05-31 (5,832 שעות, 2,580 שעות יום). Seeds: 42, 123, 777.
+
+### 6.9 מפרט ההערכה (evaluate.py)
+| פריט | מפרט |
+|---|---|
+| מסכת יום | גובה השמש ב-t+30min מעל 5° (F-02) |
+| nRMSE | RMSE / MEAN_DAYTIME_K × 100 (indirect, מחושב מחדש), RMSE / 3449 × 100 (direct) |
+| מדדים נוספים | MAE, R², RMSE, ו-**nRMSE ב-kW לשני ה-targets** (indirect מומר לפי §6.5) |
+| y_true | תמיד מקובץ הפיצ'רים, לפי timestamp, לא מקובץ הפרדיקציות |
+| CI | circular block bootstrap, בלוק 24, 1,000 חזרות, seed 42, percentile |
+| DM (D-14) | d = e_a² − e_ref². NW Bartlett עם lag 24. HLN: `DM* = DM × sqrt((n+1−2h+h(h−1)/n)/n)` עם h=24, p מ-t(n−1), דו-צדדי. Bonferroni: α/m לכל target×h. מדווחים גם את הגרסה הלא מתוקנת לשקיפות |
+| baselines | k-persistence ו-AC-persistence עם lag של h ימים, climatology (ממוצע train לכל חודש×שעה), clear-sky × MEAN_K |
+| skill | 1 − RMSE_model / RMSE_persistence(h) |
+| A1.1 | assert ש-y_true זהה בין מודלים |
+| route comparison (תיקון C-16) | **ה-truth הוא AC אמיתי בשני ה-routes**, על אותן חותמות (חיתוך), אותה מסכה (F-02), ומכנה 3449 |
+| common mask | חיתוך החותמות של כל המודלים שאומנו מחדש, עם מסכת F-02 |
+| פלט | `benchmark_summary.csv`: model, target, horizon, n, nRMSE_pct, MAE, R2, RMSE, nRMSE_CI_lo, nRMSE_CI_hi, skill_score, nRMSE_kW_pct |
+
+### 6.10 חוזי קבצים
+- **פרדיקציות:** `timestamp` (UTC, `+00:00`), `y_true`, `y_pred`, `target`∈{indirect, direct}, `horizon`∈{1,2,3}, `model`, `seed`, `split`. **כל שעות ה-test** (המסכה מופעלת ב-evaluate.py, לא בייצוא).
+- **נתיבים:** `outputs/06_<model>/predictions_<model>[_seedN].csv`, `metrics_<model>[_seedN].csv`, `models/`, ולמודלי עצים גם `shap/shap_{target}_D{h}.csv` (feature, shap_importance = mean |SHAP| על test).
+- **CLI:** `xgb_sota.py --n_trials 60 --seed S` · `evaluate.py` · `run_ablation_study.py [--quick] [--seed S]`.
+
+### 6.11 מודלים
+- **Baselines:** persistence, climatology, ו-clear-sky × MEAN_K. חובה, כי הם הבסיס ל-skill.
+- **XGB-Opt:** Optuna TPE עם 60 trials. מטרה: nRMSE יומי על val. מרחב חיפוש: n_estimators [200, 2000], max_depth [3, 10], learning_rate [0.01, 0.3] log, subsample [0.6, 1.0], colsample_bytree [0.5, 1.0], min_child_weight [1, 20], reg_alpha ו-reg_lambda [1e-8, 10] log. Early stopping של 50 סבבים. `tree_method='hist'`. monotone לפי D-15. ל-indirect: אימון רק על שעות עם k_valid. refit לפי D-10. 3 seeds × 2 targets × 3 אופקים. study נשמר ב-SQLite.
+- **BiLSTM-Opt:** encoder-decoder עם 72 צעדים ו-quantile loss (0.1, 0.5, 0.9). Alignment: `valid_ts = window_end − (DECODER_LEN − 1 − target_step)h`, עם T-02. Optuna: hidden {64, 128, 256}, n_layers [1, 3], dropout [0, 0.4], lr [1e-4, 1e-2] log, batch {32, 64, 128}. 25 epochs לכל trial, סופי 60 עם patience 10. תקציב לפי D-08.
+- **TFT-96 / TFT-168 / TFT baseline (לא מאומנים, D-08. המפרט נשמר לתיעוד):** pytorch-forecasting 1.7.0. decoder 72. 20 trials. 18 known reals. ב-baseline: encoder 168, hidden 64, dropout 0.1.
+- **PatchTST:** neuralforecast 3.1.7. patch_len 16, stride 8. 243 origins. רק ה-target. אפשרי על CPU.
+
+### 6.12 NWP מ-GFS (שלב 6b, D-12)
+- **מקור:** `https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.YYYYMMDD/HH/atmos/gfs.tHHz.pgrb2.1p00.fXXX`. מורידים בעזרת `.idx` ו-HTTP Range. אפשר להשתמש בספריית Herbie, או לכתוב את זה ידנית.
+- **בחירת ריצה (מונע דליפה):** ריצה r מותרת לתחזית שמונפקת ב-T0 רק אם `init(r) + 6h ≤ T0` (GFS מתפרסם בערך 3.5–4 שעות אחרי init, ו-6 שעות הן מרווח ביטחון). מכיוון ש-T0 הוא 21:00Z או 22:00Z, **הריצה היא 12Z של היום הקודם (UTC)**. הריצה של 18Z לא מותרת.
+- **lead לכל אופק:** עבור שעת יעד t, `lead = t − init(12Z)`. ל-D+1 זה בערך 9–34 שעות, ל-D+2 בערך 33–58, ול-D+3 בערך 57–82. כל אופק מקבל עמודה משלו, והמודל של D+h רואה רק את התחזית שזמינה ב-T0 שלו.
+- **משתנים מועמדים:** `fcst_gfs_ghi` (DSWRF אחרי חילוץ ממוצעים של 3 שעות ואינטרפולציה לשעה; לשקול גם התאמה לגאומטריה, למשל יחס ל-GHI_cs ולא אינטרפולציה לינארית), `fcst_gfs_tcc` (TCDC entire atmosphere), שכבות ענן נמוך, בינוני וגבוה, `fcst_gfs_t2m`, ו-`fcst_gfs_wind10`. מכל אלה נגזרים `fcst_gfs_kt = ghi/ghi_cs` ו-`fcst_gfs_poa` (pvlib).
+- **מיקום:** נקודת הרשת 30.0N 35.0E. בדיקת רגישות: ממוצע של 4 הנקודות הסובבות.
+- **שמות:** הקידומת `fcst_gfs_` מבדילה מה-`fcst_*` הישנים (reanalysis), שנשארים ב-EXCL.
+- **בדיקות:**
+  - T-17 בודק לכל שורה ש-`issue_time(r) + 6h ≤ T0`.
+  - שפיות: המתאם של fcst_gfs_ghi עם הקרינה הנמדדת יורד עם ה-lead. אם המתאם “טוב מדי” ב-D+3, זה דגל אדום.
+  - כיסוי: פחות מ-1% ריצות חסרות. ריצה חסרה מוחלפת בריצה הקודמת **הזמינה** (06Z, ואז 00Z), ומסומנת.
+- **אימות צולב (אופציונלי):** Open-Meteo Previous Runs, מינואר 2024, על val ו-test.
+
+### 6.13 רשם הנחות (מאומתות לפני G-1)
+| ID | הנחה | איך מאמתים | סטטוס |
+|---|---|---|---|
+| A-01 | T0 = 00:00 מקומי, ו-D+h הוא היום המקומי ה-h (D-16) | בדיקת perturbation (T-09, T-18) | ⬜ |
+| A-02 | הגולמי בשעון מקומי עם DST | ✅ F-01 (inventory, השוואה לגולמי) | ✅ |
+| A-03 | המפעל הוא שדה Ketura Sun (29.96476, 35.05972), לא שדה ה-40 MW ולא הקיבוץ | 3,449 kW AC עם 2 ממירים מתאים ל-4.95 MWp. **אישור המשתמש**, ובנוסף T-08 | 🟡 ממתין לאישור |
+| A-04 | tilt 30° ו-azimuth 180° | פרופיל יום בהיר מול POA_cs מודל, וסימטריה סביב הצהריים | ⬜ |
+| A-05 | altitude של 111 מ' | ✅ DEM במרכז השדה (14.10) | ✅ |
+| A-06 | irradiance = meteo st01 (D-09) | השוואה ל-Pyranometer, יחידות, ואפס בלילה | ⬜ |
+| A-07 | AC = inv1 + inv2, בלי ממירים נוספים | אנרגיה שנתית מול קיבולת (capacity factor סביר) | ⬜ |
+| A-08 | קיבולת 3,449 kW (C-04) | max נצפה, ותיעוד מקור | ⬜ |
+| A-09 | ממוצע שעתי עם סף כיסוי של 45/60 | סטטיסטיקת כיסוי, וכמה שעות נופלות | ⬜ |
+| A-10 | כלל לילה: AC=0 כש-elevation<0 ו-|AC| קטן | T-16 | ⬜ |
+| A-11 | מכנה ה-k (D-11) | קריטריוני D-11 | ⬜ |
+| A-12 | מסכת הערכה: שמש מעל 5° ב-t+30 | ✅ F-02 | ✅ |
+| A-13 | זמינות GFS: init + 6h | בדיקה מול זמני פרסום מתועדים של NOAA | ⬜ |
+| A-14 | אין מידע מ-val/test בהתאמת scalers, imputation ו-MEAN_K | T-01, T-09 ובדיקות קוד | ⬜ |
+| A-15 | expanding median ב-imputation משתמש רק בעבר | T-09 | ⬜ |
+| A-16 | אין שינוי ציוד או קיבולת לאורך 2021–2025 | תצוגה של max יומי לאורך זמן, וקפיצות | ⬜ |
+
+---
+
+## 7. שלבי העבודה
+
+### שלב 0: קליטת הדאטה וגיבוי (🟡)
+- **איך:** SHA-256 לכל קובץ גולמי, וגיבוי לשני מיקומים.
+- **קבלה:** 45 קבצים, 1,971,360 שורות, 240 כפילויות ו-240 חוסרים (DST, אומת). הגיבוי נבדק מול ה-checksums.
+
+### שלב 1: תשתית, קונפיג, leakage
+- **איך:** §5.1 ו-§5.2. `constants.py` חדש: splits, קיבולת, seeds, `SUN_ELEV_MIN=5`, `EVAL_SUN_OFFSET_MIN=30`, LAG_DROP; הקואורדינטות נטענות מקובץ פרטי. `feature_contract.py` (§6.6), `leakage.py` (§6.7), שלד ל-tests.
+- **קבלה:** `pytest -q` ירוק על השלד. החוזה והרשימה ב-EXCL זרים זה לזה.
+
+### שלב 2: NB01, קליטת SCADA ו-UTC
+- **איך:** מיזוג 45 הקבצים, מיפוי tags (§6.1), המרת זמן (§6.2). סימון חריגות: sentinel 32,766, ו-AC של ממיר מעל סף פיזיקלי (לקבוע; בערך 1,725 kW). השוואת irradiance (st01) מול Pyranometer ובחירה (D-09). בדיקת `Ktora.csv`.
+- **תוצרים:** `data/processed/01_ingest/scada_1min_utc.parquet`, `ingest_manifest.json`, טבלת tags.
+- **קבלה:** אינדקס UTC רציף, בלי כפילויות ובלי חורים (1,971,360). **מרכז הייצור** (centroid משוקלל AC) בימים בהירים, בכל חודש, נופל בטווח ±30 דקות מצהרי השמש ב-UTC (T-08). זה גם מאמת את azimuth=180. ימי המעבר של DST מטופלים נכון (T-05).
+
+### שלב 3: NB02, EDA
+- **מה:** הפיגורות שהדוח מצטט, מחושבות מחדש על הדאטה הנכון. **פיגורה חדשה:** פרופיל יומי של AC מול GHI_cs, “לפני” (תווית מקומית כ-UTC) ו“אחרי”. זו ההוכחה ל-F-01 ב-errata ובהגנה. נוצרת בקריאה פשוטה של הגולמי, בלי pipeline מקביל.
+- **קבלה:** כל פיגורת EDA בדוח מיוצרת מחדש.
+
+### שלב 4: NB03, עיבוד מקדים
+- **איך:** 1-min ל-1H (§6.4), סף כיסוי, ניקוי מחרוזות “(…)”. מחברת 03 ששרדה משמשת רק כבסיס ל-QA ול-flags.
+- **קבלה:** 32,856 שורות שעתיות. המקסימום השעתי של site_total_AC_kW מתועד (בערך 2,950–3,060 kW בלי חריגות). אין שעות יום עם AC=0 בגלל הזזה (בהשוואה ל-F-01c).
+
+### שלב 5: NB04, בקרת איכות וניקוי
+- **איך:** כללים מפורשים: curtailment לפי SP_W ו-Mode, עצירות ממיר לפי operativestate, חריגות, ערכים תקועים. **כלל לילה:** AC=0 כשגובה השמש (UTC אמיתי) קטן מ-0°, וגם רק אם |AC| קטן מסף רעש. ייצור אמיתי לעולם לא מאופס (T-16). מדיניות imputation, ולוג שורות לכל כלל.
+- **תוצרים:** `cleaning_policy_final.yaml`, `cleaning_logs/`, דאטה נקי.
+- **קבלה:** כל כלל עם ספירת שורות. אנרגיה יומית אחרי הניקוי ביחס לגולמי ≥ 99% בימים בלי תקלות. מספרי הניקוי נכנסים לדוח.
+
+### שלב 6: NB04b, פיצ'רים ו-target
+- **איך:** בסיס: מחברת 04 v4 עם התיקונים (§6.5, §6.6). חישוב k גם עם GHI וגם עם POA, והכרעה ב-D-11 לפי הקריטריונים.
+- **תוצרים:** `features_1H_target_k.parquet`, `feature_dictionary.csv`, `docs/target_definition.md` עם ההכרעה ב-D-11 והמספרים.
+- **קבלה:**
+  - 32,856 שורות, ו-75 (או 74) פיצ'רים לפי החוזה.
+  - היפוך k↔AC מדויק, `max |k·theo − AC| < 1e-6` (T-11).
+  - % השעות עם k>1.2 מדווח, וצפוי להיות קטן בהרבה מ-16.8%.
+  - בדיקת perturbation עוברת לכל אופק (T-09).
+  - MEAN_DAYTIME_K חדש מתועד.
+
+### שלב 6b: NWP מ-GFS (D-12, §6.12)
+- **איך:** סקריפט הורדה עם המשכיות (resume) ולוג. חילוץ הנקודה, de-averaging של DSWRF, ובניית עמודות לכל אופק לפי הריצה המותרת. שמירה ל-`data/processed/06b_gfs/gfs_point_by_horizon.parquet` עם manifest.
+- **קבלה:** T-17 ירוק. כיסוי של 99% ומעלה. מתאם הקרינה יורד עם ה-lead. XGB-dev עם GFS מול בלי GFS **על val בלבד**, והתוצאה מתועדת. ההחלטה אם GFS נכנס נרשמת ב-D-12.
+
+### שלב 7: NB05, בחירת פיצ'רים (D-13)
+- **איך:** בסיס: מחברת 05. Stage 1: variance 0.001, MI 0.01, RFE עם XGB(100, 6, 0.1). 05c: SHAP backward elimination עם elbow של 1%. 05e: consensus של 2 מתוך 3. 05f: stability floor 0.30, MI באחוזון 75, ורגישות בטווח 0.25–0.40. **על הדאטה המתוקן, עם מועמדי GFS ובלי ה-NWP הישן.** כל ההחלטות לפי train ו-val בלבד.
+- **תוצרים:** 12 קבצי JSON באותו schema, `feature_availability_classification.csv`.
+- **קבלה:** רץ מקצה לקצה. מספרים חדשים מתועדים. השוואה איכותית לסטים הישנים ב-errata.
+
+### שלב 8: evaluate.py ושכבת ההערכה (מוקדם, אחרי שלב 1)
+- **איך:** לפי §6.9. הסקריפטים ששרדו נכנסים, עם תיקונים: `compare_routes.py` (C-16), `run_ablation_study.py` (allowlist בלי NWP, C-07), `common_mask_analysis.py` (המודלים החדשים).
+- **קבלה:**
+  - **T-15 (fixture):** על פרדיקציות ה-LSTM הישנות, עם y_true מהקובץ עצמו, מכנה 0.6279 ומסכת F-02: n מדויק, nRMSE indirect בטווח 1e-3 pp, direct בטווח 5e-3 pp, R² בטווח 5e-4. זה מוכיח את נכונות הקוד.
+  - **T-03:** DM מול חישוב ידני על דאטה סינתטי, עם ובלי HLN.
+  - **T-12:** ב-route, ה-truth זהה בשני ה-routes.
+
+### שלב 9: מודלים קלים, baselines ו-XGB-dev (פיתוח)
+- **איך:** baselines לפי §6.11. XGB לפי §6.11 עם תקציב פיתוח (D-17: 20 trials, seed 42), על החוזה ולפי אופק. מריצים את כל שכבת ההערכה (שלב 8) על התוצאות כדי לוודא שהשרשרת שלמה. **ה-test לא משמש לשום החלטה.** כל ההחלטות לפי val.
+- **תוצרים:** פרדיקציות ו-metrics של פיתוח (מסומנות `dev`), וטבלת הערכה מלאה.
+- **קבלה:**
+  - XGB טוב מ-persistence ומ-climatology על val בכל target×h.
+  - צפוי שה-nRMSE יעלה עם האופק. אם הוא שטוח, בודקים שוב את T-09.
+  - כל ה-CSVs של פרקים 7–12 נוצרים בלי שגיאה.
+  - קוד ה-LSTM וה-PatchTST עובר **smoke test** (2 epochs על תת-סט, הפלט בחוזה, T-02). רק בדיקת קוד, לא אימון.
+
+### 🚦 שער G-1: ביקורת מקצה לקצה (לפני האימון הסופי)
+עוברים רק אם **כל** הסעיפים מסומנים:
+- [ ] כל הנחה ב-§6.13 מאומתת (✅), או מוצהרת כמגבלה ב-`docs/deviations.md`.
+- [ ] כל הבדיקות ב-§8.2 ירוקות. בדיקת perturbation (T-09, T-18) עוברת על כל פיצ'ר ועל כל אופק.
+- [ ] ביקורת דליפה ידנית: לכל משפחת פיצ'רים נכתב בטבלה מתי המידע זמין, מול T0.
+- [ ] ה-test לא נגע בשום החלטה. יש log של הקבצים שנקראו.
+- [ ] `reproduce_paper_results.py --dev` רץ מאפס בסביבה נקייה.
+- [ ] ביקורת חיצונית: סשן נפרד (Claude, או המנחה) עובר על הקוד מול §6, וכל הערה נסגרת.
+- [ ] הקוד מקבל tag `g1-frozen`. מכאן, כל שינוי קוד מחייב פתיחה מחדש של G-1.
+
+### שלב 10: אימון סופי לכל המודלים (D-08)
+- **מה:** על קוד קפוא (`g1-frozen`), ריצה אחת לכל מודל:
+  - XGB-Opt: 60 trials, seeds 42, 123 ו-777.
+  - PatchTST: על CPU, או ב-Colab.
+  - BiLSTM-Opt: ב-Colab, עם תקציב Optuna מוצהר, ואם אפשר 3 seeds.
+  - baselines.
+- **קבלה:**
+  - הפלט עומד בחוזה (§6.10), ו-T-02 עובר.
+  - XGB עדיף בבירור על baselines (DM עם HLN) ויציב בין seeds (<0.15 pp).
+  - התקציבים (trials, epochs, זמן GPU) מתועדים.
+  - **אסור לשנות קוד או היפר-פרמטרים אחרי שמסתכלים על ה-test.** אם מתגלה באג, מתקנים, פותחים מחדש את G-1, ומריצים מחדש את הכל.
+
+### שלב 11: NB07 ו-NB08, הערכה, דיווח, traceability, errata
+- **מה:** כל הטבלאות והפיגורות של פרקים 7–12, מחושבות מחדש:
+  - benchmark, DM ו-MDE, route (מתוקן), seasonal, common mask, SHAP, ablation (בלי no_nwp)
+  - §12.2 CV עם 5 folds ו-expanding window (הסקריפט אבד; נכתב מחדש)
+  - §12.3 פירוק bias² + variance
+  - §12.4 production quintiles
+  - §9.2 heatmap לפי שעה מקומית × עונה
+  - §11.2–11.5 (TFT): לא מאומן (D-08). הפרקים יוצאים, או נכתבים מחדש סביב SHAP של XGB ו-attention של PatchTST אם רלוונטי
+- **תוצרים:** `reproduce_paper_results.py` עובד, `docs/errata.md` עם טבלת “ישן מול חדש” וסיבה לכל הבדל, traceability מעודכן, ודוח v7.
+- **קבלה:** `python scripts/reproduce_paper_results.py --xgb-only` רץ מקצה לקצה על מחשב נקי. לכל מספר בדוח יש מקור וקוד.
+
+---
+
+## 8. תוכנית בדיקות
+
+### 8.1 שכבות
+| שכבה | מה נבדק | מתי |
+|---|---|---|
+| Unit | nRMSE, DM (HLN), bootstrap, get_features, DST, מסכת יום, היפוך k | כל commit |
+| Contracts | סכימה וטווחים בין שלבים: אינדקס UTC רציף, 32,856 שורות, חוזה פיצ'רים, k≥0 | סוף כל שלב |
+| Leakage | EXCL, LAG_DROP, rolling לפי אופק, perturbation, splits, scalers רק על train | כל commit |
+| Fixture | evaluate.py מול LSTM הישן (T-15) | כל commit בתיקיית evaluation |
+| Reproducibility | ריצה מאפס ודטרמיניסטית, manifests מול checksums | שבועי, ולפני ההגנה |
+
+### 8.2 בדיקות חובה
+| ID | בדיקה | מגינה מפני |
+|---|---|---|
+| T-01 | `test_no_leaky_features_in_X` | Phase 1/2, NWP, theoretical_power |
+| T-02 | `test_lstm_alignment_unique_valid_ts` | ניפוח ה-LSTM |
+| T-03 | `test_dm_hln_matches_manual` | C-15 |
+| T-04 | `test_y_true_identical_across_models` | A1.1 |
+| T-05 | `test_dst_transitions_to_utc` | F-01 |
+| T-06 | `test_site_coordinates_consistent` | C-03 |
+| T-07 | `test_daytime_mask_counts` (2,580 על רשת ה-test) | F-02 |
+| T-08 | `test_production_centroid_at_solar_noon` | F-01 |
+| T-09 | `test_rolling_horizon_safe` (perturbation לכל h) | F-07 |
+| T-10 | `test_feature_contract` | F-05 |
+| T-11 | `test_k_inverse_exact` | F-06 |
+| T-12 | `test_route_truth_is_actual_ac` | C-16 |
+| T-13 | `test_no_target_clipping` (אין ערכים שנתקעו בדיוק ב-1.2) | F-06 |
+| T-15 | `test_evaluate_reproduces_lstm_fixture` | F-03 |
+| T-16 | `test_cleaning_never_zeroes_daytime_production` | F-01b |
+| T-17 | `test_gfs_run_available_before_T0` (init + 6h ≤ T0, לכל שורה ולכל אופק) | דליפת NWP |
+| T-18 | `test_issuance_boundary`: שינוי של כל ערך אחרי T0 לא משנה אף פיצ'ר של D+h, כולל ימי DST | A-01 |
+
+### 8.3 סבולות
+| השוואה | סבולת |
+|---|---|
+| fixture (T-15) | indirect 1e-3 pp, direct 5e-3 pp, R² 5e-4, n מדויק |
+| seeds של XGB | פחות מ-0.15 pp |
+| מול הישן | **אין סבולת.** כל הבדל מוסבר ב-errata |
+| CI | אין מקבילה ישנה. דטרמיניסטי עם seed 42 |
+
+---
+
+## 9. ערכים ישנים (להשוואה ב-errata בלבד, לא יעד)
+
+מקור: `submission_evidence/01_benchmark/benchmark_summary.csv`. כולם חושבו על דאטה עם F-01, F-06 ו-F-07.
+
+| מודל | indirect D+1/2/3 (nRMSE %) | direct D+1/2/3 | n (D+1) |
+|---|---|---|---|
+| xgb_sota | 29.0949 / 29.1674 / 29.0864 | 12.0595 / 12.1103 / 12.1848 | 2,580 |
+| lstm_sota | 30.2374 / 30.4602 / 30.5303 | 12.5774 / 12.6371 / 12.6478 | 2,510 |
+| tft_96 | 29.6641 / 29.8205 / 29.8574 | 12.1132 / 12.4192 / 12.4268 | 2,554 |
+| tft_168 | 31.0472 / 31.3744 / 31.2858 | 13.2643 / 13.2281 / 13.1319 | 2,554 |
+| tft | 31.7560 / 32.5291 / 32.5337 | 12.7982 / 12.9077 / 12.9106 | 2,554 |
+| patchtst | 30.3005 / 31.5202 / 31.8305 | 13.8374 / 14.2966 / 14.1646 | 2,580 |
+
+- **route:** XGB 1.98–2.10 pp, LSTM 1.66–1.89 pp.
+- **seeds של XGB:** 0.111 pp.
+- **SHAP D+1:** indirect rolling 57.0, direct rolling 70.7.
+- **winter XGB:** 32.22.
+- **CV:** 16.08.
+- **quintiles:** Q2 20.71.
+
+---
+
+## 10. סתירות ובאגים
+
+סטטוס: 🔧 מתוקן בקוד (בשלב שצוין) · ✏️ תיקון טקסט בדוח · ✅ הוכרע · 🔎 פתוח
+
+| ID | נושא | מה נכון / מה עושים | סטטוס |
+|---|---|---|---|
+| **C-12** | שעון מקומי כ-UTC (F-01) | המרה נכונה. כל המספרים מתעדכנים | 🔧 שלב 2 |
+| **C-29** | חיתוך k ב-1.2 והיפוך לא מדויק (F-06) | §6.5 | 🔧 שלב 6 |
+| C-13 | גילוי D1, “13.5% downtime” | תוצר של F-01. נכתב מחדש לפי הדאטה המתוקן | ✏️ שלב 11 |
+| C-14 | §9.2, “afternoon shoulder” | נבדק מחדש על הדאטה המתוקן | 🔎 שלב 11 |
+| C-16 | route: truth מ-k חתוך מול AC אמיתי | AC אמיתי בשני ה-routes (§6.9) | 🔧 שלב 8 |
+| C-17 / F-07 | rolling דולף ב-D+2/3 | rolling לפי אופק | 🔧 שלב 6 |
+| C-15 | DM: הדוח מתאר HLN ו-Bonferroni שלא הופעלו | מממשים אותם (D-14) | 🔧 שלב 8 |
+| C-18 | theoretical_power בקלט | מוסר (D-03) | 🔧 שלב 1 |
+| C-07 | ablation כולל פיצ'רים דולפים ו-NWP | allowlist. שורת no_nwp יוצאת (D-12) | 🔧 שלב 8 |
+| C-03 | קואורדינטות 31.5/34.9 מול קטורה, ו-§13.6 | קוד: קטורה. דוח: לפי Q-09 | 🔧 / ✏️ |
+| C-27 | נוסחת k: GHI מול POA | D-11 | 🔎 שלב 6 |
+| C-28 | הגדרת MEAN_DAYTIME_K | מוגדר ב-§6.5 ומחושב מחדש | ✅ |
+| C-01 | nRMSE של LSTM: 29.40 / 30.48 / 30.24 | 30.24 היה הנכון במקור (F-03). המספר יוחלף בתוצאה החדשה | ✅ |
+| C-02 | מספר פיצ'רי leakage: 17 / 19 / 20, ושמות שונים | טבלה אחת: leakage_audit.md המעודכן (20), עם הפניה | ✏️ |
+| C-04 | קיבולת 3,449 מול max נצפה של בערך 3,000 | משפט מקור ורגישות עם מכנה 3,000 | ✏️ שלב 11 |
+| C-05 | הגדרות “שעות יום” | אחת בלבד: F-02. גם route ו-mask עוברים אליה | 🔧 שלב 8 |
+| C-06 | ה-Supplement מסביר בעזרת NWP | אין NWP. לנסח מחדש | ✏️ |
+| C-08 | skill של 90–96% | מחושב מחדש מול persistence(h) | 🔧 שלב 8 |
+| C-09 | ה-JSONs של 05e עם NWP | נוצרים מחדש בלי NWP (D-13) | 🔧 שלב 7 |
+| C-10 | שורות ה-LSTM ב-seed_variability הן מדדי אימון | כל seed נמדד ב-evaluate.py | 🔧 שלב 10 |
+| C-11 | ציטוטים לא נכונים | להחליף | ✏️ |
+| C-19 | מספר הפיצ'רים: 60 / 80 / 78 | 75 (או 74), לפי החוזה | ✏️ |
+| C-20 | monotone: 3 בדוח מול substring בקוד | רשימה מפורשת (D-15) | 🔧 שלב 9 |
+| C-21 | README: v5, ו-19 ב-3 קטגוריות | README חדש | ✏️ |
+| C-22 | “~17% לפני alignment” | אין ראיה. להסיר | ✏️ |
+| C-23 | trials של BiLSTM: 60 או 20 | נקבע מחדש ב-D-08 ומדווח | 🔧 שלב 10 |
+| C-24 | CITATION: SHAP עם NWP | מתעדכן מהתוצאות החדשות | ✏️ |
+| C-25 | seeds של XGB: FINDINGS מול CSV | מוחלף | ✅ |
+| C-26 | קבצים ישנים ב-01_benchmark | לא לצטט | ✅ |
+
+---
+
+## 11. הכנה להגנה
+
+**המסר המרכזי:** “בניתי מחדש את ה-pipeline מאפס. תוך כדי מצאתי ותיקנתי באגים מהותיים: אזור זמן, הגדרת ה-target ודליפה בפיצ'רי rolling. לכל אחד מהם יש בדיקה אוטומטית שמונעת חזרה, ואני מראה כאן מה השתנה בתוצאות ולמה.” **לעדכן את המנחה מוקדם** (Q-02), כי מספרי הדוח ישתנו.
+
+**שאלות צפויות**
+1. **“למה המספרים שונים מהדוח שהוגש?”** ה-errata: F-01, F-06 ו-F-07, עם פיגורת “לפני ואחרי” ו-T-15, שמוכיחה שקוד המדידה עצמו לא השתנה.
+2. **“באיזה אזור זמן הדאטה, ואיך אתה יודע שעכשיו זה נכון?”** T-08: מרכז הייצור נופל על צהרי השמש בכל חודש.
+3. **“במה שונה D+3 מ-D+1?”** rolling לפי אופק. מציגים את העלייה הצפויה בשגיאה עם האופק.
+4. **“מה עם תחזית מזג אוויר?”** הארכיון של Open-Meteo הוא reanalysis, כלומר דליפה, והוצא. במקומו נבדקה תחזית GFS אמיתית מהארכיון של NOAA, עם ריצה שהייתה זמינה לפני T0 (T-17). מציגים את התוצאה, תרם או לא תרם, מול val.
+5. **“למה ה-route העקיף עדיף, ואם בכלל?”** לפי התוצאה המתוקנת (C-16).
+6. **“למה XGB ולא רשת נוירונים?”** לפי התוצאות החדשות, DM עם HLN, ו-MDE.
+7. **“האם הקוד שלך?”** סיפור המחיקה, השחזור, הבאגים שנמצאו והבדיקות.
+
+**תוצרים**
+- [ ] שקף ארכיטקטורה
+- [ ] שקף “F-01 לפני ואחרי”
+- [ ] דמו: pytest ירוק ו-`reproduce_paper_results.py --skip-train`
+- [ ] טבלת traceability
+- [ ] עמוד “Reproduction & Correction note”
+
+---
+
+## 12. סיכונים וסדר עבודה
+
+### 12.1 סיכונים
+| ID | סיכון | תגובה |
+|---|---|---|
+| R-1 | התוצאות המתוקנות משנות מסקנות (route, דירוג, SHAP) | זה צפוי ולגיטימי. מעדכנים מסקנות ותיאום עם המנחה (Q-02) |
+| R-2 | אימון סופי של BiLSTM יקר ב-GPU | PatchTST על CPU. BiLSTM ב-Colab עם תקציב מוצהר. רק אחרי G-1, כדי לא לשלם פעמיים |
+| R-9 | הורדת GFS: ריצות חסרות, rate limiting, או ניתוח GRIB על Windows (eccodes) | resume ו-manifest. cfgrib דרך conda-forge. fallback ל-UCAR ds084.1 |
+| R-10 | דליפה “עדינה” שמתגלה רק אחרי האימון הסופי | זה בדיוק התפקיד של G-1, ובנוסף T-09, T-17 ו-T-18 |
+| R-3 | מקור הקרינה או הטמפרטורה (D-09) או azimuth/tilt לא נכונים | T-08 ובדיקות יום בהיר בשלב 2 ו-6 |
+| R-4 | DST: ambiguous='infer' נכשל אם יש חוסרים ליד המעבר | fallback לפי סדר הופעה, ובדיקה T-05 |
+| R-5 | אובדן עבודה | GitHub פרטי מהיום הראשון ושני גיבויים |
+| R-6 | הזמן לא מספיק לכל ניתוחי פרק 12 | עדיפות: benchmark ו-DM, אחר כך route, seasonal, SHAP, ablation, CV, פירוק ו-quintiles |
+
+### 12.2 סדר עבודה (ימי עבודה, הערכה)
+**שלב א', בנייה עם מודלים קלים**
+1. **שלבים 0 ו-1:** התקנה, ריפו, constants, חוזה, EXCL ורשם הנחות (2–3).
+2. **שלב 8 (חלק א'):** evaluate.py, DM עם HLN, baselines ו-T-15 על ה-fixture (2).
+3. **שלבים 2, 4 ו-5:** ingest ל-UTC, preprocess, ניקוי, T-05, T-08 ו-T-16, ואימות A-02 עד A-10 (3–4).
+4. **שלב 3:** EDA, כולל פיגורת F-01 (1–2).
+5. **שלב 6:** target מתוקן, D-11, rolling לפי אופק, T-09, T-11, T-13 ו-T-18 (3).
+6. **שלב 6b:** GFS: הורדה, עיבוד, T-17, ובדיקת ערך על val (3–4, כולל לילה של הורדה).
+7. **שלב 7:** בחירת פיצ'רים על הדאטה המתוקן (2).
+8. **שלב 9:** baselines ו-XGB-dev, הערכה מלאה בפיתוח, smoke ל-LSTM ו-PatchTST (3).
+
+**שלב ב', ביקורת**
+9. **🚦 G-1:** ביקורת מקצה לקצה, ביקורת חיצונית, ו-freeze (2–3). **עדכון למנחה.**
+
+**שלב ג', אימון סופי ודוח**
+10. **שלב 10:** אימון סופי: XGB (60×3), PatchTST ו-BiLSTM (2–4, ועוד זמן GPU).
+11. **שלב 11:** כל ההערכה ופרק 12, errata ודוח v7 (4–5).
+
+**סך הכל:** בערך 25–33 ימי עבודה. אין מועד קשיח. ההגנה תתואם בסוף.
+
+---
+
+## 13. Traceability
+הקובץ הבסיסי: `submission_evidence/11_audit/REPORT_CLAIM_EVIDENCE_MATRIX.csv`. בשלב 11 נבנה מחדש לדוח v7 עם עמודות `claim, value_old, value_new, file, script, verified_on`.
+
+| טענה | ערך | קובץ | סקריפט | אומת |
+|---|---|---|---|---|
+| (ישן) LSTM indirect D+1 | 30.2374 | benchmark_summary.csv | evaluate.py, fixture | 2026-10-13 (F-03) |
+| שעות יום ב-test | 2,580 | — | מסכה (F-02) | 2026-10-13 |
+| (ישן) שעות יום עם y_true=0 | 13.5%, כולן 03–05 לפי התווית | LSTM preds | verify_findings.ps1 | 2026-10-13 |
+
+---
+
+## 14. מצאי ראיות (submission_evidence, read-only)
+
+| נתיב | תוכן | שימוש עכשיו |
+|---|---|---|
+| 01/benchmark_summary.csv | תוצאות ישנות | השוואה ב-errata |
+| 01/global_metrics, executive_summary; 02/bootstrap_ci | הערכה ישנה יותר (F-08) | ❌ |
+| 02/dm_* | DM ישן, בלי HLN | השוואה |
+| 03, 04, 05, 06, 07 | route, seasonal, seeds, mask, SHAP ישנים | השוואה |
+| **08/predictions_lstm_sota_aligned.csv** | הפרדיקציות היחידות ששרדו (34,134 שורות) | **fixture ל-T-15** וראיה ל-F-01 |
+| 09/*.json | 05e ו-05f ישנים (עם NWP) | השוואה ל-D-13 |
+| 10_config/* | constants, manifest, leakage_audit | בסיס למפרט, עם תיקונים |
+| 11_audit/* | audits מ-05.2026 | רקע ורשימת טענות |
+| 12_scripts/* | 8 סקריפטים | בסיס, עם תיקונים (C-07, C-16) |
+| 13_report/…v6.docx | הדוח | בסיס לדוח v7 |
+| old files/*.ipynb | 03, 04 v4, 05, 07 | בסיס למימוש. **לא להעתיק את טיפול הזמן מ-03, ולא את חישוב ה-k ב-15 דקות מ-04** |
+
+---
+
+## 15. מילון שמות
+| בדוח | ב-CSV |
+|---|---|
+| XGB-Opt | xgb_sota |
+| BiLSTM-Opt | lstm_sota |
+| TFT-96 / TFT-168 | tft_96 / tft_168 |
+| TFT baseline | tft |
+| PatchTST | patchtst |
+| clear-sky performance index | target_k |
+
+---
+
+## 16. שאלות פתוחות
+| ID | שאלה | למי |
+|---|---|---|
+| ~~Q-01~~ | ~~מועד ההגנה~~: **נסגר.** אין מועד. ההגנה תתואם אחרי סיום העבודה (14.10) | — |
+| Q-02 | האם המנחה יודע על המחיקה ועל כך שהמספרים ישתנו? | משתמש |
+| Q-03 | יש גישה לגיבויים של המכונה המקורית (204323141)? פחות קריטי עכשיו, אבל יכול לעזור עם YAMLs (altitude, tilt) | משתמש |
+| ~~Q-04~~ | ~~גובה האתר~~: **נסגר.** 111 מ' (A-05) | — |
+| Q-10 | האם המפעל הוא אכן Ketura Sun (Arava Power, 4.95 MWp)? (A-03) | משתמש |
+| Q-05 | `sun_azimuth` מול `solar_azimuth` | שלב 6 |
+| Q-06 | מאיפה evaluate.py הישן לקח y_true? (לא חוסם) | — |
+| Q-07 | מה זה `Ktora.csv`? | שלב 2 |
+| Q-09 | להשאיר את הקואורדינטות מוסתרות בדוח? | משתמש ומפעיל |
+
+---
+
+## 17. יומן שינויים
+| תאריך | גרסה | מה השתנה |
+|---|---|---|
+| 2026-10-13 | v1.0 | יצירת המסמך המאוחד מתוכנית ה-claude.ai ומסקירה מלאה של התיקייה. F-01 עד F-10, D-01 עד D-10, C-12 עד C-28, מפרט קנוני, בדיקות ושלב 11 מורחב. |
+| 2026-10-13 | v1.1 | **החלטות המשתמש:** אין שחזור 1:1, וכל באג מתוקן (D-01). חובה לתקן את הזזת השעות (F-01) ואת באג ה-1.2 וההמרה (F-06, C-29). Meteo/NWP מחוץ לתחום (D-12). בעקבות זאת: הוסר מצב legacy, המספרים הישנים הפכו להשוואה בלבד (§9), ה-LSTM ששרד הפך ל-fixture (T-15). נוספו D-11 עד D-15, T-11 עד T-16, ו-§6.5 מחודש (k כיחס של ממוצעים, בלי חיתוך, היפוך מדויק). theoretical_power הוסר (75 פיצ'רים), rolling לפי אופק, DM עם HLN, route עם AC אמיתי, ואימון מחדש של הנוירונים (D-08). |
+| 2026-10-14 | v1.2 | **החלטות המשתמש:** (1) לחפש מקור NWP חליפי, אמין וחינמי. נמצא ונבדק ארכיון GFS של NOAA ב-AWS, מספטמבר 2021 עד מאי 2025 (F-11). נוספו שלב 6b, §6.12, D-12 מעודכן ו-T-17. (2) D-08 הוכרע: PatchTST ו-BiLSTM, **רק בסוף**. קודם pipeline מלא עם מודלים קלים, אחר כך שער G-1 (ביקורת, בלי דליפות ובלי הנחות לא מאומתות), ואז אימון סופי אחד לכל המודלים על קוד קפוא. TFT יוצא. (3) אין מועד הגנה (Q-01 נסגר). נוספו גם רשם הנחות (§6.13, A-01 עד A-16), D-16 (T0 = 00:00 מקומי), D-17 (תקציב פיתוח) ו-T-18, וסדר העבודה עודכן. |
+| 2026-10-14 | v1.3 | **שלב 1 הושלם.** הותקנו Git 2.55 ו-Miniforge (winget, באישור המשתמש), ונוצר env `solar` (Python 3.11.17) עם `environment.lock.yml`. ריפו git (`main`) עם זהות מקומית. החבילה `src/solarpv/` (D-18): constants, paths, site, contract (75), leakage (EXCL), daytime mask, ו-stubs לכל השלבים. 67 בדיקות ירוקות, כולל T-07 ב-pvlib (2,580 ו-2,510/2,512/2,514). ruff נקי. docs: errata, deviations, leakage_audit v2. **שלב 0:** `raw_checksums.sha256` (50 קבצים). **מיקום (בקשת המשתמש):** הקואורדינטות הועברו למרכז שדה Ketura Sun (29.96476, 35.05972), גובה 111 מ' (Q-04 נסגר). ממתין לאישור (Q-10). הערה: הייבוא הראשון בסביבה חדשה איטי מאוד (pvlib לקח 212 שניות, כנראה סריקת Defender). אחרי זה pytest רץ ב-2 שניות. |

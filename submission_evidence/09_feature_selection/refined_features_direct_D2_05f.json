@@ -1,0 +1,116 @@
+{
+  "source": "05f_feature_analysis \u2014 post-hoc audit of 05e",
+  "target": "site_total_AC_kW",
+  "target_label": "direct",
+  "horizon": 2,
+  "note": "05f is an audit/analysis artifact only. 06_modeling_v2 uses 05e feature sets exclusively. recommended_05f is available for interpretive discussion and sensitivity analysis in reporting, but does NOT change modeling inputs.",
+  "05e_recommended_n": 34,
+  "stability_axis": {
+    "stable_core": 0.75,
+    "moderate": 0.5,
+    "unstable_threshold": 0.3
+  },
+  "mi_75th_percentile": 1.1969,
+  "tiers": {
+    "CORE": {
+      "n": 12,
+      "features": [
+        "fcst_temp_2m",
+        "hour_cos",
+        "month_sin",
+        "s01_inv1_DC_kW",
+        "s01_inv1_rolling_mean_3d_same_tod",
+        "s01_inv2_DC_kW",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "solar_azimuth",
+        "site_total_rolling_mean_3d_same_tod",
+        "mod_temp1_lag_3d",
+        "fcst_dni",
+        "ambient_temp_lag_3d"
+      ]
+    },
+    "SUPPORTED": {
+      "n": 3,
+      "features": [
+        "irradiance_lag_2d",
+        "irradiance_lag_3d",
+        "mod_temp2_lag_14d"
+      ]
+    },
+    "CONDITIONAL": {
+      "n": 2,
+      "features": [
+        "s01_inv1_AC_kW_lag_3d",
+        "site_total_AC_kW_lag_3d"
+      ]
+    },
+    "EXCLUDED": {
+      "n": 19,
+      "features": [
+        "doy_sin",
+        "fcst_cloud_cover",
+        "s01_inv2_AC_kW_lag_2d",
+        "s01_inv1_rolling_std_3d_same_tod",
+        "doy_cos",
+        "site_total_rolling_std_3d_same_tod",
+        "poa_global_forecast",
+        "irradiance_lag_14d",
+        "mod_temp1_lag_14d",
+        "wind_speed_squared",
+        "aoi",
+        "irradiance_lag_7d",
+        "fcst_dhi",
+        "fcst_ghi",
+        "day_length",
+        "hour_sin",
+        "poa_global_clearsky",
+        "solar_zenith",
+        "sun_azimuth"
+      ],
+      "reasons": {
+        "doy_sin": "excluded (stab=0.97, votes=2, MI=0.130)",
+        "fcst_cloud_cover": "excluded (stab=0.77, votes=2, MI=0.033)",
+        "s01_inv2_AC_kW_lag_2d": "unstable_not_forecast_safe (stab=0.43, avail=HORIZON_DEPENDENT)",
+        "s01_inv1_rolling_std_3d_same_tod": "unstable_and_weak_MI (stab=0.40, MI=0.630 \u2264 MI_75th=1.197)",
+        "doy_cos": "unstable_and_weak_MI (stab=0.33, MI=0.156 \u2264 MI_75th=1.197)",
+        "site_total_rolling_std_3d_same_tod": "unstable_and_weak_MI (stab=0.33, MI=0.630 \u2264 MI_75th=1.197)",
+        "poa_global_forecast": "stability_too_low (0.27 < 0.30 floor)",
+        "irradiance_lag_14d": "stability_too_low (0.17 < 0.30 floor)",
+        "mod_temp1_lag_14d": "insufficient_votes (1/3)",
+        "wind_speed_squared": "stability_too_low (0.13 < 0.30 floor)",
+        "aoi": "stability_too_low (0.07 < 0.30 floor)",
+        "irradiance_lag_7d": "stability_too_low (0.07 < 0.30 floor)",
+        "fcst_dhi": "stability_too_low (0.03 < 0.30 floor)",
+        "fcst_ghi": "stability_too_low (0.03 < 0.30 floor)",
+        "day_length": "stability_too_low (0.00 < 0.30 floor)",
+        "hour_sin": "stability_too_low (0.00 < 0.30 floor)",
+        "poa_global_clearsky": "stability_too_low (0.00 < 0.30 floor)",
+        "solar_zenith": "insufficient_votes (1/3)",
+        "sun_azimuth": "stability_too_low (0.00 < 0.30 floor)"
+      }
+    }
+  },
+  "recommended_05f": {
+    "features": [
+      "fcst_temp_2m",
+      "hour_cos",
+      "month_sin",
+      "s01_inv1_DC_kW",
+      "s01_inv1_rolling_mean_3d_same_tod",
+      "s01_inv2_DC_kW",
+      "s01_inv2_rolling_mean_7d_same_tod",
+      "solar_azimuth",
+      "site_total_rolling_mean_3d_same_tod",
+      "mod_temp1_lag_3d",
+      "fcst_dni",
+      "ambient_temp_lag_3d",
+      "irradiance_lag_2d",
+      "irradiance_lag_3d",
+      "mod_temp2_lag_14d",
+      "s01_inv1_AC_kW_lag_3d",
+      "site_total_AC_kW_lag_3d"
+    ],
+    "n": 17,
+    "method": "tiered_CORE_SUPPORTED_CONDITIONAL"
+  }
+}

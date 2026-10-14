@@ -1,0 +1,13 @@
+model,target,horizon,nRMSE_mean,nRMSE_std,nRMSE_min,nRMSE_max,n_seeds
+lstm_sota,direct,1,8.477,0.13,8.392,8.626,3
+lstm_sota,direct,2,8.665,0.046,8.627,8.716,3
+lstm_sota,direct,3,8.643,0.034,8.605,8.671,3
+lstm_sota,indirect,1,19.669,0.424,19.315,20.139,3
+lstm_sota,indirect,2,20.245,0.454,19.83,20.729,3
+lstm_sota,indirect,3,20.288,0.436,19.847,20.718,3
+xgb_sota,direct,1,12.058,0.007,12.05,12.064,3
+xgb_sota,direct,2,12.132,0.035,12.11,12.172,3
+xgb_sota,direct,3,12.135,0.047,12.093,12.185,3
+xgb_sota,indirect,1,29.053,0.06,28.984,29.095,3
+xgb_sota,indirect,2,29.118,0.045,29.079,29.167,3
+xgb_sota,indirect,3,29.081,0.028,29.05,29.106,3

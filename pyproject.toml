@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solarpv"
+version = "0.1.0"
+description = "Day-ahead PV power forecasting for the Ktora plant (capstone rebuild)"
+requires-python = ">=3.11"
+authors = [{ name = "Yonatan Barak", email = "barakyv@gmail.com" }]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "needs_raw: requires the raw SCADA files in 'Raw data/'",
+    "needs_private_site: requires configs/site.private.yaml (true site coordinates)",
+    "slow: takes more than a few seconds",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

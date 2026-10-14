@@ -1,0 +1,7 @@
+name: solar_fix
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pyarrow=21.0.0
+prefix: C:\Users\baraky\AppData\Local\anaconda3\envs\solar_fix

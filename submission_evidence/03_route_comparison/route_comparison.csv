@@ -1,0 +1,13 @@
+model,horizon,route,n,nRMSE_kW_pct,MAE_kW,R2,RMSE_kW
+xgb_sota,1,indirect_to_power,2165,11.1616,210.55,0.7959,384.96
+xgb_sota,1,direct,2172,13.1415,275.55,0.7092,453.25
+xgb_sota,2,indirect_to_power,2165,11.1857,217.46,0.795,385.79
+xgb_sota,2,direct,2172,13.1968,283.41,0.7067,455.16
+xgb_sota,3,indirect_to_power,2165,11.1784,216.95,0.7952,385.54
+xgb_sota,3,direct,2172,13.2767,287.07,0.7032,457.91
+lstm_sota,1,indirect_to_power,2243,11.2968,181.33,0.8045,389.63
+lstm_sota,1,direct,2520,12.9519,246.51,0.72,446.71
+lstm_sota,2,indirect_to_power,2245,11.3436,184.03,0.803,391.24
+lstm_sota,2,direct,2521,13.0663,247.92,0.7148,450.66
+lstm_sota,3,indirect_to_power,2248,11.2023,179.85,0.8083,386.37
+lstm_sota,3,direct,2523,13.0932,248.4,0.7137,451.58

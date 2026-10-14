@@ -1,0 +1,38 @@
+# CPU environment for the whole pipeline except final neural training (see PROJECT_MASTER.md §5.1).
+# After creating or updating: conda env export --no-builds > environment.lock.yml
+name: solar
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  # data
+  - numpy
+  - pandas>=2.2
+  - pyarrow
+  - pyyaml
+  - requests
+  # solar physics
+  - pvlib>=0.11
+  # GFS / GRIB (stage 6b)
+  - xarray
+  - cfgrib
+  - eccodes
+  # modelling
+  - scikit-learn
+  - xgboost>=2.1
+  - optuna>=4.0
+  - shap
+  # statistics
+  - scipy
+  - statsmodels
+  # plots and notebooks
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - ipykernel
+  # quality
+  - pytest
+  - ruff
+  - pip:
+      - -e .

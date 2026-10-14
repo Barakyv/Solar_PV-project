@@ -1,0 +1,8 @@
+target,compare,spearman_rho,p_value
+indirect,indirect_D1 vs indirect_D2,0.6556,0.0
+indirect,indirect_D1 vs indirect_D3,0.5124,0.0
+indirect,indirect_D2 vs indirect_D3,0.7692,0.0
+direct,direct_D1 vs direct_D2,0.7133,0.0
+direct,direct_D1 vs direct_D3,0.6034,0.0
+direct,direct_D2 vs direct_D3,0.7975,0.0
+cross-target,indirect_D1 vs direct_D1,0.6735,0.0

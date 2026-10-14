@@ -1,0 +1,58 @@
+# split_manifest.yaml — Official temporal split boundaries
+# Source of truth: production/00_config/constants.py
+# All timestamps are UTC.
+
+split:
+  train:
+    start: "2021-09-01 00:00 UTC"
+    end:   "2024-01-31 23:59 UTC"
+    rationale: >
+      Training set covers ~2.5 years of data. Ends before the validation
+      window to prevent forward-looking feature leakage.
+
+  validation:
+    start: "2024-02-01 00:00 UTC"
+    end:   "2024-09-30 23:59 UTC"
+    rationale: >
+      8-month validation window used for Optuna hyperparameter optimization.
+      Covers winter → spring → summer transition. Not used for final evaluation.
+
+  test:
+    start: "2024-10-01 00:00 UTC"
+    end:   "2025-05-31 23:59 UTC"
+    rationale: >
+      8-month held-out test set. Covers autumn → winter → spring. This period
+      is strictly held out and not touched during any modelling decision.
+      Final reported nRMSE values are computed on this window, daytime hours
+      only (sun_elevation > 5 degrees).
+
+site:
+  capacity_kw: 3449.0
+  lat:  31.5
+  lon:  34.9
+  timezone: UTC
+
+targets:
+  indirect:
+    column: target_k
+    definition: "AC_kW / (GHI_clearsky * AC_CAPACITY_KW / 1000)"
+    type: "clear-sky performance index (dimensionless [0, 1.2])"
+    normalization_denominator: MEAN_DAYTIME_K  # = 0.6279
+    daytime_filter: "y_true > 0.01 (k threshold)"
+
+  direct:
+    column: site_total_AC_kW
+    definition: "Inverter 1 + Inverter 2 AC power output"
+    type: "AC power in kW"
+    normalization_denominator: AC_CAPACITY_KW  # = 3449.0 kW
+    daytime_filter: "y_true > 10.0 (kW threshold)"
+
+horizons: [1, 2, 3]  # Day+1, Day+2, Day+3
+
+evaluation:
+  dm_test_lags: 24        # Newey-West HAC lags (hourly data standard)
+  bootstrap_block: 24     # hours (daily autocorrelation block)
+  bootstrap_reps: 1000
+  significance_level: 0.05
+
+seeds: [42, 123, 777]     # Three seeds for mean ± std reporting

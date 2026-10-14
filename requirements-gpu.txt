@@ -1,0 +1,9 @@
+# Final neural training (stage 10, Colab GPU). Install the repo itself with: pip install -e .
+# Versions follow the original project (PROJECT_MASTER.md §6.11).
+neuralforecast==3.1.7
+lightning
+pvlib>=0.11
+pandas>=2.2
+pyarrow
+pyyaml
+optuna>=4.0

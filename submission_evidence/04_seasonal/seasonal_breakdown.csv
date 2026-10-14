@@ -1,0 +1,173 @@
+target,horizon,model,season,nRMSE_pct,R2,n_samples,note
+indirect,1,climatology,winter,27.763,0.7203,767,
+indirect,1,climatology,spring,21.145,0.8347,884,
+indirect,1,climatology,fall,32.149,0.6553,514,
+indirect,1,climatology,ALL_SPREAD,11.003,,2165, *UNSTABLE*
+indirect,1,k_persistence,winter,33.383,0.5955,767,
+indirect,1,k_persistence,spring,26.952,0.7315,884,
+indirect,1,k_persistence,fall,41.755,0.4185,514,
+indirect,1,k_persistence,ALL_SPREAD,14.803,,2165, *UNSTABLE*
+indirect,1,lstm_sota,winter,25.607,0.7671,828,
+indirect,1,lstm_sota,spring,19.481,0.8593,901,
+indirect,1,lstm_sota,fall,31.671,0.659,523,
+indirect,1,lstm_sota,ALL_SPREAD,12.19,,2252, *UNSTABLE*
+indirect,1,tft,winter,27.726,0.721,767,
+indirect,1,tft,spring,19.777,0.8553,864,
+indirect,1,tft,fall,33.559,0.6244,514,
+indirect,1,tft,ALL_SPREAD,13.782,,2145, *UNSTABLE*
+indirect,1,xgb_phase1,winter,25.589,0.7624,767,
+indirect,1,xgb_phase1,spring,18.507,0.8734,884,
+indirect,1,xgb_phase1,fall,31.203,0.6753,514,
+indirect,1,xgb_phase1,ALL_SPREAD,12.695,,2165, *UNSTABLE*
+indirect,1,xgb_phase2,winter,25.809,0.7582,767,
+indirect,1,xgb_phase2,spring,18.529,0.8731,884,
+indirect,1,xgb_phase2,fall,31.27,0.6739,514,
+indirect,1,xgb_phase2,ALL_SPREAD,12.741,,2165, *UNSTABLE*
+indirect,1,xgb_sota,winter,25.973,0.7552,767,
+indirect,1,xgb_sota,spring,18.043,0.8797,884,
+indirect,1,xgb_sota,fall,31.039,0.6787,514,
+indirect,1,xgb_sota,ALL_SPREAD,12.996,,2165, *UNSTABLE*
+indirect,2,climatology,winter,27.763,0.7203,767,
+indirect,2,climatology,spring,21.145,0.8347,884,
+indirect,2,climatology,fall,32.149,0.6553,514,
+indirect,2,climatology,ALL_SPREAD,11.003,,2165, *UNSTABLE*
+indirect,2,k_persistence,winter,33.383,0.5955,767,
+indirect,2,k_persistence,spring,26.952,0.7315,884,
+indirect,2,k_persistence,fall,41.755,0.4185,514,
+indirect,2,k_persistence,ALL_SPREAD,14.803,,2165, *UNSTABLE*
+indirect,2,lstm_sota,winter,27.356,0.7342,828,
+indirect,2,lstm_sota,spring,18.826,0.8688,912,
+indirect,2,lstm_sota,fall,32.026,0.6513,514,
+indirect,2,lstm_sota,ALL_SPREAD,13.2,,2254, *UNSTABLE*
+indirect,2,tft,winter,31.376,0.6427,767,
+indirect,2,tft,spring,18.968,0.8669,874,
+indirect,2,tft,fall,38.377,0.5088,505,
+indirect,2,tft,ALL_SPREAD,19.409,,2146, *UNSTABLE*
+indirect,2,xgb_phase1,winter,26.132,0.7522,767,
+indirect,2,xgb_phase1,spring,18.518,0.8732,884,
+indirect,2,xgb_phase1,fall,31.339,0.6724,514,
+indirect,2,xgb_phase1,ALL_SPREAD,12.822,,2165, *UNSTABLE*
+indirect,2,xgb_phase2,winter,25.941,0.7558,767,
+indirect,2,xgb_phase2,spring,18.48,0.8738,884,
+indirect,2,xgb_phase2,fall,31.322,0.6728,514,
+indirect,2,xgb_phase2,ALL_SPREAD,12.842,,2165, *UNSTABLE*
+indirect,2,xgb_sota,winter,25.978,0.7551,767,
+indirect,2,xgb_sota,spring,17.89,0.8817,884,
+indirect,2,xgb_sota,fall,31.228,0.6748,514,
+indirect,2,xgb_sota,ALL_SPREAD,13.338,,2165, *UNSTABLE*
+indirect,3,climatology,winter,27.763,0.7203,767,
+indirect,3,climatology,spring,21.145,0.8347,884,
+indirect,3,climatology,fall,32.149,0.6553,514,
+indirect,3,climatology,ALL_SPREAD,11.003,,2165, *UNSTABLE*
+indirect,3,k_persistence,winter,33.383,0.5955,767,
+indirect,3,k_persistence,spring,26.952,0.7315,884,
+indirect,3,k_persistence,fall,41.755,0.4185,514,
+indirect,3,k_persistence,ALL_SPREAD,14.803,,2165, *UNSTABLE*
+indirect,3,lstm_sota,winter,25.932,0.7611,828,
+indirect,3,lstm_sota,spring,18.503,0.8735,923,
+indirect,3,lstm_sota,fall,32.145,0.6486,505,
+indirect,3,lstm_sota,ALL_SPREAD,13.642,,2256, *UNSTABLE*
+indirect,3,tft,winter,31.406,0.642,767,
+indirect,3,tft,spring,18.878,0.8683,884,
+indirect,3,tft,fall,38.708,0.5005,496,
+indirect,3,tft,ALL_SPREAD,19.83,,2147, *UNSTABLE*
+indirect,3,xgb_phase1,winter,25.762,0.7591,767,
+indirect,3,xgb_phase1,spring,18.571,0.8725,884,
+indirect,3,xgb_phase1,fall,31.34,0.6724,514,
+indirect,3,xgb_phase1,ALL_SPREAD,12.769,,2165, *UNSTABLE*
+indirect,3,xgb_phase2,winter,25.741,0.7595,767,
+indirect,3,xgb_phase2,spring,18.63,0.8717,884,
+indirect,3,xgb_phase2,fall,31.078,0.6779,514,
+indirect,3,xgb_phase2,ALL_SPREAD,12.448,,2165, *UNSTABLE*
+indirect,3,xgb_sota,winter,25.888,0.7568,767,
+indirect,3,xgb_sota,spring,18.01,0.8801,884,
+indirect,3,xgb_sota,fall,31.157,0.6762,514,
+indirect,3,xgb_sota,ALL_SPREAD,13.147,,2165, *UNSTABLE*
+direct,1,clearsky_persistence,winter,20.391,0.2554,767,
+direct,1,clearsky_persistence,spring,22.035,0.1962,887,
+direct,1,clearsky_persistence,fall,25.008,-0.0355,518,
+direct,1,clearsky_persistence,ALL_SPREAD,4.617,,2172, *UNSTABLE*
+direct,1,lstm,winter,12.218,0.7327,767,
+direct,1,lstm,spring,10.173,0.8287,887,
+direct,1,lstm,fall,15.269,0.6144,509,
+direct,1,lstm,ALL_SPREAD,5.096,,2163, *UNSTABLE*
+direct,1,lstm_sota,winter,10.736,0.7992,927,
+direct,1,lstm_sota,spring,9.384,0.8563,1015,
+direct,1,lstm_sota,fall,13.379,0.6931,589,
+direct,1,lstm_sota,ALL_SPREAD,3.995,,2531, *UNSTABLE*
+direct,1,persistence,winter,16.471,0.5141,767,
+direct,1,persistence,spring,15.048,0.6251,887,
+direct,1,persistence,fall,20.003,0.3375,518,
+direct,1,persistence,ALL_SPREAD,4.956,,2172, *UNSTABLE*
+direct,1,tft,winter,14.372,0.6301,767,
+direct,1,tft,spring,11.308,0.7888,867,
+direct,1,tft,fall,14.946,0.6301,518,
+direct,1,tft,ALL_SPREAD,3.638,,2152, *UNSTABLE*
+direct,1,xgb_phase1,winter,12.073,0.739,767,
+direct,1,xgb_phase1,spring,10.36,0.8223,887,
+direct,1,xgb_phase1,fall,14.98,0.6284,518,
+direct,1,xgb_phase1,ALL_SPREAD,4.62,,2172, *UNSTABLE*
+direct,1,xgb_phase2,winter,12.01,0.7417,767,
+direct,1,xgb_phase2,spring,10.38,0.8216,887,
+direct,1,xgb_phase2,fall,14.983,0.6283,518,
+direct,1,xgb_phase2,ALL_SPREAD,4.603,,2172, *UNSTABLE*
+direct,1,xgb_sota,winter,12.425,0.7235,767,
+direct,1,xgb_sota,spring,10.161,0.8291,887,
+direct,1,xgb_sota,fall,14.959,0.6295,518,
+direct,1,xgb_sota,ALL_SPREAD,4.799,,2172, *UNSTABLE*
+direct,2,clearsky_persistence,winter,20.391,0.2554,767,
+direct,2,clearsky_persistence,spring,22.035,0.1962,887,
+direct,2,clearsky_persistence,fall,25.008,-0.0355,518,
+direct,2,clearsky_persistence,ALL_SPREAD,4.617,,2172, *UNSTABLE*
+direct,2,lstm_sota,winter,11.709,0.7612,927,
+direct,2,lstm_sota,spring,10.387,0.8238,1027,
+direct,2,lstm_sota,fall,14.942,0.6153,578,
+direct,2,lstm_sota,ALL_SPREAD,4.555,,2532, *UNSTABLE*
+direct,2,persistence,winter,16.471,0.5141,767,
+direct,2,persistence,spring,15.048,0.6251,887,
+direct,2,persistence,fall,20.003,0.3375,518,
+direct,2,persistence,ALL_SPREAD,4.956,,2172, *UNSTABLE*
+direct,2,tft,winter,15.337,0.5787,767,
+direct,2,tft,spring,11.446,0.7833,877,
+direct,2,tft,fall,16.129,0.5697,509,
+direct,2,tft,ALL_SPREAD,4.683,,2153, *UNSTABLE*
+direct,2,xgb_phase1,winter,12.295,0.7293,767,
+direct,2,xgb_phase1,spring,10.203,0.8277,887,
+direct,2,xgb_phase1,fall,14.905,0.6321,518,
+direct,2,xgb_phase1,ALL_SPREAD,4.702,,2172, *UNSTABLE*
+direct,2,xgb_phase2,winter,12.329,0.7278,767,
+direct,2,xgb_phase2,spring,10.242,0.8263,887,
+direct,2,xgb_phase2,fall,14.878,0.6335,518,
+direct,2,xgb_phase2,ALL_SPREAD,4.636,,2172, *UNSTABLE*
+direct,2,xgb_sota,winter,12.453,0.7223,767,
+direct,2,xgb_sota,spring,10.263,0.8256,887,
+direct,2,xgb_sota,fall,15.002,0.6274,518,
+direct,2,xgb_sota,ALL_SPREAD,4.739,,2172, *UNSTABLE*
+direct,3,clearsky_persistence,winter,20.391,0.2554,767,
+direct,3,clearsky_persistence,spring,22.035,0.1962,887,
+direct,3,clearsky_persistence,fall,25.008,-0.0355,518,
+direct,3,clearsky_persistence,ALL_SPREAD,4.617,,2172, *UNSTABLE*
+direct,3,lstm_sota,winter,11.746,0.7597,927,
+direct,3,lstm_sota,spring,10.287,0.827,1039,
+direct,3,lstm_sota,fall,15.097,0.6056,567,
+direct,3,lstm_sota,ALL_SPREAD,4.81,,2533, *UNSTABLE*
+direct,3,persistence,winter,16.471,0.5141,767,
+direct,3,persistence,spring,15.048,0.6251,887,
+direct,3,persistence,fall,20.003,0.3375,518,
+direct,3,persistence,ALL_SPREAD,4.956,,2172, *UNSTABLE*
+direct,3,tft,winter,15.249,0.5835,767,
+direct,3,tft,spring,11.421,0.7841,887,
+direct,3,tft,fall,16.374,0.5559,500,
+direct,3,tft,ALL_SPREAD,4.953,,2154, *UNSTABLE*
+direct,3,xgb_phase1,winter,12.261,0.7308,767,
+direct,3,xgb_phase1,spring,10.343,0.8229,887,
+direct,3,xgb_phase1,fall,14.941,0.6304,518,
+direct,3,xgb_phase1,ALL_SPREAD,4.597,,2172, *UNSTABLE*
+direct,3,xgb_phase2,winter,12.405,0.7244,767,
+direct,3,xgb_phase2,spring,10.414,0.8204,887,
+direct,3,xgb_phase2,fall,14.815,0.6366,518,
+direct,3,xgb_phase2,ALL_SPREAD,4.401,,2172, *UNSTABLE*
+direct,3,xgb_sota,winter,12.405,0.7244,767,
+direct,3,xgb_sota,spring,10.259,0.8258,887,
+direct,3,xgb_sota,fall,14.89,0.6329,518,
+direct,3,xgb_sota,ALL_SPREAD,4.631,,2172, *UNSTABLE*

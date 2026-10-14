@@ -1,0 +1,16 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.csv text eol=lf
+*.ipynb text eol=lf
+*.docx binary
+*.xlsx binary
+*.png binary
+*.pdf binary
+# read-only evidence is stored byte-for-byte (no line-ending normalisation)
+submission_evidence/** -text
+old?files/** -text
+00_data_audit/raw_data_inventory.csv -text

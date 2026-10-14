@@ -1,0 +1,32 @@
+# Official temporal setup. Source of truth: src/solarpv/config/constants.py (PROJECT_MASTER.md §6).
+# All timestamps are true UTC (fix F-01). Hourly rows are labelled by the start of the hour.
+
+data:
+  start_utc: "2021-08-31 21:00"   # 2021-09-01 00:00 local (IDT)
+  end_utc:   "2025-05-31 20:59"   # 2025-05-31 23:59 local (IDT)
+  hours: 32856
+
+issuance:
+  t0_local: "00:00"               # forecasts issued at local midnight (D-16, A-01)
+  timezone: Asia/Jerusalem
+  horizon_definition: "D+h = the h-th local day starting at T0"
+  rule: "a feature value is allowed only if it is known at T0"
+
+split:
+  train:      {start: "2021-08-31 21:00", end: "2024-01-31 23:59"}
+  validation: {start: "2024-02-01 00:00", end: "2024-09-30 23:59"}  # all tuning and selection
+  test:       {start: "2024-10-01 00:00", end: "2025-05-31 23:59"}  # final evaluation only
+
+targets:
+  direct:   {column: site_total_AC_kW, unit: kW, denominator: 3449}
+  indirect: {column: target_k, definition: "hourly mean AC / hourly mean clear-sky power (D-11)",
+             denominator: "mean daytime k on train (stage 6)", clipping: none}
+
+horizons: [1, 2, 3]
+
+evaluation:
+  daytime: "sun elevation at hour start + 30 min > 5 deg"   # F-02
+  bootstrap: {method: circular_block, block_hours: 24, reps: 1000, seed: 42}
+  diebold_mariano: {loss: squared, nw_lags: 24, kernel: bartlett, hln: true, multiple_testing: bonferroni}
+
+seeds: [42, 123, 777]

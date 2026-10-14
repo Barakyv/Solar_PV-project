@@ -1,0 +1,128 @@
+{
+  "source": "05f_feature_analysis \u2014 post-hoc audit of 05e",
+  "target": "target_k",
+  "target_label": "indirect",
+  "horizon": 1,
+  "note": "05f is an audit/analysis artifact only. 06_modeling_v2 uses 05e feature sets exclusively. recommended_05f is available for interpretive discussion and sensitivity analysis in reporting, but does NOT change modeling inputs.",
+  "05e_recommended_n": 40,
+  "stability_axis": {
+    "stable_core": 0.75,
+    "moderate": 0.5,
+    "unstable_threshold": 0.3
+  },
+  "mi_75th_percentile": 1.1405,
+  "tiers": {
+    "CORE": {
+      "n": 15,
+      "features": [
+        "aoi",
+        "doy_cos",
+        "fcst_dni",
+        "hour_sin",
+        "poa_global_clearsky",
+        "solar_azimuth",
+        "sun_azimuth",
+        "fcst_ghi",
+        "poa_direct_forecast",
+        "poa_global_forecast",
+        "s01_inv1_AC_kW_lag_1d",
+        "mod_temp1_lag_1d",
+        "site_total_AC_kW_lag_1d",
+        "hour_cos",
+        "s01_inv1_rolling_mean_7d_same_tod"
+      ]
+    },
+    "SUPPORTED": {
+      "n": 8,
+      "features": [
+        "ambient_temp_lag_1d",
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "fcst_dhi",
+        "mod_temp1_lag_3d",
+        "s01_inv2_AC_kW_lag_2d",
+        "site_total_rolling_mean_7d_same_tod",
+        "s01_inv1_rolling_mean_3d_same_tod",
+        "airmass"
+      ]
+    },
+    "CONDITIONAL": {
+      "n": 1,
+      "features": [
+        "site_total_rolling_mean_3d_same_tod"
+      ]
+    },
+    "EXCLUDED": {
+      "n": 18,
+      "features": [
+        "s01_inv2_AC_kW_lag_1d",
+        "fcst_cloud_cover",
+        "ghi_clearsky",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "poa_diffuse_forecast",
+        "fcst_temp_2m",
+        "irradiance_lag_1d",
+        "dhi_clearsky",
+        "dni_clearsky",
+        "fcst_wind_speed",
+        "has_statistical_outlier",
+        "mod_temp2_lag_3d",
+        "month",
+        "month_sin",
+        "poa_diffuse_clearsky",
+        "poa_direct_clearsky",
+        "poa_ground_diffuse_clearsky",
+        "time_to_solar_noon"
+      ],
+      "reasons": {
+        "s01_inv2_AC_kW_lag_1d": "unstable_and_weak_MI (stab=0.47, MI=1.140 \u2264 MI_75th=1.141)",
+        "fcst_cloud_cover": "unstable_and_weak_MI (stab=0.43, MI=0.016 \u2264 MI_75th=1.141)",
+        "ghi_clearsky": "unstable_and_weak_MI (stab=0.37, MI=1.009 \u2264 MI_75th=1.141)",
+        "s01_inv2_rolling_mean_7d_same_tod": "stability_too_low (0.23 < 0.30 floor)",
+        "poa_diffuse_forecast": "stability_too_low (0.20 < 0.30 floor)",
+        "fcst_temp_2m": "stability_too_low (0.03 < 0.30 floor)",
+        "irradiance_lag_1d": "stability_too_low (0.03 < 0.30 floor)",
+        "dhi_clearsky": "stability_too_low (0.00 < 0.30 floor)",
+        "dni_clearsky": "insufficient_votes (0/3)",
+        "fcst_wind_speed": "stability_too_low (0.00 < 0.30 floor)",
+        "has_statistical_outlier": "stability_too_low (0.00 < 0.30 floor)",
+        "mod_temp2_lag_3d": "stability_too_low (0.00 < 0.30 floor)",
+        "month": "stability_too_low (0.00 < 0.30 floor)",
+        "month_sin": "stability_too_low (0.00 < 0.30 floor)",
+        "poa_diffuse_clearsky": "stability_too_low (0.00 < 0.30 floor)",
+        "poa_direct_clearsky": "insufficient_votes (0/3)",
+        "poa_ground_diffuse_clearsky": "stability_too_low (0.00 < 0.30 floor)",
+        "time_to_solar_noon": "stability_too_low (0.00 < 0.30 floor)"
+      }
+    }
+  },
+  "recommended_05f": {
+    "features": [
+      "aoi",
+      "doy_cos",
+      "fcst_dni",
+      "hour_sin",
+      "poa_global_clearsky",
+      "solar_azimuth",
+      "sun_azimuth",
+      "fcst_ghi",
+      "poa_direct_forecast",
+      "poa_global_forecast",
+      "s01_inv1_AC_kW_lag_1d",
+      "mod_temp1_lag_1d",
+      "site_total_AC_kW_lag_1d",
+      "hour_cos",
+      "s01_inv1_rolling_mean_7d_same_tod",
+      "ambient_temp_lag_1d",
+      "s01_inv2_rolling_mean_3d_same_tod",
+      "fcst_dhi",
+      "mod_temp1_lag_3d",
+      "s01_inv2_AC_kW_lag_2d",
+      "site_total_rolling_mean_7d_same_tod",
+      "s01_inv1_rolling_mean_3d_same_tod",
+      "airmass",
+      "site_total_rolling_mean_3d_same_tod"
+    ],
+    "n": 24,
+    "method": "tiered_CORE_SUPPORTED_CONDITIONAL"
+  }
+}
