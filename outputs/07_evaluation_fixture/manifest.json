@@ -1,0 +1,16 @@
+{
+  "inputs": [
+    "submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv"
+  ],
+  "git_commit": "3693943",
+  "mean_daytime_k": 0.6279,
+  "dm_reference": "persistence",
+  "truth": "prediction files (fixture mode)",
+  "site_private": true,
+  "rows": {
+    "benchmark_summary": 12,
+    "dm_tests": 6,
+    "seasonal_metrics": 36,
+    "common_mask_summary": 0
+  }
+}
