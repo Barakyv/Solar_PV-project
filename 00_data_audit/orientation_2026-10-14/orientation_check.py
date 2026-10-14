@@ -85,7 +85,7 @@ def fit_orientation(y, zen, azi, dni, ghi, dhi, dni_extra, per_day=None):
 def main():
     site = load_site()
     loc = pvlib.location.Location(site.latitude, site.longitude, tz="UTC", altitude=site.altitude_m)
-    print(f"site: {site.latitude}, {site.longitude}, {site.altitude_m} m  (private={site.is_private})")
+    print(f"site: {site.latitude}, {site.longitude}, {site.altitude_m} m ({site.is_private=})")
 
     df = pd.concat(load_month(m) for m in MONTHS)
     df["dc"] = df["inv1_dc"] + df["inv2_dc"]
