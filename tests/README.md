@@ -31,5 +31,6 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-26 | Hourly clean output: axis, means, site total, flag shares, op-limited, hour_source | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-27 | Daytime energy unchanged on fault-free days (±0.1 %) | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-28 | Log and manifest equal the output; policy and file hashes | `contracts/test_clean_output.py` | ✅ stage 5 |
+| T-29 | Data-processing record complete and current (numbers from manifests, every stage, rule and OP) | `contracts/test_data_record.py` | ✅ |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.
