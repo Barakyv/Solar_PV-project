@@ -1,0 +1,5 @@
+month,reading,clear_days,median_centroid_minus_solar_noon_min
+"winter (Dec 2021, UTC+2)",original (local stamps read as UTC),6,120.4
+"winter (Dec 2021, UTC+2)","rebuild (true UTC, clock-corrected)",6,1.9
+"summer (Jul 2022, UTC+3)",original (local stamps read as UTC),6,173.6
+"summer (Jul 2022, UTC+3)","rebuild (true UTC, clock-corrected)",6,2.6

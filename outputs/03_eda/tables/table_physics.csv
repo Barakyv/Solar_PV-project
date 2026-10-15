@@ -1,0 +1,3 @@
+quantity,value,basis
+relative temperature coefficient of AC [%/K],-0.422,"train, 700-900 W/m2"
+AC per irradiance at 25 degC [kW per W/m2],2.8682,"train, 700-900 W/m2"

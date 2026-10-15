@@ -4,7 +4,7 @@
 # (thresholds come from physics and from the train period; nothing is tuned on val or test).
 #
 # Two kinds of rules:
-#   value rules (R1-R6): a measurement is wrong -> it is replaced (NaN or 0); the first rule
+#   value rules (R1-R7): a measurement is wrong -> it is replaced (NaN or 0); the first rule
 #                        that applies to a minute is recorded in rule_<column>.
 #   flag rules  (F1-F2): a real plant event -> values are never changed, only flagged (D-22).
 version: 1
@@ -54,12 +54,28 @@ frozen_min_minutes:
   ambient_temp: 60
   site_ambient_temp: 60
 frozen_ignore_zero: [s01_inv1_AC_kW, s01_inv2_AC_kW, s01_inv1_DC_kW, s01_inv2_DC_kW]
+# Minutes next to a frozen run are contaminated too: when data resume, the 1-min average blends
+# the stale value with the real one (e.g. 247 kW at sunrise on 2021-09-12, found in stage 3), and
+# on the polled source the stage-4 reconstruction interpolates from the stale value.
+frozen_margin_minutes:
+  minute: 1
+  polled: 15
 
 # R6: dead DC sensor. DC = 0 while the same inverter delivers AC is impossible (AC <= DC).
 # 7,038 minutes on inverter 1 in March 2023 (explore_cleaning.py, follow-up check).
 dc_dead:
   pairs: {s01_inv1_DC_kW: s01_inv1_AC_kW, s01_inv2_DC_kW: s01_inv2_AC_kW}
   min_ac_kw: 100.0
+
+# R7: scale fault of a redundant sensor against its reference, per local day. The pyranometer
+# reads exactly x0.75 from 2023-05-28 to 2023-12-31 and on days in Dec 2024 - Apr 2025, while the
+# irradiance sensor stays consistent with clear-sky POA and with DC power (F-19, found in stage 3).
+# The reference is the cleaned irradiance; days without a reference are kept.
+scale_fault:
+  pairs: {pyranometer: irradiance}
+  min_elevation: 30.0
+  min_reference: 300.0
+  ratio_range: [0.9, 1.1]
 
 # R4/R5: night rule on true geometry (fixes F-01b). Twilight production between -3 and 0 deg
 # is real (up to ~29 kW) and is kept.

@@ -1,0 +1,45 @@
+{
+  "stage": "03_eda",
+  "git_commit": "bc6f7dd+dirty",
+  "inputs_sha256": {
+    "data/processed/05_clean/scada_1H_clean.parquet": "1e78ad5e039b97fd971668da4df21a42d7ae694ded9ba81884b01ebcd9205bdb",
+    "data/processed/04_preprocess/scada_1H_utc.parquet": "323a515efab87aa80b2858c2a3aa55f9cf08260735412ef84fa37befac8813ce",
+    "Raw data/2112.CSV": "588b8a3565b06c22a7b750412c70bfae71d5770350ca32c3c457a69c9d25f26b",
+    "Raw data/2207.CSV": "a35d24e1fce22d046862f7acb312ba0fd780a2ff71e4b621ce9c15e1d4c5494b",
+    "configs/clock_offsets.csv": "8f040f4f5c1bf68644e1da34a133789a42d1f8931381cdea4fed3c14b1dd1b87",
+    "00_data_audit/polled_reconstruction_2026-10-15/summary.csv": "01a72bf72bb15cd16207b17f23464c1403119f3c5c0010ee07abfc56e0d45a37",
+    "outputs/05_cleaning/cleaning_log.csv": "0a21d50ddb5652f14aa45ae426809acb69c4d9faa1ae1d04d2bd0915ac398417"
+  },
+  "figures": [
+    "fig01_overview.png",
+    "fig02_time_bug.png",
+    "fig03_clock.png",
+    "fig04_polled.png",
+    "fig05_cleaning.png",
+    "fig06_diurnal.png",
+    "fig07_power_irradiance.png",
+    "fig08_variability.png",
+    "fig09_operations.png",
+    "fig10_sensors.png"
+  ],
+  "tables": [
+    "table_physics.csv",
+    "table_sensors.csv",
+    "table_splits.csv",
+    "table_time_bug.csv",
+    "table_variability.csv"
+  ],
+  "split_hours": {
+    "train": 21195,
+    "val": 5832,
+    "test": 5829,
+    "all": 32856
+  },
+  "time_bug_median_offset_min": {
+    "winter (Dec 2021, UTC+2) | original (local stamps read as UTC)": 120.4,
+    "winter (Dec 2021, UTC+2) | rebuild (true UTC, clock-corrected)": 1.9,
+    "summer (Jul 2022, UTC+3) | original (local stamps read as UTC)": 173.6,
+    "summer (Jul 2022, UTC+3) | rebuild (true UTC, clock-corrected)": 2.6
+  },
+  "temperature_coefficient_pct_per_K": -0.422
+}

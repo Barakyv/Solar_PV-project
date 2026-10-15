@@ -1,48 +1,49 @@
 {
   "stage": "05_clean",
-  "git_commit": "ee4799a",
+  "git_commit": "bc6f7dd+dirty",
   "input": {
     "file": "scada_1min_true_utc.parquet",
     "sha256": "9d6a9fd9531b7c45a4ebd1953ef1a28c281a73e3b56a60db90df4dd60440e270"
   },
   "policy": {
     "file": "cleaning_policy.yaml",
-    "sha256": "bab5b6ae6ff24566b5a1ab9d3626d83cecc5108072099366cf822fea8effef38"
+    "sha256": "b6281451893d558592888f04c737f66ec62741223cc56d5c369911be883604eb"
   },
   "rows_1min": 1971360,
   "rows_1H": 32856,
   "rule_minutes": {
     "R1_range:ambient_temp": 2698,
-    "R3_frozen:ambient_temp": 7791,
+    "R3_frozen:ambient_temp": 7823,
     "R2_offset:irradiance": 57738,
-    "R3_frozen:irradiance": 8891,
+    "R3_frozen:irradiance": 8993,
     "R1_range:mod_temp1": 2139,
-    "R3_frozen:mod_temp1": 7905,
+    "R3_frozen:mod_temp1": 7991,
     "R1_range:mod_temp2": 2093,
-    "R3_frozen:mod_temp2": 7878,
-    "R3_frozen:pyranometer": 8404,
+    "R3_frozen:mod_temp2": 7948,
+    "R3_frozen:pyranometer": 8460,
+    "R7_scale_fault:pyranometer": 403409,
     "R1_range:s01_inv1_AC_kW": 6,
-    "R3_frozen:s01_inv1_AC_kW": 5652,
+    "R3_frozen:s01_inv1_AC_kW": 5693,
     "R4_night_zero:s01_inv1_AC_kW": 4980,
     "R1_range:s01_inv1_DC_kW": 16,
-    "R3_frozen:s01_inv1_DC_kW": 3103,
+    "R3_frozen:s01_inv1_DC_kW": 3127,
     "R4_night_zero:s01_inv1_DC_kW": 123,
     "R6_dc_dead:s01_inv1_DC_kW": 7056,
     "R1_range:s01_inv2_AC_kW": 6,
-    "R3_frozen:s01_inv2_AC_kW": 5617,
+    "R3_frozen:s01_inv2_AC_kW": 5643,
     "R4_night_zero:s01_inv2_AC_kW": 4475,
     "R1_range:s01_inv2_DC_kW": 6,
-    "R3_frozen:s01_inv2_DC_kW": 3127,
+    "R3_frozen:s01_inv2_DC_kW": 3169,
     "R4_night_zero:s01_inv2_DC_kW": 53,
     "R6_dc_dead:s01_inv2_DC_kW": 46,
-    "R3_frozen:site_ambient_temp": 7563,
+    "R3_frozen:site_ambient_temp": 7589,
     "R1_range:wind_speed": 61
   },
   "flag_minutes": {
-    "downtime_inv1_flag": 4155,
-    "downtime_inv2_flag": 4377,
+    "downtime_inv1_flag": 4182,
+    "downtime_inv2_flag": 4404,
     "curtail_flag": 11960,
-    "op_limited_flag": 17946
+    "op_limited_flag": 17973
   },
   "hours_by_split": {
     "train": {
@@ -78,7 +79,7 @@
     "p99_99_hourly": 2894.6
   },
   "outputs": {
-    "scada_1min_clean.parquet": "65f39ad3d48c8cb55f208ae4556bf9855f6b141beea342c841537e18d545e5b3",
-    "scada_1H_clean.parquet": "afab8dabf80507dffa6d4818dfd88bd133fc3e4c454d61f853ca551b9e2ac055"
+    "scada_1min_clean.parquet": "4e830bc98b218e5faaec07bf8af5314c303b923e1a74cba84795fc6bc3570cbf",
+    "scada_1H_clean.parquet": "1e78ad5e039b97fd971668da4df21a42d7ae694ded9ba81884b01ebcd9205bdb"
   }
 }
