@@ -38,7 +38,7 @@ import yaml
 
 from solarpv.config.constants import TEST_START, TRAIN_END, VAL_END, VAL_START
 from solarpv.config.paths import CONFIGS_DIR, output_dir, stage_dir
-from solarpv.config.provenance import git_commit, sha256
+from solarpv.config.provenance import git_commit, sha256, text_sha256
 from solarpv.config.site import load_site
 from solarpv.data.clock import Orientation, clear_sky_components, poa_from_components
 from solarpv.data.preprocess import AC_COLUMNS, TARGET, hourly_mean
@@ -334,7 +334,7 @@ def clean(in_dir: Path | None = None, out_dir: Path | None = None,
     hourly_file = out_dir / "scada_1H_clean.parquet"
     after.to_parquet(minute_file)
     hourly.to_parquet(hourly_file)
-    log.to_csv(log_dir / "cleaning_log.csv", index=False)
+    log.to_csv(log_dir / "cleaning_log.csv", index=False, lineterminator="\n")
     shutil.copyfile(policy_file, log_dir / "cleaning_policy_applied.yaml")
 
     total = hourly[TARGET]
@@ -342,7 +342,7 @@ def clean(in_dir: Path | None = None, out_dir: Path | None = None,
         "stage": "05_clean",
         "git_commit": git_commit(),
         "input": {"file": in_file.name, "sha256": sha256(in_file)},
-        "policy": {"file": policy_file.name, "sha256": sha256(policy_file)},
+        "policy": {"file": policy_file.name, "sha256": text_sha256(policy_file)},
         "rows_1min": len(after),
         "rows_1H": len(hourly),
         "rule_minutes": {f"{r['rule']}:{r['column']}": r["minutes"]
@@ -354,8 +354,8 @@ def clean(in_dir: Path | None = None, out_dir: Path | None = None,
         "outputs": {p.name: sha256(p) for p in (minute_file, hourly_file)},
     }
     text = json.dumps(manifest, indent=2)
-    (out_dir / "cleaning_manifest.json").write_text(text, encoding="utf-8")
-    (log_dir / "cleaning_manifest.json").write_text(text, encoding="utf-8")
+    for path in (out_dir / "cleaning_manifest.json", log_dir / "cleaning_manifest.json"):
+        path.write_text(text, encoding="utf-8", newline="\n")
     print(log.to_string(index=False))
     print(json.dumps({k: manifest[k] for k in ("flag_minutes", "hours_by_split",
                                                "site_total_AC_kW")}, indent=2))

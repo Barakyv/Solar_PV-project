@@ -25,7 +25,7 @@ import pandas as pd
 
 from solarpv.config.constants import AC_CAPACITY_KW, HOURLY_MIN_COVERAGE, N_HOURS_EXPECTED
 from solarpv.config.paths import CONFIGS_DIR, stage_dir
-from solarpv.config.provenance import git_commit, sha256
+from solarpv.config.provenance import git_commit, sha256, text_sha256
 from solarpv.config.site import load_site
 from solarpv.data.clock import MIN_ELEV, apply_correction, clear_sky_components, load_offsets
 from solarpv.data.resolution import harmonise_sources, local_day
@@ -100,7 +100,7 @@ def preprocess(in_dir: Path | None = None, out_dir: Path | None = None,
         "stage": "04_preprocess",
         "git_commit": git_commit(),
         "input": {"file": str(raw_file.name), "sha256": sha256(raw_file)},
-        "clock_offsets": {"file": offsets_file.name, "sha256": sha256(offsets_file)},
+        "clock_offsets": {"file": offsets_file.name, "sha256": text_sha256(offsets_file)},
         "polled_source": None if era is None else {"first_day": str(era.first_day.date()),
                                                    "era_start": str(era.era_start.date())},
         "rows_1min": len(corrected),
@@ -119,7 +119,7 @@ def preprocess(in_dir: Path | None = None, out_dir: Path | None = None,
         "outputs": {p.name: sha256(p) for p in (minute_file, hourly_file)},
     }
     (out_dir / "preprocess_manifest.json").write_text(json.dumps(manifest, indent=2),
-                                                      encoding="utf-8")
+                                                      encoding="utf-8", newline="\n")
     print(json.dumps({k: manifest[k] for k in ("polled_source", "rows_1H", "hourly_nan_daytime",
                                                "site_total_AC_kW")}, indent=2))
     return hourly

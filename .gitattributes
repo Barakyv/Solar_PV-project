@@ -5,6 +5,9 @@
 *.yaml text eol=lf
 *.toml text eol=lf
 *.csv text eol=lf
+*.json text eol=lf
+*.sha256 text eol=lf
+*.txt text eol=lf
 *.ipynb text eol=lf
 *.docx binary
 *.xlsx binary

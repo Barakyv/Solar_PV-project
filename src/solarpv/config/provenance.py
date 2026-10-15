@@ -28,3 +28,9 @@ def sha256(path: Path, chunk: int = 1 << 20) -> str:
         while block := f.read(chunk):
             h.update(block)
     return h.hexdigest()
+
+
+def text_sha256(path: Path) -> str:
+    """Hash of a text file with CRLF read as LF, so a git checkout (eol=lf in .gitattributes)
+    does not change it."""
+    return hashlib.sha256(Path(path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()

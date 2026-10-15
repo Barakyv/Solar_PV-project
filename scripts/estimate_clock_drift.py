@@ -151,7 +151,7 @@ def main() -> int:
     if offsets.loc[offsets.index >= era.first_day, ["polled_meteo", "polled_inverter"]
                    ].isna().any().any():
         raise ValueError("polled-source offset undefined for some days")
-    offsets.round(3).to_csv(OFFSETS_FILE)
+    offsets.round(3).to_csv(OFFSETS_FILE, lineterminator="\n")
 
     # (a) anchors
     first = rt["day"].min()

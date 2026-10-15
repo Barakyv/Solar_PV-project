@@ -11,7 +11,7 @@ import pytest
 
 from solarpv.config import constants as C
 from solarpv.config.paths import CONFIGS_DIR, PROCESSED_DIR
-from solarpv.config.provenance import sha256
+from solarpv.config.provenance import sha256, text_sha256
 from solarpv.data.preprocess import AC_COLUMNS, COUNTED, TARGET, hourly_mean
 
 STAGE = PROCESSED_DIR / "04_preprocess"
@@ -70,7 +70,7 @@ def test_site_total_is_sum_of_inverters(minute):
 @needs_output
 def test_manifest_matches_inputs_and_outputs(manifest, hourly):
     assert manifest["rows_1H"] == len(hourly)
-    assert manifest["clock_offsets"]["sha256"] == sha256(CONFIGS_DIR / "clock_offsets.csv")
+    assert manifest["clock_offsets"]["sha256"] == text_sha256(CONFIGS_DIR / "clock_offsets.csv")
     assert manifest["outputs"]["scada_1H_utc.parquet"] == sha256(HOURLY)
 
 

@@ -14,7 +14,7 @@ import yaml
 
 from solarpv.config import constants as C
 from solarpv.config.paths import CONFIGS_DIR, OUTPUTS_DIR, PROCESSED_DIR
-from solarpv.config.provenance import sha256
+from solarpv.config.provenance import sha256, text_sha256
 from solarpv.data.preprocess import AC_COLUMNS, TARGET, hourly_mean
 from solarpv.features.leakage import is_leaky
 
@@ -270,9 +270,9 @@ def test_log_and_manifest_match_the_output(after, manifest):
 
 
 def test_manifest_hashes(manifest):
-    policy_sha = sha256(CONFIGS_DIR / "cleaning_policy.yaml")
+    policy_sha = text_sha256(CONFIGS_DIR / "cleaning_policy.yaml")
     assert manifest["policy"]["sha256"] == policy_sha
-    assert sha256(OUTPUTS_DIR / "05_cleaning" / "cleaning_policy_applied.yaml") == policy_sha
+    assert text_sha256(OUTPUTS_DIR / "05_cleaning" / "cleaning_policy_applied.yaml") == policy_sha
     assert manifest["input"]["sha256"] == sha256(BEFORE)
     assert manifest["outputs"]["scada_1H_clean.parquet"] == sha256(HOURLY)
     assert manifest["outputs"]["scada_1min_clean.parquet"] == sha256(MINUTE)
