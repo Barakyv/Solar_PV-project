@@ -1,6 +1,6 @@
 {
   "stage": "03_eda",
-  "git_commit": "bc6f7dd+dirty",
+  "git_commit": "cc4946b",
   "inputs_sha256": {
     "data/processed/05_clean/scada_1H_clean.parquet": "1e78ad5e039b97fd971668da4df21a42d7ae694ded9ba81884b01ebcd9205bdb",
     "data/processed/04_preprocess/scada_1H_utc.parquet": "323a515efab87aa80b2858c2a3aa55f9cf08260735412ef84fa37befac8813ce",

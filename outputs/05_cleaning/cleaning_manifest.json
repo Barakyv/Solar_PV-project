@@ -1,6 +1,6 @@
 {
   "stage": "05_clean",
-  "git_commit": "bc6f7dd+dirty",
+  "git_commit": "cc4946b",
   "input": {
     "file": "scada_1min_true_utc.parquet",
     "sha256": "9d6a9fd9531b7c45a4ebd1953ef1a28c281a73e3b56a60db90df4dd60440e270"
