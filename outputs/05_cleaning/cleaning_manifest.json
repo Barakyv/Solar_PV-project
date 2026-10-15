@@ -1,0 +1,84 @@
+{
+  "stage": "05_clean",
+  "git_commit": "ee4799a",
+  "input": {
+    "file": "scada_1min_true_utc.parquet",
+    "sha256": "9d6a9fd9531b7c45a4ebd1953ef1a28c281a73e3b56a60db90df4dd60440e270"
+  },
+  "policy": {
+    "file": "cleaning_policy.yaml",
+    "sha256": "bab5b6ae6ff24566b5a1ab9d3626d83cecc5108072099366cf822fea8effef38"
+  },
+  "rows_1min": 1971360,
+  "rows_1H": 32856,
+  "rule_minutes": {
+    "R1_range:ambient_temp": 2698,
+    "R3_frozen:ambient_temp": 7791,
+    "R2_offset:irradiance": 57738,
+    "R3_frozen:irradiance": 8891,
+    "R1_range:mod_temp1": 2139,
+    "R3_frozen:mod_temp1": 7905,
+    "R1_range:mod_temp2": 2093,
+    "R3_frozen:mod_temp2": 7878,
+    "R3_frozen:pyranometer": 8404,
+    "R1_range:s01_inv1_AC_kW": 6,
+    "R3_frozen:s01_inv1_AC_kW": 5652,
+    "R4_night_zero:s01_inv1_AC_kW": 4980,
+    "R1_range:s01_inv1_DC_kW": 16,
+    "R3_frozen:s01_inv1_DC_kW": 3103,
+    "R4_night_zero:s01_inv1_DC_kW": 123,
+    "R6_dc_dead:s01_inv1_DC_kW": 7056,
+    "R1_range:s01_inv2_AC_kW": 6,
+    "R3_frozen:s01_inv2_AC_kW": 5617,
+    "R4_night_zero:s01_inv2_AC_kW": 4475,
+    "R1_range:s01_inv2_DC_kW": 6,
+    "R3_frozen:s01_inv2_DC_kW": 3127,
+    "R4_night_zero:s01_inv2_DC_kW": 53,
+    "R6_dc_dead:s01_inv2_DC_kW": 46,
+    "R3_frozen:site_ambient_temp": 7563,
+    "R1_range:wind_speed": 61
+  },
+  "flag_minutes": {
+    "downtime_inv1_flag": 4155,
+    "downtime_inv2_flag": 4377,
+    "curtail_flag": 11960,
+    "op_limited_flag": 17946
+  },
+  "hours_by_split": {
+    "train": {
+      "daytime_hours": 9698,
+      "op_limited_hours": 193,
+      "hours_with_downtime": 110,
+      "hours_with_curtailment": 88,
+      "target_nan_hours": 42,
+      "polled_hours": 0,
+      "mixed_hours": 0
+    },
+    "val": {
+      "daytime_hours": 2902,
+      "op_limited_hours": 106,
+      "hours_with_downtime": 18,
+      "hours_with_curtailment": 90,
+      "target_nan_hours": 1,
+      "polled_hours": 0,
+      "mixed_hours": 0
+    },
+    "test": {
+      "daytime_hours": 2580,
+      "op_limited_hours": 106,
+      "hours_with_downtime": 37,
+      "hours_with_curtailment": 73,
+      "target_nan_hours": 5,
+      "polled_hours": 1001,
+      "mixed_hours": 70
+    }
+  },
+  "site_total_AC_kW": {
+    "max_hourly": 2948.4,
+    "p99_99_hourly": 2894.6
+  },
+  "outputs": {
+    "scada_1min_clean.parquet": "65f39ad3d48c8cb55f208ae4556bf9855f6b141beea342c841537e18d545e5b3",
+    "scada_1H_clean.parquet": "afab8dabf80507dffa6d4818dfd88bd133fc3e4c454d61f853ca551b9e2ac055"
+  }
+}

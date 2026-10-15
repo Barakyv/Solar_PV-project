@@ -1,0 +1,89 @@
+# Stage-5 cleaning policy (PROJECT_MASTER.md §7 stage 5, decisions D-21 and D-22).
+# Applied by solarpv.data.clean to the clock-corrected minute data of stage 4.
+# Evidence for every threshold: 00_data_audit/cleaning_2026-10-15/explore_cleaning.py
+# (thresholds come from physics and from the train period; nothing is tuned on val or test).
+#
+# Two kinds of rules:
+#   value rules (R1-R6): a measurement is wrong -> it is replaced (NaN or 0); the first rule
+#                        that applies to a minute is recorded in rule_<column>.
+#   flag rules  (F1-F2): a real plant event -> values are never changed, only flagged (D-22).
+version: 1
+
+sun:
+  # apparent solar elevation at the middle of each minute, true UTC (stage 4)
+  daytime_min_elevation: 10.0
+
+# R1: physically impossible values, sensor fault codes and transmission spikes -> NaN.
+# Temperatures: fault code -270 and its blends (-256, -218, ...); site minimum is ~1 degC.
+# Power: normal per-inverter maximum ~1,535 kW (AC) / ~1,710 kW (DC); limit = 1.1 x 1,724.5 kW
+# rating; spikes are 8,302 .. 40,825 kW and one 32,766 sentinel.
+range:
+  ambient_temp: [-20.0, 60.0]
+  site_ambient_temp: [-20.0, 60.0]
+  mod_temp1: [-20.0, 90.0]
+  mod_temp2: [-20.0, 90.0]
+  irradiance: [-20.0, 1600.0]
+  pyranometer: [-20.0, 1600.0]
+  wind_speed: [0.0, 60.0]
+  s01_inv1_AC_kW: [-20.0, 1897.0]
+  s01_inv2_AC_kW: [-20.0, 1897.0]
+  s01_inv1_DC_kW: [-20.0, 1897.0]
+  s01_inv2_DC_kW: [-20.0, 1897.0]
+# Neighbours of a bad value are contaminated: a 1-min average can blend it in (minute source),
+# and the stage-4 reconstruction interpolates towards it for up to one poll period (polled).
+range_margin_minutes:
+  minute: 1
+  polled: 15
+
+# R2: small negative irradiance is the sensor's night offset (min -7.8 W/m2) -> 0.
+negative_to_zero: [irradiance, pyranometer]
+
+# R3: frozen values (communication freezes repeat the last value for hours) -> NaN.
+# A run of identical values at least this long that reaches daytime. Power runs of exactly 0
+# are inverter stops (flag F1), not a frozen sensor. Ambient temperature has 0.1 degC steps,
+# so it needs a longer run.
+frozen_min_minutes:
+  irradiance: 30
+  pyranometer: 30
+  s01_inv1_AC_kW: 30
+  s01_inv2_AC_kW: 30
+  s01_inv1_DC_kW: 30
+  s01_inv2_DC_kW: 30
+  mod_temp1: 30
+  mod_temp2: 30
+  ambient_temp: 60
+  site_ambient_temp: 60
+frozen_ignore_zero: [s01_inv1_AC_kW, s01_inv2_AC_kW, s01_inv1_DC_kW, s01_inv2_DC_kW]
+
+# R6: dead DC sensor. DC = 0 while the same inverter delivers AC is impossible (AC <= DC).
+# 7,038 minutes on inverter 1 in March 2023 (explore_cleaning.py, follow-up check).
+dc_dead:
+  pairs: {s01_inv1_DC_kW: s01_inv1_AC_kW, s01_inv2_DC_kW: s01_inv2_AC_kW}
+  min_ac_kw: 100.0
+
+# R4/R5: night rule on true geometry (fixes F-01b). Twilight production between -3 and 0 deg
+# is real (up to ~29 kW) and is kept.
+night:
+  columns: [s01_inv1_AC_kW, s01_inv2_AC_kW, s01_inv1_DC_kW, s01_inv2_DC_kW]
+  max_elevation: 0.0          # R4: below this, |power| <= noise_kw -> 0
+  noise_kw: 5.0
+  stale_below_elevation: -6.0  # R5: below this, power > noise_kw is a frozen value -> NaN
+
+# F1: inverter stop. The sun is up and the in-plane irradiance is high, but the inverter gives
+# (almost) nothing. If the irradiance is missing, the clear-sky POA stands in for it.
+downtime:
+  min_elevation: 5.0
+  min_irradiance: 150.0
+  fallback_min_poa_clearsky: 300.0
+  max_ac_kw: 20.0
+
+# F2: grid curtailment by the park setpoint (percent). iec_mode is not used: production under
+# modes 0 and 1 matches mode 2 (explore_cleaning.py section 6), so it does not limit output.
+curtailment:
+  setpoint_column: iec_sp_w
+  below: 100.0
+  min_elevation: 5.0
+
+hourly:
+  # an hour is op-limited (D-22) if at least this share of its minutes is flagged F1 or F2
+  op_limited_min_share: 0.05

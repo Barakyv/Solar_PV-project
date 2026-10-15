@@ -1,0 +1,9 @@
+caught      value changed without a rule
+caught      daytime production zeroed, labelled as night rule
+caught      T-16 on the same fault
+caught      spike left in place (reconciliation)
+caught      spike left in place (ranges)
+caught      frozen run partly kept
+caught      flag changed a value
+caught      curtailment minute not flagged
+caught      manifest count off by one
