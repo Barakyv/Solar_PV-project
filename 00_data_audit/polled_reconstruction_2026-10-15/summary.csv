@@ -1,0 +1,13 @@
+days,method,n_hours,rmse_kW,rmse_pct_capacity,bias_kW,p95_abs_kW
+all,M0 hold,2194,88.9,2.58,-1.9,168.7
+all,M1 linear,2194,55.8,1.62,-1.0,111.8
+all,M2 kc-linear,2194,55.8,1.62,-0.6,110.9
+all,M3 fused,2194,107.7,3.12,-15.3,203.9
+clear or steady,M0 hold,1658,71.0,2.06,-0.9,109.7
+clear or steady,M1 linear,1658,29.2,0.85,-0.3,54.1
+clear or steady,M2 kc-linear,1658,29.3,0.85,0.1,54.0
+clear or steady,M3 fused,1658,103.9,3.01,-11.7,151.8
+variable,M0 hold,536,129.3,3.75,-4.9,263.0
+variable,M1 linear,536,100.5,2.91,-3.3,206.9
+variable,M2 kc-linear,536,100.4,2.91,-2.8,207.5
+variable,M3 fused,536,118.8,3.44,-26.7,241.9
