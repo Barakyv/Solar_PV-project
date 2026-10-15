@@ -84,6 +84,8 @@ EXCL_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
         r"_efficiency$",
         r"_flag(_auto)?$",  # cleaning / QA flags are computed from same-timestamp data
         r"^has_",
+        r"^(n|src|rule|frac)_",  # stage-4/5 quality columns: counts, source, rule codes, shares
+        r"^hour_source$",  # data source of the hour (D-21): for evaluation only
     )
 )
 

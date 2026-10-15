@@ -40,3 +40,4 @@ Verified by perturbation tests: changing any value after T0 must not change any 
 - 2025-10: Phase-1/2 leakage (`theoretical_power`, target duplicates) identified.
 - 2026-04-08: NWP archive leakage identified.
 - 2026-10-13: rebuild audit — time-zone bug (F-01), rolling leakage at D+2/D+3 (F-07).
+- 2026-10-15: stage-5 quality columns blocked as model inputs: `n_*`, `src_*`, `rule_*`, `frac_*`, `*_flag`, `hour_source` (T-01; the original used quality flags such as `has_statistical_outlier` as features).
