@@ -8,7 +8,7 @@ change must be explained by exactly one rule (contract). IDs continue PROJECT_MA
 
 1. **Every changed value is explained.** For each cleaned column, a minute differs from stage 4
    if and only if `rule_<column>` is non-zero, and the new value is what that rule prescribes
-   (NaN for R1/R3/R5/R6, 0 for R2/R4).
+   (NaN for R1/R3/R5/R6/R7, 0 for R2/R4).
 2. **Every rule hit is justified.** A minute carries rule *r* only if the stage-4 value meets
    the condition of *r*, with the thresholds of the policy file.
 3. **Flags never change values** (D-22): F1 (inverter stop) and F2 (curtailment) only mark.
@@ -25,11 +25,12 @@ change must be explained by exactly one rule (contract). IDs continue PROJECT_MA
 | T-22a | unit | R1 range: fault code, spike, sentinel | outside range → NaN; at the limit kept; only the bad minute and its margin change |
 | T-22b | unit | R1 margin by source | ±1 min on the minute source, ±15 min on the polled source |
 | T-22c | unit | R2 offset | −7.8 → 0; −25 → NaN (R1, not R2); positive values untouched |
-| T-22d | unit | R3 frozen | 30 identical non-zero daytime minutes → NaN; 29 kept; a frozen run only at night kept; a run of exact zeros (inverter stop) kept; ambient needs 60 |
+| T-22d | unit | R3 frozen | 30 identical non-zero daytime minutes → NaN; 29 kept; a frozen run only at night kept; a run of exact zeros (inverter stop) kept; ambient needs 60; margin ±1 min (minute source) / ±15 min (polled) covers the blend minute when data resume (added 2026-10-15 after stage 3 found a 247 kW blend minute at sunrise) |
 | T-22e | unit | R4 night | sun < 0 and \|AC\| ≤ 5 → 0; twilight 20 kW at −2° kept; daytime small value kept (T-16) |
 | T-22f | unit | R5 stale night value | 1,296 kW at −30° → NaN |
 | T-22g | unit | F1 downtime | sun up, irradiance 800, AC 0 → flagged, value unchanged; irradiance missing → clear-sky fallback; AC missing → not flagged |
 | T-22h | unit | F2 curtailment | setpoint 50 in daytime → flagged; setpoint 100 → not; at night → not |
+| T-22l | unit | R7 scale fault (added 2026-10-15, F-19) | pyranometer at ×0.75 of the irradiance for a local day → the whole day NaN; a normal day kept; the reference sensor untouched |
 | T-22k | unit | R6 dead DC sensor | DC = 0 with AC 800 → NaN; DC = 0 with AC 50 kept; the AC column itself unchanged |
 | T-22i | unit | rule precedence and idempotence | each minute gets the first applicable rule; cleaning twice = cleaning once |
 | T-22j | unit | hourly flags | share of flagged minutes per hour; op-limited from 5 % (3 of 60 minutes) |

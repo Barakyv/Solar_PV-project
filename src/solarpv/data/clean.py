@@ -8,11 +8,14 @@ docs/stage5_test_plan.md. Works on the clock-corrected minute data of stage 4.
 Value rules replace a wrong measurement; the rule that did it is kept in rule_<column>:
   R1 range        outside the physical range, plus a margin of neighbours      -> NaN
   R2 offset       small negative irradiance (sensor offset at night)          -> 0
-  R3 frozen       long run of one repeated value that reaches daytime         -> NaN
+  R3 frozen       long run of one repeated value that reaches daytime, plus a  -> NaN
+                  margin of neighbours (blended or interpolated from it)
   R4 night zero   |power| <= noise with the sun below the horizon             -> 0
   R5 night stale  power > noise with the sun far below the horizon            -> NaN
   R6 dead DC      DC = 0 while the same inverter delivers AC                  -> NaN
-Precedence when several apply to one minute: R1, R3, R6, R5, R2, R4.
+  R7 scale fault  a redundant sensor off its reference by a constant factor   -> NaN for
+                  over a local day (the pyranometer read x0.75 for months)       that day
+Precedence when several apply to one minute: R1, R3, R6, R7, R5, R2, R4.
 Flag rules never change a value (decision D-22):
   F1 downtime     sun up and high in-plane irradiance, inverter gives ~nothing
   F2 curtailment  park setpoint below 100 %
@@ -36,7 +39,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from solarpv.config.constants import TEST_START, TRAIN_END, VAL_END, VAL_START
+from solarpv.config.constants import TEST_START, TIMEZONE_LOCAL, TRAIN_END, VAL_END, VAL_START
 from solarpv.config.paths import CONFIGS_DIR, output_dir, stage_dir
 from solarpv.config.provenance import git_commit, sha256, text_sha256
 from solarpv.config.site import load_site
@@ -46,10 +49,10 @@ from solarpv.evaluation.daytime import daytime_mask
 
 POLICY_FILE = CONFIGS_DIR / "cleaning_policy.yaml"
 RULES = {1: "R1_range", 2: "R2_offset", 3: "R3_frozen", 4: "R4_night_zero",
-         5: "R5_night_stale", 6: "R6_dc_dead"}
-NAN_RULES = (1, 3, 5, 6)
+         5: "R5_night_stale", 6: "R6_dc_dead", 7: "R7_scale_fault"}
+NAN_RULES = (1, 3, 5, 6, 7)
 ZERO_RULES = (2, 4)
-PRECEDENCE = (1, 3, 6, 5, 2, 4)
+PRECEDENCE = (1, 3, 6, 7, 5, 2, 4)
 SOURCE_POLLED = 1
 DOWNTIME_FLAGS = {"s01_inv1_AC_kW": "downtime_inv1_flag", "s01_inv2_AC_kW": "downtime_inv2_flag"}
 CURTAIL_FLAG = "curtail_flag"
@@ -66,8 +69,14 @@ def load_policy(path: Path = POLICY_FILE) -> dict:
 def cleaned_columns(policy: dict) -> list[str]:
     cols = (set(policy["range"]) | set(policy["negative_to_zero"])
             | set(policy["frozen_min_minutes"]) | set(policy["night"]["columns"])
-            | set(policy["dc_dead"]["pairs"]))
+            | set(policy["dc_dead"]["pairs"]) | set(policy["scale_fault"]["pairs"]))
     return sorted(cols)
+
+
+def local_day_number(index: pd.DatetimeIndex) -> np.ndarray:
+    """Days since 1970-01-01 of each minute's local calendar date."""
+    local = index.tz_convert(TIMEZONE_LOCAL).tz_localize(None).normalize()
+    return ((local - pd.Timestamp("1970-01-01")) // pd.Timedelta(days=1)).to_numpy()
 
 
 def source_reference(column: str) -> str:
@@ -95,9 +104,7 @@ def rule_range(v: np.ndarray, lo: float, hi: float, source: np.ndarray,
     """R1: outside [lo, hi], plus neighbours within the margin of the minute's source."""
     finite = np.isfinite(v)
     bad = finite & ((v < lo) | (v > hi))
-    near = np.where(source == SOURCE_POLLED, _dilate(bad, margins["polled"]),
-                    _dilate(bad, margins["minute"]))
-    return finite & near
+    return finite & _near(bad, source, margins)
 
 
 def rule_offset(v: np.ndarray, lo: float) -> np.ndarray:
@@ -113,15 +120,25 @@ def run_lengths(v: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return rid, np.bincount(rid)[rid]
 
 
-def rule_frozen(v: np.ndarray, min_minutes: int, daytime: np.ndarray,
-                ignore_zero: bool) -> np.ndarray:
-    """R3: runs of one value lasting at least min_minutes that reach daytime."""
+def _near(core: np.ndarray, source: np.ndarray, margins: dict) -> np.ndarray:
+    """`core` widened by the margin of each minute's source (minute / polled)."""
+    return np.where(source == SOURCE_POLLED, _dilate(core, margins["polled"]),
+                    _dilate(core, margins["minute"]))
+
+
+def rule_frozen(v: np.ndarray, min_minutes: int, daytime: np.ndarray, ignore_zero: bool,
+                source: np.ndarray | None = None, margins: dict | None = None) -> np.ndarray:
+    """R3: runs of one value lasting at least min_minutes that reach daytime, plus the
+    neighbours within the margin of the minute's source."""
     rid, length = run_lengths(v)
     reaches_day = np.bincount(rid, weights=daytime.astype(float)) > 0
-    hit = np.isfinite(v) & (length >= min_minutes) & reaches_day[rid]
+    core = np.isfinite(v) & (length >= min_minutes) & reaches_day[rid]
     if ignore_zero:
-        hit &= v != 0
-    return hit
+        core &= v != 0
+    if margins is None:
+        return core
+    src = np.zeros(len(v), dtype=np.int8) if source is None else source
+    return np.isfinite(v) & _near(core, src, margins)
 
 
 def rule_night_zero(v: np.ndarray, elev: np.ndarray, max_elev: float, noise: float) -> np.ndarray:
@@ -139,10 +156,24 @@ def rule_dc_dead(dc: np.ndarray, ac: np.ndarray, min_ac: float) -> np.ndarray:
     return np.isfinite(dc) & (dc == 0) & np.isfinite(ac) & (ac > min_ac)
 
 
+def rule_scale_fault(v: np.ndarray, ref: np.ndarray, elev: np.ndarray, day: np.ndarray,
+                     p: dict) -> np.ndarray:
+    """R7: local days on which the median ratio v / ref (sun high, reference bright) lies
+    outside p["ratio_range"]; the whole day of v is marked."""
+    ok = (np.isfinite(v) & np.isfinite(ref) & (elev > p["min_elevation"])
+          & (ref > p["min_reference"]))
+    ratio = pd.Series(v[ok] / ref[ok]).groupby(day[ok]).median()
+    lo, hi = p["ratio_range"]
+    bad_days = ratio.index[(ratio < lo) | (ratio > hi)]
+    return np.isfinite(v) & np.isin(day, bad_days)
+
+
 def rule_masks(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
-               policy: dict, ac: np.ndarray | None = None) -> dict[int, np.ndarray]:
+               policy: dict, ac: np.ndarray | None = None, ref: np.ndarray | None = None,
+               day: np.ndarray | None = None) -> dict[int, np.ndarray]:
     """All value-rule masks for one column, before precedence. `ac`: the stage-4 AC of the
-    same inverter, for the DC columns (R6)."""
+    same inverter, for the DC columns (R6). `ref` and `day` (local-day number per minute): the
+    cleaned reference sensor, for R7."""
     none = np.zeros(len(v), dtype=bool)
     daytime = elev > policy["sun"]["daytime_min_elevation"]
     night = policy["night"]
@@ -154,20 +185,23 @@ def rule_masks(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
             masks[2] = rule_offset(v, lo)
     if column in policy["frozen_min_minutes"]:
         masks[3] = rule_frozen(v, policy["frozen_min_minutes"][column], daytime,
-                               column in policy["frozen_ignore_zero"])
+                               column in policy["frozen_ignore_zero"], source,
+                               policy["frozen_margin_minutes"])
     if column in night["columns"]:
         masks[4] = rule_night_zero(v, elev, night["max_elevation"], night["noise_kw"])
         masks[5] = rule_night_stale(v, elev, night["stale_below_elevation"], night["noise_kw"])
     if column in policy["dc_dead"]["pairs"] and ac is not None:
         masks[6] = rule_dc_dead(v, ac, policy["dc_dead"]["min_ac_kw"])
+    if column in policy["scale_fault"]["pairs"] and ref is not None and day is not None:
+        masks[7] = rule_scale_fault(v, ref, elev, day, policy["scale_fault"])
     return masks
 
 
 def apply_value_rules(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
-                      policy: dict, ac: np.ndarray | None = None
-                      ) -> tuple[np.ndarray, np.ndarray]:
+                      policy: dict, ac: np.ndarray | None = None, ref: np.ndarray | None = None,
+                      day: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     """(cleaned values, rule code per minute, 0 = unchanged)."""
-    masks = rule_masks(column, v, elev, source, policy, ac)
+    masks = rule_masks(column, v, elev, source, policy, ac, ref, day)
     code = np.zeros(len(v), dtype=np.int8)
     for r in PRECEDENCE:
         code[masks[r] & (code == 0)] = r
@@ -203,15 +237,20 @@ def clean_minutes(df: pd.DataFrame, elev: np.ndarray, poa_cs: np.ndarray, policy
     """All stage-4 columns (cleaned where a rule exists), rule_<column> codes, minute flags,
     and site_total recomputed from the cleaned inverters."""
     out = df.copy()
-    for col in cleaned_columns(policy):
+    day = local_day_number(df.index)
+    references = set(policy["scale_fault"]["pairs"].values())
+    columns = sorted(cleaned_columns(policy), key=lambda c: c not in references)
+    for col in columns:  # reference sensors first: R7 compares against their cleaned values
         if col not in df:
             continue
-        ref = source_reference(col)
-        source = df[ref].to_numpy() if ref in df else np.zeros(len(df), dtype=np.int8)
+        src_col = source_reference(col)
+        source = df[src_col].to_numpy() if src_col in df else np.zeros(len(df), dtype=np.int8)
         pair = policy["dc_dead"]["pairs"].get(col)
         ac = df[pair].to_numpy(dtype=float) if pair in df else None
+        ref_col = policy["scale_fault"]["pairs"].get(col)
+        ref = out[ref_col].to_numpy(dtype=float) if ref_col in out else None
         values, code = apply_value_rules(col, df[col].to_numpy(dtype=float), elev, source, policy,
-                                         ac)
+                                         ac, ref, day)
         out[col] = values
         out[f"rule_{col}"] = code
     out[TARGET] = out[list(AC_COLUMNS)].sum(axis=1, min_count=len(AC_COLUMNS))

@@ -23,8 +23,8 @@ MINUTE = STAGE / "scada_1min_clean.parquet"
 HOURLY = STAGE / "scada_1H_clean.parquet"
 BEFORE = PROCESSED_DIR / "04_preprocess" / "scada_1min_true_utc.parquet"
 POLICY = yaml.safe_load((CONFIGS_DIR / "cleaning_policy.yaml").read_text(encoding="utf-8"))
-NAN_RULES, ZERO_RULES = {1, 3, 5, 6}, {2, 4}
-PRECEDENCE = [1, 3, 6, 5, 2, 4]
+NAN_RULES, ZERO_RULES = {1, 3, 5, 6, 7}, {2, 4}
+PRECEDENCE = [1, 3, 6, 7, 5, 2, 4]
 
 needs_output = pytest.mark.skipif(not HOURLY.exists(), reason="stage 5 output not present")
 pytestmark = needs_output
@@ -33,7 +33,7 @@ pytestmark = needs_output
 def cleaned_columns():
     return sorted(set(POLICY["range"]) | set(POLICY["negative_to_zero"])
                   | set(POLICY["frozen_min_minutes"]) | set(POLICY["night"]["columns"])
-                  | set(POLICY["dc_dead"]["pairs"]))
+                  | set(POLICY["dc_dead"]["pairs"]) | set(POLICY["scale_fault"]["pairs"]))
 
 
 @pytest.fixture(scope="module")
@@ -80,8 +80,21 @@ def _runs(values: pd.Series, daytime: np.ndarray):
     return g.transform("size").to_numpy(), g.transform("max").to_numpy()
 
 
-def _conditions(col, before, sun):
-    """Minutes where each rule's condition holds on the stage-4 values (independent code)."""
+def _distance_to(mask: np.ndarray) -> np.ndarray:
+    """Distance in minutes of every minute to the nearest True of `mask` (inf if none)."""
+    hits = np.flatnonzero(mask)
+    pos = np.arange(len(mask))
+    if len(hits) == 0:
+        return np.full(len(mask), np.inf)
+    k = np.searchsorted(hits, pos)
+    right = hits[np.minimum(k, len(hits) - 1)]
+    left = hits[np.maximum(k - 1, 0)]
+    return np.minimum(np.abs(pos - right), np.abs(pos - left)).astype(float)
+
+
+def _conditions(col, before, sun, after=None):
+    """Minutes where each rule's condition holds on the stage-4 values (independent code).
+    R7 compares against the cleaned reference sensor, taken from `after`."""
     elev, _ = sun
     v = before[col]
     a = v.to_numpy(dtype=float)
@@ -92,23 +105,17 @@ def _conditions(col, before, sun):
         bad_pos = np.flatnonzero(finite & ((a < lo) | (a > hi)))
         margin = np.where(_source_of(col, before) == 1, POLICY["range_margin_minutes"]["polled"],
                           POLICY["range_margin_minutes"]["minute"])
-        if len(bad_pos):  # distance of every minute to the nearest out-of-range minute
-            pos = np.arange(len(a))
-            k = np.searchsorted(bad_pos, pos)
-            right = bad_pos[np.minimum(k, len(bad_pos) - 1)]
-            left = bad_pos[np.maximum(k - 1, 0)]
-            dist = np.minimum(np.abs(pos - right), np.abs(pos - left))
-            cond[1] = finite & (dist <= margin)
-        else:
-            cond[1] = np.zeros(len(a), dtype=bool)
+        cond[1] = finite & (_distance_to(np.isin(np.arange(len(a)), bad_pos)) <= margin)
         if col in POLICY["negative_to_zero"]:
             cond[2] = finite & (a < 0) & (a >= lo)
     if col in POLICY["frozen_min_minutes"]:
         length, reaches = _runs(v, elev > POLICY["sun"]["daytime_min_elevation"])
-        c = finite & (length >= POLICY["frozen_min_minutes"][col]) & reaches
+        core = finite & (length >= POLICY["frozen_min_minutes"][col]) & reaches
         if col in POLICY["frozen_ignore_zero"]:
-            c &= a != 0
-        cond[3] = c
+            core &= a != 0
+        fm = POLICY["frozen_margin_minutes"]
+        margin = np.where(_source_of(col, before) == 1, fm["polled"], fm["minute"])
+        cond[3] = finite & (_distance_to(core) <= margin)
     if col in POLICY["night"]["columns"]:
         n = POLICY["night"]
         cond[4] = finite & (elev < n["max_elevation"]) & (np.abs(a) <= n["noise_kw"]) & (a != 0)
@@ -116,6 +123,14 @@ def _conditions(col, before, sun):
     if col in POLICY["dc_dead"]["pairs"]:
         ac = before[POLICY["dc_dead"]["pairs"][col]].to_numpy(dtype=float)
         cond[6] = finite & (a == 0) & (ac > POLICY["dc_dead"]["min_ac_kw"])
+    if col in POLICY["scale_fault"]["pairs"] and after is not None:
+        p = POLICY["scale_fault"]
+        ref = after[p["pairs"][col]]
+        day = pd.Series(v.index.tz_convert(C.TIMEZONE_LOCAL).date, index=v.index)
+        use = v.notna() & ref.notna() & (elev > p["min_elevation"]) & (ref > p["min_reference"])
+        ratio = (v[use] / ref[use]).groupby(day[use]).median()
+        bad = ratio.index[(ratio < p["ratio_range"][0]) | (ratio > p["ratio_range"][1])]
+        cond[7] = finite & day.isin(set(bad)).to_numpy()
     return cond
 
 
@@ -131,7 +146,7 @@ def test_every_change_is_explained_and_every_rule_hit_is_justified(col, before, 
     assert np.array_equal(changed, code != 0), "change without a rule, or a rule without change"
     assert np.isnan(b[np.isin(code, list(NAN_RULES))]).all()
     assert (b[np.isin(code, list(ZERO_RULES))] == 0).all()
-    cond = _conditions(col, before, sun)
+    cond = _conditions(col, before, sun, after)
     for r in np.unique(code[code != 0]):
         hit = code == r
         assert cond[r][hit].all(), f"rule {r}: {int((hit & ~cond[r]).sum())} unjustified minutes"
@@ -257,7 +272,7 @@ def test_energy_unchanged_on_fault_free_days(before, after, sun):
 def test_log_and_manifest_match_the_output(after, manifest):
     log = pd.read_csv(OUTPUTS_DIR / "05_cleaning" / "cleaning_log.csv")
     names = {1: "R1_range", 2: "R2_offset", 3: "R3_frozen", 4: "R4_night_zero",
-             5: "R5_night_stale", 6: "R6_dc_dead"}
+             5: "R5_night_stale", 6: "R6_dc_dead", 7: "R7_scale_fault"}
     recomputed = {}
     for col in cleaned_columns():
         counts = after[f"rule_{col}"].value_counts()

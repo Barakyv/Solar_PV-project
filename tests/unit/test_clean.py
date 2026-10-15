@@ -82,9 +82,18 @@ def _with_run(n_run, value, base_len=100, start=30, base=500.0, step=0.37):
 
 def test_frozen_daytime_run_of_30_is_nan_29_is_kept():
     out, code = rules("s01_inv1_AC_kW", _with_run(30, 1296.05))
-    assert np.isnan(out[30:60]).all() and (code[30:60] == 3).all() and (code[:30] == 0).all()
+    assert np.isnan(out[30:60]).all() and (code[29:61] == 3).all() and (code[:29] == 0).all()
     _, code = rules("s01_inv1_AC_kW", _with_run(29, 1296.05))
     assert (code == 0).all()
+
+
+def test_frozen_margin_covers_the_blend_minute_after_the_run():
+    v = _with_run(30, 1296.05)
+    v[60] = 247.4  # communication resumes: stale value blended with the real one
+    _, code = rules("s01_inv1_AC_kW", v)
+    assert (code[29:61] == 3).all() and code[28] == 0 and code[61] == 0
+    _, code = rules("s01_inv1_AC_kW", _with_run(30, 1296.05), source=1)
+    assert (code[15:75] == 3).all() and code[14] == 0 and code[75] == 0
 
 
 def test_zero_run_is_an_inverter_stop_not_a_frozen_sensor():
@@ -101,7 +110,7 @@ def test_ambient_temperature_needs_60_minutes():
     _, code = rules("ambient_temp", _with_run(59, 31.25, base=30.0, step=0.01))
     assert (code == 0).all()
     _, code = rules("ambient_temp", _with_run(60, 31.25, base=30.0, step=0.01))
-    assert (code[30:90] == 3).all()
+    assert (code[29:91] == 3).all()
 
 
 # T-22e/f night --------------------------------------------------------------
@@ -159,7 +168,7 @@ def test_curtailment_is_flagged_by_setpoint_in_daytime_only():
 def test_first_rule_wins():
     v = _with_run(60, -270.0, base=25.0, step=0.01)  # a fault that is also frozen in daytime
     _, code = rules("mod_temp1", v)
-    assert (code[30:90] == 1).all()
+    assert (code[29:91] == 1).all()
 
 
 def test_cleaning_twice_equals_cleaning_once():
@@ -191,6 +200,25 @@ def test_op_limited_hour_needs_5_percent_of_minutes():
     assert hourly["frac_curtail_flag"].round(4).tolist() == [0.05, 0.0333, 0.0]
     assert hourly[OP_FLAG].tolist() == [True, False, False]
     assert hourly["hour_source"].tolist() == ["minute", "minute", "mixed"]
+
+
+# T-22l scale fault of a redundant sensor --------------------------------------
+
+def test_pyranometer_scale_fault_removes_the_whole_local_day():
+    idx = pd.date_range("2023-06-01 21:00", periods=2 * 1440, freq="min", tz="UTC")  # 2 days
+    hour = idx.tz_convert("Asia/Jerusalem").hour
+    sunny = (hour >= 9) & (hour < 15)
+    irr = np.where(sunny, 800.0, 0.0) + np.arange(len(idx)) * 1e-4
+    pyr = irr.copy()
+    first_day = np.arange(len(idx)) < 1440
+    pyr[first_day] *= 0.75  # day 1: calibration-constant fault
+    df = _frame(len(idx), irradiance=irr, pyranometer=pyr).set_axis(idx)
+    elev = np.where(sunny, 50.0, -20.0)
+    out = clean_minutes(df, elev, np.full(len(idx), 900.0), POLICY)
+    assert out["pyranometer"][first_day].isna().all()
+    assert (out["rule_pyranometer"][first_day] == 7).all()
+    np.testing.assert_array_equal(out["pyranometer"][~first_day], pyr[~first_day])
+    np.testing.assert_array_equal(out["irradiance"], irr)  # the reference is untouched
 
 
 # T-22k dead DC sensor ---------------------------------------------------------

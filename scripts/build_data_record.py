@@ -28,6 +28,11 @@ SOURCES = {
     "cleaning_log": OUTPUTS_DIR / "05_cleaning" / "cleaning_log.csv",
     "fixture_benchmark": OUTPUTS_DIR / "07_evaluation_fixture" / "benchmark_summary.csv",
     "old_benchmark": EVIDENCE_DIR / "01_benchmark" / "benchmark_summary.csv",
+    "eda_splits": OUTPUTS_DIR / "03_eda" / "tables" / "table_splits.csv",
+    "eda_time_bug": OUTPUTS_DIR / "03_eda" / "tables" / "table_time_bug.csv",
+    "eda_physics": OUTPUTS_DIR / "03_eda" / "tables" / "table_physics.csv",
+    "eda_sensors": OUTPUTS_DIR / "03_eda" / "tables" / "table_sensors.csv",
+    "eda_manifest": OUTPUTS_DIR / "03_eda" / "eda_manifest.json",
 }
 
 
@@ -164,6 +169,35 @@ def build() -> str:
     old = old[old["model"] == "lstm_sota"][["target", "horizon", "nRMSE_pct", "R2"]]
     both = new.merge(old, on=["target", "horizon"], suffixes=("_rebuilt", "_reported"))
     parts += [table(both.round(4)), ""]
+    sensors = load("eda_sensors")
+    eda = load("eda_manifest")
+    parts += [
+        "## N9. Exploratory analysis (stage 3)",
+        "",
+        f"Produced at commit {eda['git_commit']}.",
+        "",
+        "Splits (UTC; daytime = sun > 5 deg at mid-hour):",
+        "",
+        table(load("eda_splits")),
+        "",
+        "Time-zone bug, clear-day production centre minus solar noon [min]:",
+        "",
+        table(load("eda_time_bug")),
+        "",
+        "Physics (train):",
+        "",
+        table(load("eda_physics")),
+        "",
+        kv({"months with pyranometer / irradiance < 0.8 before cleaning (F-19)":
+            int((sensors["pyranometer_over_irradiance_median"] < 0.8).sum()),
+            "range of irradiance / clear-sky POA, monthly 90th percentile":
+            f"{sensors['irradiance_over_clearsky_p90'].min()} .. "
+            f"{sensors['irradiance_over_clearsky_p90'].max()}",
+            "range of pyranometer / irradiance after R7, monthly median":
+            f"{sensors['pyranometer_over_irradiance_after_cleaning'].min()} .. "
+            f"{sensors['pyranometer_over_irradiance_after_cleaning'].max()}"}),
+        "",
+    ]
     return "\n".join(parts)
 
 

@@ -24,7 +24,7 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-19 | Polled data rebuilt without the hold lag; source and era detection (F-18) | `unit/test_resolution.py` | ✅ stage 4 |
 | T-20 | Clock correction: known shifts per group and source, exact step days, no smoothing across steps (D-19) | `unit/test_clock.py` | ✅ stage 4 |
 | T-21 | Hourly rule: left label, 45/60 coverage; stage-4 output contract | `unit/test_preprocess.py`, `contracts/test_preprocess_output.py` | ✅ stage 4 |
-| T-22 | Cleaning rules R1–R6, flags F1–F2, precedence, idempotence, hourly flags (synthetic) | `unit/test_clean.py` | ✅ stage 5 |
+| T-22 | Cleaning rules R1–R7, flags F1–F2, precedence, idempotence, hourly flags (synthetic) | `unit/test_clean.py` | ✅ stage 5 |
 | T-23 | Reconciliation: every change explained by one rule, every rule hit justified, nothing missed | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-24 | Physical ranges after cleaning; no power far below the horizon; no dead DC | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-25 | Flags never change values; flags match their definition | `contracts/test_clean_output.py` | ✅ stage 5 |
@@ -32,5 +32,6 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-27 | Daytime energy unchanged on fault-free days (±0.1 %) | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-28 | Log and manifest equal the output; policy and file hashes | `contracts/test_clean_output.py` | ✅ stage 5 |
 | T-29 | Data-processing record complete and current (numbers from manifests, every stage, rule and OP) | `contracts/test_data_record.py` | ✅ |
+| T-30 | Stage-3 EDA outputs: planned items exist, tables agree with stage 5 and physics, made from current inputs | `contracts/test_eda_output.py` | ✅ stage 3 |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.
