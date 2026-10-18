@@ -1,0 +1,11 @@
+tag,evidence,conclusion
+precipitation,"max 0.00, minutes > 0: 0, minutes < 0: 1760",never records rain in 45 months (the site has rain events): not usable
+soil,monthly median > 1 until 2023-06; then 0.00 or less,sensor stops reporting during the data; undocumented units: not usable
+soiling01,monthly median > 1 until 2024-06; then 0.00 or less,sensor stops reporting during the data; undocumented units: not usable
+soiling02,monthly median > 1 until 2024-06; then 0.22 or less,sensor stops reporting during the data; undocumented units: not usable
+wind_speed / wind_direction,held >= 30 min: 2.7 % / 0.5 % of daytime minutes; 61 minutes outside 0..60 m/s,"measured at the target time (EXCL), no lag in the contract; frequent stuck periods"
+"kVar, PF",PF = 1.000 in 47.8 % of minutes; kVar follows the grid operator's reactive-power setpoint,"grid control, not weather: no information on active power"
+inverter states,code 3: 49.3 %; code 1: 48.9 %; code 5: 1.1 %; code 99: 0.4 %,"status at the target time (EXCL); used only by flag F3 (codes 5/6 = derated, Q16)"
+iec_sp_q,"p1 -14129.8, median 355.1, p99 13748.0",grid setpoint for reactive power / voltage: not related to the forecast
+iec_sp_v,"p1 38.8, median 166.0, p99 170.1",grid setpoint for reactive power / voltage: not related to the forecast
+iec_sp_pf,"p1 -1.0, median 0.0, p99 1.0",grid setpoint for reactive power / voltage: not related to the forecast

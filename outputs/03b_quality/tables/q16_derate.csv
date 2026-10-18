@@ -1,0 +1,10 @@
+inverter,state,episode,minutes,median_ratio_to_other
+inv1,1,all,468029,0.989
+inv1,3,all,1274,1.008
+inv1,5,run >= 30 min,3994,0.739
+inv1,5,run < 30 min,604,0.715
+inv2,1,all,466044,1.012
+inv2,3,all,3188,0.77
+inv2,5,run >= 30 min,3961,0.768
+inv2,5,run < 30 min,191,0.766
+inv2,6,run >= 30 min,672,0.765

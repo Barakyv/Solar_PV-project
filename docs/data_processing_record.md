@@ -225,7 +225,7 @@ can never be model inputs (T-01).
 *Result (N7):* hourly maximum of site AC 2,948.4 kW (3,271.9 before; spikes removed);
 op-limited daytime hours 379 (train), 146 (val), 186 (test), of which 245 / 43 / 93 with a
 derated inverter (F3) — before stage 3b they were 193 / 106 / 106; daytime hours with a missing
-target 42 / 1 / 5, all from communication freezes. The pyranometer loses 408,187 minutes to R7
+target 42 / 1 / 5, all from communication freezes. The pyranometer loses 409,160 minutes to R7
 (it is not a model input). Real twilight production (up to ~29 kW with the sun 0–3° below the
 horizon) is kept.
 

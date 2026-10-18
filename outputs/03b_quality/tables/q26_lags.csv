@@ -1,0 +1,57 @@
+series,lag_days,pearson_r
+site AC,1,0.8967
+site AC,2,0.874
+site AC,3,0.8735
+site AC,4,0.8642
+site AC,5,0.8696
+site AC,6,0.8686
+site AC,7,0.8694
+site AC,8,0.8636
+site AC,9,0.8615
+site AC,10,0.8579
+site AC,11,0.8563
+site AC,12,0.8625
+site AC,13,0.8616
+site AC,14,0.8573
+clear-sky index (AC / clear-sky AC),1,0.3366
+clear-sky index (AC / clear-sky AC),2,0.1876
+clear-sky index (AC / clear-sky AC),3,0.1742
+clear-sky index (AC / clear-sky AC),4,0.1354
+clear-sky index (AC / clear-sky AC),5,0.1724
+clear-sky index (AC / clear-sky AC),6,0.1559
+clear-sky index (AC / clear-sky AC),7,0.167
+clear-sky index (AC / clear-sky AC),8,0.1425
+clear-sky index (AC / clear-sky AC),9,0.118
+clear-sky index (AC / clear-sky AC),10,0.0931
+clear-sky index (AC / clear-sky AC),11,0.1003
+clear-sky index (AC / clear-sky AC),12,0.1464
+clear-sky index (AC / clear-sky AC),13,0.1242
+clear-sky index (AC / clear-sky AC),14,0.1209
+irradiance,1,0.9027
+irradiance,2,0.8809
+irradiance,3,0.8809
+irradiance,4,0.8719
+irradiance,5,0.877
+irradiance,6,0.8758
+irradiance,7,0.8765
+irradiance,8,0.8718
+irradiance,9,0.8699
+irradiance,10,0.8661
+irradiance,11,0.865
+irradiance,12,0.8696
+irradiance,13,0.8689
+irradiance,14,0.8646
+mod_temp1,1,0.9339
+mod_temp1,2,0.9076
+mod_temp1,3,0.8967
+mod_temp1,4,0.8913
+mod_temp1,5,0.8958
+mod_temp1,6,0.8921
+mod_temp1,7,0.8926
+mod_temp1,8,0.8905
+mod_temp1,9,0.8857
+mod_temp1,10,0.8793
+mod_temp1,11,0.8747
+mod_temp1,12,0.8719
+mod_temp1,13,0.8644
+mod_temp1,14,0.8607

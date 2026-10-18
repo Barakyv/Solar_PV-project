@@ -1,0 +1,29 @@
+column,group,unit,logger,role,role_class,min,p1,p50,p99,max,distinct_values,non_integer_share,nan_raw,nan_stage4,nan_stage5
+site_total_AC_kW,power,kW,derived,"target: inverter 1 + inverter 2, minute by minute",target,0.0,0.0,1.39,2664.55,42162.96,983530,,,330,6037
+s01_inv1_AC_kW,power,kW,inverter,target component; model input as past-day lags,target,0.0,0.0,0.0,1326.03,40825.09,921124,,0.0,239,5938
+s01_inv2_AC_kW,power,kW,inverter,target component; model input as past-day lags,target,0.0,0.0,0.0,1349.66,12045.41,920633,,0.0,265,5914
+s01_inv1_DC_kW,power,kW,inverter,"QA only: rule R6, clock check (measured at the target time, EXCL)",QA only,0.0,0.0,0.0,1381.55,28150.24,879597,,0.0,239,10438
+s01_inv2_DC_kW,power,kW,inverter,"QA only: rule R6, clock check (measured at the target time, EXCL)",QA only,0.0,0.0,0.0,1408.01,18027.69,880596,,0.0,265,3486
+s01_inv1_AC_kVar,power,kVar,inverter,"not used: reactive power, set by the grid operator (EXCL)",not used,-1445.64,-290.65,0.0,844.42,8226.72,919433,,0.0,213,213
+s01_inv2_AC_kVar,power,kVar,inverter,"not used: reactive power, set by the grid operator (EXCL)",not used,-774.0,-297.4,0.0,872.73,5300.71,919246,,0.0,291,291
+s01_inv1_PF,power,power factor,inverter,not used: follows the reactive-power setpoint (EXCL),not used,0.0,0.81,1.0,1.0,1.0,73977,,0.0,239,239
+s01_inv2_PF,power,power factor,inverter,not used: follows the reactive-power setpoint (EXCL),not used,0.0,0.81,1.0,1.0,1.0,73244,,0.0,265,265
+s01_inv1_state,status,code,inverter,flag F3: codes 5/6 mark a derated inverter (Q16); not a model input (EXCL),flag,1.0,1.0,3.0,5.0,99.0,5961,0.0042,0.0,239,239
+s01_inv2_state,status,code,inverter,flag F3: codes 5/6 mark a derated inverter (Q16); not a model input (EXCL),flag,1.0,1.0,3.0,5.0,99.0,5304,0.00341,0.0,265,265
+irradiance,irradiance,"W/m2, panel plane",meteo,model input as past-day lags; reference of R7 and F1 (D-09),model input,-7.84,-1.0,4.48,1064.44,1518.33,891949,,0.0,253,9246
+pyranometer,irradiance,"W/m2, panel plane",SiteData,"QA only: redundant sensor, x0.75 fault (F-19)",QA only,0.0,0.0,2.75,1054.49,1374.22,955753,,0.0,240,417860
+mod_temp1,temperature,degC,meteo,model input as past-day lags,model input,-270.0,4.53,25.87,58.5,68.2,1211654,,0.0,227,10357
+mod_temp2,temperature,degC,meteo,model input as past-day lags,model input,-270.0,4.39,25.6,57.18,67.62,1216236,,0.0,265,10306
+ambient_temp,temperature,degC,meteo,"model input as past-day lags (D-09: sensor choice, Q22)",model input,-270.0,7.1,24.5,42.4,48.4,765760,,0.0,188,10709
+site_ambient_temp,temperature,degC,SiteData,QA only: second ambient sensor (Q22),QA only,0.29,7.86,25.64,42.1,48.28,1276920,,0.0,253,7842
+wind_speed,meteo,m/s,meteo,"not used: measured at the target time, no lag in the contract (Q28)",not used,0.0,0.01,2.4,8.12,629.24,1866651,,0.0,253,314
+wind_direction,meteo,deg,meteo,"not used: measured at the target time, no lag in the contract (Q28)",not used,0.0,0.02,77.6,348.53,360.0,1917585,,0.0,253,253
+precipitation,meteo,undocumented,meteo,not used: see Q28,not used,-0.8,0.0,0.0,0.0,0.0,571,,0.0,253,253
+soil,soiling,undocumented,meteo,not used: see Q28,not used,-5772.13,0.0,0.0,5.47,50.78,409201,,0.0,253,253
+soiling01,soiling,undocumented,meteo,not used: see Q28,not used,0.0,0.0,41.54,17332.86,20000.0,1206549,,0.0,253,253
+soiling02,soiling,undocumented,meteo,not used: see Q28,not used,0.0,0.2,4003.66,17277.9,20000.0,1384804,,0.0,253,253
+iec_sp_w,grid (IEC),% of park power,inverter,flag F2: curtailment when below 100 (Q14),flag,0.0,100.0,100.0,100.0,100.0,4668,0.00237,0.0,239,239
+iec_mode,grid (IEC),code 0/1/2,inverter,"not used: output under modes 0/1 equals mode 2 (F-17, Q14)",not used,0.0,0.0,2.0,2.0,2.0,50,2e-05,0.0,239,239
+iec_sp_q,grid (IEC),kVar setpoint,inverter,not used: reactive-power setpoint,not used,-22480.63,-14129.46,355.12,13747.9,15067.72,1880028,,0.0,239,239
+iec_sp_v,grid (IEC),kV setpoint,inverter,not used: voltage setpoint,not used,0.0,38.78,165.99,170.1,174.35,1970705,,0.0,239,239
+iec_sp_pf,grid (IEC),power-factor setpoint,inverter,not used: power-factor setpoint,not used,-1.0,-1.0,0.0,1.0,1.0,503061,,0.0,239,239

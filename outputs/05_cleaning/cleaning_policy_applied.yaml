@@ -1,12 +1,13 @@
 # Stage-5 cleaning policy (PROJECT_MASTER.md §7 stage 5, decisions D-21 and D-22).
 # Applied by solarpv.data.clean to the clock-corrected minute data of stage 4.
-# Evidence for every threshold: 00_data_audit/cleaning_2026-10-15/explore_cleaning.py
-# (thresholds come from physics and from the train period; nothing is tuned on val or test).
+# Evidence for every threshold: 00_data_audit/cleaning_2026-10-15/explore_cleaning.py and the
+# stage-3b data-quality analysis (notebooks/02b_data_quality.ipynb, Q05-Q16); thresholds come
+# from physics and from the train period; nothing is tuned on val or test.
 #
 # Two kinds of rules:
 #   value rules (R1-R7): a measurement is wrong -> it is replaced (NaN or 0); the first rule
 #                        that applies to a minute is recorded in rule_<column>.
-#   flag rules  (F1-F2): a real plant event -> values are never changed, only flagged (D-22).
+#   flag rules  (F1-F3): a real plant event -> values are never changed, only flagged (D-22).
 version: 1
 
 sun:
@@ -67,15 +68,20 @@ dc_dead:
   pairs: {s01_inv1_DC_kW: s01_inv1_AC_kW, s01_inv2_DC_kW: s01_inv2_AC_kW}
   min_ac_kw: 100.0
 
-# R7: scale fault of a redundant sensor against its reference, per local day. The pyranometer
-# reads exactly x0.75 from 2023-05-28 to 2023-12-31 and on days in Dec 2024 - Apr 2025, while the
-# irradiance sensor stays consistent with clear-sky POA and with DC power (F-19, found in stage 3).
-# The reference is the cleaned irradiance; days without a reference are kept.
+# R7: scale fault of a redundant sensor against its reference. The pyranometer reads exactly
+# x0.75 from 2023-05-28 to 2023-12-31 and on days in Dec 2024 - Apr 2025, while the irradiance
+# sensor stays consistent with clear-sky POA and with DC power (F-19, found in stage 3).
+# Judged per local day and per UTC hour (stage 3b, F-21: the fault also switches on and off within
+# a day, e.g. 2021-11-05 07:00-09:00 UTC, which a daily median can miss); a period is judged
+# only with at least 20 usable minutes (a freeze day had been decided on 2; 2023-12-11, a freeze
+# day with 24 usable minutes at x0.75, must still be caught). The reference is the cleaned
+# irradiance; periods without a reference are kept.
 scale_fault:
   pairs: {pyranometer: irradiance}
   min_elevation: 30.0
   min_reference: 300.0
   ratio_range: [0.9, 1.1]
+  min_minutes: {day: 20, hour: 20}
 
 # R4/R5: night rule on true geometry (fixes F-01b). Twilight production between -3 and 0 deg
 # is real (up to ~29 kW) and is kept.
@@ -95,11 +101,37 @@ downtime:
 
 # F2: grid curtailment by the park setpoint (percent). iec_mode is not used: production under
 # modes 0 and 1 matches mode 2 (explore_cleaning.py section 6), so it does not limit output.
+# A commanded limit is a step (0 / 25 / 50 / 75 %); the minute that holds a step shows a blended,
+# non-integer value for 2-4 minutes. From 2022-02-09 the setpoint drifted through non-integer
+# values for 4,309 minutes while output stayed normal (stage 3b, F-20): such a drift is not
+# curtailment.
 curtailment:
   setpoint_column: iec_sp_w
   below: 100.0
   min_elevation: 5.0
+  max_noninteger_run_minutes: 10
+
+# F3: partial inverter outage (derate, stage 3b, F-22). The inverter runs but delivers a stable
+# fraction (mostly ~75 %, once ~50 %) of its twin, for hours or days. Two signs (train):
+#  - its status code is 5 or 6 for at least 30 minutes while it produces (median AC ratio to the
+#    other inverter 0.74-0.77, against 0.99-1.01 in code 1). Episodes of 2-10 minutes at start-up
+#    are not derates (some keep a ratio of 1.0);
+#  - in a centred 31-minute window, the median of its AC ratio to the other inverter is below 0.85
+#    and the ratio is stable (inter-quartile range of the log ratio below 0.05). Train modes of the
+#    windowed ratio: 0.99 and 0.74 / 1/0.77, valley between 0.78 and 0.88; stable windows have an
+#    IQR below 0.01, while clouds over one field and the 2025 polling phases give 0.1-0.5.
+derate:
+  states: [5, 6]
+  min_elevation: 5.0
+  min_ac_kw: 20.0             # status rule: the inverter is producing (below 20 kW: F1)
+  state_min_run_minutes: 30
+  ratio_below: 0.85
+  ratio_max_iqr: 0.05         # of the log ratio in the window
+  ratio_window_minutes: 31
+  ratio_min_valid_minutes: 20
+  ratio_min_elevation: 15.0
+  ratio_min_ac_kw: 100.0      # both inverters, so that the ratio is meaningful
 
 hourly:
-  # an hour is op-limited (D-22) if at least this share of its minutes is flagged F1 or F2
+  # an hour is op-limited (D-22) if at least this share of its minutes is flagged F1, F2 or F3
   op_limited_min_share: 0.05

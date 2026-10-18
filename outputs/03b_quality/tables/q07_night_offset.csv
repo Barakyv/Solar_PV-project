@@ -1,0 +1,9 @@
+column,sun_band,minutes,share_negative,min,p0_1,share_below_minus_20
+irradiance,-90..-6,592886,0.05008,-7.0,-2.0,0.0
+irradiance,-6..0,47009,0.04895,-7.84,-2.0,0.0
+irradiance,0..10,91103,9e-05,-2.0,0.0,0.0
+irradiance,10..90,540649,0.0,-1.0,0.0,0.0
+pyranometer,-90..-6,592886,0.0,0.0,0.0,0.0
+pyranometer,-6..0,47009,0.0,0.0,0.0,0.0
+pyranometer,0..10,91103,0.0,0.0,0.0,0.0
+pyranometer,10..90,540649,0.0,0.0,0.0,0.0

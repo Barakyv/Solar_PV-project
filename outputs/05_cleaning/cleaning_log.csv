@@ -8,7 +8,7 @@ R3_frozen,mod_temp1,7991,3462,154,
 R1_range,mod_temp2,2093,278,53,
 R3_frozen,mod_temp2,7948,3426,152,
 R3_frozen,pyranometer,8460,3340,157,
-R7_scale_fault,pyranometer,403409,173106,6731,
+R7_scale_fault,pyranometer,409160,178857,6826,
 R1_range,s01_inv1_AC_kW,6,6,2,1304.3
 R3_frozen,s01_inv1_AC_kW,5693,2356,106,60962.3
 R4_night_zero,s01_inv1_AC_kW,4980,0,1486,128.2

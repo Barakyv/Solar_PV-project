@@ -7,3 +7,6 @@ caught      frozen run partly kept
 caught      flag changed a value
 caught      curtailment minute not flagged
 caught      manifest count off by one
+caught      derated minute not flagged
+caught      setpoint drift flagged as curtailment
+caught      pyranometer scale fault kept

@@ -1,0 +1,965 @@
+{
+  "stage": "03b_quality",
+  "git_commit": "19dbcfd",
+  "inputs_sha256": {
+    "data/processed/01_ingest/scada_1min_utc.parquet": "2ecacbe5ce510c0a539b63f44e1073b9323b30734541b91033bc059660863a61",
+    "data/processed/04_preprocess/scada_1min_true_utc.parquet": "9d6a9fd9531b7c45a4ebd1953ef1a28c281a73e3b56a60db90df4dd60440e270",
+    "data/processed/04_preprocess/scada_1H_utc.parquet": "323a515efab87aa80b2858c2a3aa55f9cf08260735412ef84fa37befac8813ce",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "outputs/05_cleaning/cleaning_log.csv": "e6c428ad48d421fe7c990621cb8d4c3c3f37085a911b6076c54c9f620541461b",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/03_eda/eda_manifest.json": "cea66ba11873ce354f3717c0db6bfdea78c6186b73a9ab8a40f5e5960500d7fb"
+  },
+  "analyses": {
+    "q01_inventory": {
+      "title": "Inventory of the 27 tags",
+      "facts": {
+        "n_tags": 27,
+        "minutes": 1971360,
+        "hours": 32856,
+        "raw_nan_total": 0,
+        "stage4_nan_max": 291,
+        "roles": {
+          "not used": 14,
+          "QA only": 4,
+          "model input": 4,
+          "target": 3,
+          "flag": 3
+        },
+        "index_unique": true,
+        "index_regular": true,
+        "state_non_integer_share": 0.0042
+      },
+      "table": "q01_inventory.csv"
+    },
+    "q02_held_values": {
+      "title": "Held values over time",
+      "facts": {
+        "held_pct_all": {
+          "irradiance": 0.421,
+          "pyranometer": 0.389,
+          "s01_inv1_AC_kW": 0.274,
+          "s01_inv2_AC_kW": 0.269,
+          "s01_inv1_DC_kW": 0.186,
+          "s01_inv2_DC_kW": 0.189,
+          "mod_temp1": 0.426,
+          "mod_temp2": 0.424,
+          "ambient_temp": 0.893,
+          "site_ambient_temp": 0.52,
+          "s01_inv1_AC_kVar": 0.272,
+          "s01_inv2_AC_kVar": 0.269,
+          "wind_speed": 2.729,
+          "wind_direction": 0.539,
+          "soil": 79.537,
+          "soiling01": 25.159,
+          "soiling02": 0.904,
+          "precipitation": 99.896
+        },
+        "held_pct_train": {
+          "irradiance": 0.624,
+          "pyranometer": 0.581,
+          "s01_inv1_AC_kW": 0.399,
+          "s01_inv2_AC_kW": 0.399,
+          "s01_inv1_DC_kW": 0.269,
+          "s01_inv2_DC_kW": 0.269,
+          "mod_temp1": 0.623,
+          "mod_temp2": 0.623,
+          "ambient_temp": 0.628,
+          "site_ambient_temp": 0.589,
+          "s01_inv1_AC_kVar": 0.399,
+          "s01_inv2_AC_kVar": 0.398,
+          "wind_speed": 4.136,
+          "wind_direction": 0.699,
+          "soil": 67.991,
+          "soiling01": 0.669,
+          "soiling02": 0.667,
+          "precipitation": 99.889
+        },
+        "dead_months": {
+          "soil": [
+            "2022-08",
+            "2025-05",
+            34
+          ],
+          "soiling01": [
+            "2024-07",
+            "2025-05",
+            11
+          ],
+          "precipitation": [
+            "2021-09",
+            "2025-05",
+            45
+          ]
+        }
+      },
+      "table": "q02_held_values.csv",
+      "figure": "q02_held_values.png"
+    },
+    "q03_sampling_regime": {
+      "title": "Two sampling regimes",
+      "facts": {
+        "tag_hours": 160716,
+        "ambiguous_share": 0.006166,
+        "polled_share_before": 0.002584,
+        "polled_share_after": 0.871573,
+        "first_day": "2025-02-26",
+        "minute_rate_median_before": 1.0
+      },
+      "table": "q03_sampling_regime.csv",
+      "figure": "q03_sampling_regime.png"
+    },
+    "q04_distributions": {
+      "title": "Distributions before cleaning",
+      "facts": {
+        "outside": {
+          "ambient_temp": 2648,
+          "site_ambient_temp": 0,
+          "mod_temp1": 2103,
+          "mod_temp2": 2057,
+          "irradiance": 0,
+          "pyranometer": 0,
+          "wind_speed": 46,
+          "s01_inv1_AC_kW": 2,
+          "s01_inv2_AC_kW": 2,
+          "s01_inv1_DC_kW": 6,
+          "s01_inv2_DC_kW": 2
+        }
+      },
+      "table": "q04_distributions.csv",
+      "figure": "q04_distributions.png"
+    },
+    "q05_range_limits": {
+      "title": "R1 limits",
+      "facts": {
+        "power_largest_inside_over_upper": {
+          "s01_inv1_AC_kW": 0.80923,
+          "s01_inv2_AC_kW": 0.804085,
+          "s01_inv1_DC_kW": 0.86981,
+          "s01_inv2_DC_kW": 0.881529
+        },
+        "power_smallest_above_over_upper": {
+          "s01_inv1_AC_kW": 17.272673,
+          "s01_inv2_AC_kW": 4.376574,
+          "s01_inv1_DC_kW": 6.405045,
+          "s01_inv2_DC_kW": 5.311892
+        },
+        "temperature_smallest_inside_not_next": {
+          "mod_temp1": -2.5,
+          "mod_temp2": -2.6,
+          "ambient_temp": 0.03,
+          "site_ambient_temp": 0.29
+        },
+        "temperature_smallest_inside": {
+          "mod_temp1": -16.17,
+          "mod_temp2": -19.58,
+          "ambient_temp": 0.03,
+          "site_ambient_temp": 0.29
+        },
+        "temperature_largest_below": {
+          "mod_temp1": -55.12,
+          "mod_temp2": -55.57,
+          "ambient_temp": -38.17,
+          "site_ambient_temp": null
+        },
+        "irradiance_largest_inside": 1518.33,
+        "wind_largest_inside": 59.38,
+        "n_outside": {
+          "ambient_temp": 2129,
+          "site_ambient_temp": 0,
+          "mod_temp1": 1732,
+          "mod_temp2": 1732,
+          "irradiance": 0,
+          "pyranometer": 0,
+          "wind_speed": 43,
+          "s01_inv1_AC_kW": 2,
+          "s01_inv2_AC_kW": 2,
+          "s01_inv1_DC_kW": 4,
+          "s01_inv2_DC_kW": 1
+        }
+      },
+      "table": "q05_range_limits.csv",
+      "figure": "q05_range_limits.png"
+    },
+    "q06_range_margin": {
+      "title": "R1 margin",
+      "facts": {
+        "share_beyond_normal": {
+          "temperatures": 0.2125,
+          "power": 0.0
+        },
+        "example_column": "ambient_temp",
+        "per_column": {
+          "ambient_temp": 0.25,
+          "mod_temp1": 0.192,
+          "mod_temp2": 0.192,
+          "wind_speed": 0.5,
+          "s01_inv1_AC_kW": 0.0,
+          "s01_inv2_AC_kW": 0.0,
+          "s01_inv1_DC_kW": 0.0,
+          "s01_inv2_DC_kW": 0.0
+        }
+      },
+      "table": "q06_range_margin.csv",
+      "figure": "q06_range_margin.png"
+    },
+    "q07_night_offset": {
+      "title": "R2 night offset",
+      "facts": {
+        "irradiance_min_train": -7.840006,
+        "irradiance_negative_share_sun_above_10": 0.0,
+        "irradiance_negative_share_night": 0.05008,
+        "pyranometer_min_train": 0.0,
+        "any_below_minus_20": 0.0
+      },
+      "table": "q07_night_offset.csv",
+      "figure": "q07_night_offset.png"
+    },
+    "q08_frozen_runs": {
+      "title": "R3 run lengths",
+      "facts": {
+        "ratio_15_60": {
+          "irradiance": 1.070694,
+          "pyranometer": 1.050026,
+          "s01_inv1_AC_kW": 1.064822,
+          "s01_inv2_AC_kW": 1.064789,
+          "s01_inv1_DC_kW": 1.097496,
+          "s01_inv2_DC_kW": 1.097345,
+          "mod_temp1": 1.065192,
+          "mod_temp2": 1.087311,
+          "ambient_temp": 1.55963,
+          "site_ambient_temp": 1.107506
+        },
+        "ratio_30_120": {
+          "irradiance": 1.137755,
+          "pyranometer": 1.060435,
+          "s01_inv1_AC_kW": 1.074124,
+          "s01_inv2_AC_kW": 1.074351,
+          "s01_inv1_DC_kW": 1.110707,
+          "s01_inv2_DC_kW": 1.111066,
+          "mod_temp1": 1.136214,
+          "mod_temp2": 1.136629,
+          "ambient_temp": 1.143403,
+          "site_ambient_temp": 1.074635
+        },
+        "value_step": {
+          "irradiance": 0.9999,
+          "pyranometer": 0.7499,
+          "s01_inv1_AC_kW": 0.3931,
+          "s01_inv2_AC_kW": 5.0585,
+          "s01_inv1_DC_kW": 0.02,
+          "s01_inv2_DC_kW": 5.303,
+          "mod_temp1": 0.1,
+          "mod_temp2": 0.1,
+          "ambient_temp": 0.1,
+          "site_ambient_temp": 0.02
+        },
+        "share_ge_5": {
+          "irradiance": 0.7352,
+          "pyranometer": 0.6346,
+          "s01_inv1_AC_kW": 0.4407,
+          "s01_inv2_AC_kW": 0.4409,
+          "s01_inv1_DC_kW": 0.315,
+          "s01_inv2_DC_kW": 0.3104,
+          "mod_temp1": 0.9276,
+          "mod_temp2": 0.9257,
+          "ambient_temp": 6.6159,
+          "site_ambient_temp": 0.94
+        },
+        "share_ge_30": {
+          "irradiance": 0.6244,
+          "pyranometer": 0.5808,
+          "s01_inv1_AC_kW": 0.4014,
+          "s01_inv2_AC_kW": 0.4017,
+          "s01_inv1_DC_kW": 0.2749,
+          "s01_inv2_DC_kW": 0.2711,
+          "mod_temp1": 0.6231,
+          "mod_temp2": 0.6231,
+          "ambient_temp": 0.6283,
+          "site_ambient_temp": 0.5889
+        }
+      },
+      "table": "q08_frozen_runs.csv",
+      "figure": "q08_frozen_runs.png"
+    },
+    "q09_freeze_events": {
+      "title": "Communication freezes",
+      "facts": {
+        "share_multi_column_train": 0.963265,
+        "events_all": 65,
+        "events_by_split": {
+          "train": 27,
+          "test": 23,
+          "val": 15
+        },
+        "events_reaching_daytime": 17,
+        "longest_hours": 42.066667
+      },
+      "table": "q09_freeze_events.csv",
+      "figure": "q09_freeze_events.png"
+    },
+    "q10_freeze_resume": {
+      "title": "R3 margin",
+      "facts": {
+        "resumes": 122,
+        "blend_share": 0.770492,
+        "resumes_train": 108,
+        "blend_share_train": 0.777778,
+        "example_blend_kw": 247.391969
+      },
+      "table": "q10_freeze_resume.csv",
+      "figure": "q10_freeze_resume.png"
+    },
+    "q11_night": {
+      "title": "R4 / R5 night",
+      "facts": {
+        "max_not_frozen_below_minus6": {
+          "s01_inv1_AC_kW": 0.0,
+          "s01_inv2_AC_kW": 0.0
+        },
+        "max_not_frozen_twilight": {
+          "s01_inv1_AC_kW": 28.82,
+          "s01_inv2_AC_kW": 29.42
+        },
+        "p99_9_not_frozen_below_0": {
+          "s01_inv1_AC_kW": 7.913207,
+          "s01_inv2_AC_kW": 10.509562
+        },
+        "deep_night_nonzero_not_frozen": {
+          "s01_inv1_AC_kW": 0,
+          "s01_inv2_AC_kW": 0
+        },
+        "r4_candidates_in_twilight_share": 0.94235,
+        "r5_minutes_all": 5616,
+        "r5_share_in_or_next_to_freeze": 1.0
+      },
+      "table": "q11_night.csv",
+      "figure": "q11_night.png"
+    },
+    "q12_dc_consistency": {
+      "title": "R6 and AC/DC",
+      "facts": {
+        "efficiency_median": {
+          "inv1": 0.9721,
+          "inv2": 0.9709
+        },
+        "share_ac_above_dc": {
+          "inv1": 0.0072,
+          "inv2": 0.008
+        },
+        "share_ac_above_dc_stable": {
+          "inv1": 0.0005,
+          "inv2": 0.0006
+        },
+        "r6_minutes": {
+          "inv1": 7056,
+          "inv2": 46
+        },
+        "r6_top_month": {
+          "inv1": "2023-03",
+          "inv2": "2025-02"
+        },
+        "r6_share_top_month": {
+          "inv1": 0.9974,
+          "inv2": 0.6739
+        }
+      },
+      "table": "q12_dc_consistency.csv",
+      "figure": "q12_dc_consistency.png"
+    },
+    "q13_scale_fault": {
+      "title": "R7 scale fault",
+      "facts": {
+        "train_days": 879,
+        "train_gap_days": {
+          "2021-11-05": 0.8258
+        },
+        "train_faulty_days": 221,
+        "train_faulty_median": 0.749337,
+        "train_good_median": 0.998165,
+        "train_good_iqr": [
+          0.994124,
+          1.001034
+        ],
+        "faulty_days_by_split": {
+          "train": 221,
+          "val": 0,
+          "test": 60
+        },
+        "train_extra_hours": 28,
+        "train_extra_hours_near_075": 6,
+        "example_ratios": [
+          0.968,
+          0.732,
+          0.736,
+          0.739,
+          0.743,
+          0.745,
+          0.999,
+          1.002,
+          1.005,
+          1.008,
+          1.012,
+          1.013
+        ],
+        "ratio_by_elevation": {
+          "(10, 15]": 0.964,
+          "(15, 20]": 0.9784,
+          "(20, 25]": 0.9819,
+          "(25, 30]": 0.9856,
+          "(30, 35]": 0.9916,
+          "(35, 40]": 0.9948,
+          "(40, 45]": 0.9973,
+          "(45, 50]": 0.9991,
+          "(50, 55]": 0.9979,
+          "(55, 60]": 1.0009,
+          "(60, 65]": 1.004,
+          "(65, 70]": 1.0029,
+          "(70, 75]": 1.0022,
+          "(75, 80]": 0.9988
+        }
+      },
+      "table": "q13_scale_fault.csv",
+      "figure": "q13_scale_fault.png"
+    },
+    "q14_downtime": {
+      "title": "F1 downtime",
+      "facts": {
+        "share_below_20": {
+          "s01_inv1_AC_kW": 0.00369,
+          "s01_inv2_AC_kW": 0.00422
+        },
+        "share_20_to_100": {
+          "s01_inv1_AC_kW": 0.00027,
+          "s01_inv2_AC_kW": 0.00027
+        },
+        "median_at_150_200": {
+          "s01_inv1_AC_kW": 216.9,
+          "s01_inv2_AC_kW": 222.4
+        },
+        "p1_at_150_200": {
+          "s01_inv1_AC_kW": 132.1,
+          "s01_inv2_AC_kW": 140.4
+        }
+      },
+      "table": "q14_downtime.csv",
+      "figure": "q14_downtime.png"
+    },
+    "q15_curtailment": {
+      "title": "F2 curtailment",
+      "facts": {
+        "minutes_below_100_by_split": {
+          "train": 4386,
+          "val": 4189,
+          "test": 3385
+        },
+        "flagged_minutes_by_split": {
+          "train": 2578,
+          "val": 4189,
+          "test": 3385
+        },
+        "train_transition_run_max": 3,
+        "train_drift_runs": [
+          4309
+        ],
+        "relative_output_by_setpoint_train": {
+          "0": 0.026,
+          "25": 0.326,
+          "50": 0.638,
+          "75": 0.841
+        },
+        "relative_output_commanded_days_median": 0.623,
+        "relative_output_drift_days": {
+          "2022-02-09": 1.029,
+          "2022-02-10": 1.087,
+          "2022-02-11": 1.001,
+          "2022-02-12": 0.994
+        },
+        "mode_relative_output": {
+          "0": 0.9986,
+          "1": 0.9904,
+          "2": 1.0001
+        }
+      },
+      "table": "q15_curtailment.csv",
+      "figure": "q15_curtailment.png"
+    },
+    "q16_derate": {
+      "title": "F3 derate",
+      "facts": {
+        "modes": {
+          "normal": 0.985112,
+          "inv1_low": 0.737123,
+          "inv2_low": 1.303431
+        },
+        "train_windows": 479557,
+        "train_low_windows": 11707,
+        "train_valley_share": 0.001739,
+        "train_low_stable_share": 0.816605,
+        "train_low_unstable_share": 0.093961,
+        "flag_minutes_by_split": {
+          "train": 12920,
+          "val": 2245,
+          "test": 3866
+        },
+        "hours_by_split": {
+          "train": 245,
+          "val": 43,
+          "test": 93
+        },
+        "lost_mwh_by_split": {
+          "train": 41.5,
+          "val": 8.7,
+          "test": 17.0
+        },
+        "ratio_by_state": {
+          "inv1 code 1 all": 0.989,
+          "inv1 code 3 all": 1.008,
+          "inv1 code 5 run >= 30 min": 0.739,
+          "inv1 code 5 run < 30 min": 0.715,
+          "inv2 code 1 all": 1.012,
+          "inv2 code 3 all": 0.77,
+          "inv2 code 5 run >= 30 min": 0.768,
+          "inv2 code 5 run < 30 min": 0.766,
+          "inv2 code 6 run >= 30 min": 0.765
+        }
+      },
+      "table": "q16_derate.csv",
+      "figure": "q16_derate.png"
+    },
+    "q17_hourly_thresholds": {
+      "title": "Hourly thresholds",
+      "facts": {
+        "daytime_train_hours": 9698,
+        "hours_partial_coverage_1_44": 13,
+        "hours_empty": 29,
+        "share_partial": 0.00134,
+        "op_hours_at": {
+          "0.01": 382,
+          "0.02": 381,
+          "0.05": 379,
+          "0.1": 375,
+          "0.2": 355,
+          "0.5": 320
+        },
+        "flagged_hours_full_share": 0.667539
+      },
+      "table": "q17_hourly_thresholds.csv",
+      "figure": "q17_hourly_thresholds.png"
+    },
+    "q18_changes": {
+      "title": "What cleaning changed",
+      "facts": {
+        "matches_cleaning_log": true,
+        "minutes_by_rule": {
+          "R1_range": 7025,
+          "R2_offset": 57738,
+          "R3_frozen": 66436,
+          "R4_night_zero": 9631,
+          "R6_dc_dead": 7102,
+          "R7_scale_fault": 409160
+        },
+        "minutes_by_split": {
+          "test": 104630,
+          "train": 432217,
+          "val": 20245
+        },
+        "kwh_by_split": {
+          "test": 3640.8,
+          "train": 119246.0,
+          "val": 267.7
+        },
+        "kwh_by_rule": {
+          "R1_range": 1671.8,
+          "R3_frozen": 121244.8,
+          "R4_night_zero": 237.9
+        },
+        "busiest_month_by_rule": {
+          "R1_range": "2022-01",
+          "R2_offset": "2024-06",
+          "R3_frozen": "2023-12",
+          "R4_night_zero": "2025-03",
+          "R6_dc_dead": "2023-03",
+          "R7_scale_fault": "2023-07"
+        }
+      },
+      "table": "q18_changes.csv",
+      "figure": "q18_changes.png"
+    },
+    "q19_distributions": {
+      "title": "Distributions before and after",
+      "facts": {
+        "max_bulk_shift_pct": {
+          "ambient_temp": 0.561851,
+          "irradiance": 0.327055,
+          "mod_temp1": 0.296759,
+          "mod_temp2": 0.392746,
+          "pyranometer": 5.049945,
+          "s01_inv1_AC_kW": 0.04958,
+          "s01_inv1_DC_kW": 1.447502,
+          "s01_inv2_AC_kW": 0.032957,
+          "s01_inv2_DC_kW": 0.060018,
+          "site_ambient_temp": 0.173947,
+          "wind_speed": 0.146139
+        },
+        "outside_range_after": {
+          "ambient_temp": 0,
+          "irradiance": 0,
+          "mod_temp1": 0,
+          "mod_temp2": 0,
+          "pyranometer": 0,
+          "s01_inv1_AC_kW": 0,
+          "s01_inv1_DC_kW": 0,
+          "s01_inv2_AC_kW": 0,
+          "s01_inv2_DC_kW": 0,
+          "site_ambient_temp": 0,
+          "wind_speed": 0
+        }
+      },
+      "table": "q19_distributions.csv",
+      "figure": "q19_distributions.png"
+    },
+    "q20_energy": {
+      "title": "Energy before and after",
+      "facts": {
+        "days": 1369,
+        "days_changed": 20,
+        "days_changed_by_rule": {
+          "R3_frozen": 16,
+          "R1_range": 4
+        },
+        "total_change_pct_by_split": {
+          "train": -0.809,
+          "val": -0.006,
+          "test": -0.11
+        },
+        "largest_increase_pct": 0.0,
+        "largest_decrease_pct": -99.683655
+      },
+      "table": "q20_energy.csv",
+      "figure": "q20_energy.png"
+    },
+    "q21_missing_after": {
+      "title": "Missing after cleaning",
+      "facts": {
+        "target_nan_daytime_hours": {
+          "train": 42,
+          "val": 1,
+          "test": 5
+        },
+        "missing_pct_all": {
+          "site_total_AC_kW": 0.311,
+          "irradiance": 0.453,
+          "pyranometer": 21.542,
+          "s01_inv1_AC_kW": 0.299,
+          "s01_inv2_AC_kW": 0.296,
+          "s01_inv1_DC_kW": 1.015,
+          "s01_inv2_DC_kW": 0.219,
+          "mod_temp1": 0.46,
+          "mod_temp2": 0.46,
+          "ambient_temp": 0.444,
+          "site_ambient_temp": 0.382,
+          "wind_speed": 0.028
+        }
+      },
+      "table": "q21_missing_after.csv",
+      "figure": "q21_missing_after.png"
+    },
+    "q22_residual": {
+      "title": "Residual checks",
+      "facts": {
+        "csi_above_1_2_low_sun_share": 0.981651,
+        "csi_above_1_2_by_utc_hour": {
+          "03": 19,
+          "04": 4,
+          "13": 1,
+          "14": 21,
+          "15": 64
+        },
+        "robust_outliers_by_utc_hour": {
+          "05": 64,
+          "11": 1
+        },
+        "robust_outliers_by_month": {
+          "01": 39,
+          "02": 1,
+          "12": 25
+        },
+        "csi_max": 1.646145,
+        "csi_above_1_2": 109,
+        "frozen_daytime_minutes_left": {
+          "irradiance": 0,
+          "pyranometer": 0,
+          "s01_inv1_AC_kW": 0,
+          "s01_inv2_AC_kW": 0,
+          "s01_inv1_DC_kW": 0,
+          "s01_inv2_DC_kW": 0,
+          "mod_temp1": 0,
+          "mod_temp2": 0,
+          "ambient_temp": 0,
+          "site_ambient_temp": 0
+        },
+        "robust_outliers": 65,
+        "robust_outliers_by_split": {
+          "train": 48,
+          "test": 17
+        },
+        "imbalance_hours": 22,
+        "imbalance_hours_without_f3": 268,
+        "imbalance_by_split": {
+          "test": 17,
+          "train": 5
+        },
+        "ac_max_after": {
+          "s01_inv1_AC_kW": 1535.112699,
+          "s01_inv2_AC_kW": 1525.347347
+        }
+      },
+      "table": "q22_residual.csv",
+      "figure": "q22_residual.png"
+    },
+    "q23_inverter_ceiling": {
+      "title": "Inverter ceiling",
+      "facts": {
+        "ac_p99_99": {
+          "inv1": 1508.5,
+          "inv2": 1503.6
+        },
+        "ac_max": {
+          "inv1": 1535.1,
+          "inv2": 1525.3
+        },
+        "site_hourly_max_train": 2948.396057,
+        "site_hourly_p99_9_train": 2816.190594,
+        "share_of_capacity": 0.854855,
+        "efficiency_at_dc_1600": 0.912062
+      },
+      "table": "q23_inverter_ceiling.csv",
+      "figure": "q23_inverter_ceiling.png"
+    },
+    "q24_temperature_sensors": {
+      "title": "Temperature sensors",
+      "facts": {
+        "pairs": {
+          "ambient_temp - site_ambient_temp": {
+            "minutes": 1261866,
+            "median_diff": -0.064,
+            "p1_diff": -4.244,
+            "p99_diff": 1.239,
+            "pearson_r": 0.988,
+            "diurnal_range_of_median_diff": 0.808
+          },
+          "mod_temp1 - mod_temp2": {
+            "minutes": 1262213,
+            "median_diff": 0.292,
+            "p1_diff": 0.058,
+            "p99_diff": 1.918,
+            "pearson_r": 0.9997,
+            "diurnal_range_of_median_diff": 1.186
+          }
+        },
+        "faults": {
+          "ambient_temp": {
+            "R1": 2698,
+            "R3": 7823
+          },
+          "site_ambient_temp": {
+            "R1": 0,
+            "R3": 7589
+          },
+          "mod_temp1": {
+            "R1": 2139,
+            "R3": 7991
+          },
+          "mod_temp2": {
+            "R1": 2093,
+            "R3": 7948
+          }
+        },
+        "physics": {
+          "ambient_temp": {
+            "slope_K_per_kWm2": 18.094,
+            "r2": 0.7
+          },
+          "site_ambient_temp": {
+            "slope_K_per_kWm2": 17.953,
+            "r2": 0.6656
+          }
+        }
+      },
+      "table": "q24_temperature_sensors.csv",
+      "figure": "q24_temperature_sensors.png"
+    },
+    "q25_correlations": {
+      "title": "Correlations",
+      "facts": {
+        "target_vs": {
+          "s01_inv1_AC_kW": 1.0,
+          "s01_inv2_AC_kW": 1.0,
+          "irradiance": 0.986,
+          "pyranometer": 0.984,
+          "poa_clearsky": 0.917,
+          "elev": 0.87,
+          "mod_temp1": 0.661,
+          "mod_temp2": 0.643,
+          "ambient_temp": 0.175,
+          "site_ambient_temp": 0.178,
+          "wind_speed": 0.182,
+          "s01_inv1_DC_kW": 0.999
+        },
+        "hours": 9319
+      },
+      "table": "q25_correlations.csv",
+      "figure": "q25_correlations.png"
+    },
+    "q26_lags": {
+      "title": "Lag correlations",
+      "facts": {
+        "target": {
+          "1": 0.8967,
+          "2": 0.874,
+          "3": 0.8735,
+          "7": 0.8694,
+          "14": 0.8573
+        },
+        "clear_sky_index": {
+          "1": 0.3366,
+          "2": 0.1876,
+          "3": 0.1742,
+          "7": 0.167,
+          "14": 0.1209
+        },
+        "mod_temp1": {
+          "1": 0.9339,
+          "7": 0.8926,
+          "14": 0.8607
+        }
+      },
+      "table": "q26_lags.csv",
+      "figure": "q26_lags.png"
+    },
+    "q27_sky_conditions": {
+      "title": "Sky conditions",
+      "facts": {
+        "clear_pct": {
+          "DJF": 77.5,
+          "MAM": 87.9,
+          "JJA": 97.8,
+          "SON": 91.2
+        },
+        "overcast_pct": {
+          "DJF": 3.6,
+          "MAM": 1.9,
+          "JJA": 0.3,
+          "SON": 0.8
+        },
+        "median_kt": {
+          "DJF": 1.073,
+          "MAM": 1.083,
+          "JJA": 1.084,
+          "SON": 1.086
+        },
+        "kt_p95": 1.244674
+      },
+      "table": "q27_sky_conditions.csv",
+      "figure": "q27_sky_conditions.png"
+    },
+    "q28_weekday": {
+      "title": "Weekday effect",
+      "facts": {
+        "kruskal_p": 0.660128,
+        "kruskal_h": 4.122312,
+        "median_range": 0.0198,
+        "days": 805
+      },
+      "table": "q28_weekday.csv",
+      "figure": "q28_weekday.png"
+    },
+    "q29_long_term": {
+      "title": "Long-term performance",
+      "facts": {
+        "slope_pct_per_year_train": -1.128477,
+        "p_value_train": 0.001464,
+        "plant_vs_clear_sky_slope_train": -1.761629,
+        "plant_vs_clear_sky_p": 0.142312,
+        "sensor_vs_clear_sky_slope_train": -0.325967,
+        "sensor_vs_clear_sky_p": 0.534738,
+        "gamma_pct_per_K": -0.421,
+        "seasonal_range_pct": 3.298726,
+        "same_month_plant": {
+          "10": {
+            "2021-10": 0.862,
+            "2022-10": 0.84,
+            "2023-10": 0.83,
+            "2024-10": 0.855
+          },
+          "11": {
+            "2021-11": 0.892,
+            "2022-11": 0.881,
+            "2023-11": 0.866,
+            "2024-11": 0.885
+          },
+          "12": {
+            "2021-12": 0.894,
+            "2022-12": 0.895,
+            "2023-12": 0.867,
+            "2024-12": 0.883
+          },
+          "1": {
+            "2022-01": 0.958,
+            "2023-01": 0.924,
+            "2024-01": 0.907,
+            "2025-01": 0.91
+          },
+          "2": {
+            "2022-02": 0.926,
+            "2023-02": 0.921,
+            "2024-02": 0.909,
+            "2025-02": 0.919
+          }
+        }
+      },
+      "table": "q29_long_term.csv",
+      "figure": "q29_long_term.png"
+    },
+    "q30_unused_tags": {
+      "title": "Unused tags",
+      "facts": {
+        "precipitation_max": 0.0,
+        "precipitation_positive_minutes": 0,
+        "soiling_last_active_month": {
+          "soil": "2023-06",
+          "soiling01": "2024-06",
+          "soiling02": "2024-06"
+        },
+        "wind_held_pct": {
+          "wind_speed": 2.729364,
+          "wind_direction": 0.539352
+        },
+        "pf_one_pct": 47.814199
+      },
+      "table": "q30_unused_tags.csv",
+      "figure": "q30_unused_tags.png"
+    },
+    "q31_splits": {
+      "title": "Split comparison",
+      "facts": {
+        "test_calendar_months": "1,2,3,4,5,10,11,12",
+        "test_hours_JJA": 0,
+        "mean_ac_kw": {
+          "train": 1508.9,
+          "val": 1511.3,
+          "test": 1483.4
+        },
+        "clear_hour_pct": {
+          "train": 81.1,
+          "val": 84.9,
+          "test": 82.1
+        }
+      },
+      "table": "q31_splits.csv",
+      "figure": "q31_splits.png"
+    }
+  }
+}

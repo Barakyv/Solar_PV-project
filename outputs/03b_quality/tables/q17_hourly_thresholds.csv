@@ -1,0 +1,13 @@
+threshold,daytime_train_hours_affected
+coverage >= 30/60,39
+coverage >= 40/60,41
+coverage >= 45/60,42
+coverage >= 50/60,44
+coverage >= 55/60,44
+coverage >= 60/60,49
+op-limited share >= 0.01,382
+op-limited share >= 0.02,381
+op-limited share >= 0.05,379
+op-limited share >= 0.1,375
+op-limited share >= 0.2,355
+op-limited share >= 0.5,320

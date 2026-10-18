@@ -1,0 +1,3 @@
+pair,minutes,median_diff,p1_diff,p99_diff,pearson_r,diurnal_range_of_median_diff
+ambient_temp - site_ambient_temp,1261866,-0.064,-4.244,1.239,0.988,0.808
+mod_temp1 - mod_temp2,1262213,0.292,0.058,1.918,0.9997,1.186

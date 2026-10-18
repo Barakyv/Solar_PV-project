@@ -1,0 +1,3 @@
+column,minutes,share_below_20kW,share_20_to_100kW,median_ac_at_150_200_wm2,p1_ac_at_150_200_wm2
+s01_inv1_AC_kW,505463,0.00369,0.00027,216.9,132.1
+s01_inv2_AC_kW,505463,0.00422,0.00027,222.4,140.4

@@ -1,0 +1,9 @@
+column,fault_minutes_train,neighbours_checked,normal_change_p99_9,neighbour_deviation_median,share_neighbours_beyond_normal
+ambient_temp,2129,28,0.503,0.096,0.25
+mod_temp1,1732,26,2.63,0.217,0.192
+mod_temp2,1732,26,2.79,0.284,0.192
+wind_speed,43,8,4.485,8.578,0.5
+s01_inv1_AC_kW,2,4,646.351,5.375,0.0
+s01_inv2_AC_kW,2,4,659.963,7.092,0.0
+s01_inv1_DC_kW,4,8,680.185,13.22,0.0
+s01_inv2_DC_kW,1,2,704.402,14.072,0.0

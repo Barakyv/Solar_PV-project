@@ -1,13 +1,13 @@
 {
   "stage": "05_clean",
-  "git_commit": "cc4946b",
+  "git_commit": "19dbcfd",
   "input": {
     "file": "scada_1min_true_utc.parquet",
     "sha256": "9d6a9fd9531b7c45a4ebd1953ef1a28c281a73e3b56a60db90df4dd60440e270"
   },
   "policy": {
     "file": "cleaning_policy.yaml",
-    "sha256": "b6281451893d558592888f04c737f66ec62741223cc56d5c369911be883604eb"
+    "sha256": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b"
   },
   "rows_1min": 1971360,
   "rows_1H": 32856,
@@ -21,7 +21,7 @@
     "R1_range:mod_temp2": 2093,
     "R3_frozen:mod_temp2": 7948,
     "R3_frozen:pyranometer": 8460,
-    "R7_scale_fault:pyranometer": 403409,
+    "R7_scale_fault:pyranometer": 409160,
     "R1_range:s01_inv1_AC_kW": 6,
     "R3_frozen:s01_inv1_AC_kW": 5693,
     "R4_night_zero:s01_inv1_AC_kW": 4980,
@@ -42,33 +42,38 @@
   "flag_minutes": {
     "downtime_inv1_flag": 4182,
     "downtime_inv2_flag": 4404,
-    "curtail_flag": 11960,
-    "op_limited_flag": 17973
+    "curtail_flag": 10152,
+    "derate_inv1_flag": 7094,
+    "derate_inv2_flag": 11937,
+    "op_limited_flag": 35039
   },
   "hours_by_split": {
     "train": {
       "daytime_hours": 9698,
-      "op_limited_hours": 193,
+      "op_limited_hours": 379,
       "hours_with_downtime": 110,
-      "hours_with_curtailment": 88,
+      "hours_with_curtailment": 59,
+      "hours_with_derate": 245,
       "target_nan_hours": 42,
       "polled_hours": 0,
       "mixed_hours": 0
     },
     "val": {
       "daytime_hours": 2902,
-      "op_limited_hours": 106,
+      "op_limited_hours": 146,
       "hours_with_downtime": 18,
       "hours_with_curtailment": 90,
+      "hours_with_derate": 43,
       "target_nan_hours": 1,
       "polled_hours": 0,
       "mixed_hours": 0
     },
     "test": {
       "daytime_hours": 2580,
-      "op_limited_hours": 106,
+      "op_limited_hours": 186,
       "hours_with_downtime": 37,
       "hours_with_curtailment": 73,
+      "hours_with_derate": 93,
       "target_nan_hours": 5,
       "polled_hours": 1001,
       "mixed_hours": 70
@@ -79,7 +84,7 @@
     "p99_99_hourly": 2894.6
   },
   "outputs": {
-    "scada_1min_clean.parquet": "4e830bc98b218e5faaec07bf8af5314c303b923e1a74cba84795fc6bc3570cbf",
-    "scada_1H_clean.parquet": "1e78ad5e039b97fd971668da4df21a42d7ae694ded9ba81884b01ebcd9205bdb"
+    "scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873"
   }
 }

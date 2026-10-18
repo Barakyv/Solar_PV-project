@@ -1,0 +1,4 @@
+split,daytime_hours,target_nan_daytime_hours,pct,longest_gap_hours
+train,9698,42,0.433,9
+val,2902,1,0.034,1
+test,2580,5,0.194,2
