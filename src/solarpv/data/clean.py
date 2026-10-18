@@ -14,11 +14,12 @@ Value rules replace a wrong measurement; the rule that did it is kept in rule_<c
   R5 night stale  power > noise with the sun far below the horizon            -> NaN
   R6 dead DC      DC = 0 while the same inverter delivers AC                  -> NaN
   R7 scale fault  a redundant sensor off its reference by a constant factor   -> NaN for
-                  over a local day (the pyranometer read x0.75 for months)       that day
+                  over a local day or a UTC hour (the pyranometer read x0.75)    that period
 Precedence when several apply to one minute: R1, R3, R6, R7, R5, R2, R4.
 Flag rules never change a value (decision D-22):
   F1 downtime     sun up and high in-plane irradiance, inverter gives ~nothing
-  F2 curtailment  park setpoint below 100 %
+  F2 curtailment  park setpoint below 100 % (a commanded step, not a non-integer drift)
+  F3 derate       the inverter runs at ~75 % of its twin (status code, or AC ratio)
 The night rule uses true-UTC geometry, so real afternoon production is never zeroed (F-01b,
 test T-16). Hourly output: hourly_mean() of stage 4 on the cleaned minutes, plus the share of
 flagged minutes per hour, op_limited_flag (D-22) and hour_source (D-21).
@@ -55,9 +56,11 @@ ZERO_RULES = (2, 4)
 PRECEDENCE = (1, 3, 6, 7, 5, 2, 4)
 SOURCE_POLLED = 1
 DOWNTIME_FLAGS = {"s01_inv1_AC_kW": "downtime_inv1_flag", "s01_inv2_AC_kW": "downtime_inv2_flag"}
+DERATE_FLAGS = {"s01_inv1_AC_kW": "derate_inv1_flag", "s01_inv2_AC_kW": "derate_inv2_flag"}
+STATE_COLUMNS = {"s01_inv1_AC_kW": "s01_inv1_state", "s01_inv2_AC_kW": "s01_inv2_state"}
 CURTAIL_FLAG = "curtail_flag"
 OP_FLAG = "op_limited_flag"
-MINUTE_FLAGS = (*DOWNTIME_FLAGS.values(), CURTAIL_FLAG, OP_FLAG)
+MINUTE_FLAGS = (*DOWNTIME_FLAGS.values(), CURTAIL_FLAG, *DERATE_FLAGS.values(), OP_FLAG)
 SOURCE_COLUMNS = ("src_meteo", "src_inv1", "src_inv2")
 COUNTED = (TARGET, *AC_COLUMNS, "irradiance", "mod_temp1", "mod_temp2", "ambient_temp")
 
@@ -157,23 +160,33 @@ def rule_dc_dead(dc: np.ndarray, ac: np.ndarray, min_ac: float) -> np.ndarray:
 
 
 def rule_scale_fault(v: np.ndarray, ref: np.ndarray, elev: np.ndarray, day: np.ndarray,
-                     p: dict) -> np.ndarray:
-    """R7: local days on which the median ratio v / ref (sun high, reference bright) lies
-    outside p["ratio_range"]; the whole day of v is marked."""
+                     p: dict, hour: np.ndarray | None = None) -> np.ndarray:
+    """R7: periods (local days, and UTC hours if `hour` is given) on which the median ratio
+    v / ref over the usable minutes (sun high, reference bright; at least
+    p["min_minutes"][period] of them) lies outside p["ratio_range"]; the whole period of v is
+    marked."""
     ok = (np.isfinite(v) & np.isfinite(ref) & (elev > p["min_elevation"])
           & (ref > p["min_reference"]))
-    ratio = pd.Series(v[ok] / ref[ok]).groupby(day[ok]).median()
+    ratio = pd.Series(v[ok] / ref[ok])
     lo, hi = p["ratio_range"]
-    bad_days = ratio.index[(ratio < lo) | (ratio > hi)]
-    return np.isfinite(v) & np.isin(day, bad_days)
+    out = np.zeros(len(v), dtype=bool)
+    for period, key in (("day", day), ("hour", hour)):
+        if key is None:
+            continue
+        g = ratio.groupby(key[ok]).agg(["median", "size"])
+        g = g[g["size"] >= p["min_minutes"][period]]
+        bad = g.index[(g["median"] < lo) | (g["median"] > hi)]
+        out |= np.isin(key, bad)
+    return np.isfinite(v) & out
 
 
 def rule_masks(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
                policy: dict, ac: np.ndarray | None = None, ref: np.ndarray | None = None,
-               day: np.ndarray | None = None) -> dict[int, np.ndarray]:
+               day: np.ndarray | None = None, hour: np.ndarray | None = None
+               ) -> dict[int, np.ndarray]:
     """All value-rule masks for one column, before precedence. `ac`: the stage-4 AC of the
-    same inverter, for the DC columns (R6). `ref` and `day` (local-day number per minute): the
-    cleaned reference sensor, for R7."""
+    same inverter, for the DC columns (R6). `ref`, `day` and `hour` (local-day number and UTC
+    hour number per minute): the cleaned reference sensor, for R7."""
     none = np.zeros(len(v), dtype=bool)
     daytime = elev > policy["sun"]["daytime_min_elevation"]
     night = policy["night"]
@@ -193,15 +206,16 @@ def rule_masks(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
     if column in policy["dc_dead"]["pairs"] and ac is not None:
         masks[6] = rule_dc_dead(v, ac, policy["dc_dead"]["min_ac_kw"])
     if column in policy["scale_fault"]["pairs"] and ref is not None and day is not None:
-        masks[7] = rule_scale_fault(v, ref, elev, day, policy["scale_fault"])
+        masks[7] = rule_scale_fault(v, ref, elev, day, policy["scale_fault"], hour)
     return masks
 
 
 def apply_value_rules(column: str, v: np.ndarray, elev: np.ndarray, source: np.ndarray,
                       policy: dict, ac: np.ndarray | None = None, ref: np.ndarray | None = None,
-                      day: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+                      day: np.ndarray | None = None, hour: np.ndarray | None = None
+                      ) -> tuple[np.ndarray, np.ndarray]:
     """(cleaned values, rule code per minute, 0 = unchanged)."""
-    masks = rule_masks(column, v, elev, source, policy, ac, ref, day)
+    masks = rule_masks(column, v, elev, source, policy, ac, ref, day, hour)
     code = np.zeros(len(v), dtype=np.int8)
     for r in PRECEDENCE:
         code[masks[r] & (code == 0)] = r
@@ -223,10 +237,52 @@ def flag_downtime(ac: np.ndarray, irradiance: np.ndarray, poa_cs: np.ndarray, el
     return (elev > p["min_elevation"]) & bright & np.isfinite(ac) & (ac < p["max_ac_kw"])
 
 
+def true_run_lengths(mask: np.ndarray) -> np.ndarray:
+    """Length of the stretch of consecutive True values each minute belongs to (0 where False)."""
+    edges = np.flatnonzero(np.diff(np.r_[0, mask.astype(np.int8), 0]))
+    out = np.zeros(len(mask), dtype=np.int64)
+    for a, b in zip(edges[::2], edges[1::2], strict=True):
+        out[a:b] = b - a
+    return out
+
+
 def flag_curtailment(setpoint: np.ndarray, elev: np.ndarray, policy: dict) -> np.ndarray:
-    """F2: daytime minute with the park setpoint below 100 %."""
+    """F2: daytime minute with the park setpoint below 100 %, unless the setpoint is drifting
+    through non-integer values for longer than a step change takes."""
     p = policy["curtailment"]
-    return (elev > p["min_elevation"]) & np.isfinite(setpoint) & (setpoint < p["below"])
+    limited = np.isfinite(setpoint) & (setpoint < p["below"])
+    non_integer = limited & (np.abs(setpoint - np.round(setpoint)) > 1e-6)
+    drift = true_run_lengths(non_integer) > p["max_noninteger_run_minutes"]
+    return (elev > p["min_elevation"]) & limited & ~drift
+
+
+def flag_derate(ac: np.ndarray, other_ac: np.ndarray, state: np.ndarray, elev: np.ndarray,
+                policy: dict) -> np.ndarray:
+    """F3: the inverter produces, but in a derated status code for a sustained period, or its AC
+    stays at a stable fraction well below that of the other inverter (windowed log ratio: low
+    median, small inter-quartile range)."""
+    p = policy["derate"]
+    code = np.round(state)
+    integer = np.isfinite(state) & (np.abs(state - code) < 1e-6)
+    by_state = ((elev > p["min_elevation"]) & integer & np.isin(code, p["states"])
+                & np.isfinite(ac) & (ac >= p["min_ac_kw"]))
+    by_state &= true_run_lengths(by_state) >= p["state_min_run_minutes"]
+    both = ((elev > p["ratio_min_elevation"]) & np.isfinite(ac) & np.isfinite(other_ac)
+            & (ac > p["ratio_min_ac_kw"]) & (other_ac > p["ratio_min_ac_kw"]))
+    log_ratio = np.full(len(ac), np.nan)
+    log_ratio[both] = np.log(ac[both] / other_ac[both])
+    window = pd.Series(log_ratio).rolling(p["ratio_window_minutes"], center=True,
+                                          min_periods=p["ratio_min_valid_minutes"])
+    median = window.median().to_numpy()
+    iqr = (window.quantile(0.75) - window.quantile(0.25)).to_numpy()
+    by_ratio = both & (median < np.log(p["ratio_below"])) & (iqr < p["ratio_max_iqr"])
+    return by_state | by_ratio
+
+
+def utc_hour_number(index: pd.DatetimeIndex) -> np.ndarray:
+    """Hours since 1970-01-01 00:00 UTC of each minute."""
+    return ((index.tz_convert("UTC").tz_localize(None) - pd.Timestamp("1970-01-01"))
+            // pd.Timedelta(hours=1)).to_numpy()
 
 
 # ── whole table ────────────────────────────────────────────────────────────
@@ -238,6 +294,7 @@ def clean_minutes(df: pd.DataFrame, elev: np.ndarray, poa_cs: np.ndarray, policy
     and site_total recomputed from the cleaned inverters."""
     out = df.copy()
     day = local_day_number(df.index)
+    hour = utc_hour_number(df.index)
     references = set(policy["scale_fault"]["pairs"].values())
     columns = sorted(cleaned_columns(policy), key=lambda c: c not in references)
     for col in columns:  # reference sensors first: R7 compares against their cleaned values
@@ -250,7 +307,7 @@ def clean_minutes(df: pd.DataFrame, elev: np.ndarray, poa_cs: np.ndarray, policy
         ref_col = policy["scale_fault"]["pairs"].get(col)
         ref = out[ref_col].to_numpy(dtype=float) if ref_col in out else None
         values, code = apply_value_rules(col, df[col].to_numpy(dtype=float), elev, source, policy,
-                                         ac, ref, day)
+                                         ac, ref, day, hour)
         out[col] = values
         out[f"rule_{col}"] = code
     out[TARGET] = out[list(AC_COLUMNS)].sum(axis=1, min_count=len(AC_COLUMNS))
@@ -259,7 +316,12 @@ def clean_minutes(df: pd.DataFrame, elev: np.ndarray, poa_cs: np.ndarray, policy
         out[name] = flag_downtime(out[ac].to_numpy(), irr, poa_cs, elev, policy)
     setpoint = df[policy["curtailment"]["setpoint_column"]].to_numpy(dtype=float)
     out[CURTAIL_FLAG] = flag_curtailment(setpoint, elev, policy)
-    out[OP_FLAG] = out[list(DOWNTIME_FLAGS.values())].any(axis=1) | out[CURTAIL_FLAG]
+    for (ac, name), other in zip(DERATE_FLAGS.items(), reversed(AC_COLUMNS), strict=True):
+        state = (df[STATE_COLUMNS[ac]].to_numpy(dtype=float) if STATE_COLUMNS[ac] in df
+                 else np.full(len(df), np.nan))
+        out[name] = flag_derate(out[ac].to_numpy(), out[other].to_numpy(), state, elev, policy)
+    flags = [*DOWNTIME_FLAGS.values(), CURTAIL_FLAG, *DERATE_FLAGS.values()]
+    out[OP_FLAG] = out[flags].any(axis=1)
     return out
 
 
@@ -336,6 +398,7 @@ def hours_by_split(hourly: pd.DataFrame, site) -> dict:
     day = daytime_mask(hourly.index, site)
     split = split_of(hourly.index)
     down = (hourly["frac_downtime_inv1_flag"] + hourly["frac_downtime_inv2_flag"]) > 0
+    derate = (hourly["frac_derate_inv1_flag"] + hourly["frac_derate_inv2_flag"]) > 0
     out = {}
     for s in ("train", "val", "test"):
         m = day & (split == s)
@@ -344,6 +407,7 @@ def hours_by_split(hourly: pd.DataFrame, site) -> dict:
             "op_limited_hours": int((hourly[OP_FLAG] & m).sum()),
             "hours_with_downtime": int((down & m).sum()),
             "hours_with_curtailment": int(((hourly["frac_curtail_flag"] > 0) & m).sum()),
+            "hours_with_derate": int((derate & m).sum()),
             "target_nan_hours": int(hourly.loc[m, TARGET].isna().sum()),
             "polled_hours": int(((hourly["hour_source"] == "polled") & m).sum()),
             "mixed_hours": int(((hourly["hour_source"] == "mixed") & m).sum()),

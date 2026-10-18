@@ -5,12 +5,16 @@
 """
 
 import nbformat
+import pandas as pd
 from nbclient import NotebookClient
 
-from solarpv.config.paths import REPO_ROOT
+from solarpv.config.paths import OUTPUTS_DIR, REPO_ROOT
 
 NB = REPO_ROOT / "notebooks" / "02_eda.ipynb"
 FIG = "../outputs/03_eda/figures"
+# numbers quoted in the text are read from the stage-3 tables, never typed
+SPLITS = pd.read_csv(OUTPUTS_DIR / "03_eda" / "tables" / "table_splits.csv").set_index("split")
+TEST = SPLITS.loc["test"]
 
 md = nbformat.v4.new_markdown_cell
 code = nbformat.v4.new_code_cell
@@ -51,11 +55,12 @@ whole period, with no step that would indicate a change of equipment or capacity
 A-16). The hatched area is the second data source of 2025 (F-18); dashed lines mark the two
 logger-clock resyncs (F-15)."""),
     code("""tables["table_splits"]"""),
-    md("""The split is temporal and defined in UTC. Exact counts replace the approximate values of
-the submitted report (train ~21,049 h there; 21,195 h here). The test period has 2,580 daytime hours
-(sun above 5° at mid-hour, F-02), of which 106 are op-limited (inverter stop or curtailment,
-D-22) and 1,001 come from the polled source (D-21). Validation and training contain no polled
-data, so the second source never enters training."""),
+    md(f"""The split is temporal and defined in UTC. Exact counts replace the approximate values of
+the submitted report (train ~21,049 h there; {SPLITS.loc["train", "hours"]:,} h here). The test
+period has {TEST["daytime_hours"]:,} daytime hours (sun above 5° at mid-hour, F-02), of which
+{TEST["daytime_op_limited"]} are op-limited (inverter stop, curtailment or derated inverter, D-22)
+and {TEST["daytime_polled"]:,} come from the polled source (D-21). Validation and training contain
+no polled data, so the second source never enters training."""),
     md(f"""## 2. Time base: the original read local time as UTC (F-01)
 
 ![time bug]({FIG}/fig02_time_bug.png)"""),
@@ -139,11 +144,13 @@ long lags and with the value of weather forecasts (stage 6b)."""),
 
 ![operations]({FIG}/fig09_operations.png)
 
-Inverter stops and grid curtailment affect from a few up to about 45 daytime hours per month, with
-curtailment frequent in spring 2024 (validation) and autumn 2024 (test). These hours stay in the
-data with their flags: they are excluded from the training loss and from past-day features,
-included in the main evaluation and excluded in a secondary one (D-22). Missing-target hours
-come from communication freezes."""),
+Inverter stops, grid curtailment and derated inverters (one inverter running at about 75 % of
+the other for hours or days; flag F3, found in stage 3b) affect from a few up to about 90 daytime
+hours per month. Curtailment is frequent in spring 2024 (validation) and autumn 2024 (test);
+derates cluster in 2023. These hours stay in the data with their flags: they are excluded from the
+training loss and from past-day features, included in the main evaluation and excluded in a
+secondary one (D-22). Missing-target hours come from communication freezes. The data-quality
+notebook (`02b_data_quality.ipynb`) gives the evidence for every flag and threshold."""),
     md("""## 9. What this means for the next stages
 
 - All geometry is now in phase with production (section 2); the clear-sky and solar-position

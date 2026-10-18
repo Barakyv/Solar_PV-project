@@ -33,6 +33,7 @@ SOURCES = {
     "eda_physics": OUTPUTS_DIR / "03_eda" / "tables" / "table_physics.csv",
     "eda_sensors": OUTPUTS_DIR / "03_eda" / "tables" / "table_sensors.csv",
     "eda_manifest": OUTPUTS_DIR / "03_eda" / "eda_manifest.json",
+    "quality_manifest": OUTPUTS_DIR / "03b_quality" / "quality_manifest.json",
 }
 
 
@@ -196,6 +197,59 @@ def build() -> str:
             "range of pyranometer / irradiance after R7, monthly median":
             f"{sensors['pyranometer_over_irradiance_after_cleaning'].min()} .. "
             f"{sensors['pyranometer_over_irradiance_after_cleaning'].max()}"}),
+        "",
+    ]
+    q = {k.split("_")[0]: v["facts"] for k, v in load("quality_manifest")["analyses"].items()}
+    parts += [
+        "## N10. Data quality before and after cleaning (stage 3b)",
+        "",
+        f"Produced at commit {load('quality_manifest')['git_commit']}; 31 analyses, facts in "
+        "`outputs/03b_quality/quality_manifest.json`.",
+        "",
+        kv({"raw export: NaN in all 27 tags (Q01)": q["q01"]["raw_nan_total"],
+            "stage-4 detection: ambiguous tag-hours (Q03)": q["q03"]["ambiguous_share"],
+            "R1: largest normal power / upper limit (Q05)":
+                max(q["q05"]["power_largest_inside_over_upper"].values()),
+            "R1: smallest spike / upper limit (Q05)":
+                min(v for v in q["q05"]["power_smallest_above_over_upper"].values() if v),
+            "R1 margin: temperature-fault neighbours beyond normal change (Q06)":
+                q["q06"]["share_beyond_normal"]["temperatures"],
+            "R2: minimum irradiance, train [W/m2] (Q07)":
+                round(q["q07"]["irradiance_min_train"], 2),
+            "R3: irradiance share(>=15 min) / share(>=60 min) (Q08)":
+                round(q["q08"]["ratio_15_60"]["irradiance"], 3),
+            "R3: frozen daytime minute-columns in multi-column freezes (Q09)":
+                q["q09"]["share_multi_column_train"],
+            "R3: freeze events (all periods) (Q09)": q["q09"]["events_all"],
+            "R3 margin: resume minutes that are blends, train (Q10)": q["q10"]["blend_share_train"],
+            "R4: candidates in twilight (-3..0 deg) (Q11)":
+                q["q11"]["r4_candidates_in_twilight_share"],
+            "R5: minutes in or next to a freeze (Q11)": q["q11"]["r5_share_in_or_next_to_freeze"],
+            "R6: inverter-1 minutes in March 2023 (Q12)": q["q12"]["r6_share_top_month"]["inv1"],
+            "R7: good / faulty daily median ratio, train (Q13)":
+                f"{q['q13']['train_good_median']:.3f} / {q['q13']['train_faulty_median']:.3f}",
+            "R7: hours added by the hourly check, train (Q13)": q["q13"]["train_extra_hours"],
+            "F1: minutes with 20-100 kW, inverter 1 (Q14)":
+                q["q14"]["share_20_to_100"]["s01_inv1_AC_kW"],
+            "F2: relative output at setpoint 0/25/50/75 (Q15)": " / ".join(
+                str(v) for v in q["q15"]["relative_output_by_setpoint_train"].values()),
+            "F2: train drift minutes no longer flagged (Q15)":
+                q["q15"]["minutes_below_100_by_split"]["train"]
+                - q["q15"]["flagged_minutes_by_split"]["train"],
+            "F3: derate daytime hours train / val / test (Q16)": " / ".join(
+                str(v) for v in q["q16"]["hours_by_split"].values()),
+            "F3: energy not produced train / val / test [MWh] (Q16)": " / ".join(
+                str(v) for v in q["q16"]["lost_mwh_by_split"].values()),
+            "op-limited train hours at share 0.01 / 0.05 / 0.10 (Q17)": " / ".join(
+                str(q["q17"]["op_hours_at"][k]) for k in ("0.01", "0.05", "0.1")),
+            "days with energy changed > 0.1 % (Q20)": q["q20"]["days_changed"],
+            "inverter imbalance hours without / with F3 (Q22)":
+                f"{q['q22']['imbalance_hours_without_f3']} / {q['q22']['imbalance_hours']}",
+            "observed hourly peak / 3,449 kW (Q23)": round(q["q23"]["share_of_capacity"], 3),
+            "weekday effect, Kruskal-Wallis p (Q28)": round(q["q28"]["kruskal_p"], 3),
+            "performance trend, train [%/yr] (Q29)": round(q["q29"]["slope_pct_per_year_train"], 2),
+            "irradiance sensor vs clear sky, trend [%/yr] (Q29)":
+                round(q["q29"]["sensor_vs_clear_sky_slope_train"], 2)}),
         "",
     ]
     return "\n".join(parts)

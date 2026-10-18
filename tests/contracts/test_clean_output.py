@@ -125,12 +125,18 @@ def _conditions(col, before, sun, after=None):
         cond[6] = finite & (a == 0) & (ac > POLICY["dc_dead"]["min_ac_kw"])
     if col in POLICY["scale_fault"]["pairs"] and after is not None:
         p = POLICY["scale_fault"]
+        lo, hi = p["ratio_range"]
         ref = after[p["pairs"][col]]
-        day = pd.Series(v.index.tz_convert(C.TIMEZONE_LOCAL).date, index=v.index)
+        periods = {"day": pd.Series(v.index.tz_convert(C.TIMEZONE_LOCAL).date, index=v.index),
+                   "hour": pd.Series(v.index.floor("h"), index=v.index)}
         use = v.notna() & ref.notna() & (elev > p["min_elevation"]) & (ref > p["min_reference"])
-        ratio = (v[use] / ref[use]).groupby(day[use]).median()
-        bad = ratio.index[(ratio < p["ratio_range"][0]) | (ratio > p["ratio_range"][1])]
-        cond[7] = finite & day.isin(set(bad)).to_numpy()
+        hit = np.zeros(len(v), dtype=bool)
+        for name, key in periods.items():
+            g = (v[use] / ref[use]).groupby(key[use]).agg(["median", "size"])
+            g = g[g["size"] >= p["min_minutes"][name]]
+            bad = set(g.index[(g["median"] < lo) | (g["median"] > hi)])
+            hit |= key.isin(bad).to_numpy()
+        cond[7] = finite & hit
     return cond
 
 
@@ -199,10 +205,42 @@ def test_flags_never_change_values(before, after):
         assert ((a == b) | (np.isnan(a) & np.isnan(b))).all(), col
 
 
+def _expected_curtailment(after, elev):
+    """F2 by pandas: setpoint below 100, except runs of non-integer values longer than the
+    policy's maximum (a drift, not a commanded step)."""
+    c = POLICY["curtailment"]
+    sp = after[c["setpoint_column"]]
+    limited = sp < c["below"]
+    drifting = limited & ((sp - sp.round()).abs() > 1e-6)
+    run = drifting.ne(drifting.shift()).cumsum()
+    length = drifting.groupby(run).transform("size")
+    drift = drifting & (length > c["max_noninteger_run_minutes"])
+    return (elev > c["min_elevation"]) & (limited & ~drift).to_numpy()
+
+
+def _expected_derate(after, elev, i):
+    """F3 by pandas: status code 5/6 while producing for a sustained run, or a stable windowed
+    AC ratio to the other inverter below the policy's threshold."""
+    p = POLICY["derate"]
+    ac, other = after[f"s01_inv{i}_AC_kW"], after[f"s01_inv{3 - i}_AC_kW"]
+    state = pd.Series((elev > p["min_elevation"]) & after[f"s01_inv{i}_state"].isin(p["states"])
+                      .to_numpy() & (ac >= p["min_ac_kw"]).to_numpy())
+    run = state.ne(state.shift()).cumsum()
+    by_state = state & (state.groupby(run).transform("size") >= p["state_min_run_minutes"])
+    both = ((elev > p["ratio_min_elevation"]) & (ac > p["ratio_min_ac_kw"]).to_numpy()
+            & (other > p["ratio_min_ac_kw"]).to_numpy())
+    ratio = np.log(ac.where(both) / other.where(both))
+    window = ratio.rolling(p["ratio_window_minutes"], center=True,
+                           min_periods=p["ratio_min_valid_minutes"])
+    stable = (window.quantile(0.75) - window.quantile(0.25)) < p["ratio_max_iqr"]
+    by_ratio = both & ((window.median() < np.log(p["ratio_below"])) & stable).to_numpy()
+    return by_state.to_numpy() | by_ratio
+
+
 @pytest.mark.slow
 def test_flags_match_their_definition(after, sun):
     elev, poa = sun
-    d, c = POLICY["downtime"], POLICY["curtailment"]
+    d = POLICY["downtime"]
     irr = after["irradiance"].to_numpy()
     bright = np.where(np.isfinite(irr), irr > d["min_irradiance"],
                       poa > d["fallback_min_poa_clearsky"])
@@ -210,10 +248,11 @@ def test_flags_match_their_definition(after, sun):
         ac = after[f"s01_inv{i}_AC_kW"].to_numpy()
         expected = (elev > d["min_elevation"]) & bright & np.isfinite(ac) & (ac < d["max_ac_kw"])
         assert np.array_equal(after[f"downtime_inv{i}_flag"].to_numpy(), expected)
-    sp = after[c["setpoint_column"]].to_numpy()
-    expected = (elev > c["min_elevation"]) & (sp < c["below"])
-    assert np.array_equal(after["curtail_flag"].to_numpy(), expected)
-    op = after[["downtime_inv1_flag", "downtime_inv2_flag", "curtail_flag"]].any(axis=1)
+        assert np.array_equal(after[f"derate_inv{i}_flag"].to_numpy(),
+                              _expected_derate(after, elev, i)), f"derate inv{i}"
+    assert np.array_equal(after["curtail_flag"].to_numpy(), _expected_curtailment(after, elev))
+    op = after[["downtime_inv1_flag", "downtime_inv2_flag", "curtail_flag", "derate_inv1_flag",
+                "derate_inv2_flag"]].any(axis=1)
     assert np.array_equal(after["op_limited_flag"].to_numpy(), op.to_numpy())
 
 

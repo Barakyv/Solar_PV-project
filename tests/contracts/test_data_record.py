@@ -56,18 +56,19 @@ def test_every_processed_stage_has_a_section(record):
 def test_every_cleaning_rule_is_described(record):
     policy = yaml.safe_load((CONFIGS_DIR / "cleaning_policy.yaml").read_text(encoding="utf-8"))
     rules = ["R1 range", "R2 offset", "R3 frozen", "R4 night zero", "R5 night stale",
-             "R6 dead DC", "R7 scale fault", "F1 `downtime", "F2 `curtail"]
+             "R6 dead DC", "R7 scale fault", "F1 `downtime", "F2 `curtail", "F3 `derate"]
     for rule in rules:
         assert rule in record, rule
     for key in ("range", "range_margin_minutes", "frozen_min_minutes", "frozen_margin_minutes",
-                "night", "dc_dead", "scale_fault", "downtime", "curtailment", "hourly"):
+                "night", "dc_dead", "scale_fault", "downtime", "curtailment", "derate",
+                "hourly"):
         assert key in policy  # the record's rule table must follow the policy's sections
 
 
 def test_operation_ids_are_complete_and_unique(record):
     defined = re.findall(r"(?:\*\*|\| )OP-(\d{2})\b(?= —|\s\|)", record)
     numbers = [int(n) for n in defined]
-    assert len(numbers) >= 29, "OP pattern found too few entries"  # 29 documented on 2026-10-15
+    assert len(numbers) >= 31, "OP pattern found too few entries"  # 31 documented on 2026-10-18
     assert numbers == list(range(1, len(numbers) + 1)), numbers
     for ref in set(re.findall(r"OP-(\d{2})", record)):
         assert int(ref) <= len(numbers), f"OP-{ref} referenced but not defined"

@@ -1,4 +1,4 @@
-"""Stage-5 cleaning rules on synthetic data (docs/stage5_test_plan.md, T-22a..j).
+"""Stage-5 cleaning rules on synthetic data (docs/stage5_test_plan.md, T-22a..n).
 
 Thresholds come from the real configs/cleaning_policy.yaml, so a change of policy that breaks a
 documented behaviour fails here."""
@@ -163,6 +163,59 @@ def test_curtailment_is_flagged_by_setpoint_in_daytime_only():
     np.testing.assert_array_equal(out["s01_inv1_AC_kW"], df["s01_inv1_AC_kW"])
 
 
+def test_a_drifting_non_integer_setpoint_is_not_curtailment():
+    n = 30
+    sp = np.full(n, 100.0)
+    sp[2:4] = [83.4, 51.2]  # a commanded step to 50 %, blended in two minutes
+    sp[4:8] = 50.0
+    sp[10:25] = 98.7 - np.arange(15) * 1.13  # 15 minutes drifting through non-integer values
+    flag = _clean(_frame(n, iec_sp_w=sp))[CURTAIL_FLAG].to_numpy()
+    assert flag[2:8].all()
+    assert not flag[10:25].any()
+    assert not flag[[0, 1, 8, 9, 25]].any()
+
+
+# T-22m derated inverter ------------------------------------------------------
+
+def test_sustained_derated_status_code_is_flagged_a_start_up_episode_is_not():
+    n = 90
+    state = np.ones(n)
+    state[5:10] = 5  # a five-minute start-up episode
+    state[20:60] = 5  # forty minutes derated
+    state[40:42] = 6  # still derated, other code
+    state[65:75] = 5
+    ac1 = wiggle(n, 380.0)
+    ac1[70] = 10.0  # code 5 at 10 kW is a stop (F1): it splits the run into two short ones
+    df = _frame(n, s01_inv1_AC_kW=ac1, s01_inv2_AC_kW=wiggle(n, 390.0), s01_inv1_state=state,
+                s01_inv2_state=np.ones(n))
+    out = _clean(df)
+    flag = out["derate_inv1_flag"].to_numpy()
+    assert flag[20:60].all() and not flag[5:10].any() and not flag[65:75].any()
+    assert not out["derate_inv2_flag"].any()
+    assert out[OP_FLAG].to_numpy()[20:60].all()
+    np.testing.assert_array_equal(out["s01_inv1_AC_kW"], df["s01_inv1_AC_kW"])
+
+
+def test_sustained_low_ratio_to_the_twin_is_flagged_a_short_dip_is_not():
+    n = 120
+    inv2 = wiggle(n, 1000.0, 0.1)
+    inv1 = inv2 * 0.98
+    inv1[20:80] = inv2[20:80] * 0.75  # one hour derated while the status code stays 1
+    inv1[100:105] = inv2[100:105] * 0.6  # five minutes of a cloud edge over one field
+    df = _frame(n, s01_inv1_AC_kW=inv1, s01_inv2_AC_kW=inv2, s01_inv1_state=np.ones(n),
+                s01_inv2_state=np.ones(n))
+    clouds = df.copy()  # an hour of shadows moving over the two fields: low but unstable ratio
+    clouds["s01_inv1_AC_kW"] = inv1
+    clouds.iloc[20:80, 0] = inv2[20:80] * np.tile([0.4, 0.9, 0.55, 1.05, 0.6, 0.85], 10)
+    assert not _clean(clouds)["derate_inv1_flag"].any()
+    out = _clean(df)
+    flag = out["derate_inv1_flag"].to_numpy()
+    assert flag[30:70].all()
+    assert not flag[100:105].any() and not flag[:5].any()
+    assert not out["derate_inv2_flag"].any()
+    assert not _clean(df, elev=10.0)["derate_inv1_flag"].any()  # ratio judged above 15 deg
+
+
 # T-22i precedence and idempotence -------------------------------------------
 
 def test_first_rule_wins():
@@ -219,6 +272,36 @@ def test_pyranometer_scale_fault_removes_the_whole_local_day():
     assert (out["rule_pyranometer"][first_day] == 7).all()
     np.testing.assert_array_equal(out["pyranometer"][~first_day], pyr[~first_day])
     np.testing.assert_array_equal(out["irradiance"], irr)  # the reference is untouched
+
+
+def _two_days(fault):
+    """Two local days, sun up 09-15 local; fault(hour_local, day_index) -> pyranometer factor."""
+    idx = pd.date_range("2023-06-01 21:00", periods=2 * 1440, freq="min", tz="UTC")
+    hour = idx.tz_convert("Asia/Jerusalem").hour.to_numpy()
+    day = (np.arange(len(idx)) >= 1440).astype(int)
+    sunny = (hour >= 9) & (hour < 15)
+    irr = np.where(sunny, 800.0, 0.0) + np.arange(len(idx)) * 1e-4
+    pyr = irr * np.array([fault(h, k) for h, k in zip(hour, day, strict=True)])
+    df = _frame(len(idx), irradiance=irr, pyranometer=pyr).set_axis(idx)
+    out = clean_minutes(df, np.where(sunny, 50.0, -20.0), np.full(len(idx), 900.0), POLICY)
+    return out, pyr, hour, day
+
+
+def test_scale_fault_in_part_of_a_day_removes_those_hours():
+    out, pyr, hour, day = _two_days(lambda h, k: 0.75 if (k == 1 and h in (10, 11)) else 1.0)
+    faulty = (day == 1) & np.isin(hour, (10, 11))
+    assert out["pyranometer"][faulty].isna().all()
+    assert (out["rule_pyranometer"][faulty] == 7).all()
+    np.testing.assert_array_equal(out["pyranometer"][~faulty], pyr[~faulty])
+
+
+def test_a_period_with_too_few_usable_minutes_is_not_judged():
+    idx = pd.date_range("2023-06-02 09:00", periods=120, freq="min", tz="UTC")
+    irr = np.where(np.arange(120) < 15, 800.0, 0.0) + np.arange(120) * 1e-4
+    df = _frame(120, irradiance=irr, pyranometer=irr * 0.75).set_axis(idx)
+    elev = np.where(np.arange(120) < 15, 50.0, -20.0)  # 15 usable minutes only
+    out = clean_minutes(df, elev, np.full(120, 900.0), POLICY)
+    assert (out["rule_pyranometer"] != 7).all()
 
 
 # T-22k dead DC sensor ---------------------------------------------------------

@@ -73,6 +73,17 @@ def main() -> int:
     flag_changed = mutate(i, AC, 0.0)
     unflagged = after.copy()
     unflagged.iloc[pick(after["curtail_flag"]), unflagged.columns.get_loc("curtail_flag")] = False
+    underated = after.copy()  # added in stage 3b (F3, F2 drift, R7 per hour)
+    underated.iloc[pick(after["derate_inv1_flag"]),
+                   underated.columns.get_loc("derate_inv1_flag")] = False
+    sp = after["iec_sp_w"].to_numpy()
+    drift = (elev > 5) & (sp < 100) & (np.abs(sp - np.round(sp)) > 1e-6) & ~after["curtail_flag"]
+    drifted = after.copy()
+    drifted.iloc[pick(drift), drifted.columns.get_loc("curtail_flag")] = True
+    idx = np.flatnonzero(after["rule_pyranometer"].to_numpy() == 7)[:60]
+    pyr_kept = after.copy()
+    pyr_kept.iloc[idx, pyr_kept.columns.get_loc("pyranometer")] = before["pyranometer"].iloc[idx]
+    pyr_kept.iloc[idx, pyr_kept.columns.get_loc("rule_pyranometer")] = 0
     manifest = json.loads((T.STAGE / "cleaning_manifest.json").read_text(encoding="utf-8"))
     manifest["rule_minutes"][next(iter(manifest["rule_minutes"]))] += 1
 
@@ -97,6 +108,13 @@ def main() -> int:
             unflagged, sun)),
         ("manifest count off by one", lambda: T.test_log_and_manifest_match_the_output(
             after, manifest)),
+        ("derated minute not flagged", lambda: T.test_flags_match_their_definition(
+            underated, sun)),
+        ("setpoint drift flagged as curtailment", lambda: T.test_flags_match_their_definition(
+            drifted, sun)),
+        ("pyranometer scale fault kept",
+         lambda: T.test_every_change_is_explained_and_every_rule_hit_is_justified(
+             "pyranometer", before, pyr_kept, sun)),
     ]
     results = [expect_fail(name, fn) for name, fn in checks]
     return 0 if all(results) else 1

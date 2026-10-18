@@ -11,7 +11,7 @@ power–irradiance relation, variability, autocorrelation) is computed on **trai
 labelled so; descriptive overviews of the whole period mark val and test. Code:
 `solarpv.eda` (`python -m solarpv.eda`); outputs in `outputs/03_eda/` (figures, tables,
 manifest); narrative in `notebooks/02_eda.ipynb`; operations in the data-processing record
-(OP-28). Input: the stage-5 output, plus the raw files for the time-zone figure and the
+(OP-29). Input: the stage-5 output, plus the raw files for the time-zone figure and the
 stage-4/clock audit outputs.
 
 | # | Figure / table | Shows | Data | Check (T-30) |

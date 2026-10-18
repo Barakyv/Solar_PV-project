@@ -5,7 +5,8 @@ One notebook per stage. Logic lives in `src/solarpv/`; notebooks import it and e
 | Notebook | Stage | Module |
 |---|---|---|
 | `01_data_ingest.ipynb` | 2 | `solarpv.data.ingest` |
-| `02_eda.ipynb` | 3 | — |
+| `02_eda.ipynb` | 3 | `solarpv.eda` |
+| `02b_data_quality.ipynb` | 3b | `solarpv.eda.quality` (a markdown note under every code cell) |
 | `03_preprocessing.ipynb` | 4 | `solarpv.data.preprocess` |
 | `04_cleaning.ipynb` | 5 | `solarpv.data.clean` |
 | `04b_features_target.ipynb` | 6 | `solarpv.features.build`, `solarpv.features.target` |

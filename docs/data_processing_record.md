@@ -28,15 +28,17 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | — | ingest output | site and panel geometry (OP-06, OP-07) | `configs/site.private.yaml` | — |
 | — | ingest output | clock and data-source audits (OP-08–OP-13) | `configs/clock_offsets.csv`, `00_data_audit/` | — |
 | 4 | ingest output, clock offsets | source handling, clock correction, hourly means (OP-14–OP-17) | `data/processed/04_preprocess/` | `stage-04-passed` |
-| 5 | stage-4 minutes, cleaning policy | value rules, flags, hourly re-aggregation (OP-18–OP-27) | `data/processed/05_clean/`, `outputs/05_cleaning/` | `stage-05-passed` ² |
-| 3 | stage-5 output, raw files, audits | figures and tables of the data chapter; findings fed back into stage 5 (OP-28) | `outputs/03_eda/`, `notebooks/02_eda.ipynb` | `stage-03-passed` |
-| 8A | old LSTM predictions | evaluation-code check (OP-29) | `outputs/07_evaluation_fixture/` | `stage-08a-passed` |
+| 5 | stage-4 minutes, cleaning policy | value rules, flags, hourly re-aggregation (OP-18–OP-28) | `data/processed/05_clean/`, `outputs/05_cleaning/` | `stage-05-passed` ² |
+| 3 | stage-5 output, raw files, audits | figures and tables of the data chapter; findings fed back into stage 5 (OP-29) | `outputs/03_eda/`, `notebooks/02_eda.ipynb` | `stage-03-passed` |
+| 8A | old LSTM predictions | evaluation-code check (OP-30) | `outputs/07_evaluation_fixture/` | `stage-08a-passed` |
+| 3b | stages 2, 4, 5 | data quality before and after cleaning, evidence for every threshold; findings fed back into stage 5 (OP-31) | `outputs/03b_quality/`, `notebooks/02b_data_quality.ipynb` | `stage-03b-passed` |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
 unchanged (same sha256, N1).
-² Stage 5 was revised during stage 3 (R3 margin, new rule R7, OP-20 and OP-24); the current
-cleaning is the one at `stage-03-passed`.
+² Stage 5 was revised during stage 3 (R3 margin, new rule R7, OP-20 and OP-24) and again during
+stage 3b (R7 per hour, F2 drift, new flag F3: OP-24, OP-26, OP-27); the current cleaning is the
+one at `stage-03b-passed`.
 
 ## 2. Raw data (stage 0)
 
@@ -183,8 +185,9 @@ NaN if either inverter is missing.
 ## 7. Cleaning (stage 5, `solarpv.data.clean`, policy `configs/cleaning_policy.yaml`)
 
 The policy file holds every threshold; the evidence for each is
-`00_data_audit/cleaning_2026-10-15/explore_cleaning.py` (thresholds from physics and the train
-period). The test plan (`docs/stage5_test_plan.md`) was written before the code.
+`00_data_audit/cleaning_2026-10-15/explore_cleaning.py` and, in full, the stage-3b data-quality
+analysis (OP-31, `notebooks/02b_data_quality.ipynb`, Q05–Q17); thresholds come from physics and
+the train period. The test plan (`docs/stage5_test_plan.md`) was written before the code.
 
 *Original pipeline:* notebook 03 only added flags on 15-min data; the cleaning that fed
 notebook 04 was done in a step that did not survive and applied the night rule on the wrong
@@ -200,33 +203,37 @@ Value rules — a wrong measurement is replaced; the rule is stored per minute i
 | OP-18 | R1 range | outside the physical range (temperatures −20…60/90 °C, irradiance −20…1,600 W/m², power −20…1,897 kW per inverter, wind 0…60 m/s), plus neighbours: ±1 min on the minute source (blended 1-min averages), ±15 min on the polled source (interpolated towards the bad value) | NaN |
 | OP-19 | R2 offset | irradiance between −20 and 0 W/m² (sensor offset at night) | 0 |
 | OP-20 | R3 frozen | a run of one repeated value ≥ 30 min (ambient temperatures ≥ 60 min, 0.1 °C steps) that reaches daytime (sun > 10°); power runs of exactly 0 excluded (inverter stops); plus neighbours ±1 min (minute source) / ±15 min (polled), because when data resume the 1-min average blends the stale value with the real one — margin added after stage 3 found a 247 kW blend minute at sunrise on 2021-09-12 | NaN |
-| OP-21 | R4 night zero | sun below 0° and 0 < \|power\| ≤ 5 kW | 0 |
+| OP-21 | R4 night zero | sun below 0° and 0 < \|power\| ≤ 5 kW. Stage 3b showed there is no night noise (below −6° the inverters read exactly 0); 94 % of the readings R4 changes are tiny twilight production between −3° and 0° (238 kWh in 3¾ years). Kept as a definition — the target is exactly 0 when the sun is down, where k is undefined and nothing is evaluated | 0 |
 | OP-22 | R5 night stale | sun below −6° and power > 5 kW (frozen values during communication outages) | NaN |
 | OP-23 | R6 dead DC | DC = 0 while the same inverter delivers more than 100 kW AC (inverter 1, March 2023) | NaN |
-| OP-24 | R7 scale fault | per local day, median pyranometer / cleaned irradiance (sun > 30°, irradiance > 300 W/m²) outside 0.9–1.1 → the whole day. Added after stage 3 found the pyranometer at exactly ×0.75 from 2023-05-28 to 2023-12-31 and on days in Dec 2024 – Apr 2025, while the irradiance sensor stays consistent with clear-sky POA and DC (F-19) | NaN |
+| OP-24 | R7 scale fault | per local day **and per UTC hour**, median pyranometer / cleaned irradiance (sun > 30°, irradiance > 300 W/m²; at least 20 usable minutes in the period) outside 0.9–1.1 → the whole period. Added after stage 3 found the pyranometer at exactly ×0.75 from 2023-05-28 to 2023-12-31 and on days in Dec 2024 – Apr 2025, while the irradiance sensor stays consistent with clear-sky POA and DC (F-19). The hourly check and the minimum minutes were added in stage 3b: the fault also switches within a day (2021-11-05), and a freeze day had been judged on 2 minutes (F-21) | NaN |
 
 Flag rules — real plant events, values never changed (D-22):
 
 | ID | Flag | Condition | Use (D-22) |
 |---|---|---|---|
 | OP-25 | F1 `downtime_inv1/2_flag` | sun > 5°, in-plane irradiance > 150 W/m² (if missing: clear-sky POA > 300), inverter AC < 20 kW | out of the training loss; NaN in past-day features; included in the main evaluation, excluded in the secondary one |
-| OP-26 | F2 `curtail_flag` | sun > 5° and park setpoint `iec_sp_w` < 100 %. `iec_mode` is not used: output under modes 0/1 matches mode 2 (F-17) | same |
+| OP-26 | F2 `curtail_flag` | sun > 5° and park setpoint `iec_sp_w` < 100 %, except runs of non-integer setpoint values longer than 10 minutes. A commanded step (0/25/50/75 %) cuts output to about the setpoint plus ten points and shows at most 3 blended minutes; on 2022-02-09…12 the setpoint drifted through non-integer values for 4,309 minutes while output stayed normal (stage 3b, F-20). `iec_mode` is not used: output under modes 0/1 matches mode 2 (F-17) | same |
+| OP-27 | F3 `derate_inv1/2_flag` | the inverter produces (AC ≥ 20 kW, sun > 5°) with status code 5 or 6 for at least 30 minutes, or its AC stays at a stable fraction below 0.85 of the other inverter's (centred 31-minute window: median of log(AC/AC_other) < log 0.85 and inter-quartile range < 0.05; sun > 15°, both inverters > 100 kW). Partial outages: one inverter at ~75 % (once ~50 %) of its twin for hours or days, unseen by F1 (stage 3b, F-22) | same |
 
-**OP-27 — Hourly re-aggregation.** Same hourly rule as OP-17 on the cleaned minutes, plus per
-hour: share of minutes with each flag (`frac_*`), `op_limited_flag` (≥ 5 % of the hour flagged),
+**OP-28 — Hourly re-aggregation.** Same hourly rule as OP-17 on the cleaned minutes, plus per
+hour: share of minutes with each flag (`frac_*`), `op_limited_flag` (≥ 5 % of the hour flagged by
+F1, F2 or F3),
 `hour_source` (minute / polled / mixed, D-21) and valid-minute counts (`n_*`). Quality columns
 can never be model inputs (T-01).
 
 *Result (N7):* hourly maximum of site AC 2,948.4 kW (3,271.9 before; spikes removed);
-op-limited daytime hours 193 (train), 106 (val), 106 (test); daytime hours with a missing
-target 42 / 1 / 5, all from communication freezes. The pyranometer loses 403,409 minutes to R7
-(it is not a model input). Real twilight production (up to ~29 kW with
-the sun 0–3° below the horizon) is kept.
+op-limited daytime hours 379 (train), 146 (val), 186 (test), of which 245 / 43 / 93 with a
+derated inverter (F3) — before stage 3b they were 193 / 106 / 106; daytime hours with a missing
+target 42 / 1 / 5, all from communication freezes. The pyranometer loses 408,187 minutes to R7
+(it is not a model input). Real twilight production (up to ~29 kW with the sun 0–3° below the
+horizon) is kept.
 
 *Verification:*
 - runtime self-check: no value changes without a rule code;
-- T-22: 20 synthetic tests of every rule (including the R3 margin and R7), flag, precedence,
-  idempotence and the hourly flags;
+- T-22: 25 synthetic tests of every rule (including the R3 margin, R7 per day and per hour),
+  flag (including the F2 drift and both signs of F3), precedence, idempotence and the hourly
+  flags;
 - T-23: on the real output, for every cleaned column, a value changed if and only if a rule
   code is set, the new value is the one the rule prescribes, the rule's condition holds on the
   stage-4 value, and no minute meeting a condition was missed — re-derived with independent
@@ -234,17 +241,18 @@ the sun 0–3° below the horizon) is kept.
 - T-16 (no daytime production > 5 kW ever becomes 0), T-24 (ranges), T-25 (flags never change
   values; flags match their definition), T-26 (hourly output), T-27 (daytime energy unchanged on
   fault-free days, ±0.1 %), T-28 (log and manifest equal the output; policy and file hashes);
-- mutation check: 9 faults planted in a copy of the output, all 9 caught
-  (`00_data_audit/cleaning_2026-10-15/mutation_check_output.txt`).
+- mutation check: 12 faults planted in a copy of the output, all 12 caught
+  (`00_data_audit/cleaning_2026-10-15/mutation_check_output.txt`; the last three — an unflagged
+  derate, a flagged setpoint drift, a kept pyranometer fault — added in stage 3b).
 
 ## 8. Exploratory analysis (stage 3, `solarpv.eda`)
 
-**OP-28 — Figures and tables of the data chapter.** No data are changed. Plan:
+**OP-29 — Figures and tables of the data chapter.** No data are changed. Plan:
 `docs/stage3_eda_plan.md`; outputs: `outputs/03_eda/` (10 figures, 5 tables, manifest with input
 hashes); narrative: `notebooks/02_eda.ipynb`. Statistics that could inform a modelling choice are
 computed on train only. Results (N9):
 - exact split sizes (train 21,195 h, val 5,832 h, test 5,829 h; the submitted report gave
-  ~21,049 h for train); 2,580 test daytime hours, 106 of them op-limited, 1,001 polled;
+  ~21,049 h for train); 2,580 test daytime hours, 186 of them op-limited, 1,001 polled;
 - the time-zone bug measured on raw files: clear-day production centre +120.4 min (winter) and
   +173.6 min (summer) after solar noon under the original reading, +1.9 and +2.6 min after the
   rebuild;
@@ -255,35 +263,67 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§11). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§12). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
 
-**OP-29 — Reproduction of the old LSTM metrics.** The surviving old LSTM predictions
+**OP-30 — Reproduction of the old LSTM metrics.** The surviving old LSTM predictions
 (`submission_evidence/08_lstm_alignment/`) are evaluated with the new evaluation code: the
 daytime mask (sun > 5° at mid-hour) reproduces n = 2,510 / 2,512 / 2,514, and nRMSE matches the
 reported values within 1e-4 pp (indirect) and 0.0012 pp (direct) (N8, T-15). This proves that
 differences in the corrected results come from data and models, not from a changed metric.
 The old predictions are used only to test the code, never as a target.
 
-## 10. Differences from the original data pipeline
+## 10. Data quality before and after cleaning (stage 3b, `solarpv.eda.quality`)
+
+**OP-31 — Evidence for every threshold, and the effect of cleaning.** The analysis itself
+changes no data. Requested by the user on 2026-10-16. Plan written before the code:
+`docs/stage3b_quality_eda_plan.md`; outputs: `outputs/03b_quality/` (31 analyses, each with a
+table, a figure and the facts its note relies on, in `quality_manifest.json` with input hashes);
+narrative: `notebooks/02b_data_quality.ipynb`, a markdown note under every code cell, numbers
+formatted from the manifest. Thresholds are judged on train only; analyses over all periods are
+descriptive. Parts: the export as delivered (Q01–Q04), the evidence for each cleaning threshold
+(Q05–Q17), what cleaning changed (Q18–Q22), the cleaned data for modelling (Q23–Q31). Results
+(N10):
+- the raw export has no NaN at all: outages appear as repeated values (Q01), and 96 % of frozen
+  daytime minute-columns are freezes of the whole logger (Q09) — the basis of R3;
+- every R1 limit sits in an empty region (Q05); the R1/R3 margins are justified by blended
+  minutes next to faults (Q06, Q10); the R3 duration lies on a plateau of the run-length curve
+  (Q08); R5 removes only frozen values (Q11); R6 is one dead sensor (Q12); the R7 band separates
+  two populations at 1.00 and 0.75 (Q13); the F1 threshold sits in an empty valley (Q14); the
+  hourly thresholds are insensitive (Q17);
+- cleaning changes the tails, not the body of the data (Q19); energy changes only on 20 freeze or
+  spike days (Q20); nothing frozen is left (Q22).
+
+*Fed back into stage 5 (rerun; all tests and the mutation check green):* F-20 (F2 ignores a
+drifting non-integer setpoint, OP-26), F-21 (R7 per hour and with minimum minutes, OP-24),
+F-22 (new flag F3 for derated inverters, OP-27); R4's justification corrected (OP-21).
+*For later stages:* the clear-sky index is unstable at low sun (D-11); winter-morning row
+shading; the observed peak is 85 % of the 3,449 kW capacity (A-08); keep `ambient_temp` (D-09);
+past-day lags add little beyond the clear-sky features; no weekday effect; a decline of about
+1 % per year with a stable irradiance sensor; test has no summer. *Verification:* T-31 (every
+planned output exists and was made from the current inputs, the notebook was built from the
+current manifest with a note under every code cell, and the claims of the notes hold).
+
+## 11. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
 | Time base | local time labelled UTC | true UTC, DST decoded | OP-04, F-01 |
 | Logger clocks | not checked | drift up to −16 min corrected, residual ≤ 2 min | OP-09, OP-15, F-15 |
 | 2025 data source | 15-min snapshots used as minute data | detected, rebuilt at poll instants, own clock | OP-10–OP-14, F-18 |
-| Night rule | wrong geometry, afternoon production zeroed | true geometry, only ≤ 5 kW noise zeroed | OP-21, F-01b |
+| Night rule | wrong geometry, afternoon production zeroed | true geometry; only readings ≤ 5 kW below the horizon set to 0 (tiny twilight output; no night noise exists) | OP-21, F-01b |
 | Spikes, sentinel, −270 | left in the data (flag only) | removed with their blended neighbours | OP-18, F-14 |
 | Frozen values | not handled | removed (≥ 30 min repeated, reaching daytime, with a margin for blended minutes) | OP-20, OP-22 |
 | Redundant irradiance sensor | ×0.75 calibration fault for 217+ days unnoticed (not a model input) | detected against clear-sky POA and DC; faulty days removed | OP-24, F-19 |
-| Curtailment, stops | not handled; "13.5 % downtime" was a time-zone artefact | flagged, used per D-22 | OP-25, OP-26 |
+| Curtailment, stops | not handled; "13.5 % downtime" was a time-zone artefact | flagged, used per D-22; a drifting setpoint is not curtailment | OP-25, OP-26 |
+| Partial inverter outages | not handled (learned as weather) | flagged (F3), used per D-22 | OP-27, F-22 |
 | Quality flags as features | yes | blocked | OP-27, T-01 |
 | Panel tilt | 30° assumed | 20° measured | OP-07, F-13 |
 | Gap filling | backward fill | none at this stage; no future information later | §6.6 |
 
-## 11. Limitations carried into the report
+## 12. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -291,7 +331,14 @@ The old predictions are used only to test the code, never as a target.
   are noisier; measured floor 1.62 % of capacity RMSE (OP-13). Evaluation will be reported
   overall, by source, and without polled hours (D-21). A minute-resolution export from the
   operator would remove this limitation (Q-12).
-- Inverter state codes are undocumented; stops are detected from power and irradiance (OP-25).
+- Inverter state codes are undocumented; stops are detected from power and irradiance (OP-25),
+  and only codes 5 and 6 are used, for derates, because the AC ratio confirms their meaning
+  (OP-27).
+- Output per unit irradiance declines by about 1 % per year over train while the irradiance
+  sensor is stable against the clear-sky model (OP-31, Q29); no trend feature is used, so a small
+  level bias of the direct target in test is possible.
+- nRMSE of the direct target is normalised by 3,449 kW (as in the original); the observed peak is
+  85 % of that (OP-31, Q23).
 - Minute-source hours after the 2025 switch (a few hours, e.g. 2025-03-26, 2025-04-29) are
   corrected with the last estimated legacy offset (−15.9 min); a direct measurement on
   2025-04-29 gives −17.4 min, so these hours may be about 1.5 min off (within the ±2 min goal).
@@ -299,7 +346,7 @@ The old predictions are used only to test the code, never as a target.
   hours; the clear-sky reference scale matters for the k target and is examined in stage 6.
 - The array may face 2–3° west of the irradiance sensor; re-measured in stage 6 (A-04).
 
-## 12. Reproduction
+## 13. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -309,11 +356,13 @@ python -m solarpv.data.preprocess
 python -m solarpv.data.clean
 python -m solarpv.eda
 python scripts/make_eda_notebook.py
+python -m solarpv.eda.quality
+python scripts/make_quality_notebook.py
 python scripts/build_data_record.py
 pytest
 ```
 
-## 13. Pending operations (documented here when performed)
+## 14. Pending operations (documented here when performed)
 
 Stage 6 target `k` (D-11), array orientation re-measurement (A-04),
 features with D-22 masking; stage 6b GFS forecasts (D-12); stage 7 feature selection;

@@ -29,3 +29,7 @@ extend-exclude = ["old files", "submission_evidence", "Raw data"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# markdown tables and long sentences of the notebook text cannot be wrapped
+"scripts/make_quality_notebook.py" = ["E501"]
