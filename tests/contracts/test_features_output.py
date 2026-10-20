@@ -146,6 +146,11 @@ def test_masked_power_never_feeds_a_past_day_feature(tables, hourly):  # T-35
 def test_manifest_and_dictionary(manifest, tables):
     assert manifest["rows_per_horizon"] == {f"D{h}": C.N_HOURS_EXPECTED for h in C.HORIZONS}
     assert manifest["dst_guard_removed_values"] == {"D1": 28, "D2": 56, "D3": 84}
+    checks = manifest["target_checks"]
+    assert checks["daytime_min_theo_kw"] > C.THEO_MIN_KW  # §6.5: every daytime hour is valid
+    assert checks["max_inversion_error_kw"] < 1e-6  # T-11
+    assert sum(checks["k_suspect_hours"].values()) == int(tables[1]["k_suspect"].sum())
+    assert checks["k_suspect_op_limited"] == 0
     dictionary = pd.read_csv(OUTPUTS_DIR / "06_features" / "feature_dictionary.csv")
     assert set(dictionary["feature"]) == set(features_for_horizon(1))
     assert dictionary["available_at_T0"].notna().all()

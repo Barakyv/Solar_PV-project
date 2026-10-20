@@ -42,6 +42,7 @@ from solarpv.config.constants import (
     DERIVED_CONSTANTS_FILE,
     HORIZONS,
     LAG_DROP,
+    THEO_MIN_KW,
     TIMEZONE_LOCAL,
 )
 from solarpv.config.paths import CONFIGS_DIR, PROCESSED_DIR, output_dir, stage_dir
@@ -332,6 +333,38 @@ def add_decided_target(table: pd.DataFrame, decision: dict) -> pd.DataFrame:
     return table
 
 
+def target_checks(t: pd.DataFrame, ac_minutes: pd.Series) -> dict:
+    """Facts about the decided target that the data-processing record quotes (OP-33, OP-34):
+    the smallest theoretical power of a daytime hour (§6.5 assumes every daytime hour is above
+    the 50 kW threshold), the k_suspect hours (§6.5: examined and reported, never removed), and
+    the daytime hours whose AC mean rests on fewer than 60 minutes while theo covers the full
+    hour (the deviation from §6.4)."""
+    day = t["daytime"].to_numpy()
+    suspect_rows = t["k_suspect"].to_numpy(dtype=bool)
+    partial = day & t["site_total_AC_kW"].notna().to_numpy() & (ac_minutes.to_numpy() < 60)
+    valid = t["k_valid"].to_numpy(dtype=bool)
+    split = t["split"].to_numpy()
+
+    def by_split(mask: np.ndarray) -> dict[str, int]:
+        return {s: int((mask & (split == s)).sum()) for s in ("train", "val", "test")}
+
+    error = (t["target_k"] * t["theo_kw"] - t["site_total_AC_kW"]).abs()[valid]
+    elevation = t.loc[suspect_rows, "sun_elevation"]
+    return {
+        "daytime_min_theo_kw": round(float(t.loc[day, "theo_kw"].min()), 1),
+        "valid_hours": int(valid.sum()),
+        "max_inversion_error_kw": float(error.max()),
+        "k_suspect_hours": by_split(suspect_rows),
+        "k_suspect_in_daytime": int((suspect_rows & day).sum()),
+        "k_suspect_op_limited": int((suspect_rows & t["op_limited_flag"].to_numpy()).sum()),
+        "k_suspect_sun_elevation_deg": [round(float(elevation.min()), 1),
+                                        round(float(elevation.max()), 1)],
+        "k_suspect_max_theo_kw": round(float(t.loc[suspect_rows, "theo_kw"].max()), 1),
+        "partial_ac_daytime_hours": by_split(partial),
+        "partial_ac_min_minutes": int(ac_minutes[partial].min()),
+    }
+
+
 GROUP_METHODS = {  # how each group is computed, and why it is known at T0
     "clearsky": ("hourly mean of the 60 minute values (pvlib Ineichen clear sky, monthly Linke "
                  "turbidity; POA by Hay-Davies on the panel plane, albedo 0.2)",
@@ -473,7 +506,7 @@ def run() -> dict:
             dict_path = report_dir / "feature_dictionary.csv"
             dictionary.to_csv(dict_path, index=False, lineterminator="\n")
             files.append(dict_path)
-            derived = None
+            derived, checks = None, None
             if decision:
                 t = tables[1]
                 mdk = mean_daytime_k(t["target_k"], t["k_valid"], t["daytime"].to_numpy(),
@@ -487,6 +520,10 @@ def run() -> dict:
                     + yaml.safe_dump(derived, sort_keys=False), encoding="utf-8", newline="\n")
                 log.value("mean_daytime_k", derived["mean_daytime_k"])
                 files.append(DERIVED_CONSTANTS_FILE)
+                checks = target_checks(t, hourly["n_site_total_AC_kW"])
+                log.note(f"target checks: {checks}")
+                if checks["daytime_min_theo_kw"] <= THEO_MIN_KW:
+                    log.warn("a daytime hour has theo at or below the k threshold (§6.5)")
         out_hashes = log.outputs(files)
         manifest = {
             "stage": "06_features",
@@ -505,6 +542,7 @@ def run() -> dict:
                 den: share_above(base[f"k_{den}"], base[f"k_valid_{den}"].to_numpy() & train_day)
                 for den in DENOMINATORS},
             "derived_constants": derived,
+            "target_checks": checks,  # None until D-11 is decided
             "outputs": out_hashes,
             "warnings": log.warnings,
         }
