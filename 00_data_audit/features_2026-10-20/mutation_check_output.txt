@@ -1,0 +1,6 @@
+caught      (a) rolling from shift 1 day at D+2 (F-07)
+caught      (b) imputation with backward fill
+caught      (b2) imputation from the same hour on later days
+caught      (c) lags without the DST guard (25th hour)
+caught      (c) lags without the DST guard (perturbation, D+1)
+unmodified code passes

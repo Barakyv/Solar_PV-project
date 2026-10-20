@@ -1,0 +1,4 @@
+min_theo_kw,val_nrmse_kw_pct_mean,val_nrmse_kw_pct_seed_std
+50.0,7.9406,0.0878
+100.0,8.0572,0.0213
+150.0,7.8874,0.0492

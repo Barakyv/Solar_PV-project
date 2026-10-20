@@ -343,3 +343,55 @@ Produced at commit 19dbcfd; 31 analyses, facts in `outputs/03b_quality/quality_m
 | weekday effect, Kruskal-Wallis p (Q28) | 0.66 |
 | performance trend, train [%/yr] (Q29) | -1.13 |
 | irradiance sensor vs clear sky, trend [%/yr] (Q29) | -0.33 |
+
+## N11. Target and features (stage 6)
+
+Tables built at commit 4c5cb3c (log `outputs/06_features/runs/20261020T103033Z.log`); D-11 and L-04 decided at 034f72d.
+
+Orientation of the panels on the corrected data (A-04, F-23; 174 clear train days, sun above 15 deg):
+
+| method | tilt | azimuth | nrmse | tilt_range_1pct | azimuth_range_1pct |
+|---|---|---|---|---|---|
+| M1 DC one scale | 21.0 | 185.0 | 0.04948 | 20.0-21.5 | 183.5-186.5 |
+| M2 DC scale per day | 15.5 | 186.5 | 0.03436 | 12.0-19.0 | 185.0-188.5 |
+| M0 sensor scale per day | 16.5 | 180.5 | 0.03291 | 13.0-20.0 | 179.0-181.5 |
+| M3 DC centre vs clear-sky centre | 21.0 | 184.7 |  |  |  |
+
+D-11 criteria (train; criterion 3 on validation, 3 seeds):
+
+| criterion | ghi | poa |
+|---|---|---|
+| share k > 1 | 0.32446 | 0.05437 |
+| share k > 1.2 | 0.12541 | 0.00611 |
+| clear-day k spread (monthly median) | 0.4127 | 0.1079 |
+| validation nRMSE [% of 3,449 kW] | 8.0931 | 7.9406 |
+| seed std [pp] | 0.0561 | 0.0878 |
+
+| item | value |
+|---|---|
+| panel plane used (tilt / azimuth, transposition) | 21.0 / 185.0, haydavies |
+| D-11 decision (criteria won of 3) | poa (3) |
+| L-04 validation nRMSE at 50 / 100 / 150 kW | 7.9406 / 8.0572 / 7.8874 |
+| L-04 gain needed [pp] | 0.1188 |
+| training / evaluation threshold on theo [kW] | 50.0 / 50.0 |
+| MEAN_DAYTIME_K (train) | 0.788157 |
+| k with poa: shares > 1 / 1.2 / 1.5, train daytime | 0.05437 / 0.00611 / 0.00041 |
+| k with ghi: shares > 1 / 1.2 / 1.5, train daytime | 0.32446 / 0.12541 / 0.00994 |
+| rows per horizon | 32856 |
+| features D+1 / D+2 / D+3 | 74 / 67 / 60 |
+| hours masked before past-day features, inv1 / inv2 / site total | 474 / 548 / 733 |
+| DST guard: values removed at D+1 / D+2 / D+3 | 28 / 56 / 84 |
+| largest imputed share of a past-day feature (D+1) | 0.03564 |
+| warm-up hours | 336 |
+
+Checks of the decided target (`target_checks` in the manifest):
+
+| item | value |
+|---|---|
+| smallest theo of a daytime hour [kW] (threshold 50) | 62.2 |
+| k <-> kW: largest abs(k x theo - AC) [kW] on valid hours | 2.3e-13 on 15,809 hours |
+| k_suspect (k > 1.5) hours train / val / test | 9 / 7 / 7 |
+| k_suspect: in the daytime mask / op-limited | 8 / 0 |
+| k_suspect: sun elevation range [deg], largest theo [kW] | 1.4..9.7, 198.5 |
+| daytime hours with AC from fewer than 60 minutes train / val / test | 7 / 0 / 19 |
+| fewest AC minutes in such an hour | 46 |

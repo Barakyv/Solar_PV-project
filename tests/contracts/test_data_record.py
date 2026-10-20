@@ -19,6 +19,7 @@ STAGE_SECTIONS = {
     "01_ingest": "(stage 2,",
     "04_preprocess": "(stage 4,",
     "05_clean": "(stage 5,",
+    "06_features": "(stage 6,",
 }
 
 
@@ -68,7 +69,7 @@ def test_every_cleaning_rule_is_described(record):
 def test_operation_ids_are_complete_and_unique(record):
     defined = re.findall(r"(?:\*\*|\| )OP-(\d{2})\b(?= —|\s\|)", record)
     numbers = [int(n) for n in defined]
-    assert len(numbers) >= 31, "OP pattern found too few entries"  # 31 documented on 2026-10-18
+    assert len(numbers) >= 39, "OP pattern found too few entries"  # 39 documented on 2026-10-20
     assert numbers == list(range(1, len(numbers) + 1)), numbers
     for ref in set(re.findall(r"OP-(\d{2})", record)):
         assert int(ref) <= len(numbers), f"OP-{ref} referenced but not defined"
@@ -76,5 +77,5 @@ def test_operation_ids_are_complete_and_unique(record):
 
 def test_numbers_sections_referenced_exist(record):
     numbers = NUMBERS.read_text(encoding="utf-8")
-    for ref in sorted(set(re.findall(r"\bN(\d)\b", record))):
+    for ref in sorted(set(re.findall(r"\bN(\d{1,2})\b", record))):  # N1 ... N11
         assert f"## N{ref}." in numbers, f"N{ref}"

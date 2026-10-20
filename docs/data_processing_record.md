@@ -3,7 +3,7 @@
 Every operation performed on the data in the rebuild, in order, with its reason, method,
 parameters, result, verification and evidence. Written to be lifted into the final report
 (data chapter, "Reproduction and correction note", appendix). All numbers come from
-`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N9).
+`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N11).
 
 IDs: OP-xx = operation on the data (this file); F-xx finding, D-xx decision, A-xx assumption,
 T-xx test, all defined in `PROJECT_MASTER.md`. Corrections relative to the submitted report are
@@ -32,6 +32,7 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | 3 | stage-5 output, raw files, audits | figures and tables of the data chapter; findings fed back into stage 5 (OP-29) | `outputs/03_eda/`, `notebooks/02_eda.ipynb` | `stage-03-passed` |
 | 8A | old LSTM predictions | evaluation-code check (OP-30) | `outputs/07_evaluation_fixture/` | `stage-08a-passed` |
 | 3b | stages 2, 4, 5 | data quality before and after cleaning, evidence for every threshold; findings fed back into stage 5 (OP-31) | `outputs/03b_quality/`, `notebooks/02b_data_quality.ipynb` | `stage-03b-passed` |
+| 6 | stage-5 hourly data and minute flags | panel orientation, solar geometry, targets and D-11, D-22 masks, lags and rolling statistics, imputation, calendar (OP-32–OP-39) | `data/processed/06_features/`, `outputs/06_features/`, `configs/target.yaml`, `configs/derived_constants.yaml`, `notebooks/04b_features_target.ipynb` | `stage-06-passed` |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
@@ -263,7 +264,7 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§12). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§13). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
@@ -306,7 +307,208 @@ past-day lags add little beyond the clear-sky features; no weekday effect; a dec
 planned output exists and was made from the current inputs, the notebook was built from the
 current manifest with a note under every code cell, and the claims of the notes hold).
 
-## 11. Differences from the original data pipeline
+## 11. Target and features (stage 6, `solarpv.features`)
+
+**Records and conventions.**
+- Plan written before the code: `docs/stage6_plan.md`.
+- Every run writes a log (`outputs/06_features/runs/`) and is described in `docs/run_journal.md`
+  (R6-01 to R6-08).
+- Outputs:
+  - `data/processed/06_features/features_1H_D{1,2,3}.parquet`, one table per horizon;
+  - `outputs/06_features/`: feature dictionary, manifest, D-11 and L-04 evidence;
+  - `configs/target.yaml` and `configs/derived_constants.yaml`.
+- Narrative: `notebooks/04b_features_target.ipynb`, a note after every code cell.
+- Splits: decisions are made on train; D-11's third criterion and L-04 on validation, as
+  specified; the test split is used for nothing.
+- Numbers: N11.
+
+**OP-32 — Panel orientation re-measured on the corrected data (A-04, F-23).**
+- *Why:* OP-07 measured 20°/180° before the clock correction. Afterwards, the DC production
+  centre sat 1–2.7 min after solar noon. The plane enters the theoretical power (the denominator
+  of k) and the POA features.
+- *Data:*
+  - 174 clear train days, 6 per month over 29 months: a smooth DC curve, the top 40 % of
+    energy, no op-limited minute, DC complete;
+  - 10-min means with the sun above 15°;
+  - DC corrected for module temperature (−0.421 %/K, fitted on the same days).
+- *Method:* grid search of tilt and azimuth against Ineichen clear-sky POA (Hay–Davies), in four
+  ways:
+  - M1: one scale for all days;
+  - M2: a scale per day (the daily shape only);
+  - M3: the azimuth at which the DC centre coincides with the centre of the POA_cs curve;
+  - M0: the irradiance sensor, fitted like M2.
+- *Result (N11):*
+
+  | Method | Tilt | Azimuth |
+  |---|---|---|
+  | M1 | 21° | 185° |
+  | M2 | 15.5° | 186.5° |
+  | M3 | — | 184.7° |
+  | M0 (sensor) | 16.5° | 180.5° |
+
+  - The DC methods agree on about 185°, and the sensor faces 180°. It is the panels, not the
+    clocks, that face west of south.
+  - The difference exceeds the 2° rule of the plan, so the **panel plane is 21°/185°**
+    (`configs/panel_orientation.yaml`).
+  - The clock correction (OP-09) stays framed on the sensor plane 20°/180°, which M0 confirms.
+- *Evidence:* `00_data_audit/orientation_2026-10-20/` (script, results, figure); log
+  `20261020T094900Z`; R6-01.
+- *Original:* 30°/180° assumed.
+- *Open:* external confirmation of the row orientation (Q-11).
+
+**OP-33 — Solar geometry and clear-sky values per hour.**
+- *Method:* for every minute of the hour [t, t+1h):
+  - pvlib solar position (apparent zenith);
+  - Ineichen clear sky with pvlib's Linke-turbidity climatology;
+  - Hay–Davies transposition to the panel plane (albedo 0.2);
+  - angle of incidence;
+  - relative air mass (Kasten–Young; NaN with the sun below the horizon).
+
+  The hourly value is the mean of the 60 minutes (a circular mean for the azimuth),
+  left-labelled like the data. Sunrise, sunset and transit per local day come from pvlib (SPA).
+- *Why:* the data are hourly means, so the reference must be the hourly mean of the same
+  quantity, not a value at one instant.
+- *Deviations, both in `docs/deviations.md`:*
+  - The mean covers the full hour, not only the minutes in which AC is valid (§6.4). The
+    forecast converts k to kW with the theoretical power of the full hour, because data gaps are
+    not known at T0, so the training target uses the same value. It matters in 26 daytime hours
+    whose AC mean rests on 46–59 minutes (7 in train, 19 in test; N11).
+  - Hay–Davies instead of isotropic (§6.3): it is the model used for clear-sky POA since
+    stage 2, and it was fixed in the plan before the D-11 criteria were computed.
+- *Verification:* T-36 (the hourly value equals the mean of the minute values).
+
+**OP-34 — Targets: theoretical power, k, and the exact inversion (fixes F-06).**
+- *Method:*
+  - `theo_kw = CS × 3,449 / 1,000`, where CS is the hourly mean clear-sky irradiance. Both
+    GHI_cs and POA_cs are kept as columns until D-11.
+  - `k = AC / theo` where theo > 50 kW and AC is known (`k_valid`); 0 where theo ≤ 50 kW
+    (night, deep twilight); NaN where AC is missing.
+  - k is not clipped. `k_suspect = k > 1.5` is a flag only.
+- *Result (N11):*
+  - With POA, 5.4 % of valid daytime train hours are above 1, 0.61 % above 1.2 and 0.04 %
+    above 1.5. With GHI: 32.4 / 12.5 / 0.99 %.
+  - Every daytime hour (F-02 mask) has theo above 50 kW (smallest 62 kW). All daytime hours
+    with AC are therefore valid, as §6.5 assumes.
+- *The 23 k_suspect hours, examined (N11):*
+  - 9 in train, 7 in val, 7 in test.
+  - All are at low sun (hourly mean elevation 1.4–9.7°, theo below 200 kW) and none is
+    op-limited.
+  - Each is a ratio of two small numbers, sensitive to the clear-sky diffuse at low sun and to
+    the ±2 min clock uncertainty. They are kept and flagged.
+- *Verification:*
+  - T-11: k × theo equals AC within 2.3e-13 kW on 15,809 valid hours.
+  - T-13: no value sits at exactly 1.2, values above 1.2 are kept, and k_suspect means k > 1.5.
+- *Original:* k was a mean of 15-min ratios (not invertible), on local time labelled UTC, against
+  GHI_cs, and clipped at 1.2: 16.8 % of daytime test hours sat at exactly 1.2.
+
+**OP-35 — The k denominator (D-11), the training threshold (L-04) and MEAN_DAYTIME_K.**
+- *D-11 criteria, fixed in the plan before the run (majority wins):*
+  1. the share of k > 1 on train;
+  2. the spread of the monthly median k of clear days on train;
+  3. the validation nRMSE in kW of a fixed XGBoost trained on k and converted to kW: 400 trees,
+     depth 6, learning rate 0.05, seeds 42/123/777.
+- *D-11 result (N11):* POA wins all three:
+
+  | Criterion | POA | GHI |
+  |---|---|---|
+  | 1. share of k > 1 | 0.054 | 0.324 |
+  | 2. clear-day spread | 0.108 | 0.413 |
+  | 3. validation nRMSE | 7.94 ± 0.09 % | 8.09 ± 0.06 % |
+
+  **D-11 = POA_cs on the panel plane** (`configs/target.yaml`).
+- *L-04 (literature review):*
+  - Training thresholds on theo of 50, 100 and 150 kW were tried, three seeds each. A higher
+    threshold is adopted only if its gain exceeds max(0.05 pp, 2 × the pooled seed std).
+  - The best gain was 0.053 pp against the 0.119 pp needed, so the threshold **stays 50 kW**.
+  - The first rule, a gain of 0.05 pp on a single fit, chose 150 kW from noise. It was replaced
+    before any use (R6-03, R6-04).
+- *MEAN_DAYTIME_K:* the mean k over valid daytime train hours, **0.788157**
+  (`configs/derived_constants.yaml`). It is the denominator of the indirect nRMSE (§6.9). The
+  original's 0.6279 is kept only for the fixture (T-15).
+
+**OP-36 — Operation masks before the past-day features (D-22).**
+- *Method:* before any lag or rolling statistic:
+  - each inverter's AC becomes NaN in hours where its own stop (F1) or derate (F3), or the
+    curtailment (F2), covers at least 5 % of the minutes;
+  - the site total becomes NaN in op-limited hours;
+  - weather columns are not masked.
+- *Why:* a limitation is not weather. Yesterday's curtailed afternoon must not look like a
+  cloudy one.
+- *Result (N11):* 474 hours masked for inverter 1, 548 for inverter 2, 733 for the site total.
+- *Verification:* T-35.
+  - Synthetic: each inverter follows its own flags.
+  - Real data: no site-total lag equals the raw value of an op-limited hour.
+
+**OP-37 — Lags and rolling statistics, safe for every horizon (fixes F-07; D-04, D-16).**
+- *Issuance:* the forecast for local day D+h is issued at T0 = 00:00 local of day D+1.
+- *Lags:* the value at the same UTC hour d days back, d ∈ {1, 2, 3, 7, 14}. lag_1d is dropped
+  at D+2, and lag_1d and lag_2d at D+3 (LAG_DROP).
+- *Rolling:* the mean and standard deviation (ddof 1, at least 2 values) of the same UTC hour
+  over days h … h+N−1 back, for N = 3 and 7.
+- *DST guard:*
+  - A past value from hour s may feed hour t only if s + 1 h ≤ T0(t).
+  - On the 25-hour fall-back day, the 24-hour shift of the last hour reaches T0's own hour.
+    The guard turns such values into NaN.
+  - Over the four autumns: 28 / 56 / 84 values at D+1 / D+2 / D+3 (N11).
+- *Verification:*
+  - T-09 and T-18, synthetic and real: changing every source value from T0 on changes no
+    feature of the forecast, across both DST transitions and at every horizon.
+  - Mutation check: the original's rolling window and lags without the guard are both caught
+    (`00_data_audit/features_2026-10-20/`).
+- *Original:* the rolling windows started 1 day back at every horizon, so at D+2 and D+3 they
+  included days not known at T0 (F-07). DST was not handled.
+
+**OP-38 — Imputation of past-day gaps, and the warm-up.**
+- *Method:*
+  - A missing past-day value (data gap, OP-36 mask, DST guard) is filled with the median of the
+    same feature at the same UTC hour over the previous 30 days: earlier days only, at least
+    one value. Never backward fill.
+  - The first 14 days (336 hours) have too little history. They carry `warmup = True` and are
+    excluded from training (§6.6).
+- *Result (N11):* at most 3.56 % of a past-day feature is imputed (site-total lag 14d).
+- *Why the change:* the original (`04_feature_engineering_v4.ipynb`):
+  - filled with the expanding median of the whole column, nights included, which pulls
+    daytime gaps towards zero and mixes the seasons;
+  - then applied `ffill().bfill()`, which fills the first rows from later values.
+- *Verification:*
+  - T-34: only the same hour on earlier days is used, and later values change nothing.
+  - Mutation check: backward fill and a median from later days are both caught.
+
+**OP-39 — Calendar features and the contract (74 features; Q-05).**
+- *Method:*
+  - `hour_sin/cos` from the UTC hour (§6.6).
+  - month, season, day of year, day_of_week, hour_local and is_weekend from the local day of
+    the target hour.
+  - `is_weekend` = Friday and Saturday, the Israeli weekend.
+  - `time_to_solar_noon` = pvlib transit − middle of the hour.
+  - `day_length` = sunset − sunrise.
+  - `daylight_fraction` = day_length / the longest day of the year at the site.
+- *Contract:*
+  - `sun_azimuth` equalled `solar_azimuth` and is removed (Q-05). That leaves 74 features at
+    D+1, 67 at D+2 and 60 at D+3.
+  - Every feature has its definition, unit and availability at T0 in
+    `outputs/06_features/feature_dictionary.csv`.
+- *Original:*
+  - weekend Saturday–Sunday (`day_of_week >= 5`);
+  - `time_to_solar_noon` = local hour − 12, which overwrote an earlier pvlib transit value;
+  - `daylight_fraction` from a cosine approximation of the day length.
+- *Verification:*
+  - T-10: the contract (74 / 67 / 60).
+  - T-36: weekend, solar noon and hourly means.
+  - T-33: the tables, i.e. rows, UTC axis, feature sets and no leaky column (T-01).
+
+*Verification of the whole stage:*
+- The tests above, plus the mutation check: five planted leaks, all caught.
+- The outputs are byte-identical across reruns from clean commits (R6-07, R6-08).
+
+*For later stages:*
+- Clear-sky geometry still correlates with k (|r| about 0.4).
+- Yesterday's power correlates −0.28 with today's k. Proposal for stage 7, to be decided on
+  validation: lags of k for the indirect route.
+- k persists only weakly from one day to the next (0.34, Q26), so the GFS forecasts
+  (stage 6b) are expected to carry the skill.
+
+## 12. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
@@ -320,10 +522,15 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Curtailment, stops | not handled; "13.5 % downtime" was a time-zone artefact | flagged, used per D-22; a drifting setpoint is not curtailment | OP-25, OP-26 |
 | Partial inverter outages | not handled (learned as weather) | flagged (F3), used per D-22 | OP-27, F-22 |
 | Quality flags as features | yes | blocked | OP-27, T-01 |
-| Panel tilt | 30° assumed | 20° measured | OP-07, F-13 |
-| Gap filling | backward fill | none at this stage; no future information later | §6.6 |
+| Panel orientation | 30°/180° assumed | 21°/185° measured on the corrected data; the irradiance sensor at 20°/180° | OP-07, OP-32, F-13, F-23 |
+| Gap filling | backward fill; past-day gaps from the expanding median of the whole column (nights included), then ffill/bfill | none in stages 2–5; past-day gaps from the same UTC hour over the previous 30 days, never from later values | OP-38, A-15 |
+| Indirect target | k against GHI_cs, a mean of 15-min ratios, clipped at 1.2 | k = AC / theoretical power from POA_cs on the panel plane, hourly ratio of means, not clipped, exact inversion | OP-34, OP-35, F-06 |
+| MEAN_DAYTIME_K | 0.6279 | 0.788157 (train, valid daytime hours) | OP-35, §6.9 |
+| Rolling features | from 1 day back at every horizon (D+2/D+3 saw unknown days) | days h … h+N−1 back, DST guard | OP-37, F-07 |
+| Past-day power in limited hours | used as is | masked per inverter (D-22) | OP-36, D-22 |
+| Calendar | weekend Saturday–Sunday; solar noon = local hour − 12; daylight fraction approximated | weekend Friday–Saturday; solar noon from the transit; daylight fraction from sunrise and sunset | OP-39, Q-05 |
 
-## 12. Limitations carried into the report
+## 13. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -343,10 +550,17 @@ current manifest with a note under every code cell, and the claims of the notes 
   corrected with the last estimated legacy offset (−15.9 min); a direct measurement on
   2025-04-29 gives −17.4 min, so these hours may be about 1.5 min off (within the ±2 min goal).
 - The in-plane irradiance reads 10–20 % above the Ineichen clear-sky model at the clearest
-  hours; the clear-sky reference scale matters for the k target and is examined in stage 6.
-- The array may face 2–3° west of the irradiance sensor; re-measured in stage 6 (A-04).
+  hours. k is defined against the model (OP-34), and k → kW uses the same model, so the
+  model's scale does not bias any result in kW; it only sets the level of k (MEAN_DAYTIME_K
+  0.788, OP-35).
+- The panel plane 21°/185° is measured from the data (OP-32); external confirmation of the
+  row orientation is open (Q-11).
+- k is least stable at low sun: the 23 hours with k > 1.5 all have the sun below 10°
+  (OP-34).
+- Hourly clear-sky values cover the full hour while AC covers its valid minutes; 26 daytime
+  hours have 46–59 AC minutes (OP-33).
 
-## 13. Reproduction
+## 14. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -358,12 +572,16 @@ python -m solarpv.eda
 python scripts/make_eda_notebook.py
 python -m solarpv.eda.quality
 python scripts/make_quality_notebook.py
+python 00_data_audit/orientation_2026-10-20/orientation_check.py  # A-04 evidence; configs/panel_orientation.yaml is committed
+python -m solarpv.features.build
+python -m solarpv.features.decide_k     # writes configs/target.yaml (committed)
+python -m solarpv.features.build        # again, with the D-11 decision
+python scripts/make_features_notebook.py
 python scripts/build_data_record.py
 pytest
 ```
 
-## 14. Pending operations (documented here when performed)
+## 15. Pending operations (documented here when performed)
 
-Stage 6 target `k` (D-11), array orientation re-measurement (A-04),
-features with D-22 masking; stage 6b GFS forecasts (D-12); stage 7 feature selection;
-stage 9 models and the D-21 robustness check on val.
+Stage 6b GFS forecasts (D-12); stage 7 feature selection (including the proposal of k lags
+for the indirect route, §11); stage 9 models and the D-21 robustness check on val.

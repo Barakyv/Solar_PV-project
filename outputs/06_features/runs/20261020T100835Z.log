@@ -1,0 +1,46 @@
+[     0.0s] RUN     stage 06_features
+[     0.0s] RUN     command: python -m solarpv.features.build
+[     0.1s] RUN     git commit: 034f72d
+[     0.1s] RUN     started (UTC): 2026-10-20T10:08:35+00:00
+[     1.4s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     1.4s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.6s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.6s] NOTE    panel plane 21.0/185.0 (haydavies); D-11 decision: poa
+[     1.6s] STEP    load stage-5 hourly data and minute flags ...
+[     1.8s] VALUE   hours = 32856
+[     1.8s] STEP    load stage-5 hourly data and minute flags done in 0.2s
+[     1.8s] STEP    geometry, clear sky, calendar, targets ...
+[    19.3s] NOTE    k_ghi: valid daytime train hours 9656; shares above 1 / 1.2 / 1.5: {'k>1.0': 0.32446, 'k>1.2': 0.12541, 'k>1.5': 0.00994}
+[    19.4s] NOTE    k_poa: valid daytime train hours 9656; shares above 1 / 1.2 / 1.5: {'k>1.0': 0.05437, 'k>1.2': 0.00611, 'k>1.5': 0.00041}
+[    19.4s] STEP    geometry, clear sky, calendar, targets done in 17.6s
+[    19.4s] STEP    D-22 masks ...
+[    19.4s] NOTE    s01_inv1_AC_kW: 474 hours masked before past-day features
+[    19.4s] NOTE    s01_inv2_AC_kW: 548 hours masked before past-day features
+[    19.4s] NOTE    site_total_AC_kW: 733 hours masked before past-day features
+[    19.4s] STEP    D-22 masks done in 0.1s
+[    19.4s] STEP    past-day features and table for D+1 ...
+[    20.4s] VALUE   D1_dst_guard_removed_values = 28
+[    20.4s] VALUE   D1_max_imputed_share = 0.03564
+[    20.4s] VALUE   D1_features = 74
+[    20.4s] STEP    past-day features and table for D+1 done in 1.0s
+[    20.4s] STEP    past-day features and table for D+2 ...
+[    21.4s] VALUE   D2_dst_guard_removed_values = 56
+[    21.4s] VALUE   D2_max_imputed_share = 0.03564
+[    21.4s] VALUE   D2_features = 67
+[    21.4s] STEP    past-day features and table for D+2 done in 0.9s
+[    21.4s] STEP    past-day features and table for D+3 ...
+[    22.1s] VALUE   D3_dst_guard_removed_values = 84
+[    22.1s] VALUE   D3_max_imputed_share = 0.03564
+[    22.1s] VALUE   D3_features = 60
+[    22.1s] STEP    past-day features and table for D+3 done in 0.8s
+[    22.1s] STEP    write outputs ...
+[    22.8s] VALUE   mean_daytime_k = 0.788157
+[    22.8s] STEP    write outputs done in 0.7s
+[    22.8s] OUTPUT  data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[    22.8s] OUTPUT  data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[    22.9s] OUTPUT  data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[    22.9s] OUTPUT  outputs/06_features/feature_dictionary.csv sha256=c82475747943e9b7
+[    22.9s] OUTPUT  configs/derived_constants.yaml sha256=c4156747717471a9
+[    23.0s] NOTE    manifest written to data/processed/06_features and outputs/06_features
+[    23.0s] RUN     warnings: 0
+[    23.0s] RUN     status: ok; duration 23.0s

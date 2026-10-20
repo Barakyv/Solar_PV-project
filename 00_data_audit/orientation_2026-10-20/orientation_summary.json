@@ -1,0 +1,12 @@
+{
+  "clear_days": 174,
+  "temperature_coefficient_per_K": -0.00421,
+  "panel_tilt_m1": 21.0,
+  "panel_azimuth_median_m1_m3": 185.0,
+  "sensor_plane_m0": {
+    "tilt": 16.5,
+    "azimuth": 180.5
+  },
+  "differs_from_20_180": true,
+  "decision": "use the panel plane 21.0/185.0"
+}

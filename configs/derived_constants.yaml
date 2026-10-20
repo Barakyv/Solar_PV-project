@@ -1,0 +1,7 @@
+# Written by stage 6 (solarpv.features.build); do not edit by hand.
+mean_daytime_k: 0.788157
+k_denominator: poa
+panel_plane:
+  tilt: 21.0
+  azimuth: 185.0
+source: python -m solarpv.features.build (stage 6)

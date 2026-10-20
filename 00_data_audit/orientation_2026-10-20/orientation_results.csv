@@ -1,0 +1,5 @@
+method,tilt,azimuth,nrmse,tilt_range_1pct,azimuth_range_1pct
+M1 DC one scale,21.0,185.0,0.04948,20.0-21.5,183.5-186.5
+M2 DC scale per day,15.5,186.5,0.03436,12.0-19.0,185.0-188.5
+M0 sensor scale per day,16.5,180.5,0.03291,13.0-20.0,179.0-181.5
+M3 DC centre vs clear-sky centre,21.0,184.7,,,

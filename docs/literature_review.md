@@ -263,10 +263,14 @@ H high (cheap and likely useful), M medium, L low.
 
 | ID | Idea | Source | Pri. |
 |---|---|---|---|
-| L-01 | **Physical model-chain features and baseline from GFS.** GFS GHI → separation (Erbs or Engerer) → Perez transposition to the measured plane (20°/180°) → cell temperature (Faiman, from GFS 2-m temperature; wind constant, S2) → PV power (PVWatts, with γ = −0.42 %/K measured in stage 3). Produces `fcst_gfs_poa`, `fcst_gfs_tcell` and `fcst_gfs_pv_phys`, used (a) as hybrid predictors and (b) as a physical baseline model | C1, C2, S2 | H |
+| L-01 | **Physical model-chain features and baseline from GFS.** GFS GHI → separation (Erbs or Engerer) → Perez transposition to the measured panel plane (21°/185°, F-23) → cell temperature (Faiman, from GFS 2-m temperature; wind constant, S2) → PV power (PVWatts, with γ = −0.42 %/K measured in stage 3). Produces `fcst_gfs_poa`, `fcst_gfs_tcell` and `fcst_gfs_pv_phys`, used (a) as hybrid predictors and (b) as a physical baseline model | C1, C2, S2 | H |
 | L-02 | **Temporal engineering of the NWP features:** for the target day, the daily mean and centred 1-, 3- and 5-hour moving averages of GFS kt, GHI and cloud cover; drop near-duplicates (\|r\| > 0.98) | C1 | H |
 | L-03 | **NWP clear-sky index as a direct predictor of k:** `fcst_gfs_kt = GHI_gfs / GHI_cs` (and the POA version from L-01), aligned with the target definition of D-11. The GFS bias is then learned in k space, where it is most stable | C1, C5 | H |
 | L-04 | **Low sun:** report the error by sun-elevation band. Test on validation a sample weight proportional to the clear-sky power, or a higher validity threshold than theo > 50 kW for the k loss (stage 3b, Q22: k above 1.2 at 03 and 15 UTC) | C2, Q22 | M |
+
+**Status after stage 6 (2026-10-20):**
+- **L-04 tested, not adopted.** k is least stable at low sun (p99 1.42 at 5–10°), but leaving hours with theo below 100 or 150 kW out of the training loss gave no gain beyond the seed noise: 0.053 pp, against 0.119 pp needed (`docs/run_journal.md`, R6-04).
+- **L-01 to L-03 need the GFS data** and move to stage 6b.
 
 ### Stage 6b: GFS (D-12, §6.12)
 

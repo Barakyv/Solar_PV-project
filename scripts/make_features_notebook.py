@@ -36,9 +36,10 @@ K = yaml.safe_load(DERIVED_CONSTANTS_FILE.read_text(encoding="utf-8"))
 ORI = json.loads(ORIENT.read_text(encoding="utf-8"))
 Q26 = json.loads(QUALITY.read_text(encoding="utf-8"))["analyses"]["q26_lags"]["facts"]
 T1 = R.load(1)
-KD = R.k_distributions(T1).facts
+KS = M["k_shares_train_daytime"]  # unrounded, as in the D-11 criteria
 COR = R.target_correlations(T1).facts
 INV = R.kw_from_k(T1)
+TC = M["target_checks"]
 ORES = pd.read_csv(AUDIT_DIR / "orientation_2026-10-20" / "orientation_results.csv")
 CRIT = D["criteria"]
 L04 = D["l04_validation_nrmse_by_threshold"]
@@ -111,11 +112,15 @@ External confirmation (satellite row orientation or the operator) is still open 
     code("""r = R.k_distributions(t1)
 r.show()"""),
     md(f"""**What it shows.** k = AC / theoretical clear-sky power on valid daytime train hours.
-- **With GHI_cs:** {pct(KD['share_above_1']['ghi'])} of hours have k above 1, and
-  {pct(KD['share_above_1.2']['ghi'])} above 1.2.
-- **With POA_cs on the panel plane:** {pct(KD['share_above_1']['poa'])} and
-  {pct(KD['share_above_1.2']['poa'], 2)}.
+- **With GHI_cs:** {pct(KS['ghi']['k>1.0'])} of hours have k above 1, and
+  {pct(KS['ghi']['k>1.2'])} above 1.2.
+- **With POA_cs on the panel plane:** {pct(KS['poa']['k>1.0'])} and
+  {pct(KS['poa']['k>1.2'], 2)}.
 - No value sits exactly at 1.2.
+- {sum(TC['k_suspect_hours'].values())} hours over all splits exceed 1.5 (`k_suspect`). All are
+  at low sun (elevation {TC['k_suspect_sun_elevation_deg'][0]}–{TC['k_suspect_sun_elevation_deg'][1]}°,
+  theo at most {TC['k_suspect_max_theo_kw']} kW), and {TC['k_suspect_op_limited']} are
+  op-limited. Each is a ratio of two small numbers; the hours are flagged, not removed (§6.5).
 
 **What it means.** k is not clipped (F-06 fixed). In the original, 16.8 % of daytime test hours
 were cut at exactly 1.2. With the right reference, almost nothing is near that value, because

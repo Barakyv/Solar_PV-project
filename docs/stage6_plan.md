@@ -183,3 +183,37 @@ with backward fill, (c) a lag that ignores the DST guard. Each must be caught.
 - The new MEAN_DAYTIME_K documented, D-11 decided, A-04 updated.
 - OP entries in the data-processing record, the numbers file regenerated.
 - The notebook built, the run journal written.
+
+## Changes during the stage (2026-10-20)
+
+The plan above is kept as written. What changed while it was carried out, and why (details in
+`docs/run_journal.md`, `docs/deviations.md` and the data-processing record, OP-32 to OP-39):
+
+- **S1:** the rule applied. The panel plane is 21°/185° (F-23); the sensor plane 20°/180° stays
+  the clock frame.
+- **S2:** the partial-coverage count of the plan (13 of 9,698 train hours, from stage 3b) is out of
+  date after the stage-3b changes to cleaning. The build now counts the daytime hours whose AC
+  mean rests on fewer than 60 minutes: 26 (7 train, 19 test, N11).
+- **S3, criterion 3:** three seeds instead of one, reported as mean ± std. One fit was within the
+  seed noise for L-04, so the same care was applied to D-11. The decision did not change.
+- **S4, L-04:** the plan did not fix a rule for adopting a higher threshold. The first rule (gain
+  ≥ 0.05 pp on one fit) chose 150 kW from noise. It was replaced before any use: mean of 3 seeds,
+  gain > max(0.05 pp, 2 × pooled seed std). Result: 50 kW stays.
+- **S5, imputation:** the median of the same UTC hour over the previous **30 days** instead of an
+  expanding median with forward fill. An expanding median mixes seasons after the first year, and
+  a forward fill is not needed: rows without an earlier value at that hour are in the warm-up.
+- **S6:** `feature_dictionary.csv` first gave one definition and unit per group. Every feature now
+  has its own (R6-08). The manifest also carries `target_checks`, the facts the record quotes.
+  `docs/target_definition.md` was written at the end of the stage.
+- **Tests:** the mutation check found two weak tests, and both were fixed:
+  - the synthetic data had no gaps;
+  - the perturbation window skipped the DST day.
+
+  It now plants five leaks instead of three.
+
+**Findings of the stage:**
+- F-23: the panel orientation.
+- F-24: the original imputation.
+- F-25: the original calendar features.
+- Not a bug, an observation for stage 7: the k-lag proposal. Raw power lags correlate −0.28
+  with k, because power carries the cycle that k removes.

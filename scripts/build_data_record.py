@@ -11,8 +11,16 @@ import json
 import sys
 
 import pandas as pd
+import yaml
 
-from solarpv.config.paths import AUDIT_DIR, EVIDENCE_DIR, OUTPUTS_DIR, PROCESSED_DIR, REPO_ROOT
+from solarpv.config.paths import (
+    AUDIT_DIR,
+    CONFIGS_DIR,
+    EVIDENCE_DIR,
+    OUTPUTS_DIR,
+    PROCESSED_DIR,
+    REPO_ROOT,
+)
 
 OUT = REPO_ROOT / "docs" / "data_record_numbers.md"
 SOURCES = {
@@ -34,6 +42,11 @@ SOURCES = {
     "eda_sensors": OUTPUTS_DIR / "03_eda" / "tables" / "table_sensors.csv",
     "eda_manifest": OUTPUTS_DIR / "03_eda" / "eda_manifest.json",
     "quality_manifest": OUTPUTS_DIR / "03b_quality" / "quality_manifest.json",
+    "orientation_2": AUDIT_DIR / "orientation_2026-10-20" / "orientation_results.csv",
+    "orientation_2_summary": AUDIT_DIR / "orientation_2026-10-20" / "orientation_summary.json",
+    "features_manifest": OUTPUTS_DIR / "06_features" / "features_manifest.json",
+    "target_decision": CONFIGS_DIR / "target.yaml",
+    "derived_constants": CONFIGS_DIR / "derived_constants.yaml",
 }
 
 
@@ -53,8 +66,11 @@ def kv(d: dict) -> str:
 
 def load(name: str):
     path = SOURCES[name]
-    return json.loads(path.read_text(encoding="utf-8")) if path.suffix == ".json" \
-        else pd.read_csv(path)
+    if path.suffix == ".json":
+        return json.loads(path.read_text(encoding="utf-8"))
+    if path.suffix == ".yaml":
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
+    return pd.read_csv(path)
 
 
 def build() -> str:
@@ -250,6 +266,72 @@ def build() -> str:
             "performance trend, train [%/yr] (Q29)": round(q["q29"]["slope_pct_per_year_train"], 2),
             "irradiance sensor vs clear sky, trend [%/yr] (Q29)":
                 round(q["q29"]["sensor_vs_clear_sky_slope_train"], 2)}),
+        "",
+    ]
+    fm, td = load("features_manifest"), load("target_decision")
+    o2, os2 = load("orientation_2"), load("orientation_2_summary")
+    crit, tc = td["criteria"], fm["target_checks"]
+    keys = ("share_k_above_1", "share_k_above_1.2", "clear_day_k_spread", "val_nrmse_kw_pct",
+            "val_nrmse_kw_seed_std")
+    parts += [
+        "## N11. Target and features (stage 6)",
+        "",
+        f"Tables built at commit {fm['git_commit']} (log `{fm['run_log']}`); D-11 and L-04 "
+        f"decided at {td['git_commit']}.",
+        "",
+        "Orientation of the panels on the corrected data (A-04, F-23; "
+        f"{os2['clear_days']} clear train days, sun above 15 deg):",
+        "",
+        table(o2),
+        "",
+        "D-11 criteria (train; criterion 3 on validation, 3 seeds):",
+        "",
+        table(pd.DataFrame({
+            "criterion": ["share k > 1", "share k > 1.2", "clear-day k spread (monthly median)",
+                          "validation nRMSE [% of 3,449 kW]", "seed std [pp]"],
+            "ghi": [crit["ghi"][k] for k in keys], "poa": [crit["poa"][k] for k in keys]})),
+        "",
+        kv({"panel plane used (tilt / azimuth, transposition)":
+                f"{fm['panel_plane']['tilt']} / {fm['panel_plane']['azimuth']}, "
+                f"{fm['panel_plane']['model']}",
+            "D-11 decision (criteria won of 3)":
+                f"{td['k_denominator']} ({td['wins'][td['k_denominator']]})",
+            "L-04 validation nRMSE at 50 / 100 / 150 kW": " / ".join(
+                str(v) for v in td["l04_validation_nrmse_by_threshold"].values()),
+            "L-04 gain needed [pp]": td["l04_needed_gain_pp"],
+            "training / evaluation threshold on theo [kW]":
+                f"{td['training_min_theo_kw']} / {td['evaluation_min_theo_kw']}",
+            "MEAN_DAYTIME_K (train)": load("derived_constants")["mean_daytime_k"],
+            "k with poa: shares > 1 / 1.2 / 1.5, train daytime": " / ".join(
+                str(v) for v in fm["k_shares_train_daytime"]["poa"].values()),
+            "k with ghi: shares > 1 / 1.2 / 1.5, train daytime": " / ".join(
+                str(v) for v in fm["k_shares_train_daytime"]["ghi"].values()),
+            "rows per horizon": fm["rows_per_horizon"]["D1"],
+            "features D+1 / D+2 / D+3": " / ".join(
+                str(len(v)) for v in fm["features_per_horizon"].values()),
+            "hours masked before past-day features, inv1 / inv2 / site total": " / ".join(
+                str(v) for v in fm["masked_power_hours"].values()),
+            "DST guard: values removed at D+1 / D+2 / D+3": " / ".join(
+                str(v) for v in fm["dst_guard_removed_values"].values()),
+            "largest imputed share of a past-day feature (D+1)": fm["imputed_share_max"]["D1"],
+            "warm-up hours": fm["warmup_hours"]}),
+        "",
+        "Checks of the decided target (`target_checks` in the manifest):",
+        "",
+        kv({"smallest theo of a daytime hour [kW] (threshold 50)":
+                tc["daytime_min_theo_kw"],
+            "k <-> kW: largest abs(k x theo - AC) [kW] on valid hours":
+                f"{tc['max_inversion_error_kw']:.1e} on {tc['valid_hours']:,} hours",
+            "k_suspect (k > 1.5) hours train / val / test": " / ".join(
+                str(v) for v in tc["k_suspect_hours"].values()),
+            "k_suspect: in the daytime mask / op-limited":
+                f"{tc['k_suspect_in_daytime']} / {tc['k_suspect_op_limited']}",
+            "k_suspect: sun elevation range [deg], largest theo [kW]":
+                f"{tc['k_suspect_sun_elevation_deg'][0]}..{tc['k_suspect_sun_elevation_deg'][1]}, "
+                f"{tc['k_suspect_max_theo_kw']}",
+            "daytime hours with AC from fewer than 60 minutes train / val / test": " / ".join(
+                str(v) for v in tc["partial_ac_daytime_hours"].values()),
+            "fewest AC minutes in such an hour": tc["partial_ac_min_minutes"]}),
         "",
     ]
     return "\n".join(parts)
