@@ -1,9 +1,9 @@
 """Feature contract: the exact model inputs (PROJECT_MASTER.md §6.6, finding F-05).
 
 Derived from the 76 features the original XGB-Opt actually used (submission_evidence/07_shap/
-shap_rank_stability.csv) minus theoretical_power (decision D-03). Rolling features keep their
-names but are built per horizon (decision D-04). GFS features (stage 6b) are appended only if
-they pass decision D-12.
+shap_rank_stability.csv) minus theoretical_power (decision D-03) and sun_azimuth (Q-05, stage 6:
+identical to solar_azimuth), so 74. Rolling features keep their names but are built per horizon
+(decision D-04). GFS features (stage 6b) are appended only if they pass decision D-12.
 """
 
 from solarpv.config.constants import get_features
@@ -52,7 +52,6 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
     ),
     "other": (
         "aoi",
-        "sun_azimuth",
         "solar_azimuth",
         "solar_zenith",
         "airmass",
@@ -70,6 +69,9 @@ FEATURES: tuple[str, ...] = tuple(f for group in FEATURE_GROUPS.values() for f i
 # Present in the original model inputs but removed on purpose
 REMOVED_FROM_LEGACY = {
     "theoretical_power": "listed as leakage (category 4), SHAP importance 0 (D-03)",
+    "sun_azimuth": "identical to solar_azimuth (both the pvlib azimuth); in the original it came "
+                   "from the lost preprocessing step, on the wrong time base (F-01). Q-05 closed "
+                   "in stage 6",
 }
 
 # Prefix reserved for leakage-safe NWP features from the GFS archive (stage 6b, D-12)

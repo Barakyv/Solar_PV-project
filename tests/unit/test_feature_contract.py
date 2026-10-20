@@ -1,4 +1,4 @@
-"""T-10: the feature contract (finding F-05, decision D-03)."""
+"""T-10: the feature contract (finding F-05, decision D-03, Q-05: 74 features since stage 6)."""
 
 import pandas as pd
 
@@ -15,13 +15,13 @@ EXPECTED_GROUP_SIZES = {
     "rolling_stats": 12,
     "lag_power": 35,
     "time_encodings": 8,
-    "other": 11,
+    "other": 10,
 }
 
 
-def test_contract_has_75_unique_features():
-    assert len(FEATURES) == 75
-    assert len(set(FEATURES)) == 75
+def test_contract_has_74_unique_features():
+    assert len(FEATURES) == 74
+    assert len(set(FEATURES)) == 74
 
 
 def test_group_sizes():
@@ -38,9 +38,9 @@ def test_contract_equals_original_inputs_minus_removed(evidence_dir):
 
 def test_horizon_drops():
     d1, d2, d3 = (set(features_for_horizon(h)) for h in (1, 2, 3))
-    assert len(d1) == 75
-    assert len(d2) == 75 - 7  # lag_1d of 7 sources
-    assert len(d3) == 75 - 14  # lag_1d and lag_2d of 7 sources
+    assert len(d1) == 74
+    assert len(d2) == 74 - 7  # lag_1d of 7 sources
+    assert len(d3) == 74 - 14  # lag_1d and lag_2d of 7 sources
     assert not any(f.endswith("_lag_1d") for f in d2 | d3)
     assert not any(f.endswith("_lag_2d") for f in d3)
     assert all(f in d3 for f in FEATURES if f.endswith("_lag_14d"))
