@@ -1,0 +1,19 @@
+# Orientation of the PV panel plane (A-04 re-measured, finding F-23; stage 6, S1).
+# Used for the theoretical clear-sky power (target k, D-11) and the POA / aoi features.
+# Not used for the clock correction: stage 4 is framed on the irradiance-sensor plane 20/180
+# (configs/site.private.yaml surface_tilt / surface_azimuth), and the sensor still fits 180.5.
+#
+# Evidence: 00_data_audit/orientation_2026-10-20/ (orientation_check.py, results, figure);
+# 174 clear train days, 10-min temperature-corrected DC, sun > 15 deg:
+#   M1 DC vs clear-sky POA, one scale        tilt 21.0  azimuth 185.0 (1 %: 183.5-186.5)
+#   M2 DC vs clear-sky POA, scale per day    tilt 15.5  azimuth 186.5 (tilt weakly identified)
+#   M3 DC production centre vs model centre             azimuth 184.7 (+3.0 min at 180)
+#   M0 irradiance sensor, scale per day      tilt 16.5  azimuth 180.5
+# Decision rule (docs/stage6_plan.md S1): methods agree and differ from 20/180 by >= 2 deg.
+# External confirmation (satellite row orientation or the operator) is still open: Q-11.
+tilt: 21.0
+azimuth: 185.0
+albedo: 0.2
+transposition: haydavies
+source: 00_data_audit/orientation_2026-10-20/orientation_summary.json
+measured_on: 2026-10-20
