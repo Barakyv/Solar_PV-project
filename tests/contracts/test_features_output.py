@@ -149,3 +149,5 @@ def test_manifest_and_dictionary(manifest, tables):
     dictionary = pd.read_csv(OUTPUTS_DIR / "06_features" / "feature_dictionary.csv")
     assert set(dictionary["feature"]) == set(features_for_horizon(1))
     assert dictionary["available_at_T0"].notna().all()
+    assert dictionary["definition"].is_unique  # one definition per feature, not per group
+    assert dictionary["unit"].isin(["W/m2", "deg", "kW", "degC", "h", "-", "0/1"]).all()

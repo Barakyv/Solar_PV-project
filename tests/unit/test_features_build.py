@@ -96,6 +96,15 @@ def test_rolling_uses_days_h_to_h_plus_n_minus_1():
     assert out["site_total_rolling_std_3d_same_tod"][i] == pytest.approx(expected_std)
 
 
+def test_every_feature_has_its_own_definition_and_unit():
+    units = {B.describe_feature(f)[1] for f in features_for_horizon(1)}
+    assert units <= {"W/m2", "deg", "kW", "degC", "h", "-", "0/1"}
+    assert B.describe_feature("s01_inv2_rolling_std_7d_same_tod") == (
+        "standard deviation (ddof 1) of inverter 2 AC power at the same UTC hour over 7 days, "
+        "starting h days back", "kW")
+    assert B.describe_feature("ambient_temp_lag_14d")[1] == "degC"
+
+
 def test_feature_names_match_the_contract():
     sources = _sources("2022-06-01", "2022-06-10")
     for h in HORIZONS:

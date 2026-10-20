@@ -332,33 +332,87 @@ def add_decided_target(table: pd.DataFrame, decision: dict) -> pd.DataFrame:
     return table
 
 
-FEATURE_DEFINITIONS = {
-    "clearsky": ("hourly mean of minute values: pvlib Ineichen clear sky; POA on the panel plane "
-                 "21/185 (Hay-Davies, albedo 0.2); sun_elevation apparent", "W/m2 or deg",
+GROUP_METHODS = {  # how each group is computed, and why it is known at T0
+    "clearsky": ("hourly mean of the 60 minute values (pvlib Ineichen clear sky, monthly Linke "
+                 "turbidity; POA by Hay-Davies on the panel plane, albedo 0.2)",
                  "astronomy and clear-sky model: known at any time"),
-    "rolling_stats": ("mean / std of the same UTC hour on days h..h+N-1 back (D-04); D-22 masks; "
-                      "DST guard; same-hour 30-day median for gaps", "kW",
-                      "only hours that ended by T0"),
-    "lag_power": ("value at the same UTC hour d days back; D-22 masks on power; DST guard; "
-                  "same-hour 30-day median for gaps", "kW, W/m2, degC",
+    "rolling_stats": ("D-22 masks, DST guard and same-hour 30-day median for gaps, then mean / "
+                      "std over days h..h+N-1 back (D-04)", "only hours that ended by T0"),
+    "lag_power": ("D-22 masks on power, DST guard, same-hour 30-day median for gaps",
                   "only hours that ended by T0"),
-    "time_encodings": ("hour_sin/cos from the UTC hour; month, season, is_weekend (Fri/Sat), "
-                       "hour_local from the local day of the target hour", "-",
-                       "calendar: known at any time"),
-    "other": ("aoi on the panel plane, solar azimuth (circular hourly mean), zenith, relative air "
-              "mass (NaN at night), day length and solar noon from pvlib transit/sunrise/sunset, "
-              "daylight_fraction = day length / longest day, day_of_week (local)", "deg, h, -",
-              "astronomy and calendar: known at any time"),
+    "time_encodings": ("calendar of the target hour", "calendar: known at any time"),
+    "other": ("pvlib solar position (apparent zenith) and sunrise / sunset / transit of the "
+              "local day; hourly means of minute values", "astronomy and calendar: known at any "
+              "time"),
 }
+FIXED_FEATURES = {  # name: (definition, unit)
+    "ghi_clearsky": ("clear-sky global horizontal irradiance", "W/m2"),
+    "dhi_clearsky": ("clear-sky diffuse horizontal irradiance", "W/m2"),
+    "dni_clearsky": ("clear-sky direct normal irradiance", "W/m2"),
+    "sun_elevation": ("apparent sun elevation (refraction corrected)", "deg"),
+    "poa_global_clearsky": ("clear-sky irradiance on the panel plane, total (the k denominator, "
+                            "D-11)", "W/m2"),
+    "poa_direct_clearsky": ("clear-sky irradiance on the panel plane, direct beam", "W/m2"),
+    "poa_diffuse_clearsky": ("clear-sky irradiance on the panel plane, sky + ground diffuse",
+                             "W/m2"),
+    "poa_sky_diffuse_clearsky": ("clear-sky irradiance on the panel plane, sky diffuse", "W/m2"),
+    "poa_ground_diffuse_clearsky": ("clear-sky irradiance on the panel plane, ground reflected",
+                                    "W/m2"),
+    "hour_sin": ("sin(2 pi hour / 24), hour of the UTC timestamp (§6.6)", "-"),
+    "hour_cos": ("cos(2 pi hour / 24), hour of the UTC timestamp (§6.6)", "-"),
+    "month_sin": ("sin(2 pi month / 12), local month", "-"),
+    "month_cos": ("cos(2 pi month / 12), local month", "-"),
+    "month": ("local month, 1..12", "-"),
+    "season": ("0 Dec-Feb, 1 Mar-May, 2 Jun-Aug, 3 Sep-Nov (local month)", "-"),
+    "is_weekend": ("1 on Friday and Saturday (the Israeli weekend), local day", "0/1"),
+    "hour_local": ("local clock hour of the hour's start, 0..23", "h"),
+    "aoi": ("angle of incidence of the beam on the panel plane", "deg"),
+    "solar_azimuth": ("sun azimuth, circular mean of the hour (north = 0, east = 90)", "deg"),
+    "solar_zenith": ("apparent sun zenith", "deg"),
+    "airmass": ("relative air mass (Kasten-Young 1989); NaN while the sun is below the horizon",
+                "-"),
+    "doy_sin": ("sin(2 pi day-of-year / 365.25), local day", "-"),
+    "doy_cos": ("cos(2 pi day-of-year / 365.25), local day", "-"),
+    "day_length": ("sunset - sunrise of the local day", "h"),
+    "time_to_solar_noon": ("transit - middle of the hour; positive before solar noon", "h"),
+    "daylight_fraction": ("day_length / the longest day of the year at the site", "-"),
+    "day_of_week": ("local day of week, Monday = 0", "-"),
+}
+SOURCE_UNITS = {"s01_inv1_AC_kW": ("inverter 1 AC power", "kW"),
+                "s01_inv2_AC_kW": ("inverter 2 AC power", "kW"),
+                "site_total_AC_kW": ("site total AC power", "kW"),
+                "irradiance": ("measured irradiance on the panel plane (D-09)", "W/m2"),
+                "mod_temp1": ("module temperature, sensor 1", "degC"),
+                "mod_temp2": ("module temperature, sensor 2", "degC"),
+                "ambient_temp": ("ambient temperature (D-09)", "degC")}
+
+
+def describe_feature(name: str) -> tuple[str, str]:
+    """(definition, unit) of one contract feature."""
+    if name in FIXED_FEATURES:
+        return FIXED_FEATURES[name]
+    if "_lag_" in name:
+        source, days = name.rsplit("_lag_", 1)
+        what, unit = SOURCE_UNITS[source]
+        return f"{what} at the same UTC hour {days[:-1]} day(s) back", unit
+    if "_rolling_" in name:  # e.g. s01_inv1_rolling_std_7d_same_tod
+        source, rest = name.split("_rolling_")
+        stat, window = rest.split("_")[:2]
+        what, unit = SOURCE_UNITS[ROLLING_COLUMNS[source]]
+        word = {"mean": "mean", "std": "standard deviation (ddof 1)"}[stat]
+        return (f"{word} of {what} at the same UTC hour over {window[:-1]} days, starting h days "
+                "back", unit)
+    raise KeyError(name)
 
 
 def feature_dictionary(imputed: dict[int, pd.Series]) -> pd.DataFrame:
     rows = []
     for name in features_for_horizon(1):
         group = group_of(name)
-        formula, unit, availability = FEATURE_DEFINITIONS[group]
-        row = {"feature": name, "group": group, "definition": formula, "unit": unit,
-               "available_at_T0": availability,
+        definition, unit = describe_feature(name)
+        method, availability = GROUP_METHODS[group]
+        row = {"feature": name, "group": group, "definition": definition, "unit": unit,
+               "method": method, "available_at_T0": availability,
                "horizons": ",".join(str(h) for h in HORIZONS
                                     if name in features_for_horizon(h))}
         for h, shares in imputed.items():
