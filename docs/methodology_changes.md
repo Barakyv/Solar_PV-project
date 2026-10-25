@@ -8,8 +8,12 @@ package to the rebuild. It records:
 - why it changed, with a pointer to the evidence;
 - what is still to be decided.
 
-Written on 2026-10-21, after stage 6. Stages 0–6 and 8A are done. **No new model results exist
-yet**, so the effects on the conclusions in §4 are expectations, not results.
+The scope itself, every v6 deliverable and the stage that produces it, is tracked in
+`docs/scope_register.md`.
+
+Written on 2026-10-21, after stage 6, and updated on 2026-10-25 after the user restored the
+full approved scope. Stages 0–6 and 8A are done. **No new model results exist yet**, so the
+effects on the conclusions in §4 are expectations, not results.
 
 The detailed records are:
 - `docs/errata.md`: every bug, its fix and its effect on the numbers;
@@ -38,7 +42,7 @@ level of its numbers (D-01). These elements are unchanged:
 | Uncertainty | Block bootstrap, 24-h blocks, 1,000 resamples | Same |
 | Significance | Diebold-Mariano with HLN correction, Newey-West with 24 lags | Same; now actually computed as described (§2.6) |
 | Power analysis | Observed effect as % of the minimum detectable effect | Same (`detectable_effect` logic kept) |
-| Models carried forward | XGB-Opt (Optuna 60 trials, seeds 42/123/777, monotone constraints); BiLSTM-Opt (encoder-decoder, quantile loss); PatchTST (univariate, rolling origins) | Same three models and budgets (D-08). The TFT models are not carried forward (§2.5) |
+| Models | XGB-Opt (60 trials, seeds 42/123/777, monotone constraints); BiLSTM-Opt (encoder-decoder, quantile loss, 60 trials); TFT-96 and TFT-168 (20 trials each); TFT baseline (fixed hyperparameters); PatchTST (univariate, rolling origins) | **All six, with the v6 budgets** (D-08, user decision 2026-10-25: the full approved scope), plus reference baselines. Every deliverable of v6 is tracked in `docs/scope_register.md` |
 | Feature families | Clear sky, solar geometry, time encodings, lags (1, 2, 3, 7, 14 days), rolling 3 d and 7 d same time of day | The same families and names: 74 of the original 76 XGB inputs (F-05) |
 | Feature selection | 05c SHAP elimination, 05e 2-of-3 consensus, 05f robustness audit | The same procedure, rerun on the corrected data (stage 7, D-13) |
 | Analyses of chapters 7–12 | Benchmark, common mask, horizons, DM, power, seasonal, hourly, route, SHAP, seeds, CV, error decomposition, quintiles, ablation | All recomputed with the same definitions (stage 11) |
@@ -114,11 +118,13 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | As submitted | Now | Kind | Why / evidence |
 |---|---|---|---|
-| Six models: XGB-Opt, BiLSTM-Opt, TFT-96, TFT-168, TFT baseline, PatchTST | XGB-Opt, BiLSTM-Opt, PatchTST, plus reference baselines | **Removal** (D-08) | The TFT models are not retrained. **This is the most visible change for a reader of v6** (see §5) |
+| Six models: XGB-Opt, BiLSTM-Opt, TFT-96, TFT-168, TFT baseline, PatchTST | The same six models, with the v6 budgets | — | D-08 first excluded the TFTs (2026-10-14). The user restored the full approved scope on 2026-10-25 |
+| Sequence models: decoder steps 1–24 / 25–48 / 49–72 taken as D+1 / D+2 / D+3 | Each step is assigned to a horizon by the local day of its valid time | Correction | On the 23- and 25-hour DST days, a fixed step count puts hours into the wrong day (D-16, T-02) |
+| Final BiLSTM-Opt and TFT code (did not survive) | Rebuilt from §3.4, §5 and §6 of the report; inputs fixed in the stage-9 plan before training | Completion | R-16. Each gap is recorded in `docs/deviations.md` |
 | — | Baselines: persistence matched to the horizon, climatology, clear sky × MEAN_DAYTIME_K | Extension | §6.9. They anchor the skill score and the G-1 gate |
 | Monotone constraints "+1 on ghi_clearsky, poa_global_clearsky, sun_elevation" | An explicit list (D-15). **Open: for which target?** | Correction + open question | The surviving ablation script applied +1 by substring, and to both targets. For the direct target it is physical. For k, the train data show the opposite marginal sign: Spearman −0.37 / −0.40 / −0.36 for GHI_cs, POA_cs and sun elevation. To be tested on validation in stage 9 |
 | BiLSTM timestamp bug, fixed after the fact (§13.3) | Correct alignment from the start (T-02) | Correction kept | — |
-| Final XGB fit: early stopping on validation | Unchanged unless D-10 (refit on train+val) is adopted | Open | D-10 is only proposed; v6 does not describe a refit |
+| Final XGB fit: early stopping on validation | Unchanged: no refit on train+val | — | D-10 (2026-10-25): v6 does not describe a refit, so it is not part of the approved scope |
 
 ### 2.6 Evaluation (§4.2, §6, chapters 7–12)
 
@@ -141,7 +147,7 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | As submitted | Now | Kind | Why / evidence |
 |---|---|---|---|
-| The 05e consensus sets are "the official modelling inputs" | **Open (D-13).** The proposal makes the full contract the input and feature selection an analysis | Open decision | The evidence shows that the original XGB was trained on all 76 non-excluded columns: the SHAP file has 76 rows (F-05), and the ablation script uses a blocklist, not the 05e lists. So the report's description and the code already differed. See §5 |
+| The 05e consensus sets are "the official modelling inputs" | The 05e sets, regenerated, are the XGB-Opt input per target × horizon, as the report describes. The full contract is compared once on validation, in an appendix | Completion (D-13, 2026-10-25) | The original XGB was in fact trained on all 76 non-excluded columns: the SHAP file has 76 rows (F-05), and the ablation script uses a blocklist (C-31). The errata states this |
 | 05e JSONs contain the leaky NWP columns, excluded at training time | Regenerated on the corrected data, with GFS candidates and without leaky columns | Correction | C-09 |
 
 ## 3. Report text that is factually wrong and must be corrected in v7
@@ -164,55 +170,46 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | Conclusion | Expectation | Reason |
 |---|---|---|
-| C1 ranking | Recomputed with three models. TFT-96, the 2nd place, is absent unless D-08 changes | D-08 |
+| C1 ranking | Recomputed with the same six models; the order may change | All corrections |
 | C2 route advantage 1.66–2.10 pp | Unknown; may shrink or grow | Old truth was the clipped k (C-16); k is now on POA and unclipped |
 | C3 XGB flat across horizons | **Likely to change**: some degradation with the horizon is expected | The flat profile matches the rolling leak (F-07) |
 | C4 PatchTST within 1.2 pp of XGB | Likely to widen if GFS adds skill | The report's own expectation (§13.1) |
-| C5 TFT encoder length | Dropped | D-08 |
-| C6 SHAP and TFT attention agree on −24/−48/−168 h | Dropped, unless TFT-96 is retrained; SHAP alone remains | D-08 |
+| C5 TFT encoder length | Recomputed (TFT-96 vs TFT-168) | Same comparison, corrected data |
+| C6 SHAP and TFT attention agree on −24/−48/−168 h | Recomputed. The lag pattern may differ: the rolling windows now follow the horizon, and the time base is corrected | F-01, F-07 |
 | C7 comparisons underpowered | Likely still true; recomputed | Same test size |
 | C8 errors highest at ramps (Q2) | Recomputed. The Q1 "+50 kW from inverter downtime" is now explained by the flags | D-22 |
 
-## 5. Decisions that affect continuity (open)
+## 5. Decisions that affect continuity
 
-1. **TFT (D-08).**
-   - **What disappears without TFT:**
-     - half of the model list;
-     - the second-best model of v6;
-     - §5.3–5.5 and §11.2, 11.3, 11.5;
-     - conclusions C5 and C6;
-     - two contributions of the introduction: 3, the "six-model benchmark", and 5,
-       cross-architectural interpretability.
-   - **What survives:** the title stays valid, since PatchTST is a transformer.
-   - **Option:** retrain TFT-96 alone, with its v6 budget (20 Optuna trials, GPU). That keeps the
-     interpretability thread. TFT-168 and the TFT baseline become a stated limitation.
-2. **Feature selection as the modelling input (D-13).**
-   - The report presents 05e as the official input and feature selection as a core contribution
-     (§3.6, contribution 2).
-   - If 05e is used as the input, the new pipeline will do what the report says. This follows the
-     logic of D-14: implement as described.
-   - Keeping the full contract is closer to what the old code did, but it changes the role of
-     the largest methods section.
-   - Either way, the errata must state that the old code used the full matrix.
-3. **Literature extensions (§16b).**
-   - Some ideas strengthen existing chapters without new structure: GFS (L-01–L-11), CLIPER skill
-     as an extra reference (L-13), and bias diagnostics folded into §12.3 (L-15).
-   - Others would add new model families (L-17: Extra Trees, MLP, physical baseline) or blending
-     (L-18). Together with the removal of TFT, they would change the composition of the benchmark.
-   - If tested, they belong in a clearly marked extension, not in the main benchmark.
-4. **Monotone constraints on the k target (D-15):** test on validation whether to keep them for
-   the indirect target.
-5. **Refit on train+val (D-10):** not in v6. Keep the v6 practice unless there is a reason
-   to change it.
+**Decided on 2026-10-25.** The user restored the full approved scope: "that was the scope of the
+work, and that is what was approved".
+
+1. **The six models (D-08).**
+   - XGB-Opt, BiLSTM-Opt, TFT-96, TFT-168, TFT baseline and PatchTST are all retrained, with the
+     v6 budgets.
+   - Every deliverable of v6 (S-01–S-45, all 25 figures) is tracked in `docs/scope_register.md`.
+   - T-37 fails if one of them leaves the plan.
+2. **05e as the modelling input (D-13):** the new pipeline does what the report says. The errata
+   records that the old code used the full matrix (C-31).
+3. **No refit on train+val (D-10):** as in v6.
+4. **Literature extensions:** only those that strengthen an existing chapter. Ideas that add model
+   families or blending (L-17, L-18) are outside the approved scope; at most a marked appendix,
+   after the whole register is done (§16b).
+
+**Still open.**
+
+5. **Monotone constraints on the k target (D-15, C-33):** test on validation in stage 9 whether to
+   keep them for the indirect target. If they are dropped there, that is a correction and goes
+   into the errata.
 6. **Informing the supervisor (Q-02):** the new numbers will differ substantially: the denominator
    of the indirect nRMSE, the route truth, the horizon profile. The plan (§11 of PROJECT_MASTER)
    is to inform her early, before any new number is shown.
 
 ## 6. How the changes can be presented in v7 without changing the study
 
-- **Same structure:** keep the chapter structure, numbering, model names (XGB-Opt, BiLSTM-Opt,
-  PatchTST), terms (clear-sky performance index, 05e/05f, midnight issuance, lag exclusion) and
-  the figure set of v6.
+- **Same structure:** keep the chapter structure, numbering, the six model names (XGB-Opt,
+  BiLSTM-Opt, TFT-96, TFT-168, TFT baseline, PatchTST), terms (clear-sky performance index, 05e/05f, midnight issuance, lag exclusion) and
+  the 25 figures of v6 (`docs/scope_register.md`).
 - **Up front:** a one-page "Reproduction and correction note". It explains that the code was
   rebuilt from the raw data, lists the bugs found (time base, k clipping, rolling leakage, DM
   correction, route truth), and states that the evaluation code reproduces the old metrics (T-15).
@@ -223,6 +220,6 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
   second source, cleaning, operational flags). Put the details in a data appendix built from
   `docs/data_processing_record.md`.
 - **New elements:** label them as what they are:
-  - **completions** of what the report described: DM with HLN, 05e as input if D-13 so decides;
+  - **completions** of what the report described: DM with HLN, 05e as the modelling input (D-13);
   - **corrections:** the targets, the rolling statistics;
   - **the first Future Work item, carried out:** GFS.
