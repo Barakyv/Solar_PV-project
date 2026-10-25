@@ -220,3 +220,24 @@ def test_sunshine_accumulation_that_breaks_the_window_raises():
     leads = pd.Series([9, 12])
     with pytest.raises(ValueError, match="exceeds"):
         G.three_hour_totals(leads, pd.Series([20_000.0, 21_600.0]))  # > 3 h in a 3-h window
+
+
+def test_physical_chain_on_a_clear_day():
+    """GFS GHI equal to the clear sky: kt = 1 in daylight, kt_poa near 1 (Erbs + Hay-Davies vs
+    the Ineichen POA), tcell above the air temperature at noon, pv_kw within the capacity, and
+    the result aligned on the row index (a shifted index once broke this, R6b-02)."""
+    from solarpv.config.site import EXAMPLE_FILE, load_site
+    from solarpv.features.geometry import hourly_geometry, load_panel_plane
+
+    plane = load_panel_plane()
+    hours = pd.date_range("2022-06-15 00:00", periods=24, freq="h", tz="UTC")
+    geo = hourly_geometry(hours, load_site(EXAMPLE_FILE), plane)
+    geo["theo_kw"] = geo["poa_global_clearsky"] * 3449.0 / 1000.0
+    h = pd.DataFrame({"ghi": geo["ghi_clearsky"], "t2m": 30.0, "wind10": 2.0}, index=hours)
+    out = G.physical_features(h, geo, plane)
+    assert out.index.equals(hours) and len(out) == 24
+    day = geo["ghi_clearsky"] > 200
+    np.testing.assert_allclose(out.loc[day, "kt"], 1.0)
+    assert out.loc[day, "kt_poa"].between(0.85, 1.15).all()
+    assert (out.loc[day, "tcell"] > 30.0).all()
+    assert out["pv_kw"].between(0, 3449.0).all()

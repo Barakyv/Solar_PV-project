@@ -186,7 +186,9 @@ def physical_features(h: pd.DataFrame, geo: pd.DataFrame, plane) -> pd.DataFrame
     ghi = h["ghi"].clip(lower=0)
     doy = h.index.dayofyear
     split = pvlib.irradiance.erbs(ghi, zen, doy)
-    extra = pvlib.irradiance.get_extra_radiation(h.index + pd.Timedelta(minutes=30))
+    # at the middle of the hour, but on the row index (a shifted index would not align)
+    extra = pd.Series(np.asarray(pvlib.irradiance.get_extra_radiation(
+        h.index + pd.Timedelta(minutes=30))), index=h.index)
     poa = pvlib.irradiance.get_total_irradiance(
         plane.tilt, plane.azimuth, zen, azi, split["dni"], ghi, split["dhi"], dni_extra=extra,
         model="haydavies", albedo=plane.albedo)["poa_global"].fillna(0.0).clip(lower=0)
