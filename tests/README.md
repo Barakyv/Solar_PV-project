@@ -40,6 +40,10 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-35 | D-22 masks: each inverter by its own flags, site total by op-limited, weather not masked; no masked value reaches a lag (real data) | `unit/test_features_build.py`, `contracts/test_features_output.py` | ✅ stage 6 |
 | T-36 | Calendar and geometry: Israeli weekend, solar noon from the transit, hourly means of minute values | `unit/test_features_build.py` | ✅ stage 6 |
 | — | Stage-6 notebook current, a note after every code cell; target definition matches the configs | `contracts/test_features_notebook.py`, `contracts/test_target_definition.py` | ✅ stage 6 |
+| T-38 | References: persistence DST-safe and filled from earlier days only; climatology from normal train rows; clear sky × MEAN_K | `unit/test_evaluation_8b.py` | ✅ stage 8B |
+| T-39 | Evaluation rules: split guard, alignment (shift, swap, split label), coverage, zero-output hours kept, paired route comparison, clear-sky route advantage 0 | `unit/test_evaluation_8b.py` | ✅ stage 8B |
+| T-40 | New metrics: CLIPER (theory on AR(1); persistence never beats it), kW conversion, nRMSE by the mean, seed table, DM CI, views | `unit/test_evaluation_8b.py` | ✅ stage 8B |
+| T-41 | Real validation run: truth = feature table, every reference on every daytime hour, views, paired route, no test access, committed outputs current | `contracts/test_evaluation_output.py` | ✅ stage 8B |
 | T-37 | Scope register: every v6 figure (1–25) and numbered section has exactly one row; the six v6 models stay in D-08 | `contracts/test_scope_register.py` | ✅ (2026-10-25) |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.

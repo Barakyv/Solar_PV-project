@@ -47,6 +47,9 @@ SOURCES = {
     "features_manifest": OUTPUTS_DIR / "06_features" / "features_manifest.json",
     "target_decision": CONFIGS_DIR / "target.yaml",
     "derived_constants": CONFIGS_DIR / "derived_constants.yaml",
+    "evaluation_manifest": OUTPUTS_DIR / "07_evaluation" / "val" / "manifest.json",
+    "evaluation_benchmark": OUTPUTS_DIR / "07_evaluation" / "val" / "benchmark_summary.csv",
+    "evaluation_views": OUTPUTS_DIR / "07_evaluation" / "val" / "benchmark_views.csv",
 }
 
 
@@ -332,6 +335,37 @@ def build() -> str:
             "daytime hours with AC from fewer than 60 minutes train / val / test": " / ".join(
                 str(v) for v in tc["partial_ac_daytime_hours"].values()),
             "fewest AC minutes in such an hour": tc["partial_ac_min_minutes"]}),
+        "",
+    ]
+    em, eb, ev = load("evaluation_manifest"), load("evaluation_benchmark"), load("evaluation_views")
+    refs = eb[["model", "target", "horizon", "n", "nRMSE_pct", "nRMSE_kW_pct", "skill_score",
+               "skill_cliper"]].copy()
+    refs[["nRMSE_pct", "nRMSE_kW_pct", "skill_score", "skill_cliper"]] = refs[
+        ["nRMSE_pct", "nRMSE_kW_pct", "skill_score", "skill_cliper"]].round(3)
+    view_n = ev[(ev["model"] == "climatology") & (ev["target"] == "direct")
+                & (ev["horizon"] == 1)].set_index("view")["n"]
+    parts += [
+        "## N12. Evaluation layer on the corrected tables (stage 8B)",
+        "",
+        f"Validation run at commit {em['git_commit']} (log `{em['run_log']}`); references only, "
+        "the test split was not opened.",
+        "",
+        kv({"split evaluated": em["split"],
+            "MEAN_DAYTIME_K (indirect denominator)": em["mean_daytime_k"],
+            "daytime validation hours with truth (every reference, target, horizon)":
+                int(eb["n"].iloc[0]),
+            "of which normal operation / minute source": f"{int(view_n['normal_operation'])} / "
+                f"{int(view_n['source_minute'])}",
+            "prediction files evaluated": len(em["inputs"]),
+            "CLIPER RMSE, direct D+1 / D+2 / D+3 [kW]": " / ".join(
+                f"{em['cliper_rmse'][f'direct_D{h}']:.1f}" for h in (1, 2, 3)),
+            "CLIPER RMSE, indirect D+1 / D+2 / D+3 [k]": " / ".join(
+                f"{em['cliper_rmse'][f'indirect_D{h}']:.4f}" for h in (1, 2, 3))}),
+        "",
+        "References on validation (nRMSE: indirect in % of MEAN_DAYTIME_K, direct in % of "
+        "3,449 kW; nRMSE_kW_pct: both in % of 3,449 kW):",
+        "",
+        table(refs),
         "",
     ]
     return "\n".join(parts)

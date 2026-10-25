@@ -264,3 +264,56 @@ hashes, numbers) and the commit messages are the record:
   - Data: identical in R6-07, R6-08 and R6-09.
   - Decisions: R6-07 (`decide_k`, `target.yaml` `git_commit: 034f72d`).
   - Dictionary, manifest and target checks: R6-09 (`4c5cb3c`).
+
+## Stage 8B: evaluation on the corrected tables
+
+### 2026-10-25 · R8-01 · First validation run (references only)
+
+- **Purpose:** plan step §6. The run scores the three references on validation. This checks
+  every table of the chain without a trained model and without opening the test split.
+- **Command and commit:** `python -m solarpv.evaluation.evaluate` at `a432689`.
+- **Log:** `outputs/07_evaluation/runs/20261025T071437Z.log`.
+- **Results:**
+  - 2,901 validation daytime hours with truth for every reference, target and horizon.
+  - Direct, D+1: persistence 9.68 %, climatology 8.04 %, clear sky × MEAN_K 8.96 % of
+    3,449 kW.
+  - The clear-sky route advantage is exactly 0, the built-in check.
+- **Intermediate notes:**
+  - Persistence got a positive skill against the CLIPER reference: +0.15 at direct D+1. This
+    should not happen: the reference is the optimal blend of climatology and persistence.
+  - The cause was the source of its σ and γ. They came from train, a harder sample than
+    validation (Feb–Sep, with the summer).
+- **Decision / next:** take σ and γ from the evaluated sample (plan §7, deviations), with a test
+  that persistence does not beat the reference.
+
+### 2026-10-25 · R8-02 · Validation run with the corrected CLIPER
+
+- **Command and commit:** `python -m solarpv.evaluation.evaluate` at `3df79b9`.
+- **Log:** `outputs/07_evaluation/runs/20261025T071608Z.log`.
+- **Results:**
+  - The persistence skill against CLIPER is now between −0.03 and −0.24, never positive, as
+    the theory requires.
+  - The other numbers are as in R8-01 (N12).
+- **Intermediate notes:**
+  - Climatology beats persistence on validation (8.04 % vs 9.68 % direct D+1). The validation
+    period includes the clear summer, where the mean diurnal curve is a strong forecast.
+  - Persistence degrades from D+1 to D+2 (9.68 → 10.82 %), which is the horizon effect the
+    stage-6 fix (F-07) should also produce in the models.
+
+### 2026-10-25 · R8-03 · Fixture rerun (T-15)
+
+- **Command and commit:** `python -m solarpv.evaluation.evaluate --fixture` at `3df79b9`. The
+  fixture mode has no run log, so its manifest is the record.
+- **Why:** persistence changed (DST guard, gap filling, A1–A2), and new columns were added.
+- **Results:**
+  - The BiLSTM rows of the old predictions are identical to the stage-8A output: nRMSE, n and
+    skill differ by 0.
+  - The files differ only in the new columns, in the common-mask rows (persistence is now
+    included) and in the DM CI.
+  - T-15 passes.
+- **Self-review of the stage:**
+  - Reading the original scripts against the report found that the route comparison was not
+    paired (C-34), and that the common mask chose daytime by the truth (C-35). Both are in the
+    errata.
+  - In my own stage-8A code: the persistence reference lacked the first test days and the DST
+    guard (A1, A2). Fixed.

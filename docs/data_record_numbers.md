@@ -395,3 +395,40 @@ Checks of the decided target (`target_checks` in the manifest):
 | k_suspect: sun elevation range [deg], largest theo [kW] | 1.4..9.7, 198.5 |
 | daytime hours with AC from fewer than 60 minutes train / val / test | 7 / 0 / 19 |
 | fewest AC minutes in such an hour | 46 |
+
+## N12. Evaluation layer on the corrected tables (stage 8B)
+
+Validation run at commit 3df79b9 (log `outputs/07_evaluation/runs/20261025T071608Z.log`); references only, the test split was not opened.
+
+| item | value |
+|---|---|
+| split evaluated | val |
+| MEAN_DAYTIME_K (indirect denominator) | 0.788157 |
+| daytime validation hours with truth (every reference, target, horizon) | 2901 |
+| of which normal operation / minute source | 2755 / 2901 |
+| prediction files evaluated | 0 |
+| CLIPER RMSE, direct D+1 / D+2 / D+3 [kW] | 323.9 / 358.5 / 357.1 |
+| CLIPER RMSE, indirect D+1 / D+2 / D+3 [k] | 0.1341 / 0.1422 / 0.1430 |
+
+References on validation (nRMSE: indirect in % of MEAN_DAYTIME_K, direct in % of 3,449 kW; nRMSE_kW_pct: both in % of 3,449 kW):
+
+| model | target | horizon | n | nRMSE_pct | nRMSE_kW_pct | skill_score | skill_cliper |
+|---|---|---|---|---|---|---|---|
+| clearsky_k | direct | 1 | 2,901 | 8.959 | 8.959 | 0.074 | 0.046 |
+| clearsky_k | direct | 2 | 2,901 | 8.959 | 8.959 | 0.172 | 0.138 |
+| clearsky_k | direct | 3 | 2,901 | 8.959 | 8.959 | 0.164 | 0.135 |
+| clearsky_k | indirect | 1 | 2,901 | 19.396 | 8.959 | 0.034 | -0.14 |
+| clearsky_k | indirect | 2 | 2,901 | 19.396 | 8.959 | 0.13 | -0.075 |
+| clearsky_k | indirect | 3 | 2,901 | 19.396 | 8.959 | 0.138 | -0.069 |
+| climatology | direct | 1 | 2,901 | 8.041 | 8.041 | 0.169 | 0.144 |
+| climatology | direct | 2 | 2,901 | 8.041 | 8.041 | 0.257 | 0.226 |
+| climatology | direct | 3 | 2,901 | 8.041 | 8.041 | 0.25 | 0.223 |
+| climatology | indirect | 1 | 2,901 | 17.079 | 8.062 | 0.15 | -0.004 |
+| climatology | indirect | 2 | 2,901 | 17.079 | 8.062 | 0.234 | 0.053 |
+| climatology | indirect | 3 | 2,901 | 17.079 | 8.062 | 0.241 | 0.058 |
+| persistence | direct | 1 | 2,901 | 9.676 | 9.676 |  | -0.03 |
+| persistence | direct | 2 | 2,901 | 10.822 | 10.822 |  | -0.041 |
+| persistence | direct | 3 | 2,901 | 10.72 | 10.72 |  | -0.036 |
+| persistence | indirect | 1 | 2,901 | 20.083 | 9.683 |  | -0.18 |
+| persistence | indirect | 2 | 2,901 | 22.296 | 10.841 |  | -0.236 |
+| persistence | indirect | 3 | 2,901 | 22.491 | 10.759 |  | -0.24 |

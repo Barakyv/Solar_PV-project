@@ -44,7 +44,7 @@ Changes of method are recorded in `docs/methodology_changes.md`. This register i
 | S-12 | 3.8 | Split table and timeline | 11 | — | 3, 11 | ✅ table (stage 3) / ⬜ figure |
 | S-13 | 3.9 | Lag exclusion per horizon | — | — | 6 | ✅ (stage 6) |
 | S-14 | 4.1 | Optuna protocol: XGB and BiLSTM 60 trials, TFT 20 trials, objective daytime nRMSE on val | — | XGB-Opt, BiLSTM-Opt, TFT-96, TFT-168 | 9, 10 | ⬜ |
-| S-15 | 4.2, 6.1–6.4 | Metrics, bootstrap CI, DM with HLN, skill score | — | all | 8 | ✅ part A (stage 8) / ⬜ part B |
+| S-15 | 4.2, 6.1–6.4 | Metrics, bootstrap CI, DM with HLN, skill score | — | all | 8 | ✅ (stage 8: part A 2026-10-14, part B 2026-10-25) |
 | S-16 | 5.1 | XGB-Opt: monotone constraints, 60 trials, seeds 42/123/777, search space | — | XGB-Opt | 9, 10 | ⬜ |
 | S-17 | 5.2 | BiLSTM-Opt: encoder-decoder, 72 steps, quantile loss, 60 trials, 3 seeds | — | BiLSTM-Opt | 9, 10 | ⬜ |
 | S-18 | 5.3 | TFT-96: encoder 96 h, decoder 72 h, 20 trials, 18 known reals | — | TFT-96 | 9, 10 | ⬜ |

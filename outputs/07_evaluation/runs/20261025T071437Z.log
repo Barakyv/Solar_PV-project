@@ -1,0 +1,31 @@
+[     0.0s] RUN     stage 07_evaluation
+[     0.0s] RUN     command: python -m solarpv.evaluation.evaluate
+[     0.1s] RUN     git commit: a432689
+[     0.1s] RUN     started (UTC): 2026-10-25T07:14:37+00:00
+[     0.8s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.8s] NOTE    split val; MEAN_DAYTIME_K 0.788157; 0 prediction file(s); references computed from the truth table
+[     0.8s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.8s] STEP    load truth ...
+[     1.0s] STEP    load truth done in 0.2s
+[     1.0s] STEP    evaluate ...
+[     1.3s] NOTE    val: 3 models (clearsky_k, climatology, persistence); daytime rows per model/target/horizon: 2901
+[     3.5s] OUTPUT  outputs/07_evaluation/val/benchmark_summary.csv sha256=1f139f547ec56dd0
+[     3.5s] OUTPUT  outputs/07_evaluation/val/dm_tests.csv sha256=cb8794f0a66746a5
+[     3.5s] OUTPUT  outputs/07_evaluation/val/seasonal_metrics.csv sha256=bb65cdfacfd7254a
+[     3.5s] OUTPUT  outputs/07_evaluation/val/common_mask_summary.csv sha256=d19d559660328a8c
+[     3.5s] OUTPUT  outputs/07_evaluation/val/benchmark_views.csv sha256=7fe97d0a502f4a88
+[     3.5s] OUTPUT  outputs/07_evaluation/val/common_mask_sensitivity.csv sha256=7f16277b15d35c5a
+[     3.5s] OUTPUT  outputs/07_evaluation/val/route_comparison.csv sha256=b97d76fa8bd27f2c
+[     3.5s] OUTPUT  outputs/07_evaluation/val/seed_variability_summary.csv sha256=c84c28b853c2e48d
+[     3.6s] OUTPUT  outputs/07_evaluation/val/manifest.json sha256=3b38718dd02cf17b
+[     3.6s] STEP    evaluate done in 2.6s
+[     3.6s] VALUE   rows_benchmark_summary = 18
+[     3.6s] VALUE   rows_dm_tests = 12
+[     3.6s] VALUE   rows_seasonal_metrics = 72
+[     3.6s] VALUE   rows_common_mask_summary = 18
+[     3.6s] VALUE   rows_benchmark_views = 72
+[     3.6s] VALUE   rows_common_mask_sensitivity = 18
+[     3.6s] VALUE   rows_route_comparison = 18
+[     3.6s] VALUE   rows_seed_variability_summary = 0
+[     3.6s] RUN     warnings: 0
+[     3.6s] RUN     status: ok; duration 3.6s

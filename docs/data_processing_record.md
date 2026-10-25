@@ -3,7 +3,7 @@
 Every operation performed on the data in the rebuild, in order, with its reason, method,
 parameters, result, verification and evidence. Written to be lifted into the final report
 (data chapter, "Reproduction and correction note", appendix). All numbers come from
-`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N11).
+`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N12).
 
 IDs: OP-xx = operation on the data (this file); F-xx finding, D-xx decision, A-xx assumption,
 T-xx test, all defined in `PROJECT_MASTER.md`. Corrections relative to the submitted report are
@@ -33,6 +33,7 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | 8A | old LSTM predictions | evaluation-code check (OP-30) | `outputs/07_evaluation_fixture/` | `stage-08a-passed` |
 | 3b | stages 2, 4, 5 | data quality before and after cleaning, evidence for every threshold; findings fed back into stage 5 (OP-31) | `outputs/03b_quality/`, `notebooks/02b_data_quality.ipynb` | `stage-03b-passed` |
 | 6 | stage-5 hourly data and minute flags | panel orientation, solar geometry, targets and D-11, D-22 masks, lags and rolling statistics, imputation, calendar (OP-32–OP-39) | `data/processed/06_features/`, `outputs/06_features/`, `configs/target.yaml`, `configs/derived_constants.yaml`, `notebooks/04b_features_target.ipynb` | `stage-06-passed` |
+| 8B | stage-6 tables | truth, reference forecasts, evaluation rules and views, on validation only (OP-40, OP-41) | `outputs/07_evaluation/` | `stage-08b-passed` |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
@@ -264,7 +265,7 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§13). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§14). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
@@ -508,7 +509,81 @@ current manifest with a note under every code cell, and the claims of the notes 
 - k persists only weakly from one day to the next (0.34, Q26), so the GFS forecasts
   (stage 6b) are expected to carry the skill.
 
-## 12. Differences from the original data pipeline
+## 12. Evaluation layer on the corrected tables (stage 8B, `solarpv.evaluation`)
+
+**Records.**
+- Plan written before the code: `docs/stage8b_plan.md`. It includes a self-review against the
+  original evaluation scripts (E1–E11) and against the stage-8A code (A1–A6).
+- Outputs: `outputs/07_evaluation/val/`, with run logs in `outputs/07_evaluation/runs/`.
+- Numbers: N12.
+- No model is trained in this stage. The run scores the references on **validation only**, and
+  the test split is not opened.
+
+**OP-40 — Reference forecasts (`solarpv.models.baselines`).**
+- *Why:* the skill score needs a reference (§6.9). Each reference is computed from the truth
+  table by one code path, for the split being scored.
+- *Method:*
+  - **Persistence (h):** the target at the same UTC hour h days earlier, if that hour ended by
+    the issuance time. It uses the stage-6 DST guard (OP-37), so on the 25-hour day it never
+    reads the hour that starts at T0. Gaps are filled with the same-hour median of the previous
+    30 days, earlier days only (OP-38). It is naive: operational limits are not masked.
+  - **Climatology:** the train mean per (UTC month, UTC hour), over hours with a known target
+    and normal operation (D-22).
+  - **Clear sky × MEAN_K:**
+    - direct: `clip(theo_kw × 0.788157, 0, 3,449)`;
+    - indirect: 0.788157 where theo > 50 kW, and 0 otherwise.
+- *Result (N12, validation D+1):*
+
+  | Reference | nRMSE in kW |
+  |---|---|
+  | Persistence | 9.68 % |
+  | Climatology | 8.04 % |
+  | Clear sky × MEAN_K | 8.96 % |
+
+  Persistence degrades from D+1 to D+2, as expected.
+- *Verification:*
+  - **T-38:** perturbing the truth from T0 on changes no persistence forecast of that day,
+    around the fall-back day and for every horizon; the climatology ignores val, test and
+    op-limited rows.
+  - **T-39:** the clear-sky route advantage is exactly 0.
+- *Original:* the skill reference was "same time yesterday" at every horizon (C-08).
+  Climatology and clear sky were not computed.
+
+**OP-41 — Evaluation on the corrected tables (`solarpv.evaluation.evaluate`, `truth`).**
+- *Truth:* `target_k`, `site_total_AC_kW` and `theo_kw` from the stage-6 table. The y_true
+  written in a prediction file is used only as an alignment check, with a tolerance of 1e-6 in
+  k and 1e-3 kW. It catches a file shifted by one hour (the v6 BiLSTM bug), swapped targets
+  and wrong split labels (E8, E9).
+- *Coverage:* every model, seed, target and horizon must predict every daytime hour of the
+  split that has truth. All models are therefore scored on the same n (E9).
+- *Daytime:* F-02, from geometry only. It is asserted equal to the table's flag, and is never
+  taken from the truth (E3).
+- *Split guard:* validation by default. The test split needs `--allow-test`, and every such
+  run is appended to `outputs/07_evaluation/test_access_log.csv` (E10).
+- *New columns and tables:*
+  - nRMSE in kW for both targets;
+  - nRMSE by the mean actual AC of the evaluated rows (L-16);
+  - skill against CLIPER (L-13). Its σ and γ come from the observed daytime series of the
+    evaluated split: train statistics let persistence beat the reference (stage-8B plan §7);
+  - secondary views: normal operation, and by data source (D-21, D-22);
+  - a CI of the mean DM loss differential;
+  - common-mask sensitivity;
+  - seed variability from evaluated seeds (E5).
+- *Result (N12):* 2,901 validation daytime hours with truth for every reference, target and
+  horizon; 2,755 of them in normal operation. No prediction file exists yet.
+- *Verification:*
+  - **T-39–T-41:** split guard, alignment, coverage, zero-output hours kept, paired route
+    comparison, the view counts, and the real validation run.
+  - **T-15 unchanged:** the old metrics are still reproduced, and the BiLSTM rows of the fixture
+    are identical before and after the change.
+- *Original:*
+  - The route comparison scored each route on its own rows. These were filtered by its own
+    truth (k > 0.01, AC > 10 kW), and the "true" kW of the indirect route was rebuilt from the
+    clipped k (C-34, C-16).
+  - The common mask also filtered daytime by the truth, and used three models (C-35).
+  - The models were scored on different n (2,510–2,580).
+
+## 13. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
@@ -529,8 +604,12 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Rolling features | from 1 day back at every horizon (D+2/D+3 saw unknown days) | days h … h+N−1 back, DST guard | OP-37, F-07 |
 | Past-day power in limited hours | used as is | masked per inverter (D-22) | OP-36, D-22 |
 | Calendar | weekend Saturday–Sunday; solar noon = local hour − 12; daylight fraction approximated | weekend Friday–Saturday; solar noon from the transit; daylight fraction from sunrise and sunset | OP-39, Q-05 |
+| Route comparison | each route on its own rows, filtered by its own truth; indirect truth rebuilt from the clipped k | identical rows for both routes, F-02 daytime, actual AC as truth | OP-41, C-34, C-16 |
+| Rows scored per model | 2,510–2,580, by input window; daytime in the common mask taken from the truth | every model on every daytime hour with truth; daytime from geometry only | OP-41, C-35 |
+| Skill reference | same time yesterday at every horizon | persistence of h days, DST-safe; climatology and clear sky added; CLIPER as an extra column | OP-40, C-08 |
+| Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 
-## 13. Limitations carried into the report
+## 14. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -559,8 +638,10 @@ current manifest with a note under every code cell, and the claims of the notes 
   (OP-34).
 - Hourly clear-sky values cover the full hour while AC covers its valid minutes; 26 daytime
   hours have 46–59 AC minutes (OP-33).
+- The test has 2,575 daytime hours with truth, not the 2,580 of the report: five daytime
+  hours lost their AC to communication freezes (OP-41, A-09).
 
-## 14. Reproduction
+## 15. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -577,11 +658,13 @@ python -m solarpv.features.build
 python -m solarpv.features.decide_k     # writes configs/target.yaml (committed)
 python -m solarpv.features.build        # again, with the D-11 decision
 python scripts/make_features_notebook.py
+python -m solarpv.evaluation.evaluate        # validation; the test needs --allow-test
+python -m solarpv.evaluation.evaluate --fixture
 python scripts/build_data_record.py
 pytest
 ```
 
-## 15. Pending operations (documented here when performed)
+## 16. Pending operations (documented here when performed)
 
-Stage 6b GFS forecasts (D-12); stage 7 feature selection (including the proposal of k lags
+Stage 6b GFS forecasts (D-12); stage 7 feature selection (05e as the input, D-13) (including the proposal of k lags
 for the indirect route, §11); stage 9 models and the D-21 robustness check on val.

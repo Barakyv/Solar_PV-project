@@ -1,1 +1,13 @@
-
+model,target,horizon,n,nRMSE_pct_shared,R2_shared
+lstm_sota,direct,1,2499,12.603349,0.793567
+persistence,direct,1,2499,15.673349,0.680750
+lstm_sota,direct,2,2501,12.650095,0.792138
+persistence,direct,2,2501,17.358270,0.608617
+lstm_sota,direct,3,2503,12.613221,0.793567
+persistence,direct,3,2503,17.399718,0.607163
+lstm_sota,indirect,1,2499,30.302646,0.833400
+persistence,indirect,1,2499,37.763018,0.741270
+lstm_sota,indirect,2,2501,30.497725,0.831224
+persistence,indirect,2,2501,40.910986,0.696293
+lstm_sota,indirect,3,2503,30.487859,0.831357
+persistence,indirect,3,2503,41.204811,0.691959

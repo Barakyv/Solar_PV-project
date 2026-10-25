@@ -1,0 +1,36 @@
+{
+  "inputs": [],
+  "inputs_sha256": {},
+  "git_commit": "3df79b9",
+  "mode": "feature table",
+  "split": "val",
+  "mean_daytime_k": 0.788157,
+  "dm_reference": "persistence",
+  "truth": "data/processed/06_features/features_1H_D1.parquet",
+  "truth_sha256": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+  "cliper_rmse": {
+    "indirect_D1": 0.1341029918797608,
+    "indirect_D2": 0.14219006394881972,
+    "indirect_D3": 0.14295640880225108,
+    "direct_D1": 323.91450767223205,
+    "direct_D2": 358.505071079996,
+    "direct_D3": 357.05164518701497
+  },
+  "site_private": true,
+  "strict": true,
+  "checks": {
+    "alignment": [],
+    "coverage": []
+  },
+  "rows": {
+    "benchmark_summary": 18,
+    "dm_tests": 12,
+    "seasonal_metrics": 72,
+    "common_mask_summary": 18,
+    "benchmark_views": 72,
+    "common_mask_sensitivity": 18,
+    "route_comparison": 18,
+    "seed_variability_summary": 0
+  },
+  "run_log": "outputs/07_evaluation/runs/20261025T071608Z.log"
+}

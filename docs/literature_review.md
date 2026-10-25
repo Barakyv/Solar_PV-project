@@ -299,6 +299,13 @@ H high (cheap and likely useful), M medium, L low.
 | L-15 | **Distribution-oriented diagnostics:** MBE, correlation, variance ratio V(f)/V(y), and conditional bias by forecast value, hour and season. An under-dispersed MSE-optimal forecast is expected (S2, C2) and is not a bug | S3, S2, C2 | M |
 | L-16 | **Second normalisation:** nRMSE by mean daytime power, as in the literature (C1, C2), next to the capacity normalisation (3,449 kW, kept for comparability with the original). Stage 3b showed the peak is only 85 % of capacity (A-08) | C1, C2, A-08 | H |
 
+**Status after stage 8B (2026-10-25):**
+- **L-13 adopted** as an extra column, with σ and γ from the evaluated sample. With train
+  statistics, plain persistence beat the reference on validation
+  (`docs/stage8b_plan.md` §7).
+- **L-16 adopted** (nRMSE by the mean actual AC of the evaluated rows).
+- **L-14 and L-15** are produced in stage 11, with the error analysis (§12.3).
+
 ### Stages 9–10: models (D-08, D-17)
 
 | ID | Idea | Source | Pri. |

@@ -134,6 +134,10 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 | Skill vs "same time yesterday" at every horizon | Persistence matched to the horizon (the latest value known at issuance) | Correction | At D+2/D+3, yesterday is not known at issuance (C-08) |
 | Route comparison: indirect truth built from the clipped k | Actual AC is the truth for both routes | Correction | C-16, T-12. The 1.66–2.10 pp advantage must be recomputed |
 | Ablation with leaky NWP in the base model | Recomputed on the leak-free feature set | Correction | C-07: the `minimal` set of the old script even kept `fcst_dni` and `fcst_ghi`. If GFS enters (§2.7), the `no_nwp` row becomes meaningful again |
+| Route comparison rows: each route filtered by its own truth (k > 0.01, AC > 10 kW); 2,165 vs 2,172 (XGB) and 2,243 vs 2,520 (BiLSTM) rows, called "paired" in §10 | Identical rows for both routes, daytime from geometry | Correction | C-34; found in the stage-8B self-review of `compare_routes.py` |
+| Models scored on different n (2,510–2,580); the common mask took daytime from the truth, over three models | Every model on every daytime hour with truth (2,575 on test); daytime from geometry; all models | Correction | C-35 |
+| Test set reachable at any time | Validation by default; test only with an explicit flag, logged | Completion | Enforces "never use the test for decisions" (E10) |
+| Persistence the only reference | Persistence (DST-safe), climatology and clear sky × MEAN_K; CLIPER skill and nRMSE by the mean as extra columns | Extension | §6.9, L-13, L-16; persistence stays the main skill reference |
 | One evaluation over all daytime hours | The same main evaluation, plus secondary views: without op-limited hours, by data source, and without polled hours | Extension | D-21, D-22. The main number is defined as before |
 | 5-fold expanding CV (§12.2): the script did not survive | Rewritten | Completion | Stage 11 |
 
