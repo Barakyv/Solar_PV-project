@@ -113,11 +113,30 @@ def test_hourly_reconstruction_keeps_block_means_and_labels():
     np.testing.assert_allclose(out["t2m"].to_numpy(), 280 + (lead_end - 0.5) - 273.15)
 
 
-def test_twilight_blocks_spread_the_mean_evenly():
+def test_twilight_blocks_follow_the_clear_sky():
+    """An hour without sun inside a block gets 0; the block mean is kept (R6b-03)."""
     init = pd.Timestamp("2022-06-15 12:00", tz="UTC")
     ave, inst = _fields()
     run = _run_frame(range(9, 85, 3), ave, inst)
-    hours, cs = _hours_and_cs(init, cs_level=5.0)  # below the 20 W/m2 threshold
+    hours, cs = _hours_and_cs(init)
+    cs.iloc[:] = np.tile([0.0, 0.0, 30.0], len(cs) // 3)  # dark, dark, first light per block
+    out = G.hourly_from_run(run, init, hours, cs, G.bilinear_weights(30.0, 35.0))
+    dark = cs.reindex(hours).to_numpy() == 0
+    assert (out.loc[dark, "ghi"] == 0).all()
+    lead_end = ((hours + pd.Timedelta(hours=1) - init) / pd.Timedelta(hours=1)).to_numpy()
+    block = np.ceil(lead_end / 3) * 3
+    for b in np.unique(block):
+        rows = block == b
+        if rows.sum() == 3:
+            assert out.loc[rows, "ghi"].mean() == pytest.approx(
+                np.mean(ave["dswrf"][int(b) - 2:int(b) + 1]))
+
+
+def test_a_block_without_sun_is_spread_evenly():
+    init = pd.Timestamp("2022-06-15 12:00", tz="UTC")
+    ave, inst = _fields()
+    run = _run_frame(range(9, 85, 3), ave, inst)
+    hours, cs = _hours_and_cs(init, cs_level=0.0)
     out = G.hourly_from_run(run, init, hours, cs, G.bilinear_weights(30.0, 35.0))
     lead_end = ((hours + pd.Timedelta(hours=1) - init) / pd.Timedelta(hours=1)).to_numpy()
     expected = [np.mean(ave["dswrf"][int(b) - 2:int(b) + 1]) for b in np.ceil(lead_end / 3) * 3]

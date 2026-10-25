@@ -17,9 +17,12 @@ Time rules (T-17, plan §2a N1-N4, N7):
 Reconstruction:
 - **De-averaging (L-06).** GFS averages run from the start s of each 6-hour window. The 3-hour
   mean over (n-3, n] is ((n-s) A(s,n) - (n-3-s) A(s,n-3)) / 3, or A(s,n) when n-3 = s.
-- **Irradiance to hours.** The clear-sky index of each 3-hour block (block mean / mean
-  clear-sky GHI over the same hours) times the hourly clear-sky GHI. This keeps every block
-  mean exactly. Below 20 W/m2 of clear sky the block mean is spread evenly.
+- **Irradiance to hours.** The block mean is distributed over its three hours in proportion
+  to the clear-sky GHI, i.e. the block's clear-sky index times the hourly clear-sky GHI. This
+  keeps every block mean exactly, and an hour with the sun below the horizon gets 0. Only a
+  block without any clear-sky irradiance is spread evenly (its mean is about 0). An even spread
+  at twilight, the first rule, put up to 27 W/m2 into dark hours (R6b-03).
+- **Packing noise.** Values a little below 0, or a little above 100 %, are clipped.
 - **Averaged cloud fields:** constant within the block.
 - **Instantaneous fields:** linear in time.
 - **Space:** bilinear from the 1-degree cell that contains the site; the 3x3 neighbourhood gives
@@ -153,8 +156,8 @@ def hourly_from_run(run: pd.DataFrame, init: pd.Timestamp, hours: pd.DatetimeInd
     starts = pd.DatetimeIndex(init + pd.to_timedelta(block_end - 3, unit="h"))
     block_cs = np.nanmean(np.vstack([ghi_cs.reindex(starts + pd.Timedelta(hours=k)).to_numpy()
                                      for k in range(3)]), axis=0)
-    kt_block = np.where(block_cs > CS_MIN_WM2, out["dswrf"] / np.maximum(block_cs, 1e-9), np.nan)
-    out["ghi"] = np.where(block_cs > CS_MIN_WM2, kt_block * cs, out["dswrf"])
+    share = np.where(block_cs > 0, cs / np.maximum(block_cs, 1e-12), 1.0)
+    out["ghi"] = np.clip(out["dswrf"] * share, 0.0, None)  # GRIB packing gives about -0.02
     # instantaneous fields: linear in time at the middle of the hour
     mid = lead_end - 0.5
     for name in INSTANT:
@@ -173,6 +176,8 @@ def hourly_from_run(run: pd.DataFrame, init: pd.Timestamp, hours: pd.DatetimeInd
                  .to_numpy() for _, g in tcc.groupby(["lat", "lon"])]
     stack = np.vstack(per_point)
     out["tcc_mean3x3"], out["tcc_std3x3"] = stack.mean(axis=0), stack.std(axis=0, ddof=1)
+    for name in ("tcc", "lcc", "mcc", "hcc", "tcc_mean3x3", "rh2m"):  # percentages
+        out[name] = out[name].clip(0.0, 100.0)
     return out.drop(columns=["dswrf"])
 
 

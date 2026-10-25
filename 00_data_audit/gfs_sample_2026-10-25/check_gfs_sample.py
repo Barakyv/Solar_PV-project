@@ -20,8 +20,12 @@ Checks, aimed at the failures of the original forecasts (docs/stage6b_plan.md §
 4. lead dependence (N2): the three forecasts of the same target day differ;
 5. train and validation only: GFS against the measured in-plane irradiance:
    - lag of the best correlation (must be 0);
-   - correlation of kt_poa with the measured k per horizon (plausible, not near-perfect, and
-     not improving with the horizon).
+   - per horizon, the GFS clear-sky index on the panel plane (kt_poa) against the measured one
+     (irradiance / POA_cs), the same quantity on both sides; hourly and daily correlation,
+     bias and MAE. The red flags of the original's problem: near-perfect skill at D+3
+     (daily correlation > 0.95), or skill that rises with the horizon (D+3 above D+1 by more
+     than 0.05). A first version compared kt_poa with the plant's k, whose scale includes the
+     system losses (k about 0.79), and was dropped (R6b-03).
 
 Writes `sample_summary.json`, `sample_runs.csv`, `sample_horizons.csv` and
 `sample_days.png` here, and a run log under `runs/`.
@@ -141,23 +145,41 @@ def main() -> int:
                 row = {"block": first, "split": split, "target_day": target.date().isoformat(),
                        "same_target_hours": same_index, **diffs}
                 if split in ("train", "val"):  # never the test split
-                    for h in (1, 2, 3):
-                        r = per_h[h][day_mask]
-                        k_obs = geo["target_k"].reindex(r.index)
-                        horizon_rows.append({
-                            "block": first, "split": split, "horizon": h, "hours": len(r),
-                            "kt_poa_mean": float(r["kt_poa"].mean()),
-                            "k_measured_mean": float(k_obs.mean()),
-                            "abs_error_k": float((r["kt_poa"] - k_obs).abs().mean())})
+                    for day in b_days:
+                        for h in (1, 2, 3):
+                            r = G.horizon_rows(tables[day], runs[day][1], h)
+                            poa_cs = geo["poa_global_clearsky"].reindex(r.index)
+                            use = ((geo["sun_elevation"].reindex(r.index) > 10)
+                                   & (poa_cs > 50)).to_numpy()
+                            meas = (hourly["irradiance"].reindex(r.index) / poa_cs)[use]
+                            local = r.index[use].tz_convert(TIMEZONE_LOCAL).tz_localize(
+                                None).normalize()
+                            horizon_rows += [{"block": first, "split": split, "run_day": day,
+                                              "horizon": h, "timestamp": ts, "local_day": d,
+                                              "kt_gfs": g, "kt_measured": m}
+                                             for ts, d, g, m in zip(r.index[use], local,
+                                                                    r["kt_poa"][use],
+                                                                    meas, strict=True)]
                     # alignment against the measured in-plane irradiance, D+1 days of the block
                     d1 = pd.concat([G.horizon_rows(tables[d], runs[d][1], 1) for d in b_days])
                     measured = hourly["irradiance"].reindex(d1.index)
                     row["lag_vs_measured_h"] = lag_of_best_correlation(d1["poa"], measured)
                     row["corr_poa_vs_measured_D1"] = float(d1["poa"].corr(measured))
                 block_rows.append(row)
-        horizons = pd.DataFrame(horizon_rows)
+        pairs = pd.DataFrame(horizon_rows).dropna(subset=["kt_measured"])
+        daily = pairs.groupby(["horizon", "local_day", "run_day"])[["kt_gfs", "kt_measured"]] \
+            .mean().reset_index()
+        horizons = pd.DataFrame([{
+            "horizon": h, "hours": len(g), "days": int(daily[daily["horizon"] == h].shape[0]),
+            "corr_hourly": g["kt_gfs"].corr(g["kt_measured"]),
+            "corr_daily": daily.loc[daily["horizon"] == h, "kt_gfs"].corr(
+                daily.loc[daily["horizon"] == h, "kt_measured"]),
+            "bias": float((g["kt_gfs"] - g["kt_measured"]).mean()),
+            "mae": float((g["kt_gfs"] - g["kt_measured"]).abs().mean())}
+            for h, g in pairs.groupby("horizon")])
         blocks = pd.DataFrame(block_rows)
         horizons.to_csv(HERE / "sample_horizons.csv", index=False, lineterminator="\n")
+        daily.to_csv(HERE / "sample_daily.csv", index=False, lineterminator="\n")
         blocks.to_csv(HERE / "sample_blocks.csv", index=False, lineterminator="\n")
 
         with log.step("figure"):
@@ -200,16 +222,21 @@ def main() -> int:
             ["lag_vs_measured_h"].astype(int).tolist(),
             "corr_poa_vs_measured_D1_train_val": blocks["corr_poa_vs_measured_D1"].dropna()
             .round(3).tolist(),
-            "abs_error_k_by_horizon_train_val": horizons.groupby("horizon")["abs_error_k"]
-            .mean().round(4).to_dict(),
+            "kt_poa_vs_measured_by_horizon_train_val": horizons.set_index("horizon")
+            .round(4).to_dict(orient="index"),
+            "red_flag_too_good_at_D3": bool(horizons.set_index("horizon").loc[3, "corr_daily"]
+                                            > 0.95),
+            "red_flag_skill_rises_with_horizon": bool(
+                horizons.set_index("horizon").loc[3, "corr_daily"]
+                > horizons.set_index("horizon").loc[1, "corr_daily"] + 0.05),
         }
         (HERE / "sample_summary.json").write_text(json.dumps(summary, indent=2, default=str),
                                                  encoding="utf-8", newline="\n")
         for key, value in summary.items():
             log.value(key, value)
         log.outputs([HERE / f for f in ("sample_runs.csv", "sample_blocks.csv",
-                                        "sample_horizons.csv", "sample_days.png",
-                                        "sample_summary.json")])
+                                        "sample_horizons.csv", "sample_daily.csv",
+                                        "sample_days.png", "sample_summary.json")])
     return 0
 
 
