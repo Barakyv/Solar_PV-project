@@ -273,6 +273,50 @@ GFS_COLUMNS = ("ghi", "kt", "poa", "kt_poa", "kt_poa_ma3", "kt_poa_daymean", "tc
                "wind10", "sunsd", "tcell", "pv_kw", "k_phys")
 META_COLUMNS = ("t0_utc", "gfs_init", "gfs_run", "gfs_fallback", "gfs_uploaded_max",
                 "gfs_lead_end_h")
+# name: (definition, unit, idea) - every candidate of the stage-6b tables
+DEFINITIONS = {
+    "ghi": ("GFS surface downward shortwave (DSWRF), de-averaged to 3 h and distributed over the "
+            "hours in proportion to the clear-sky GHI; bilinear at the site", "W/m2", "L-06"),
+    "kt": ("ghi / clear-sky GHI of the hour (0 below 20 W/m2 of clear sky)", "-", "L-03"),
+    "poa": ("ghi transposed to the panel plane 21/185: Erbs separation, Hay-Davies", "W/m2",
+            "L-01"),
+    "kt_poa": ("poa / clear-sky POA of the hour, the GFS analogue of the target k", "-", "L-03"),
+    "kt_poa_ma3": ("centred 3-hour mean of kt_poa, same run", "-", "L-02"),
+    "kt_poa_daymean": ("mean kt_poa over the daytime hours of the target local day, same run",
+                       "-", "L-02"),
+    "tcc": ("total cloud cover, 3-hour mean, constant within the block", "%", "L-07"),
+    "lcc": ("low cloud cover, 3-hour mean", "%", "L-07"),
+    "mcc": ("middle cloud cover, 3-hour mean", "%", "L-07"),
+    "hcc": ("high cloud cover, 3-hour mean", "%", "L-07"),
+    "tcc_mean3x3": ("total cloud cover, mean over the 3x3 grid points", "%", "L-08"),
+    "tcc_std3x3": ("total cloud cover, standard deviation over the 3x3 grid points", "%", "L-08"),
+    "tcc_daymean": ("mean tcc over the daytime hours of the target local day, same run", "%",
+                    "L-02"),
+    "t2m": ("2-m air temperature, linear in time at the middle of the hour", "degC", "L-07"),
+    "rh2m": ("2-m relative humidity, linear in time", "%", "L-07"),
+    "pwat": ("precipitable water, linear in time", "kg/m2", "L-07"),
+    "wind10": ("10-m wind speed from U and V, linear in time", "m/s", "L-07"),
+    "sunsd": ("sunshine fraction of the 3-hour block (SUNSD de-accumulated / 10,800 s)", "-",
+              "L-07"),
+    "tcell": ("cell temperature, Faiman, from poa, t2m and wind10", "degC", "L-01"),
+    "pv_kw": ("physical PV power: poa x 3,449/1,000 x (1 - 0.42 %/K x (tcell - 25))", "kW",
+              "L-01"),
+    "k_phys": ("pv_kw / theoretical power (0 where theo <= 50 kW)", "-", "L-01"),
+}
+NON_GFS = {"irradiance_clear_index_prevday": (
+    "p90 of measured in-plane irradiance / clear-sky POA over hours with the sun above 20 deg, "
+    "on the last full local day before T0 (not from GFS)", "-", "L-11a")}
+
+
+def feature_dictionary() -> pd.DataFrame:
+    rows = [{"feature": f"{PREFIX}{k}", "definition": d, "unit": u, "idea": i,
+             "available_at_T0": "GFS 12Z run of the UTC day of T0 (or a flagged earlier run); "
+                                "init + 6 h <= T0 and every file uploaded before T0 (T-17)"}
+            for k, (d, u, i) in DEFINITIONS.items()]
+    rows += [{"feature": k, "definition": d, "unit": u, "idea": i,
+              "available_at_T0": "measured on the local day that ended at T0"}
+             for k, (d, u, i) in NON_GFS.items()]
+    return pd.DataFrame(rows)
 
 
 def load_runs() -> list[tuple[pd.DataFrame, dict]]:
@@ -329,6 +373,14 @@ def run() -> dict:
             t.to_parquet(path)
             files.append(path)
             log.value(f"D{h}_rows_with_gfs", int(t[f"{PREFIX}ghi"].notna().sum()))
+        dictionary = feature_dictionary()
+        missing = set(dictionary["feature"]) ^ (set(tables[1].columns) - set(META_COLUMNS))
+        if missing:
+            raise ValueError(f"dictionary and table columns differ: {sorted(missing)}")
+        dict_path = REPORT_DIR / "gfs_feature_dictionary.csv"
+        REPORT_DIR.mkdir(parents=True, exist_ok=True)
+        dictionary.to_csv(dict_path, index=False, lineterminator="\n")
+        files.append(dict_path)
         out_hashes = log.outputs(files)
         manifest = {"stage": "06b_gfs", "git_commit": git_commit(), "run_log": log.relative_path,
                     "runs": len(runs), "fallback_runs": int(sum(r["fallback"] for _, r in runs)),
