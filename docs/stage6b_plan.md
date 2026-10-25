@@ -191,3 +191,19 @@ Plus a manifest and a feature dictionary.
 - T-17 and T-42–T-44 pass, together with the full suite.
 - The sanity checks pass, and the value check is recorded in D-12.
 - OP entries, numbers N13, the run journal and PROJECT_MASTER are updated.
+
+## 7. Changes during the stage
+
+- **Sample before the full download (user, 2026-10-25).** The user asked for a sample from
+  different periods. Ten blocks of three consecutive runs were checked
+  (`00_data_audit/gfs_sample_2026-10-25/`). Test blocks got technical checks only.
+- **ecCodes is not thread-safe:** decoding is serialised (R6b-01).
+- **SUNSD is accumulated** from the start of each 6-hour window, although tagged instantaneous.
+  It is de-accumulated into 3-hour sunshine fractions, and a value that breaks the assumption
+  raises (R6b-01).
+- **Irradiance to hours, S2:** the twilight rule of the plan ("below 20 W/m² of clear sky,
+  spread evenly") put up to 27 W/m² into dark hours. Every sunlit block is now distributed in
+  proportion to the clear sky; only a fully dark block is spread evenly (R6b-03).
+- **Physical chain:** the extraterrestrial irradiance is aligned on the row index (R6b-02).
+- **The accuracy check of S4** compares GFS kt_poa with the measured irradiance / POA_cs (the
+  same quantity), not with the plant's k (R6b-03).

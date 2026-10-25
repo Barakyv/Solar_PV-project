@@ -1,0 +1,6 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.download --start 2021-10-12 --end 2021-10-12
+[     0.1s] RUN     git commit: 3ae09b2
+[     0.1s] RUN     started (UTC): 2026-10-25T08:01:02+00:00
+[     3.3s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     3.3s] NOTE    1 days requested; 0 complete; 1 to download

@@ -1,0 +1,60 @@
+{
+  "runs": 30,
+  "fallback_runs": 0,
+  "complete_runs": 30,
+  "averaging_windows_ok": true,
+  "all_available_before_t0": true,
+  "min_hours_uploaded_before_t0": 5.006111111111111,
+  "ghi_never_negative": true,
+  "max_ghi_at_night": 1.056632003728738,
+  "lag_vs_clearsky_all_zero": true,
+  "lead_dependence_all_blocks": true,
+  "lag_vs_measured_train_val": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "corr_poa_vs_measured_D1_train_val": [
+    0.962,
+    0.975,
+    0.935,
+    1.0,
+    0.998,
+    0.993,
+    0.992,
+    1.0
+  ],
+  "kt_poa_vs_measured_by_horizon_train_val": {
+    "1": {
+      "hours": 245,
+      "days": 24,
+      "corr_hourly": 0.6441,
+      "corr_daily": 0.8328,
+      "bias": 0.0241,
+      "mae": 0.1143
+    },
+    "2": {
+      "hours": 244,
+      "days": 24,
+      "corr_hourly": 0.7136,
+      "corr_daily": 0.9138,
+      "bias": 0.0052,
+      "mae": 0.0981
+    },
+    "3": {
+      "hours": 241,
+      "days": 24,
+      "corr_hourly": 0.3666,
+      "corr_daily": 0.438,
+      "bias": -0.0064,
+      "mae": 0.1058
+    }
+  },
+  "red_flag_too_good_at_D3": false,
+  "red_flag_skill_rises_with_horizon": false
+}

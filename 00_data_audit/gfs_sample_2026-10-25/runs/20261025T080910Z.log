@@ -1,0 +1,35 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python 00_data_audit/gfs_sample_2026-10-25/check_gfs_sample.py
+[     0.1s] RUN     git commit: f96b894
+[     0.1s] RUN     started (UTC): 2026-10-25T08:09:10+00:00
+[     2.0s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.0s] NOTE    30 runs in 10 blocks; test blocks: technical checks only
+[     2.0s] STEP    download the sample (resumable) ...
+[     2.0s] STEP    download the sample (resumable) done in 0.0s
+[     2.1s] VALUE   runs_downloaded = 30
+[     2.1s] STEP    completeness, availability and physics per run ...
+[     5.4s] STEP    completeness, availability and physics per run done in 3.3s
+[     5.4s] STEP    lead dependence and comparison with measurements ...
+[     5.6s] STEP    lead dependence and comparison with measurements done in 0.2s
+[     5.6s] STEP    figure ...
+[     7.9s] STEP    figure done in 2.3s
+[     7.9s] VALUE   runs = 30
+[     7.9s] VALUE   fallback_runs = 0
+[     7.9s] VALUE   complete_runs = 30
+[     7.9s] VALUE   averaging_windows_ok = True
+[     7.9s] VALUE   all_available_before_t0 = True
+[     7.9s] VALUE   min_hours_uploaded_before_t0 = 5.006111111111111
+[     7.9s] VALUE   ghi_never_negative = False
+[     7.9s] VALUE   max_ghi_at_night = 26.651842430984743
+[     7.9s] VALUE   lag_vs_clearsky_all_zero = True
+[     7.9s] VALUE   lead_dependence_all_blocks = True
+[     7.9s] VALUE   lag_vs_measured_train_val = [0, 0, 0, 0, 0, 0, 0, 0]
+[     7.9s] VALUE   corr_poa_vs_measured_D1_train_val = [0.962, 0.975, 0.935, 1.0, 0.998, 0.992, 0.991, 1.0]
+[     7.9s] VALUE   abs_error_k_by_horizon_train_val = {1: 0.3325, 2: 0.3077, 3: 0.3238}
+[     7.9s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_runs.csv sha256=e21c4d1fb3a5d15d
+[     7.9s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_blocks.csv sha256=71d2bbe9c6afc099
+[     7.9s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_horizons.csv sha256=29353731d1454d93
+[     7.9s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_days.png sha256=02b0b65db50555cf
+[     7.9s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_summary.json sha256=0f2cae0dabf4cec8
+[     7.9s] RUN     warnings: 0
+[     7.9s] RUN     status: ok; duration 7.9s

@@ -317,3 +317,93 @@ hashes, numbers) and the commit messages are the record:
     errata.
   - In my own stage-8A code: the persistence reference lacked the first test days and the DST
     guard (A1, A2). Fixed.
+
+## Stage 6b: GFS forecasts
+
+### 2026-10-25 · R6b-01 · First real run (2021-10-12, 12Z)
+
+- **Purpose:** verify decoding, the grid and the averaging windows on real data before any
+  larger download. The user approved a sample; this was its first run.
+- **Command and commit:** `python -m solarpv.nwp.download --start 2021-10-12 --end 2021-10-12`.
+  - First attempt at `3ae09b2`, log `outputs/06b_gfs/runs/20261025T080102Z.log`. The process
+    was killed by ecCodes ("fatal flex scanner internal error"), so the log has no status line.
+  - Second attempt at `3ae09b2+dirty`, after the fix below and before its commit (`0b792bd`):
+    log `20261025T080124Z.log`, 19.5 MB in 13.8 s.
+- **Problems and fixes:**
+  - **ecCodes is not thread-safe.** Two download threads decoding at once aborted the process.
+    Decoding is now serialised with a lock; downloads stay parallel.
+  - **SUNSD is accumulated, not instantaneous.** The index and the GRIB step type say
+    "instantaneous", but the values are 10,800 s at the third hour of a sunny 6-hour window and
+    21,600 s at the sixth. It is now de-accumulated into 3-hour sunshine fractions. A value
+    longer than the elapsed window raises (test).
+- **Results:**
+  - 26 files and 11 messages per file decoded at the 3×3 points.
+  - Averaging windows 6-9, 6-12, 12-15, …, as expected.
+  - Files uploaded 15:39–15:59 UTC, i.e. 3.7–4.0 h after init and 5 h before T0.
+
+### 2026-10-25 · R6b-02 · Multi-period sample: download, then a failure in the physical chain
+
+- **Purpose:** the user asked for a sample from different periods before deciding on the full
+  download: "so that there is no problem as with the previous forecasts". 10 blocks of 3
+  consecutive runs:
+  - train: every season and both DST days;
+  - validation;
+  - test: technical checks only.
+- **Command and commit:** `python 00_data_audit/gfs_sample_2026-10-25/check_gfs_sample.py` at
+  `0b792bd`, log `00_data_audit/gfs_sample_2026-10-25/runs/20261025T080307Z.log`.
+- **Results:** the 29 new runs were downloaded in 295 s (about 0.57 GB), with no fallback run.
+- **Problems and fixes:**
+  - The run then stopped in `physical_features`. The extraterrestrial irradiance at mid-hour
+    came back on the shifted index, and pandas aligned it against the row index (74 vs 148).
+  - That function was the only one without a unit test. Fixed (`f96b894`), and a clear-day test
+    on real geometry was added.
+
+### 2026-10-25 · R6b-03 · Sample check: three findings
+
+- **Command and commit:** the same script at `f96b894`, log `20261025T080910Z.log`.
+- **Results:** 30 of 30 runs complete; all available at least 5.0 h before T0; phase against
+  the clear sky and against the measurement at lag 0 in every block; the three horizons of the
+  same target day differ.
+- **Intermediate notes (self-review of the output):**
+  - **Dark hours with irradiance.** Up to 27 W/m² of GFS irradiance at night, in spring. The
+    twilight rule spread a sunrise block evenly over its three hours, including a dark hour.
+  - **Packing noise.** Tiny negatives (−0.02 W/m²) and −0.x % cloud.
+  - **The wrong accuracy measure.** The script compared GFS kt_poa with the plant's k. The
+    plant's k includes the system losses (mean 0.79), so the "error" of 0.33 was mostly the
+    difference of scale.
+- **Fixes (`d0b743b`):**
+  - Every block with any clear-sky irradiance is now distributed in proportion to it: the
+    block mean is kept, and dark hours get 0. Only a fully dark block is spread evenly.
+  - The packing noise is clipped.
+  - The comparison now uses the same quantity on both sides: GFS kt_poa against the measured
+    irradiance / POA_cs, hourly and daily.
+
+### 2026-10-25 · R6b-04 · Sample check: all checks pass
+
+- **Command and commit:** the same script at `d0b743b`, log `20261025T081130Z.log`.
+- **Results** (`sample_summary.json`):
+  - 30 of 30 runs complete; no fallback; averaging windows as expected; all files uploaded at
+    least 5.0 h before T0.
+  - Irradiance never negative; at most 1.1 W/m² in hours whose clear sky is below 1 W/m².
+  - Phase: lag 0 against the clear sky in all 30 runs, and against the measurement in all 8
+    train and validation blocks.
+  - The forecasts of the same target day from D+1, D+2 and D+3 differ in every block (N2).
+  - GFS kt_poa against the measured clear-sky index, train and validation only:
+
+    | Horizon | Hourly r | Daily r | Bias | MAE |
+    |---|---|---|---|---|
+    | D+1 | 0.64 | 0.83 | +0.02 | 0.11 |
+    | D+2 | 0.71 | 0.91 | +0.01 | 0.10 |
+    | D+3 | 0.37 | 0.44 | −0.01 | 0.11 |
+
+    About 245 hours and 24 days per horizon.
+  - Neither red flag of the original's problem is raised: skill is far from perfect at D+3, and
+    it does not rise with the horizon.
+- **Intermediate notes:**
+  - D+2 above D+1 is a sample effect. Each horizon covers a slightly different set of 24
+    days, and the cloudy days differ.
+  - The full period will measure the horizon effect on all train days.
+  - The figure shows the forecast following the measurement, including the overcast day of
+    2022-01-19, forecast correctly as low irradiance.
+- **Decision / next:** the full download (1°, about 27 GB of transfer) and the optional 0.25°
+  comparison are left to the user, as agreed.

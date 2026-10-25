@@ -1,0 +1,38 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python 00_data_audit/gfs_sample_2026-10-25/check_gfs_sample.py
+[     0.3s] RUN     git commit: d0b743b
+[     0.3s] RUN     started (UTC): 2026-10-25T08:11:30+00:00
+[     2.7s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.7s] NOTE    30 runs in 10 blocks; test blocks: technical checks only
+[     2.7s] STEP    download the sample (resumable) ...
+[     2.7s] STEP    download the sample (resumable) done in 0.0s
+[     2.8s] VALUE   runs_downloaded = 30
+[     2.9s] STEP    completeness, availability and physics per run ...
+[     7.0s] STEP    completeness, availability and physics per run done in 4.1s
+[     7.0s] STEP    lead dependence and comparison with measurements ...
+[     7.4s] STEP    lead dependence and comparison with measurements done in 0.4s
+[     7.4s] STEP    figure ...
+[     9.6s] STEP    figure done in 2.2s
+[     9.7s] VALUE   runs = 30
+[     9.7s] VALUE   fallback_runs = 0
+[     9.7s] VALUE   complete_runs = 30
+[     9.7s] VALUE   averaging_windows_ok = True
+[     9.7s] VALUE   all_available_before_t0 = True
+[     9.7s] VALUE   min_hours_uploaded_before_t0 = 5.006111111111111
+[     9.7s] VALUE   ghi_never_negative = True
+[     9.7s] VALUE   max_ghi_at_night = 1.056632003728738
+[     9.7s] VALUE   lag_vs_clearsky_all_zero = True
+[     9.7s] VALUE   lead_dependence_all_blocks = True
+[     9.7s] VALUE   lag_vs_measured_train_val = [0, 0, 0, 0, 0, 0, 0, 0]
+[     9.7s] VALUE   corr_poa_vs_measured_D1_train_val = [0.962, 0.975, 0.935, 1.0, 0.998, 0.993, 0.992, 1.0]
+[     9.7s] VALUE   kt_poa_vs_measured_by_horizon_train_val = {1: {'hours': 245, 'days': 24, 'corr_hourly': 0.6441, 'corr_daily': 0.8328, 'bias': 0.0241, 'mae': 0.1143}, 2: {'hours': 244, 'days': 24, 'corr_hourly': 0.7136, 'corr_daily': 0.9138, 'bias': 0.0052, 'mae': 0.0981}, 3: {'hours': 241, 'days': 24, 'corr_hourly': 0.3666, 'corr_daily': 0.438, 'bias': -0.0064, 'mae': 0.1058}}
+[     9.7s] VALUE   red_flag_too_good_at_D3 = False
+[     9.7s] VALUE   red_flag_skill_rises_with_horizon = False
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_runs.csv sha256=e1ad8e9cd09b02df
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_blocks.csv sha256=11f7f869500f7cfc
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_horizons.csv sha256=eb9291d724439ba5
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_daily.csv sha256=1b7c064ef73a0611
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_days.png sha256=2c9ae47d9eed8700
+[     9.7s] OUTPUT  00_data_audit/gfs_sample_2026-10-25/sample_summary.json sha256=c429c2ef323cc01b
+[     9.7s] RUN     warnings: 0
+[     9.7s] RUN     status: ok; duration 9.7s

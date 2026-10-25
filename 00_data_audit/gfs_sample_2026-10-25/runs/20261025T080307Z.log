@@ -1,0 +1,66 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python 00_data_audit/gfs_sample_2026-10-25/check_gfs_sample.py
+[     0.2s] RUN     git commit: 0b792bd
+[     0.2s] RUN     started (UTC): 2026-10-25T08:03:07+00:00
+[     2.0s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.0s] NOTE    30 runs in 10 blocks; test blocks: technical checks only
+[     2.0s] STEP    download the sample (resumable) ...
+[   297.2s] STEP    download the sample (resumable) done in 295.2s
+[   297.3s] VALUE   runs_downloaded = 30
+[   297.3s] STEP    completeness, availability and physics per run ...
+[   297.4s] ERROR   Traceback (most recent call last):
+[   297.4s] ERROR     File "C:\Users\baraky\Desktop\solar\00_data_audit\gfs_sample_2026-10-25\check_gfs_sample.py", line 100, in main
+[   297.4s] ERROR       table = G.run_table(frame, rec, geo, plane, weights)
+[   297.4s] ERROR               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\Desktop\solar\src\solarpv\nwp\gfs.py", line 218, in run_table
+[   297.4s] ERROR       h = h.join(physical_features(h, geo, plane))
+[   297.4s] ERROR                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\Desktop\solar\src\solarpv\nwp\gfs.py", line 190, in physical_features
+[   297.4s] ERROR       poa = pvlib.irradiance.get_total_irradiance(
+[   297.4s] ERROR             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pvlib\irradiance.py", line 363, in get_total_irradiance
+[   297.4s] ERROR       poa_sky_diffuse = get_sky_diffuse(
+[   297.4s] ERROR                         ^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pvlib\irradiance.py", line 477, in get_sky_diffuse
+[   297.4s] ERROR       sky = haydavies(surface_tilt, surface_azimuth, dhi, dni, dni_extra,
+[   297.4s] ERROR             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pvlib\irradiance.py", line 939, in haydavies
+[   297.4s] ERROR       poa_circumsolar = np.maximum(dhi * (AI * Rb), 0)
+[   297.4s] ERROR                                    ~~~~^~~~~~~~~~~
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\generic.py", line 2048, in __array_ufunc__
+[   297.4s] ERROR       return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\arraylike.py", line 277, in array_ufunc
+[   297.4s] ERROR       result = maybe_dispatch_ufunc_to_dunder_op(self, ufunc, method, *inputs, **kwargs)
+[   297.4s] ERROR                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "pandas/_libs/ops_dispatch.pyx", line 113, in pandas._libs.ops_dispatch.maybe_dispatch_ufunc_to_dunder_op
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\ops\common.py", line 85, in new_method
+[   297.4s] ERROR       return method(self, other)
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\arraylike.py", line 210, in __rmul__
+[   297.4s] ERROR       return self._arith_method(other, roperator.rmul)
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\series.py", line 6751, in _arith_method
+[   297.4s] ERROR       return base.IndexOpsMixin._arith_method(self, other, op)
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\base.py", line 1644, in _arith_method
+[   297.4s] ERROR       result = ops.arithmetic_op(lvalues, rvalues, op)
+[   297.4s] ERROR                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\ops\array_ops.py", line 289, in arithmetic_op
+[   297.4s] ERROR       res_values = _na_arithmetic_op(left, right, op)  # type: ignore[arg-type]
+[   297.4s] ERROR                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\ops\array_ops.py", line 220, in _na_arithmetic_op
+[   297.4s] ERROR       result = func(left, right)
+[   297.4s] ERROR                ^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\computation\expressions.py", line 252, in evaluate
+[   297.4s] ERROR       return _evaluate(op, op_str, left_op, right_op)  # type: ignore[misc]
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\computation\expressions.py", line 83, in _evaluate_standard
+[   297.4s] ERROR       return op(left_op, right_op)
+[   297.4s] ERROR              ^^^^^^^^^^^^^^^^^^^^^
+[   297.4s] ERROR     File "C:\Users\baraky\AppData\Local\miniforge3\envs\solar\Lib\site-packages\pandas\core\roperator.py", line 20, in rmul
+[   297.4s] ERROR       return right * left
+[   297.4s] ERROR              ~~~~~~^~~~~~
+[   297.4s] ERROR   ValueError: operands could not be broadcast together with shapes (74,) (148,)
+[   297.4s] RUN     warnings: 0
+[   297.4s] RUN     status: failed (ValueError); duration 297.4s
