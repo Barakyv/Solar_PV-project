@@ -170,3 +170,16 @@ are `persistence`, `climatology` and `clearsky_k`.
 - The references behave as expected on validation: persistence and climatology are plausible,
   and the clear-sky route advantage is 0.
 - The record (OP entries, N12), the run journal, the errata (C-34) and PROJECT_MASTER are updated.
+
+## 7. Changes during the stage
+
+- **CLIPER reference (L-13): from the evaluated sample, not from train.**
+  - The plan (§3.5) took σ and γ(h) from train.
+  - On validation, the first run (R8-01) gave plain persistence a positive skill against that
+    reference: direct D+1 +0.15.
+  - The blend σ·√(1 − γ²) is optimal, and never worse than persistence, only on the sample it
+    is computed from: 2σ²(1 − γ) ≥ σ²(1 − γ²). Train statistics describe a different, harder
+    sample.
+  - σ and γ now come from the observed daytime series of the evaluated split. Only observations
+    enter, no forecast, so it is a property of the sample, like the mean in L-16.
+  - A test asserts that persistence does not beat the reference (unit and contract).

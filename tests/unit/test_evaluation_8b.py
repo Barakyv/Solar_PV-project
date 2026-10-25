@@ -249,3 +249,11 @@ def test_views_follow_the_flags(tmp_path):
     bench = tables["benchmark_summary"].set_index(["model", "target", "horizon"])
     assert pd.isna(bench.loc[("persistence", "direct", 1), "skill_score"])  # not vs itself
     assert bench.loc[("xgb_sota", "direct", 1), "n_skill"] == len(day)  # A1: full reference
+
+
+def test_persistence_does_not_beat_the_cliper_reference(tmp_path):
+    """On its own sample the CLIPER blend is never worse than persistence (2(1-g) >= 1-g^2).
+    A reference from train statistics broke this on validation (docs/stage8b_plan.md §7)."""
+    tables = E.run([], tmp_path / "out", MEAN_K, site=SITE, truth=_truth(), ci=False)
+    bench = tables["benchmark_summary"]
+    assert (bench.loc[bench["model"] == "persistence", "skill_cliper"] <= 0.02).all()

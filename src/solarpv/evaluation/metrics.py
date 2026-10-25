@@ -107,8 +107,12 @@ def bootstrap_mean_ci(d, block: int = BOOTSTRAP_BLOCK, reps: int = DM_CI_REPS,
 def cliper_rmse(y: pd.Series, use: pd.Series, lag_hours: int) -> float:
     """RMSE of the optimal climatology-persistence blend, sigma * sqrt(1 - gamma^2) (L-13; Mayer
     and Yang 2024). sigma is the standard deviation of y on the `use` rows; gamma is the
-    correlation of y(t) and y(t - lag) over the rows where both hours are `use` rows. Both come
-    from train (the caller passes the train daytime rows), so no evaluation data enters."""
+    correlation of y(t) and y(t - lag) over the rows where both hours are `use` rows.
+
+    The caller passes the evaluated daytime rows: only on the same sample is the blend optimal,
+    so that it is never worse than persistence (MSE 2 sigma^2 (1 - gamma) >= sigma^2 (1 -
+    gamma^2)). Only observations enter, no forecast. Train statistics were tried first and
+    let plain persistence beat the reference on validation (docs/stage8b_plan.md §7)."""
     use = use.reindex(y.index, fill_value=False) & y.notna()
     lagged = y.shift(lag_hours, freq="h").reindex(y.index)
     both = use & use.shift(lag_hours, freq="h").reindex(y.index, fill_value=False) \

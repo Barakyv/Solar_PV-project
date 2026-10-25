@@ -219,10 +219,11 @@ def to_kw(target: str, y_pred, theo_kw) -> np.ndarray:
     return np.clip(y_pred * np.asarray(theo_kw, dtype=float), 0.0, AC_CAPACITY_KW)
 
 
-def cliper_references(truth: pd.DataFrame) -> dict[tuple[str, int], float]:
-    """RMSE_cp per target and horizon from the train daytime series (L-13)."""
-    train_day = (truth["split"] == "train") & truth["daytime"]
-    return {(target, h): cliper_rmse(truth[target], train_day, 24 * h)
+def cliper_references(truth: pd.DataFrame, split: str) -> dict[tuple[str, int], float]:
+    """RMSE_cp per target and horizon from the observed daytime series of the evaluated split
+    (L-13). Only observations enter; on its own sample the blend is optimal (metrics.py)."""
+    rows = (truth["split"] == split) & truth["daytime"]
+    return {(target, h): cliper_rmse(truth[target], rows, 24 * h)
             for target in TARGETS for h in HORIZONS}
 
 
@@ -497,7 +498,7 @@ def run(
              f"horizon: {int(preds[preds['daytime']].groupby(KEY).size().iloc[0])}")
     models = set(preds["model"])
     reference = reference or ("xgb_sota" if "xgb_sota" in models else PERSISTENCE)
-    cliper = cliper_references(truth) if truth is not None else None
+    cliper = cliper_references(truth, split) if truth is not None else None
 
     bench = benchmark_table(preds, mean_k, ci=ci, truth=truth, cliper=cliper)
     mask_summary, mask_sensitivity = common_mask_tables(preds, mean_k)

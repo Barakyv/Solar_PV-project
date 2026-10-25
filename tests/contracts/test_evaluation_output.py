@@ -85,6 +85,11 @@ def test_clearsky_route_advantage_is_zero(tables):
     assert (route.groupby(["model", "horizon"])["n"].nunique() == 1).all()  # paired (E2)
 
 
+def test_persistence_does_not_beat_the_cliper_reference(tables):
+    bench = tables["benchmark_summary"]
+    assert (bench.loc[bench["model"] == "persistence", "skill_cliper"] <= 0.02).all()
+
+
 def test_committed_outputs_are_current():
     manifest = json.loads((COMMITTED / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["split"] == "val"
