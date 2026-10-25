@@ -8,6 +8,7 @@ added here before eccodes is imported.
 
 import os
 import sys
+import threading
 from pathlib import Path
 
 import numpy as np
@@ -19,6 +20,10 @@ if sys.platform == "win32":  # pragma: no cover - depends on the platform
         os.add_dll_directory(str(_lib))
 
 import eccodes  # noqa: E402
+
+# ecCodes is not thread-safe (its definition parser aborts the process when two threads use it
+# at once: "fatal flex scanner internal error"); downloads run in threads, decoding is serialised
+_LOCK = threading.Lock()
 
 # the 3x3 neighbourhood of the 1-degree grid point nearest to the site (30N 35E); the site
 # (about 29.97N 35.07E) lies in the cell 29-30N x 35-36E
@@ -48,6 +53,11 @@ def grid_index(lat: float, lon: float) -> int:
 def decode_message(data: bytes) -> dict:
     """Decode one GRIB2 message: short name, level, step range, step type, and the values at
     the 3x3 neighbourhood points."""
+    with _LOCK:
+        return _decode(data)
+
+
+def _decode(data: bytes) -> dict:
     handle = eccodes.codes_new_from_message(data)
     try:
         check_grid(handle)

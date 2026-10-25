@@ -34,8 +34,11 @@ def _run_frame(leads, hourly_fields: dict[str, np.ndarray], inst_fields: dict[st
                       "lat": lat, "lon": lon, "value": value} for lat, lon in POINTS]
     for name, f in inst_fields.items():
         for n in leads:
+            value = float(f[n])
+            if name in G.ACCUMULATED_IN_WINDOW:  # seconds of sunshine since the window start
+                value = float(np.sum(f[_window_start(n) + 1:n + 1]) * 3600)
             rows += [{"lead": n, "variable": name, "step_range": str(n), "step_type": "instant",
-                      "lat": lat, "lon": lon, "value": float(f[n])} for lat, lon in POINTS]
+                      "lat": lat, "lon": lon, "value": value} for lat, lon in POINTS]
     return pd.DataFrame(rows)
 
 
@@ -45,6 +48,7 @@ def _fields(n_hours=100, seed=0):
     ave["dswrf"] = rng.uniform(0, 900, n_hours)
     inst = {name: np.linspace(1, 2, n_hours) * (i + 1) for i, name in enumerate(G.INSTANT)}
     inst["t2m"] = 280 + np.arange(n_hours, dtype=float)  # linear in lead: exact interpolation
+    inst["sunsd"] = rng.uniform(0, 1, n_hours)  # sunshine fraction of each lead hour
     return ave, inst
 
 
@@ -102,6 +106,9 @@ def test_hourly_reconstruction_keeps_block_means_and_labels():
             assert out.loc[rows, "ghi"].mean() == pytest.approx(
                 np.mean(ave["dswrf"][int(b) - 2:int(b) + 1]))
             assert out.loc[rows, "tcc"].nunique() == 1  # averaged cloud constant in the block
+    # sunshine: accumulated in the window -> fraction of each 3-hour block
+    expected = [np.mean(inst["sunsd"][int(b) - 2:int(b) + 1]) for b in block]
+    np.testing.assert_allclose(out["sunsd"].to_numpy(), expected)
     # instantaneous fields at the middle of the hour (t2m linear in lead, K -> degC)
     np.testing.assert_allclose(out["t2m"].to_numpy(), 280 + (lead_end - 0.5) - 273.15)
 
@@ -207,3 +214,9 @@ def test_fallback_runs_cover_the_same_target_hours():
         assert leads[0] - (12 - run) == 9 and leads[-1] - (12 - run) == 84
     url = D.file_url("2022-06-15", 6, 15)
     assert url.endswith("gfs.20220615/06/atmos/gfs.t06z.pgrb2.1p00.f015")
+
+
+def test_sunshine_accumulation_that_breaks_the_window_raises():
+    leads = pd.Series([9, 12])
+    with pytest.raises(ValueError, match="exceeds"):
+        G.three_hour_totals(leads, pd.Series([20_000.0, 21_600.0]))  # > 3 h in a 3-h window

@@ -53,7 +53,12 @@ HOURLY_FILE = PROCESSED_DIR / "05_clean" / "scada_1H_clean.parquet"
 STAGE_DIR = PROCESSED_DIR / "06b_gfs"
 REPORT_DIR = OUTPUTS_DIR / "06b_gfs"
 AVERAGED = tuple(name for name, _, _, kind in MESSAGES if kind == "ave")
-INSTANT = tuple(name for name, _, _, kind in MESSAGES if kind == "inst")
+# SUNSD is tagged instantaneous ("9 hour fcst") but is accumulated from the start of each 6-hour
+# window: 10,800 s at the third hour of a sunny window and 21,600 s at the sixth (verified on the
+# sample run of 2021-10-12, docs/stage6b_plan.md §7)
+ACCUMULATED_IN_WINDOW = ("sunsd",)
+INSTANT = tuple(name for name, _, _, kind in MESSAGES
+                if kind == "inst" and name not in ACCUMULATED_IN_WINDOW)
 CS_MIN_WM2 = 20.0          # below this clear-sky irradiance the clear-sky index is not used
 GAMMA_PER_K = -0.0042      # temperature coefficient measured in stage 3 (table_physics)
 PREFIX = "fcst_gfs_"
@@ -87,6 +92,25 @@ def three_hour_means(leads: pd.Series, step_ranges: pd.Series, values: pd.Series
                                  f"{s}-{n - 3}")
             out[n] = ((n - s) * row["value"] - (n - 3 - s) * a.loc[n - 3, "value"]) / 3.0
     return pd.Series(out, name="mean").sort_index()
+
+
+def three_hour_totals(leads: pd.Series, values: pd.Series, window: int = 6) -> pd.Series:
+    """3-hour totals indexed by the block's end lead, from values accumulated since the start of
+    each `window`-hour window (s = window * floor((n - 1) / window)). A value larger than the
+    window length (in seconds) means the assumption is wrong, and raises."""
+    a = pd.Series(values.to_numpy(float), index=leads.to_numpy()).sort_index()
+    out = {}
+    for n, value in a.items():
+        s = window * ((n - 1) // window)
+        if value > (n - s) * 3600 + 1e-6:
+            raise ValueError(f"lead {n}: {value} s exceeds the {n - s} h since the window start")
+        if n - 3 == s:
+            out[n] = value
+        elif n - 3 in a.index:
+            out[n] = value - a[n - 3]
+        else:
+            raise ValueError(f"lead {n - 3} is needed to de-accumulate the window {s}-{n}")
+    return pd.Series(out, name="total").sort_index()
 
 
 def bilinear_weights(lat: float, lon: float) -> dict[tuple[float, float], float]:
@@ -138,6 +162,10 @@ def hourly_from_run(run: pd.DataFrame, init: pd.Timestamp, hours: pd.DatetimeInd
         out[name] = np.interp(mid, v["lead"].to_numpy(float), v["value"].to_numpy(float),
                               left=np.nan, right=np.nan)
     out["wind10"] = np.hypot(out.pop("u10"), out.pop("v10"))
+    for name in ACCUMULATED_IN_WINDOW:  # fraction of the 3-hour block with sunshine
+        v = site[site["variable"] == name]
+        totals = three_hour_totals(v["lead"], v["value"])
+        out[name] = (totals.reindex(block_end) / 10_800.0).clip(0, 1).to_numpy()
     out["t2m"] = out["t2m"] - 273.15  # K -> degC
     # cloud neighbourhood (L-08): block means at each of the 9 points
     tcc = run[run["variable"] == "tcc"]
