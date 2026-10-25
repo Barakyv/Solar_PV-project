@@ -69,6 +69,6 @@ def test_persistence_uses_value_h_days_earlier():
     idx = pd.date_range("2024-10-01", periods=24 * 5, freq="h", tz="UTC")
     truth = pd.Series(np.arange(len(idx), dtype=float), index=idx)
     for h in (1, 2, 3):
-        pred = persistence(truth, h)
+        pred = persistence(truth, h).dropna()  # full grid; NaN where nothing earlier exists
         assert pred.index[0] == idx[24 * h]
         assert (pred.to_numpy() == truth.loc[pred.index].to_numpy() - 24 * h).all()

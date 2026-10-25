@@ -2,11 +2,16 @@
 
 The bootstrap resamples circular blocks of consecutive rows of the time-ordered daytime series
 (block = 24 rows, about two days of daytime hours), as in the original detectable_effect.py.
+Stage 8B adds the CLIPER reference (L-13) and the CI of a mean loss differential (the original
+dm_tests_extended), docs/stage8b_plan.md §3.5.
 """
 
 import numpy as np
+import pandas as pd
 
 from solarpv.config.constants import BOOTSTRAP_BLOCK, BOOTSTRAP_REPS, BOOTSTRAP_SEED
+
+DM_CI_REPS = 2000  # as in the original detectable_effect.py
 
 
 def _arrays(y_true, y_pred) -> tuple[np.ndarray, np.ndarray]:
@@ -85,3 +90,31 @@ def bootstrap_nrmse_ci(
     stats = np.sqrt(sq[idx].mean(axis=1)) / denominator * 100.0
     lo, hi = np.percentile(stats, [100 * alpha / 2, 100 * (1 - alpha / 2)])
     return float(lo), float(hi)
+
+
+def bootstrap_mean_ci(d, block: int = BOOTSTRAP_BLOCK, reps: int = DM_CI_REPS,
+                      seed: int = BOOTSTRAP_SEED, alpha: float = 0.05) -> tuple[float, float]:
+    """Percentile CI of the mean of d (a loss differential) from a circular block bootstrap.
+    The original resampled non-circular block starts; circular blocks avoid the edge bias."""
+    d = np.asarray(d, dtype=float)
+    if d.size == 0 or not np.isfinite(d).all():
+        raise ValueError("d must be a non-empty finite array")
+    idx = circular_block_indices(d.size, block, reps, np.random.default_rng(seed))
+    lo, hi = np.percentile(d[idx].mean(axis=1), [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    return float(lo), float(hi)
+
+
+def cliper_rmse(y: pd.Series, use: pd.Series, lag_hours: int) -> float:
+    """RMSE of the optimal climatology-persistence blend, sigma * sqrt(1 - gamma^2) (L-13; Mayer
+    and Yang 2024). sigma is the standard deviation of y on the `use` rows; gamma is the
+    correlation of y(t) and y(t - lag) over the rows where both hours are `use` rows. Both come
+    from train (the caller passes the train daytime rows), so no evaluation data enters."""
+    use = use.reindex(y.index, fill_value=False) & y.notna()
+    lagged = y.shift(lag_hours, freq="h").reindex(y.index)
+    both = use & use.shift(lag_hours, freq="h").reindex(y.index, fill_value=False) \
+        & lagged.notna()
+    if use.sum() < 2 or both.sum() < 2:
+        raise ValueError("too few rows for the CLIPER reference")
+    sigma = float(y[use].std(ddof=1))
+    gamma = float(np.corrcoef(y[both], lagged[both])[0, 1])
+    return sigma * float(np.sqrt(max(1.0 - gamma ** 2, 0.0)))
