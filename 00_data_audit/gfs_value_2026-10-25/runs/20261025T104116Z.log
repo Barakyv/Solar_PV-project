@@ -1,0 +1,32 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python 00_data_audit/gfs_value_2026-10-25/diagnose_horizons.py
+[     0.2s] RUN     git commit: 9cd4221
+[     0.2s] RUN     started (UTC): 2026-10-25T10:41:16+00:00
+[     0.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     5.4s] NOTE    D+1 indirect gfs+static (49): 6.831 +/- 0.038
+[    11.3s] NOTE    D+1 direct gfs+static (49): 6.907 +/- 0.049
+[    14.1s] NOTE    D+1 indirect gfs_only (22): 6.901 +/- 0.050
+[    17.4s] NOTE    D+1 direct gfs_only (22): 6.839 +/- 0.058
+[    20.2s] NOTE    D+1 indirect static_only (27): 8.995 +/- 0.075
+[    23.5s] NOTE    D+1 direct static_only (27): 9.020 +/- 0.072
+[    33.5s] NOTE    D+1 indirect gfs+static+past (96): 6.873 +/- 0.039
+[    44.4s] NOTE    D+1 direct gfs+static+past (96): 6.859 +/- 0.012
+[    48.9s] NOTE    D+2 indirect gfs+static (49): 7.296 +/- 0.025
+[    55.3s] NOTE    D+2 direct gfs+static (49): 7.195 +/- 0.037
+[    57.9s] NOTE    D+2 indirect gfs_only (22): 7.211 +/- 0.055
+[    61.3s] NOTE    D+2 direct gfs_only (22): 7.278 +/- 0.032
+[    63.8s] NOTE    D+2 indirect static_only (27): 8.995 +/- 0.075
+[    67.3s] NOTE    D+2 direct static_only (27): 9.020 +/- 0.072
+[    75.5s] NOTE    D+2 indirect gfs+static+past (89): 7.231 +/- 0.044
+[    85.9s] NOTE    D+2 direct gfs+static+past (89): 7.091 +/- 0.018
+[    90.8s] NOTE    D+3 indirect gfs+static (49): 6.711 +/- 0.079
+[    96.5s] NOTE    D+3 direct gfs+static (49): 6.716 +/- 0.036
+[    99.7s] NOTE    D+3 indirect gfs_only (22): 6.786 +/- 0.025
+[   103.6s] NOTE    D+3 direct gfs_only (22): 6.707 +/- 0.045
+[   106.3s] NOTE    D+3 indirect static_only (27): 8.995 +/- 0.075
+[   110.0s] NOTE    D+3 direct static_only (27): 9.020 +/- 0.072
+[   118.7s] NOTE    D+3 indirect gfs+static+past (82): 6.650 +/- 0.042
+[   127.9s] NOTE    D+3 direct gfs+static+past (82): 6.619 +/- 0.053
+[   127.9s] OUTPUT  00_data_audit/gfs_value_2026-10-25/diagnose_horizons.csv sha256=0b7f3f48deabdd86
+[   127.9s] RUN     warnings: 0
+[   127.9s] RUN     status: ok; duration 127.9s

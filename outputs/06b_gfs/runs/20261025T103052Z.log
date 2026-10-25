@@ -1,0 +1,24 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.gfs
+[     0.2s] RUN     git commit: 069c421
+[     0.2s] RUN     started (UTC): 2026-10-25T10:30:52+00:00
+[     2.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     2.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     2.5s] STEP    load runs ...
+[     7.7s] VALUE   runs = 1371
+[     7.7s] VALUE   fallback_runs = 0
+[     7.7s] STEP    load runs done in 5.2s
+[     7.7s] STEP    hourly reconstruction and features per horizon ...
+[    29.0s] ERROR   Traceback (most recent call last):
+[    29.0s] ERROR     File "C:\Users\baraky\Desktop\solar\src\solarpv\nwp\gfs.py", line 369, in run
+[    29.0s] ERROR       tables = build_tables(runs, geo, hourly, plane, weights)
+[    29.0s] ERROR                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[    29.0s] ERROR     File "C:\Users\baraky\Desktop\solar\src\solarpv\nwp\gfs.py", line 337, in build_tables
+[    29.0s] ERROR       rows = horizon_rows(table, record, h)
+[    29.0s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[    29.0s] ERROR     File "C:\Users\baraky\Desktop\solar\src\solarpv\nwp\gfs.py", line 242, in horizon_rows
+[    29.0s] ERROR       raise ValueError(f"T-17: run {record['day']} {record['run']}Z not available at T0")
+[    29.0s] ERROR   ValueError: T-17: run 2022-01-24 12Z not available at T0
+[    29.0s] RUN     warnings: 0
+[    29.0s] RUN     status: failed (ValueError); duration 29.0s

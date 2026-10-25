@@ -207,3 +207,10 @@ Plus a manifest and a feature dictionary.
 - **Physical chain:** the extraterrestrial irradiance is aligned on the row index (R6b-02).
 - **The accuracy check of S4** compares GFS kt_poa with the measured irradiance / POA_cs (the
   same quantity), not with the plant's k (R6b-03).
+- **The user chose the full message set** after the sample: 26.5 GB transferred (R6b-05).
+- **Late re-uploads (R6b-06).** The availability rule of S1 was extended. A run in which any
+  file was uploaded after T0 is rejected and replaced by the 06Z run of the same day. 2 of
+  1,371 runs.
+- **Red flag of S4 examined (R6b-07).** D+3 beat D+1 on validation with GFS. An inner period of
+  train and a paired bootstrap show a sample effect. The S5 rule was applied as written: GFS
+  admitted.

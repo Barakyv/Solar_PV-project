@@ -1,0 +1,11 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python 00_data_audit/gfs_value_2026-10-25/diagnose_sample.py
+[     0.2s] RUN     git commit: 9cd4221
+[     0.2s] RUN     started (UTC): 2026-10-25T10:44:50+00:00
+[     0.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[    49.4s] NOTE    indirect: validation RMSE(D+3) - RMSE(D+1) = -0.204 pp, 95 % CI [-0.486, 0.031]
+[   106.4s] NOTE    direct: validation RMSE(D+3) - RMSE(D+1) = -0.270 pp, 95 % CI [-0.586, 0.028]
+[   106.4s] OUTPUT  00_data_audit/gfs_value_2026-10-25/diagnose_sample.csv sha256=702b30d9b7eedfa6
+[   106.5s] OUTPUT  00_data_audit/gfs_value_2026-10-25/diagnose_sample_bootstrap.csv sha256=94b7c87af2467bb5
+[   106.5s] RUN     warnings: 0
+[   106.5s] RUN     status: ok; duration 106.5s

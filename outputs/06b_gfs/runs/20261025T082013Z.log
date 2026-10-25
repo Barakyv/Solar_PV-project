@@ -1,0 +1,39 @@
+[     0.1s] RUN     stage 06b_gfs
+[     0.1s] RUN     command: python -m solarpv.nwp.download --workers 16
+[     0.2s] RUN     git commit: b8a712e
+[     0.2s] RUN     started (UTC): 2026-10-25T08:20:13+00:00
+[     3.5s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     3.5s] NOTE    1371 days requested; 30 complete; 1341 to download
+[   298.5s] NOTE    50/1341 days; {'complete': 50, 'fallback': 0, 'missing': 0, 'bytes': 976021705}
+[   588.7s] NOTE    100/1341 days; {'complete': 100, 'fallback': 0, 'missing': 0, 'bytes': 1976043570}
+[   881.8s] NOTE    150/1341 days; {'complete': 150, 'fallback': 0, 'missing': 0, 'bytes': 2976730118}
+[  1185.4s] NOTE    200/1341 days; {'complete': 200, 'fallback': 0, 'missing': 0, 'bytes': 3970260035}
+[  1482.2s] NOTE    250/1341 days; {'complete': 250, 'fallback': 0, 'missing': 0, 'bytes': 4943038675}
+[  1772.8s] NOTE    300/1341 days; {'complete': 300, 'fallback': 0, 'missing': 0, 'bytes': 5924269844}
+[  2061.4s] NOTE    350/1341 days; {'complete': 350, 'fallback': 0, 'missing': 0, 'bytes': 6903592863}
+[  2348.5s] NOTE    400/1341 days; {'complete': 400, 'fallback': 0, 'missing': 0, 'bytes': 7881589360}
+[  2637.9s] NOTE    450/1341 days; {'complete': 450, 'fallback': 0, 'missing': 0, 'bytes': 8879995606}
+[  2923.1s] NOTE    500/1341 days; {'complete': 500, 'fallback': 0, 'missing': 0, 'bytes': 9869671504}
+[  3214.3s] NOTE    550/1341 days; {'complete': 550, 'fallback': 0, 'missing': 0, 'bytes': 10871095786}
+[  3504.7s] NOTE    600/1341 days; {'complete': 600, 'fallback': 0, 'missing': 0, 'bytes': 11851907640}
+[  3794.0s] NOTE    650/1341 days; {'complete': 650, 'fallback': 0, 'missing': 0, 'bytes': 12829337229}
+[  4083.3s] NOTE    700/1341 days; {'complete': 700, 'fallback': 0, 'missing': 0, 'bytes': 13806328834}
+[  4377.4s] NOTE    750/1341 days; {'complete': 750, 'fallback': 0, 'missing': 0, 'bytes': 14784595088}
+[  4666.8s] NOTE    800/1341 days; {'complete': 800, 'fallback': 0, 'missing': 0, 'bytes': 15774068671}
+[  4957.9s] NOTE    850/1341 days; {'complete': 850, 'fallback': 0, 'missing': 0, 'bytes': 16770745077}
+[  5245.7s] NOTE    900/1341 days; {'complete': 900, 'fallback': 0, 'missing': 0, 'bytes': 17768467991}
+[  5532.6s] NOTE    950/1341 days; {'complete': 950, 'fallback': 0, 'missing': 0, 'bytes': 18748464980}
+[  5821.8s] NOTE    1000/1341 days; {'complete': 1000, 'fallback': 0, 'missing': 0, 'bytes': 19727231292}
+[  6110.0s] NOTE    1050/1341 days; {'complete': 1050, 'fallback': 0, 'missing': 0, 'bytes': 20705410501}
+[  6401.1s] NOTE    1100/1341 days; {'complete': 1100, 'fallback': 0, 'missing': 0, 'bytes': 21685070006}
+[  6691.4s] NOTE    1150/1341 days; {'complete': 1150, 'fallback': 0, 'missing': 0, 'bytes': 22676143970}
+[  6984.0s] NOTE    1200/1341 days; {'complete': 1200, 'fallback': 0, 'missing': 0, 'bytes': 23675258373}
+[  7275.8s] NOTE    1250/1341 days; {'complete': 1250, 'fallback': 0, 'missing': 0, 'bytes': 24670542532}
+[  7566.9s] NOTE    1300/1341 days; {'complete': 1300, 'fallback': 0, 'missing': 0, 'bytes': 25649844061}
+[  7802.4s] NOTE    1341/1341 days; {'complete': 1341, 'fallback': 0, 'missing': 0, 'bytes': 26452155083}
+[  7802.4s] VALUE   complete = 1341
+[  7802.4s] VALUE   fallback = 0
+[  7802.4s] VALUE   missing = 0
+[  7802.4s] VALUE   bytes = 26452155083
+[  7802.4s] RUN     warnings: 0
+[  7802.4s] RUN     status: ok; duration 7802.4s

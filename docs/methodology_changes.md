@@ -145,7 +145,7 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | As submitted | Now | Kind | Why / evidence |
 |---|---|---|---|
-| NWP from the Open-Meteo archive merged at the target hour; found to be leakage and removed; the final models have no weather forecast | GFS forecast runs from the NOAA archive, using only a run published before issuance. GFS enters only if it is leak-free (T-17) and improves validation (D-12) | Decision (to be tested, stage 6b) | **This is the report's first Future Work item**: "Replace same-timestamp reanalysis proxies with genuine T−24h NWP forecasts (e.g., ECMWF, GFS)". It also tests the report's own hypothesis in §13.1, that real NWP would widen the gap between feature-rich models and PatchTST. It is the same NWP model family as before (GFS), now taken at the right time |
+| NWP from the Open-Meteo archive merged at the target hour; found to be leakage and removed; the final models have no weather forecast | GFS forecast runs from the NOAA archive (1°), only runs whose every file was public before issuance (T-17, actual upload times); own leads per horizon. **Admitted (D-12, 2026-10-25):** with the fixed XGBoost of D-11, validation nRMSE in kW falls by 0.9–1.7 pp at every horizon and for both targets | Decision (done, stage 6b) | **This is the report's first Future Work item**: "Replace same-timestamp reanalysis proxies with genuine T−24h NWP forecasts (e.g., ECMWF, GFS)". It also tests the report's own hypothesis in §13.1, that real NWP would widen the gap between feature-rich models and PatchTST. It is the same NWP model family as before (GFS), now taken at the right time |
 
 ### 2.8 Feature selection (§3.6)
 

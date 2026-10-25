@@ -432,3 +432,51 @@ References on validation (nRMSE: indirect in % of MEAN_DAYTIME_K, direct in % of
 | persistence | indirect | 1 | 2,901 | 20.083 | 9.683 |  | -0.18 |
 | persistence | indirect | 2 | 2,901 | 22.296 | 10.841 |  | -0.236 |
 | persistence | indirect | 3 | 2,901 | 22.491 | 10.759 |  | -0.24 |
+
+## N13. GFS forecasts (stage 6b)
+
+Tables built at commit 9cd4221 (log `outputs/06b_gfs/runs/20261025T103344Z.log`); value check and decision at 9cd4221 (log `outputs/06b_gfs/runs/20261025T103845Z.log`). Statistics on train and validation only.
+
+| item | value |
+|---|---|
+| runs used / fallback runs (06Z) | 1371 / 2 |
+| rows with GFS, D+1 / D+2 / D+3 | 32856 / 32856 / 32856 |
+| candidate columns | 22 |
+| sample check: runs / all available before T0 / min hours before T0 | 30 / True / 5.01 |
+| best lag GFS POA vs measured (train) [h] | 0 |
+| red flags: too good at D+3 / skill rising with the horizon | False / False |
+| bias of kt_poa by season | Fall -0.025, Spring +0.012, Summer -0.025, Winter -0.003 |
+| D-12 admitted | True |
+
+GFS kt_poa against the measured clear-sky index (train and validation, common hours):
+
+| horizon | hours | days | corr_hourly | corr_daily | bias | mae |
+|---|---|---|---|---|---|---|
+| 1 | 11,659 | 1,124 | 0.6419 | 0.8187 | -0.0109 | 0.0964 |
+| 2 | 11,659 | 1,124 | 0.6237 | 0.7914 | -0.0132 | 0.0985 |
+| 3 | 11,659 | 1,124 | 0.5777 | 0.7376 | -0.0126 | 0.1026 |
+
+Value check (fixed XGBoost of D-11, 3 seeds; validation nRMSE in % of 3,449 kW):
+
+| target | horizon | contract | contract+gfs |
+|---|---|---|---|
+| direct | 1 | 7.756 | 6.877 |
+| direct | 2 | 8.134 | 7.063 |
+| direct | 3 | 8.196 | 6.626 |
+| indirect | 1 | 7.941 | 6.853 |
+| indirect | 2 | 8.307 | 7.31 |
+| indirect | 3 | 8.389 | 6.715 |
+
+Horizon order on an inner period of train (fit to 2023-04-30, scored 2023-05 to 2024-01) and on validation; paired bootstrap of RMSE(D+3) - RMSE(D+1) on validation:
+
+| target | sample | 1 | 2 | 3 |
+|---|---|---|---|---|
+| direct | inner (train, after 2023-04) | 7.237 | 7.564 | 7.722 |
+| direct | validation | 6.848 | 7.077 | 6.578 |
+| indirect | inner (train, after 2023-04) | 7.171 | 7.509 | 7.71 |
+| indirect | validation | 6.828 | 7.181 | 6.624 |
+
+| target | diff_D3_minus_D1_pp | ci_lo | ci_hi |
+|---|---|---|---|
+| indirect | -0.204 | -0.486 | 0.031 |
+| direct | -0.27 | -0.586 | 0.028 |

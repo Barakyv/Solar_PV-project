@@ -3,7 +3,7 @@
 Every operation performed on the data in the rebuild, in order, with its reason, method,
 parameters, result, verification and evidence. Written to be lifted into the final report
 (data chapter, "Reproduction and correction note", appendix). All numbers come from
-`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N12).
+`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N13).
 
 IDs: OP-xx = operation on the data (this file); F-xx finding, D-xx decision, A-xx assumption,
 T-xx test, all defined in `PROJECT_MASTER.md`. Corrections relative to the submitted report are
@@ -34,6 +34,7 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | 3b | stages 2, 4, 5 | data quality before and after cleaning, evidence for every threshold; findings fed back into stage 5 (OP-31) | `outputs/03b_quality/`, `notebooks/02b_data_quality.ipynb` | `stage-03b-passed` |
 | 6 | stage-5 hourly data and minute flags | panel orientation, solar geometry, targets and D-11, D-22 masks, lags and rolling statistics, imputation, calendar (OP-32–OP-39) | `data/processed/06_features/`, `outputs/06_features/`, `configs/target.yaml`, `configs/derived_constants.yaml`, `notebooks/04b_features_target.ipynb` | `stage-06-passed` |
 | 8B | stage-6 tables | truth, reference forecasts, evaluation rules and views, on validation only (OP-40, OP-41) | `outputs/07_evaluation/` | `stage-08b-passed` |
+| 6b | NOAA GFS archive (AWS), stage-6 tables | download of the runs public before issuance, hourly reconstruction, candidate features per horizon, sanity and value check (OP-42–OP-44) | `data/processed/06b_gfs/`, `outputs/06b_gfs/`, `configs/nwp_decision.yaml` | `stage-06b-passed` |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
@@ -265,7 +266,7 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§14). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§15). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
@@ -583,7 +584,101 @@ current manifest with a note under every code cell, and the claims of the notes 
   - The common mask also filtered daytime by the truth, and used three models (C-35).
   - The models were scored on different n (2,510–2,580).
 
-## 13. Differences from the original data pipeline
+## 13. GFS forecasts (stage 6b, `solarpv.nwp`)
+
+**Records and conventions.**
+- Plan written before the code: `docs/stage6b_plan.md`. It includes the facts checked in the
+  archive and a self-review against the original NWP (N1–N8) and against my own spec (B1–B5).
+- The user asked for a multi-period sample before the full download
+  (`00_data_audit/gfs_sample_2026-10-25/`), and approved the full download after reviewing it.
+- Outputs:
+  - `data/external/gfs_1p00/`: point values per run, not in git;
+  - `data/processed/06b_gfs/gfs_features_D{h}.parquet`;
+  - `outputs/06b_gfs/`;
+  - `configs/nwp_decision.yaml`.
+- Run journal: R6b-01 to R6b-08. Numbers: N13.
+- Statistics on train and validation only; the test split informs nothing.
+
+**OP-42 — GFS download and point extraction (`solarpv.nwp.download`, `grib`).**
+- *Source:* the NOAA GFS archive on AWS (`noaa-gfs-bdp-pds`), 1°, the 12Z run of each UTC day from
+  2021-08-29 to 2025-05-30, files f009–f084 every 3 h.
+- *Method:*
+  - From each file, 11 messages (DSWRF, four cloud covers, 2-m temperature and humidity,
+    precipitable water, 10-m wind, sunshine duration) are fetched with HTTP Range requests from
+    the `.idx` offsets.
+  - They are decoded in memory with ecCodes; only the 3×3 grid points around 30N 35E are kept.
+  - The `Last-Modified` time of every file is recorded.
+- *Availability rule (T-17):*
+  - A run serves an issuance T0 only if init + 6 h ≤ T0 and every one of its files was uploaded
+    before T0.
+  - Upload times: median 3.7 h after init, all within 5.2 h, except 7 of 35,646 files. Those
+    were re-uploaded about 10.4 h after init, in 2 of the 1,371 runs.
+  - The archive keeps only the latest version of a file, so those two runs (2022-01-24,
+    2022-07-23) were rejected; their records are kept. The 06Z run of the same day is used,
+    flagged as a fallback.
+- *Result (N13):* 1,371 runs, 2 of them fallbacks; 26.5 GB transferred, 48 MB stored.
+- *Verification:*
+  - **T-43:** index parsing, message selection, range merging, the run choice, the
+    late-upload rule.
+  - **Grid assertions** on every message.
+  - **The multi-period sample:** 30 runs, every check passed (R6b-04).
+- *Original:* the Open-Meteo **archive** API at the target time: values not known at issuance
+  (C-06, F-11). Removed from the final v6 models as leakage.
+
+**OP-43 — Hourly reconstruction and candidate features per horizon (`solarpv.nwp.gfs`).**
+- *De-averaging (L-06):* GFS averages run from the start s of each 6-hour window. The 3-hour mean
+  is ((n−s)·A(s,n) − (n−3−s)·A(s,n−3))/3. Sunshine duration (SUNSD) is accumulated in the same
+  windows, although tagged instantaneous; it is de-accumulated into a sunshine fraction.
+- *To hours:*
+  - **Irradiance:** the 3-hour mean is distributed in proportion to the clear-sky GHI. Block
+    means are kept, and dark hours get 0. An even spread at twilight, the plan's first rule, put
+    up to 27 W/m² into dark hours (R6b-03).
+  - **Averaged clouds:** constant within the block.
+  - **Instantaneous fields:** linear in time at the middle of the hour.
+  - **Space:** bilinear to the site.
+- *Per horizon:*
+  - **Run and rows.** The rows of local day D+h come from the run of the UTC day of T0, and T-17
+    is enforced on every row. A row labelled t gets the GFS values for (t, t+1].
+  - **Candidate columns** (prefix `fcst_gfs_`, dictionary in
+    `outputs/06b_gfs/gfs_feature_dictionary.csv`):
+    - GHI, kt, POA and kt_poa (L-01, L-03);
+    - the four cloud covers, the 3×3 cloud mean and std (L-07, L-08);
+    - temperature, humidity, precipitable water, wind and sunshine (L-07);
+    - cell temperature, physical PV power and k_phys (L-01);
+    - daily and centred means (L-02).
+  - **One non-GFS candidate (L-11a):** yesterday's clear-sky index of the measured irradiance.
+- *Result (N13):* every hour of the three horizons has GFS values. Leads: D+1 10–34 h, D+2
+  34–58 h, D+3 58–82 h (up to 88 h for the two fallbacks).
+- *Verification:*
+  - **T-42:** de-averaging, block means kept, dark hours, the label convention.
+  - **T-17 on the real tables, row by row**, together with the coverage, horizon differences
+    and range checks (T-44).
+- *Original:* one NWP series for all horizons (N2), merged on a clock shifted by 2–3 h (N3),
+  gaps filled backwards (N4).
+
+**OP-44 — Sanity and value check; decision D-12 (`solarpv.nwp.check`).**
+- *Sanity (train and validation, N13):*
+  - The GFS clear-sky index on the panel plane against the measured one has a daily
+    correlation of 0.82 / 0.79 / 0.74 at D+1 / D+2 / D+3, falling with the horizon. Neither red
+    flag of the original's problem is raised.
+  - The best hourly lag against the measurement is 0 h.
+  - The seasonal bias is small: −0.025 to +0.012.
+- *Value check:*
+  - The fixed XGBoost of D-11 (3 seeds), trained on train and scored on validation, nRMSE in kW.
+  - Adding the GFS candidates to the stage-6 contract lowers the error by 0.9–1.7 pp at every
+    horizon and for both targets. The rule's margin is at most 0.13 pp.
+  - **D-12: admitted** (`configs/nwp_decision.yaml`).
+- *A red flag examined (R6b-07):*
+  - With GFS, D+3 scored better on validation than D+1.
+  - The mapping is correct (the leads above), and the same order appears with GFS features
+    alone.
+  - On an inner period of train (fit to 2023-04, scored 2023-05 to 2024-01), the order is the
+    expected D+1 < D+2 < D+3.
+  - On validation the paired bootstrap CI of RMSE(D+3) − RMSE(D+1) includes 0.
+  - Conclusion: a property of the validation sample (D+3 GFS happened to be as good as D+1
+    there), not a leak (`00_data_audit/gfs_value_2026-10-25/`).
+
+## 14. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
@@ -607,9 +702,10 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Route comparison | each route on its own rows, filtered by its own truth; indirect truth rebuilt from the clipped k | identical rows for both routes, F-02 daytime, actual AC as truth | OP-41, C-34, C-16 |
 | Rows scored per model | 2,510–2,580, by input window; daytime in the common mask taken from the truth | every model on every daytime hour with truth; daytime from geometry only | OP-41, C-35 |
 | Skill reference | same time yesterday at every horizon | persistence of h days, DST-safe; climatology and clear sky added; CLIPER as an extra column | OP-40, C-08 |
+| Weather forecast | Open-Meteo archive at the target time (not known at issuance), one series for all horizons, backward fill; removed from the final v6 models | GFS runs public before issuance (T-17, actual upload times), own leads per horizon, no backward fill; admitted on validation (D-12) | OP-42–OP-44, C-06, F-11 |
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 
-## 14. Limitations carried into the report
+## 15. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -640,8 +736,13 @@ current manifest with a note under every code cell, and the claims of the notes 
   hours have 46–59 AC minutes (OP-33).
 - The test has 2,575 daytime hours with truth, not the 2,580 of the report: five daytime
   hours lost their AC to communication freezes (OP-41, A-09).
+- GFS at 1° every 3 h, interpolated to hours through the clear-sky index; the hourly 0.25°
+  files would cost about ten times the transfer (L-05, OP-42). The grid point is about 7 km
+  from the site.
+- Two runs were replaced by the 06Z run of the same day because a file had been re-uploaded
+  after the issuance time (OP-42).
 
-## 15. Reproduction
+## 16. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -658,13 +759,16 @@ python -m solarpv.features.build
 python -m solarpv.features.decide_k     # writes configs/target.yaml (committed)
 python -m solarpv.features.build        # again, with the D-11 decision
 python scripts/make_features_notebook.py
+python -m solarpv.nwp.download               # about 26 GB of transfer, resumable; --recheck
+python -m solarpv.nwp.gfs
+python -m solarpv.nwp.check                  # writes configs/nwp_decision.yaml (committed)
 python -m solarpv.evaluation.evaluate        # validation; the test needs --allow-test
 python -m solarpv.evaluation.evaluate --fixture
 python scripts/build_data_record.py
 pytest
 ```
 
-## 16. Pending operations (documented here when performed)
+## 17. Pending operations (documented here when performed)
 
-Stage 6b GFS forecasts (D-12); stage 7 feature selection (05e as the input, D-13) (including the proposal of k lags
+Stage 7 feature selection (05e as the input, D-13), with the admitted GFS candidates (including the proposal of k lags
 for the indirect route, §11); stage 9 models and the D-21 robustness check on val.

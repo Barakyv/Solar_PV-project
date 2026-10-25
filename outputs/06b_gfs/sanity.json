@@ -1,0 +1,55 @@
+{
+  "coverage_train_val": {
+    "D1": 1.0,
+    "D2": 1.0,
+    "D3": 1.0
+  },
+  "fallback_rows_D1": 48,
+  "horizon_skill": [
+    {
+      "horizon": 1,
+      "hours": 11659,
+      "days": 1124,
+      "corr_hourly": 0.6419,
+      "corr_daily": 0.8187,
+      "bias": -0.0109,
+      "mae": 0.0964
+    },
+    {
+      "horizon": 2,
+      "hours": 11659,
+      "days": 1124,
+      "corr_hourly": 0.6237,
+      "corr_daily": 0.7914,
+      "bias": -0.0132,
+      "mae": 0.0985
+    },
+    {
+      "horizon": 3,
+      "hours": 11659,
+      "days": 1124,
+      "corr_hourly": 0.5777,
+      "corr_daily": 0.7376,
+      "bias": -0.0126,
+      "mae": 0.1026
+    }
+  ],
+  "red_flag_too_good_at_D3": false,
+  "red_flag_skill_rises_with_horizon": false,
+  "lag_correlations_train": {
+    "-3": 0.1914,
+    "-2": 0.4908,
+    "-1": 0.799,
+    "0": 0.9597,
+    "1": 0.8411,
+    "2": 0.5671,
+    "3": 0.2786
+  },
+  "best_lag_h": 0,
+  "bias_kt_poa_by_season": {
+    "Fall": -0.0249,
+    "Spring": 0.0124,
+    "Summer": -0.0254,
+    "Winter": -0.003
+  }
+}

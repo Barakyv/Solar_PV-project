@@ -1,0 +1,40 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.check
+[     0.2s] RUN     git commit: 9cd4221
+[     0.2s] RUN     started (UTC): 2026-10-25T10:38:45+00:00
+[     0.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.2s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     0.7s] STEP    S4 sanity (train and validation) ...
+[     0.8s] VALUE   coverage_train_val = {'D1': 1.0, 'D2': 1.0, 'D3': 1.0}
+[     0.8s] VALUE   red_flag_too_good_at_D3 = False
+[     0.8s] VALUE   red_flag_skill_rises_with_horizon = False
+[     0.8s] VALUE   best_lag_h = 0
+[     0.8s] STEP    S4 sanity (train and validation) done in 0.1s
+[     0.8s] STEP    S5 value check (fixed XGBoost, 3 seeds, validation) ...
+[     7.2s] NOTE    D+1 indirect contract: 7.941 +/- 0.088 % (3 seeds)
+[    16.7s] NOTE    D+1 indirect contract+gfs: 6.853 +/- 0.031 % (3 seeds)
+[    25.0s] NOTE    D+1 direct contract: 7.756 +/- 0.016 % (3 seeds)
+[    36.0s] NOTE    D+1 direct contract+gfs: 6.877 +/- 0.054 % (3 seeds)
+[    41.7s] NOTE    D+2 indirect contract: 8.307 +/- 0.030 % (3 seeds)
+[    49.8s] NOTE    D+2 indirect contract+gfs: 7.310 +/- 0.022 % (3 seeds)
+[    57.4s] NOTE    D+2 direct contract: 8.134 +/- 0.033 % (3 seeds)
+[    67.3s] NOTE    D+2 direct contract+gfs: 7.063 +/- 0.023 % (3 seeds)
+[    72.5s] NOTE    D+3 indirect contract: 8.389 +/- 0.057 % (3 seeds)
+[    80.6s] NOTE    D+3 indirect contract+gfs: 6.715 +/- 0.030 % (3 seeds)
+[    87.1s] NOTE    D+3 direct contract: 8.196 +/- 0.017 % (3 seeds)
+[    96.2s] NOTE    D+3 direct contract+gfs: 6.626 +/- 0.003 % (3 seeds)
+[    96.2s] VALUE   admitted = True
+[    96.2s] STEP    S5 value check (fixed XGBoost, 3 seeds, validation) done in 95.4s
+[    97.0s] OUTPUT  outputs/06b_gfs/horizon_skill.csv sha256=0c0d67a8795dde3b
+[    97.0s] OUTPUT  outputs/06b_gfs/value_check.csv sha256=fe33c9b1bdec24ab
+[    97.0s] OUTPUT  outputs/06b_gfs/sanity.json sha256=2f7961aad542f260
+[    97.0s] OUTPUT  outputs/06b_gfs/value_check.png sha256=a28c0f25d3c294ac
+[    97.0s] OUTPUT  configs/nwp_decision.yaml sha256=15e78316f9bb2331
+[    97.0s] RUN     warnings: 0
+[    97.0s] RUN     status: ok; duration 97.0s

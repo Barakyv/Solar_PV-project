@@ -50,6 +50,13 @@ SOURCES = {
     "evaluation_manifest": OUTPUTS_DIR / "07_evaluation" / "val" / "manifest.json",
     "evaluation_benchmark": OUTPUTS_DIR / "07_evaluation" / "val" / "benchmark_summary.csv",
     "evaluation_views": OUTPUTS_DIR / "07_evaluation" / "val" / "benchmark_views.csv",
+    "gfs_manifest": OUTPUTS_DIR / "06b_gfs" / "gfs_manifest.json",
+    "gfs_sanity": OUTPUTS_DIR / "06b_gfs" / "sanity.json",
+    "gfs_value": OUTPUTS_DIR / "06b_gfs" / "value_check.csv",
+    "nwp_decision": CONFIGS_DIR / "nwp_decision.yaml",
+    "gfs_diag": AUDIT_DIR / "gfs_value_2026-10-25" / "diagnose_sample.csv",
+    "gfs_diag_boot": AUDIT_DIR / "gfs_value_2026-10-25" / "diagnose_sample_bootstrap.csv",
+    "gfs_sample": AUDIT_DIR / "gfs_sample_2026-10-25" / "sample_summary.json",
 }
 
 
@@ -366,6 +373,54 @@ def build() -> str:
         "3,449 kW; nRMSE_kW_pct: both in % of 3,449 kW):",
         "",
         table(refs),
+        "",
+    ]
+    gm, gs, gv, nd = load("gfs_manifest"), load("gfs_sanity"), load("gfs_value"), \
+        load("nwp_decision")
+    gd, gb, gsm = load("gfs_diag"), load("gfs_diag_boot"), load("gfs_sample")
+    value = gv.pivot_table(index=["target", "horizon"], columns="features",
+                           values="nrmse_kw_mean").round(3).reset_index()
+    value.columns = [str(c) for c in value.columns]
+    skill = pd.DataFrame(gs["horizon_skill"])[["horizon", "hours", "days", "corr_hourly",
+                                                "corr_daily", "bias", "mae"]]
+    inner = gd.pivot_table(index=["target", "sample"], columns="horizon",
+                           values="nrmse_kw").round(3).reset_index()
+    inner.columns = [str(c) for c in inner.columns]
+    parts += [
+        "## N13. GFS forecasts (stage 6b)",
+        "",
+        f"Tables built at commit {gm['git_commit']} (log `{gm['run_log']}`); value check and "
+        f"decision at {nd['git_commit']} (log `{nd['run_log']}`). Statistics on train and "
+        "validation only.",
+        "",
+        kv({"runs used / fallback runs (06Z)": f"{gm['runs']} / {gm['fallback_runs']}",
+            "rows with GFS, D+1 / D+2 / D+3": " / ".join(
+                str(v) for v in gm["rows_with_gfs"].values()),
+            "candidate columns": len(gm["columns"]),
+            "sample check: runs / all available before T0 / min hours before T0":
+                f"{gsm['runs']} / {gsm['all_available_before_t0']} / "
+                f"{gsm['min_hours_uploaded_before_t0']:.2f}",
+            "best lag GFS POA vs measured (train) [h]": gs["best_lag_h"],
+            "red flags: too good at D+3 / skill rising with the horizon":
+                f"{gs['red_flag_too_good_at_D3']} / {gs['red_flag_skill_rises_with_horizon']}",
+            "bias of kt_poa by season": ", ".join(
+                f"{k} {v:+.3f}" for k, v in gs["bias_kt_poa_by_season"].items()),
+            "D-12 admitted": nd["admitted"]}),
+        "",
+        "GFS kt_poa against the measured clear-sky index (train and validation, common hours):",
+        "",
+        table(skill.round(4)),
+        "",
+        "Value check (fixed XGBoost of D-11, 3 seeds; validation nRMSE in % of 3,449 kW):",
+        "",
+        table(value),
+        "",
+        "Horizon order on an inner period of train (fit to 2023-04-30, scored 2023-05 to "
+        "2024-01) and on validation; paired bootstrap of RMSE(D+3) - RMSE(D+1) on validation:",
+        "",
+        table(inner),
+        "",
+        table(gb.round(3)),
         "",
     ]
     return "\n".join(parts)

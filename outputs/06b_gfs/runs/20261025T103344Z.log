@@ -1,0 +1,22 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.gfs
+[     0.2s] RUN     git commit: 9cd4221
+[     0.2s] RUN     started (UTC): 2026-10-25T10:33:44+00:00
+[     2.8s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.8s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     2.8s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     3.2s] STEP    load runs ...
+[     9.7s] VALUE   runs = 1371
+[     9.7s] VALUE   fallback_runs = 2
+[     9.7s] STEP    load runs done in 6.5s
+[     9.7s] STEP    hourly reconstruction and features per horizon ...
+[   283.1s] STEP    hourly reconstruction and features per horizon done in 273.4s
+[   283.3s] VALUE   D1_rows_with_gfs = 32856
+[   283.4s] VALUE   D2_rows_with_gfs = 32856
+[   283.6s] VALUE   D3_rows_with_gfs = 32856
+[   283.6s] OUTPUT  data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[   283.6s] OUTPUT  data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[   283.6s] OUTPUT  data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[   283.6s] OUTPUT  outputs/06b_gfs/gfs_feature_dictionary.csv sha256=e72f153f3eb28367
+[   283.8s] RUN     warnings: 0
+[   283.8s] RUN     status: ok; duration 283.8s

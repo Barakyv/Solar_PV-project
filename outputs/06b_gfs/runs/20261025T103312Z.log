@@ -1,0 +1,16 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.download --recheck --workers 16
+[     0.2s] RUN     git commit: 9cd4221
+[     0.2s] RUN     started (UTC): 2026-10-25T10:33:12+00:00
+[     6.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     7.6s] NOTE    recheck: 2 run(s) with a file uploaded after T0 rejected: ['2022-01-24', '2022-07-23']
+[     8.4s] NOTE    1371 days requested; 1369 complete; 2 to download
+[    15.3s] WARN    2022-01-24: 12Z missing or uploaded late, used 06Z
+[    21.1s] WARN    2022-07-23: 12Z missing or uploaded late, used 06Z
+[    21.1s] NOTE    2/2 days; {'complete': 2, 'fallback': 2, 'missing': 0, 'bytes': 39614649}
+[    21.1s] VALUE   complete = 2
+[    21.1s] VALUE   fallback = 2
+[    21.1s] VALUE   missing = 0
+[    21.1s] VALUE   bytes = 39614649
+[    21.1s] RUN     warnings: 2
+[    21.1s] RUN     status: ok; duration 21.1s

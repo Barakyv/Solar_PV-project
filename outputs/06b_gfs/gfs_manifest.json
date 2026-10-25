@@ -1,0 +1,43 @@
+{
+  "stage": "06b_gfs",
+  "git_commit": "9cd4221",
+  "run_log": "outputs/06b_gfs/runs/20261025T103344Z.log",
+  "runs": 1371,
+  "fallback_runs": 2,
+  "rows_with_gfs": {
+    "D1": 32856,
+    "D2": 32856,
+    "D3": 32856
+  },
+  "columns": [
+    "fcst_gfs_ghi",
+    "fcst_gfs_kt",
+    "fcst_gfs_poa",
+    "fcst_gfs_kt_poa",
+    "fcst_gfs_kt_poa_ma3",
+    "fcst_gfs_kt_poa_daymean",
+    "fcst_gfs_tcc",
+    "fcst_gfs_lcc",
+    "fcst_gfs_mcc",
+    "fcst_gfs_hcc",
+    "fcst_gfs_tcc_mean3x3",
+    "fcst_gfs_tcc_std3x3",
+    "fcst_gfs_tcc_daymean",
+    "fcst_gfs_t2m",
+    "fcst_gfs_rh2m",
+    "fcst_gfs_pwat",
+    "fcst_gfs_wind10",
+    "fcst_gfs_sunsd",
+    "fcst_gfs_tcell",
+    "fcst_gfs_pv_kw",
+    "fcst_gfs_k_phys",
+    "irradiance_clear_index_prevday"
+  ],
+  "outputs": {
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/06b_gfs/gfs_feature_dictionary.csv": "e72f153f3eb283676dd8ab4084dfa4ef832fd0a53ec568e17dbaa67f93d00c76"
+  },
+  "warnings": []
+}

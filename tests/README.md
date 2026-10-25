@@ -19,7 +19,7 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-13 | No target clipping: nothing at exactly 1.2, values above 1.2 kept, k_suspect = k > 1.5 | `unit/test_target.py`, `contracts/test_features_output.py` | ✅ stage 6 |
 | T-15 | evaluate.py reproduces the LSTM fixture | `regression/test_evaluate_fixture.py` | ✅ stage 8 |
 | T-16 | Cleaning never zeroes daytime production | `contracts/test_clean_output.py` | ✅ stage 5 |
-| T-17 | GFS run available before T0 | — | stage 6b |
+| T-17 | GFS run available before T0: init + 6 h and every file's upload time ≤ T0, row by row; late re-uploads rejected | `unit/test_gfs.py`, `contracts/test_gfs_output.py` | ✅ stage 6b |
 | T-18 | Issuance boundary across DST: the 25th hour of the fall-back day is guarded | `unit/test_features_build.py`, `contracts/test_features_output.py` | ✅ stage 6 |
 | T-19 | Polled data rebuilt without the hold lag; source and era detection (F-18) | `unit/test_resolution.py` | ✅ stage 4 |
 | T-20 | Clock correction: known shifts per group and source, exact step days, no smoothing across steps (D-19) | `unit/test_clock.py` | ✅ stage 4 |
@@ -44,6 +44,9 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-39 | Evaluation rules: split guard, alignment (shift, swap, split label), coverage, zero-output hours kept, paired route comparison, clear-sky route advantage 0 | `unit/test_evaluation_8b.py` | ✅ stage 8B |
 | T-40 | New metrics: CLIPER (theory on AR(1); persistence never beats it), kW conversion, nRMSE by the mean, seed table, DM CI, views | `unit/test_evaluation_8b.py` | ✅ stage 8B |
 | T-41 | Real validation run: truth = feature table, every reference on every daytime hour, views, paired route, no test access, committed outputs current | `contracts/test_evaluation_output.py` | ✅ stage 8B |
+| T-42 | GFS de-averaging, block means kept, dark hours, label convention, SUNSD accumulation, physical chain | `unit/test_gfs.py` | ✅ stage 6b |
+| T-43 | GFS run choice per horizon, DST days, a later run changes nothing, downloader helpers | `unit/test_gfs.py` | ✅ stage 6b |
+| T-44 | Real GFS tables: coverage, horizons differ, ranges, sanity record (lag 0, no red flag), the D-12 decision follows the rule, no test row read | `contracts/test_gfs_output.py` | ✅ stage 6b |
 | T-37 | Scope register: every v6 figure (1–25) and numbered section has exactly one row; the six v6 models stay in D-08 | `contracts/test_scope_register.py` | ✅ (2026-10-25) |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.

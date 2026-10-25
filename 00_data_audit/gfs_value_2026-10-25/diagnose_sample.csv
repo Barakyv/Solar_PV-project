@@ -1,0 +1,13 @@
+target,horizon,sample,n,nrmse_kw
+indirect,1,validation,2901,6.827934078301151
+indirect,1,"inner (train, after 2023-04)",3080,7.170980178348062
+indirect,2,validation,2901,7.180624276459365
+indirect,2,"inner (train, after 2023-04)",3080,7.50938524174393
+indirect,3,validation,2901,6.62425825956018
+indirect,3,"inner (train, after 2023-04)",3080,7.710246498594042
+direct,1,validation,2901,6.84785100324102
+direct,1,"inner (train, after 2023-04)",3080,7.236660183223228
+direct,2,validation,2901,7.0773505378963
+direct,2,"inner (train, after 2023-04)",3080,7.563564370854284
+direct,3,validation,2901,6.5776875468349
+direct,3,"inner (train, after 2023-04)",3080,7.722065293459113

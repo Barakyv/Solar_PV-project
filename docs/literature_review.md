@@ -284,6 +284,16 @@ H high (cheap and likely useful), M medium, L low.
 | L-10 | **GEFS ensemble** (31 members, AWS `noaa-gefs-pds`): ensemble mean and spread of GHI and cloud cover. Convert members to k or power first, then average. About 5 % gain in C2, at roughly 31× the download. Only after L-05 works | C2 | L–M |
 | L-11 | **Dust and aerosol predictors:** (a) **yesterday's clear-hour deficit** at the site: the measured in-plane irradiance divided by clear-sky POA, on the clear hours of day D−1. It is known at T0, costs nothing, and is the analogue of AERONET persistence in C4; (b) the **CAMS** day-ahead AOD (550 nm) and dust AOD, as a daily mean (better than hourly in C4). This needs a free ADS account, which the user must create; (c) GEFS-Aerosols AOD, if an archive exists. Leakage rule as T-17 (issue time + latency ≤ T0) | C4, S4 | H (a), M (b) |
 
+**Status after stage 6b (2026-10-25):**
+- **L-05:** checked. The hourly 0.25° files cost about ten times the 1° transfer, so 1° is
+  used, with hourly values through the clear-sky index.
+- **L-06:** implemented and tested. SUNSD turned out to be accumulated in the same windows.
+- **L-01, L-02, L-03, L-07, L-08 and L-11a:** implemented as candidates. As a group they
+  were admitted by the value check (D-12); stage 7 selects among them.
+- **L-09:** model level, stage 9.
+- **L-10 (GEFS) and L-11c:** outside the scope (volume).
+- **L-11b (CAMS):** waits for the user (Q-14).
+
 ### Stage 7: feature selection (D-13)
 
 | ID | Idea | Source | Pri. |

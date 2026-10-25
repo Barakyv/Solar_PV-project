@@ -407,3 +407,78 @@ hashes, numbers) and the commit messages are the record:
     2022-01-19, forecast correctly as low irradiance.
 - **Decision / next:** the full download (1°, about 27 GB of transfer) and the optional 0.25°
   comparison are left to the user, as agreed.
+
+### 2026-10-25 · R6b-05 · Full download
+
+- **Purpose:** after reviewing the sample, the user chose the full set of 11 messages ("the
+  first option, download everything").
+- **Command and commit:** `python -m solarpv.nwp.download --workers 16` at `b8a712e`, log
+  `outputs/06b_gfs/runs/20261025T082013Z.log`.
+- **Results:**
+  - 1,341 new runs in 2.2 h, besides the 30 of the sample: 26.5 GB transferred, 48 MB stored.
+  - No 12Z run missing; no fallback.
+- **Intermediate notes:** 16 parallel requests per run brought it from 10 to 6 s per run.
+
+### 2026-10-25 · R6b-06 · The guard catches late re-uploads
+
+- **Command and commit:** `python -m solarpv.nwp.gfs` at `069c421`, log
+  `20261025T103052Z.log`: failed, as designed.
+- **What happened:**
+  - The T-17 guard of the build refused run 2022-01-24 12Z. One of its 26 files (f027) carries
+    `Last-Modified` 22:06Z, six minutes after T0 (22:00Z).
+  - A scan of all 35,646 files found 7 such files, in 2 runs (2022-01-24 and 2022-07-23). They
+    were re-uploaded about 10.4 h after init; every other file appeared within 5.2 h.
+  - The archive keeps only the latest version, so the version that was public at T0 cannot be
+    shown.
+- **Fix (`9cd4221`):**
+  - A run with any file uploaded after T0 is rejected (record kept, status
+    `rejected_late_upload`).
+  - The 06Z run of the same day is used, flagged.
+  - `python -m solarpv.nwp.download --recheck` (log `20261025T103312Z.log`) applied it: 2
+    runs rejected, 2 runs of 06Z fetched (40 MB).
+
+### 2026-10-25 · R6b-07 · Tables, sanity, value check, and a red flag examined
+
+- **Commands and commit:** at `9cd4221`:
+  - `python -m solarpv.nwp.gfs` (log `20261025T103344Z.log`, 284 s);
+  - `python -m solarpv.nwp.check` (log `20261025T103845Z.log`).
+- **Results:**
+  - Every hour of D+1, D+2 and D+3 has GFS values (32,856 rows each).
+  - **Sanity (train and validation):**
+    - daily r of GFS kt_poa with the measured clear-sky index: 0.82 / 0.79 / 0.74, falling
+      with the horizon;
+    - best lag 0 h;
+    - seasonal bias from −0.025 to +0.012;
+    - no red flag.
+  - **Value check** (fixed XGBoost of D-11, 3 seeds, validation nRMSE in kW):
+
+    | Target, horizon | Without GFS | With GFS |
+    |---|---|---|
+    | indirect D+1 | 7.94 % | 6.85 % |
+    | indirect D+2 | 8.31 % | 7.31 % |
+    | indirect D+3 | 8.39 % | 6.72 % |
+    | direct D+1 | 7.76 % | 6.88 % |
+    | direct D+2 | 8.13 % | 7.06 % |
+    | direct D+3 | 8.20 % | 6.63 % |
+
+  - **D-12: admitted.** Every gain is 0.9–1.7 pp, against margins of at most 0.13 pp.
+- **Intermediate notes (self-review):**
+  - With GFS, D+3 is better than D+1 on validation. GFS itself loses skill with the horizon,
+    so this is a red flag by the plan.
+  - Hypothesis 1, the past-day features: refuted. The same order appears with GFS features
+    alone (`diagnose_horizons.py`, log `00_data_audit/gfs_value_2026-10-25/runs/20261025T104116Z.log`).
+  - Hypothesis 2, a wrong mapping of horizons to runs: refuted. The leads are 10–34 / 34–58 /
+    58–82 h, and the init lies 9 or 10 h before T0, 16 h for the two fallbacks.
+  - The cause: on validation alone, GFS at D+3 correlates as well as at D+1 (0.62 / 0.57 /
+    0.62). On train it is 0.64 / 0.63 / 0.56.
+  - Confirmation (`diagnose_sample.py`, log `20261025T104450Z.log`):
+    - on an inner period of train, the order is the expected one: indirect 7.17 / 7.51 / 7.71;
+    - on validation, the paired bootstrap CI of RMSE(D+3) − RMSE(D+1) includes 0: indirect
+      −0.20 pp [−0.49, +0.03], direct −0.27 pp [−0.59, +0.03].
+
+    A sample effect, not a leak.
+
+### 2026-10-25 · R6b-08 · Tests and documentation
+
+- The full suite passes: 317 tests, including T-17 row by row on the real tables and T-44.
+- OP-42–OP-44 and N13 are recorded; PROJECT_MASTER v3.0.
