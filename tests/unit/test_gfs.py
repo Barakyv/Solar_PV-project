@@ -260,3 +260,15 @@ def test_physical_chain_on_a_clear_day():
     assert out.loc[day, "kt_poa"].between(0.85, 1.15).all()
     assert (out.loc[day, "tcell"] > 30.0).all()
     assert out["pv_kw"].between(0, 3449.0).all()
+
+
+def test_a_run_with_a_file_uploaded_after_t0_is_rejected():
+    """2022-01-24: one file re-uploaded at 22:06Z, after T0 (22:00Z in winter); R6b-05."""
+    assert D.issuance_of_run_day("2022-01-24") == pd.Timestamp("2022-01-24 22:00", tz="UTC")
+    assert D.issuance_of_run_day("2022-07-23") == pd.Timestamp("2022-07-23 21:00", tz="UTC")
+    record = {"day": "2022-01-24", "files": [
+        {"url": "f024", "uploaded_utc": "2022-01-24T15:41:32+00:00"},
+        {"url": "f027", "uploaded_utc": "2022-01-24T22:06:32+00:00"}]}
+    assert D.late_files(record) == ["f027"]
+    record["files"].pop()
+    assert D.late_files(record) == []

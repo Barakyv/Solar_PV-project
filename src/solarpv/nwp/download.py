@@ -40,6 +40,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from solarpv.config.constants import TIMEZONE_LOCAL
 from solarpv.config.paths import DATA_DIR, OUTPUTS_DIR
 from solarpv.config.runlog import RunLog
 
@@ -202,18 +203,61 @@ def completed_runs() -> dict[str, int]:
     return done
 
 
+def issuance_of_run_day(day: str) -> pd.Timestamp:
+    """T0 served by the runs of a UTC day: 00:00 local of the next local day, in UTC (D-16)."""
+    return (pd.Timestamp(day) + pd.Timedelta(days=1)).tz_localize(TIMEZONE_LOCAL).tz_convert("UTC")
+
+
+def late_files(record: dict) -> list[str]:
+    """Files of a run whose current version was uploaded after the issuance time it serves.
+
+    The archive keeps only the latest version of a file, and its Last-Modified time. A file
+    re-uploaded after T0 cannot be shown to be the version that was public at T0, so the run
+    is not used (T-17, the conservative rule; found on 2 of 1,371 runs, R6b-05)."""
+    t0 = issuance_of_run_day(record["day"])
+    return [f["url"] for f in record["files"] if pd.Timestamp(f["uploaded_utc"]) > t0]
+
+
+def _write(day: str, run: int, result: dict, status: str, **extra) -> None:
+    parquet, record = run_paths(day, run)
+    parquet.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(result.pop("rows")).to_parquet(parquet, index=False)
+    result.update({"status": status, "fallback": run != RUN_HOURS[0],
+                   "downloaded_utc": datetime.now(UTC).isoformat(timespec="seconds"), **extra})
+    record.write_text(json.dumps(result, indent=1), encoding="utf-8", newline="\n")
+
+
 def download_day(day: str, workers: int) -> dict:
+    """The preferred run that exists and whose every file was public before T0. A rejected run
+    keeps its record (status rejected_late_upload) for the audit and is not fetched again."""
     for run in RUN_HOURS:
+        _, record_path = run_paths(day, run)
+        if record_path.exists():
+            old = json.loads(record_path.read_text(encoding="utf-8"))
+            if old.get("status") == "rejected_late_upload":
+                continue
         result = fetch_run(day, run, workers)
-        if result is not None:
-            parquet, record = run_paths(day, run)
-            parquet.parent.mkdir(parents=True, exist_ok=True)
-            pd.DataFrame(result.pop("rows")).to_parquet(parquet, index=False)
-            result.update({"status": "complete", "fallback": run != RUN_HOURS[0],
-                           "downloaded_utc": datetime.now(UTC).isoformat(timespec="seconds")})
-            record.write_text(json.dumps(result, indent=1), encoding="utf-8", newline="\n")
-            return result
+        if result is None:
+            continue
+        late = late_files(result)
+        if late:
+            _write(day, run, result, "rejected_late_upload", late_files=late)
+            continue
+        _write(day, run, result, "complete")
+        return result
     return {"day": day, "status": "missing"}
+
+
+def recheck_records() -> list[str]:
+    """Mark complete records with a late file as rejected; returns the affected days."""
+    days = []
+    for path in sorted(OUT_DIR.glob("*/*.json")):
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        if rec.get("status") == "complete" and late_files(rec):
+            rec.update({"status": "rejected_late_upload", "late_files": late_files(rec)})
+            path.write_text(json.dumps(rec, indent=1), encoding="utf-8", newline="\n")
+            days.append(rec["day"])
+    return days
 
 
 def estimate(days: list[str]) -> dict:
@@ -239,6 +283,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--estimate", action="store_true", help="read .idx files only")
     parser.add_argument("--sample", type=int, default=0, help="with --estimate: days sampled")
+    parser.add_argument("--recheck", action="store_true",
+                        help="reject complete runs with a file uploaded after T0, then refetch")
     args = parser.parse_args(argv)
     days = [d.strftime("%Y-%m-%d") for d in pd.date_range(args.start, args.end, freq="D")]
     command = "python -m solarpv.nwp.download " + " ".join(argv or sys.argv[1:])
@@ -250,6 +296,10 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(est, indent=1))
         return 0
     with RunLog("06b_gfs", command.strip(), out_dir=OUTPUTS_DIR / "06b_gfs") as log:
+        if args.recheck:
+            rejected = recheck_records()
+            log.note(f"recheck: {len(rejected)} run(s) with a file uploaded after T0 rejected: "
+                     f"{rejected}")
         done = completed_runs()
         todo = [d for d in days if d not in done]
         log.note(f"{len(days)} days requested; {len(done)} complete; {len(todo)} to download")
@@ -261,7 +311,7 @@ def main(argv: list[str] | None = None) -> int:
                 counts["fallback"] += int(result["fallback"])
                 counts["bytes"] += sum(f["bytes"] for f in result["files"])
                 if result["fallback"]:
-                    log.warn(f"{day}: 12Z missing, used {result['run']:02d}Z")
+                    log.warn(f"{day}: 12Z missing or uploaded late, used {result['run']:02d}Z")
             else:
                 counts["missing"] += 1
                 log.warn(f"{day}: no allowed run available")
