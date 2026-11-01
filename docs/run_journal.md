@@ -537,8 +537,8 @@ hashes, numbers) and the commit messages are the record:
 
 ### 2026-11-01 · R7-02 · Second run, and the sign of the red flag
 
-- **Command and commit:** the same at `46ef699`, log `20261101T131913Z.log` (1,780 s); then
-  `python -m solarpv.selection.run --validation-only` at `2aa990c`.
+- **Command and commit:** the same at `46ef699`, log `20261101T125246Z.log` (1,780 s); then
+  `python -m solarpv.selection.run --validation-only` at `2aa990c`, log `20261101T132514Z.log`.
 - **Results:**
   - 05e sets: indirect 25 / 26 / 26, direct 19 / 16 / 12 (submission: 40 / 23 / 19 and
     38 / 32 / 25). GFS features lead every SHAP ranking; no dominant feature.
