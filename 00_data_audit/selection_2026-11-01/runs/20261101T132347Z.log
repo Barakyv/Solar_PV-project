@@ -1,0 +1,37 @@
+[     0.0s] RUN     stage audit
+[     0.0s] RUN     command: python 00_data_audit/selection_2026-11-01/diagnose_gap.py
+[     0.5s] RUN     git commit: 82fc921
+[     0.5s] RUN     started (UTC): 2026-11-01T13:23:47+00:00
+[     0.5s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[   232.2s] NOTE    direct D+1 done
+[   371.4s] NOTE    direct D+2 done
+[   434.7s] NOTE    indirect D+3 done
+[   505.1s] NOTE    direct D+3 done
+[   505.2s] NOTE    inner direct D+1 inner hold-out: gap +0.111 pp
+[   505.2s] NOTE    inner direct D+1 train folds: gap +0.274 pp
+[   505.2s] NOTE    inner direct D+2 inner hold-out: gap +0.215 pp
+[   505.2s] NOTE    inner direct D+2 train folds: gap +0.093 pp
+[   505.2s] NOTE    inner direct D+3 inner hold-out: gap +0.271 pp
+[   505.2s] NOTE    inner direct D+3 train folds: gap +0.423 pp
+[   505.2s] NOTE    inner indirect D+1 inner hold-out: gap +0.055 pp
+[   505.2s] NOTE    inner indirect D+1 train folds: gap -0.052 pp
+[   505.2s] NOTE    inner indirect D+2 inner hold-out: gap -0.020 pp
+[   505.2s] NOTE    inner indirect D+2 train folds: gap -0.116 pp
+[   505.2s] NOTE    inner indirect D+3 inner hold-out: gap -0.021 pp
+[   505.2s] NOTE    inner indirect D+3 train folds: gap +0.055 pp
+[   505.2s] NOTE    val direct D+1 all (n=2901): gap -0.002 pp
+[   505.2s] NOTE    val direct D+1 normal operation (n=2755): gap +0.045 pp
+[   505.2s] NOTE    val direct D+1 op-limited (n=146): gap -0.209 pp
+[   505.2s] NOTE    val direct D+2 all (n=2901): gap +0.341 pp
+[   505.2s] NOTE    val direct D+2 normal operation (n=2755): gap +0.421 pp
+[   505.2s] NOTE    val direct D+2 op-limited (n=146): gap +0.221 pp
+[   505.2s] NOTE    val direct D+3 all (n=2901): gap +0.433 pp
+[   505.2s] NOTE    val direct D+3 normal operation (n=2755): gap +0.499 pp
+[   505.2s] NOTE    val direct D+3 op-limited (n=146): gap +0.523 pp
+[   505.2s] NOTE    val indirect D+3 all (n=2901): gap +0.092 pp
+[   505.2s] NOTE    val indirect D+3 normal operation (n=2755): gap +0.111 pp
+[   505.2s] NOTE    val indirect D+3 op-limited (n=146): gap +0.096 pp
+[   505.2s] OUTPUT  00_data_audit/selection_2026-11-01/gap_inner_train.csv sha256=bcede29b3d7f3fe3
+[   505.2s] OUTPUT  00_data_audit/selection_2026-11-01/gap_validation_views.csv sha256=166b97bc5eb589cf
+[   505.2s] RUN     warnings: 0
+[   505.2s] RUN     status: ok; duration 505.2s

@@ -1,0 +1,17 @@
+[     0.0s] RUN     stage 07_feature_selection
+[     0.0s] RUN     command: python -m solarpv.selection.run --validation-only
+[     0.3s] RUN     git commit: 82fc921+dirty
+[     0.3s] RUN     started (UTC): 2026-11-01T13:25:14+00:00
+[     0.3s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     1.6s] STEP    S8 validation (recomputed) ...
+[    22.7s] NOTE    S8 indirect D+1: 05e 6.838 vs full 6.853 (margin 0.092)
+[    41.4s] NOTE    S8 direct D+1: 05e 6.872 vs full 6.877 (margin 0.079)
+[    61.6s] NOTE    S8 indirect D+2: 05e 7.314 vs full 7.310 (margin 0.062)
+[    82.9s] NOTE    S8 direct D+2: 05e 7.396 vs full 7.063 (margin 0.053)
+[   101.7s] NOTE    S8 indirect D+3: 05e 6.804 vs full 6.715 (margin 0.050)
+[   121.3s] NOTE    S8 direct D+3: 05e 7.051 vs full 6.626 (margin 0.050)
+[   121.3s] STEP    S8 validation (recomputed) done in 119.8s
+[   121.4s] OUTPUT  outputs/07_feature_selection/validation_check.csv sha256=c0a0bd99c9e62ab8
+[   121.4s] OUTPUT  outputs/07_feature_selection/selection_manifest.json sha256=c3b1178a66269841
+[   121.4s] RUN     warnings: 0
+[   121.4s] RUN     status: ok; duration 121.4s

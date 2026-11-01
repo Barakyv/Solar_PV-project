@@ -1,0 +1,13 @@
+target,horizon,sample,05e,full pool,gap_05e_minus_full
+direct,1,inner hold-out,7.381,7.2702,0.1108
+direct,1,train folds,7.928,7.6544,0.2736
+direct,2,inner hold-out,7.8253,7.6108,0.2145
+direct,2,train folds,8.0752,7.9824,0.0929
+direct,3,inner hold-out,7.9946,7.7234,0.2712
+direct,3,train folds,8.7489,8.3256,0.4233
+indirect,1,inner hold-out,7.2927,7.2378,0.0549
+indirect,1,train folds,7.5495,7.6012,-0.0518
+indirect,2,inner hold-out,7.51,7.5296,-0.0196
+indirect,2,train folds,7.7947,7.9102,-0.1155
+indirect,3,inner hold-out,7.7541,7.7755,-0.0214
+indirect,3,train folds,8.3006,8.2458,0.0548

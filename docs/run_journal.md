@@ -517,3 +517,52 @@ hashes, numbers) and the commit messages are the record:
 - **Self-review:** the direction of the original offset was derived from F-01 (local labels
   treated as UTC) and the hour-end label of the API; whichever direction, every shift other than
   the best one keeps less than half of the hourly correlation.
+
+## Stage 7: feature selection
+
+### 2026-11-01 · R7-01 · First run: the duplicate step removed real information
+
+- **Command and commit:** `python -m solarpv.selection.run` at `98c208f`, log
+  `outputs/07_feature_selection/runs/20261101T123534Z.log` (815 s).
+- **S0 (k history, inside train):** gain at D+1 +0.026 pp against a margin of 0.054 pp: not
+  admitted (D-24).
+- **Problem found:** the duplicate step removed 33–43 features per set, among them every rolling
+  mean of production ("duplicate of aoi") and every power lag ("duplicate of irradiance lag").
+  Groups were connected components of |r| > 0.98, so they chained, and on daytime rows every
+  same-time-of-day variable follows the diurnal shape. The direct 05e sets were then 0.4–0.5 pp
+  worse than the full pool on validation.
+- **Fix (`46ef699`):** the January base stage had no such step; pairs are now reported, not
+  removed, and the step-1 RFE removes redundant copies. Plan §7. The validation comparison of
+  this run is void.
+
+### 2026-11-01 · R7-02 · Second run, and the sign of the red flag
+
+- **Command and commit:** the same at `46ef699`, log `20261101T131913Z.log` (1,780 s); then
+  `python -m solarpv.selection.run --validation-only` at `2aa990c`.
+- **Results:**
+  - 05e sets: indirect 25 / 26 / 26, direct 19 / 16 / 12 (submission: 40 / 23 / 19 and
+    38 / 32 / 25). GFS features lead every SHAP ranking; no dominant feature.
+  - The MI vote endorsed all 42 starting features in every set: the base-stage MI filter
+    (0.02) had already removed the features near the shuffled null, so the 2-of-3 consensus
+    equals the union of the SHAP elbow and the stability votes. Kept as registered (D-23).
+  - Validation, once (`validation_check.csv`): the 05e set minus the full pool is −0.015 /
+    +0.005 / +0.088 pp (indirect D+1 / D+2 / D+3) and −0.005 / +0.333 / +0.425 pp (direct).
+    Red flags, above the margins: indirect D+3, direct D+2 and D+3.
+- **Second problem found:** S8 had negated the gap, so the manifest showed no red flag. Fixed in
+  `2aa990c` with a test that checks gap, flag and manifest against each other (it failed on the
+  old outputs). The recomputed numbers are identical; three red flags.
+
+### 2026-11-01 · R7-03 · Diagnosis of the red flags
+
+- **Command:** `python 00_data_audit/selection_2026-11-01/diagnose_gap.py` at `2aa990c`
+  (`gap_inner_train.csv`, `gap_validation_views.csv`).
+- **Direct, a method problem.** The fixed XGBoost of D-11 is also worse with the 05e set inside
+  train: +0.27 / +0.09 / +0.42 pp on the date folds and +0.11 / +0.22 / +0.27 pp on an inner
+  hold-out (fit to April 2023, scored May 2023 to January 2024). On validation the gap is in
+  normal-operation hours (+0.42 / +0.50 pp at D+2 / D+3) and in most months, so it is not the
+  curtailment of spring 2024. The selection model (100 trees, depth 5, as in the base notebooks)
+  cannot use much beyond the GFS power features: at D+3 one feature came within 1 % of all 42.
+  The sets are therefore too small for the model that uses them.
+- **Indirect, a sample effect.** No gap inside train (−0.12 to +0.06 pp); the +0.09 pp at D+3 on
+  validation is spread over the months, like the D+3 effect of R6b-07.
+- **Open:** how to fix the direct selection (user decision).
