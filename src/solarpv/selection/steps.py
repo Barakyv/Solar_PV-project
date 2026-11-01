@@ -54,35 +54,19 @@ def low_mi(mi: pd.Series, protected: set[str]) -> list[str]:
     return [f for f in mi.index if mi[f] < MI_MIN and f not in protected]
 
 
-def duplicate_groups(X: pd.DataFrame, feats: list[str], rows: pd.Series) -> list[list[str]]:
-    """Connected components of |Pearson r| > 0.98 on the selection rows (B4)."""
-    corr = X.loc[complete_rows(X, feats, rows), feats].corr().abs()
-    parent = {f: f for f in feats}
+def correlated_pairs(X: pd.DataFrame, feats: list[str], rows: pd.Series) -> pd.DataFrame:
+    """Pairs with |Pearson r| > 0.98 on the selection rows: reported, not removed (L-12, C2).
 
-    def root(f: str) -> str:
-        while parent[f] != f:
-            f = parent[f]
-        return f
-
-    for i, a in enumerate(feats):
-        for b in feats[i + 1:]:
-            if corr.loc[a, b] > DUPLICATE_R:
-                parent[root(b)] = root(a)
-    groups: dict[str, list[str]] = {}
-    for f in feats:
-        groups.setdefault(root(f), []).append(f)
-    return [sorted(g) for g in groups.values() if len(g) > 1]
-
-
-def deduplicate(groups: list[list[str]], mi: pd.Series, core: set[str]) -> dict[str, str]:
-    """{removed feature: kept representative}. A core member wins its group; otherwise the
-    highest MI (ties by name)."""
-    removed = {}
-    for members in groups:
-        ranked = sorted(members, key=lambda f: (f not in core, -mi[f], f))
-        for f in ranked[1:]:
-            removed[f] = ranked[0]
-    return removed
+    The first run removed one representative per connected group (R7-01). Groups chain (A ~ B and
+    B ~ C put A and C together), and on daytime rows every same-time-of-day variable follows the
+    diurnal shape, so the rolling means of production went out as "duplicates" of aoi. The
+    January base stage had no such step: the RFE, one feature per step with a refit, removes
+    redundant copies one at a time."""
+    corr = X.loc[complete_rows(X, feats, rows), feats].corr()
+    rows_out = [{"a": a, "b": b, "r": round(float(corr.loc[a, b]), 4)}
+                for i, a in enumerate(feats) for b in feats[i + 1:]
+                if abs(corr.loc[a, b]) > DUPLICATE_R]
+    return pd.DataFrame(rows_out, columns=["a", "b", "r"])
 
 
 def rfe(problem: Problem, feats: list[str], protected: set[str], target_n: int = RFE_TARGET,

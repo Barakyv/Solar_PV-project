@@ -68,7 +68,7 @@ Fixed before any result. "Original" = January base notebooks and the submitted f
 | Selection model | XGBoost 100 trees, depth 5, learning rate 0.1, subsample 0.8, colsample 0.8, min_child_weight 3, gamma 0.1, alpha 0.1, lambda 1, seed 42 | original |
 | Filters | variance < 0.001 removed; MI < 0.02 removed (5 neighbours, seed 42); core exempt | original |
 | Core (11) | `solar_zenith`, `solar_azimuth`, `aoi`, `fcst_gfs_ghi`, `fcst_gfs_poa` (for DNI and DHI, which GFS does not give), `fcst_gfs_t2m`, `fcst_gfs_tcc`, `hour_sin`, `hour_cos`, `doy_sin`, `doy_cos` | original, mapped |
-| Duplicates | \|Pearson r\| > 0.98 on selection rows; keep the highest MI (core first) | December notebook + L-12 |
+| Correlated pairs | \|Pearson r\| > 0.98 on selection rows, reported only (R7-01) | L-12 |
 | RFE | step 1 to 42 features, mean \|SHAP\| on held-out folds; core kept | original target; ranking P7 (deviation) |
 | 05c | backward elimination from the 42 by mean \|SHAP\|, refit each step; elbow = smallest set whose score is at most 1 % (relative) above that of the 42; 0.5 %, 2 % and the second-derivative elbows reported | original thresholds; rule written explicitly (deviation) |
 | 05e stability | 30 subsamples of 70 % of train days; a feature is selected in a subsample when its share of the total mean \|SHAP\| on the held-out days is ≥ 1 %; vote at probability ≥ 0.6 | original counts and threshold; selection rule written explicitly (deviation) |
@@ -96,8 +96,8 @@ Contract(h) + the 22 admitted candidates (+ k history if admitted, indirect only
 ### S2. Filters (base stage)
 Variance, then MI, with the core exempt. Logged: what each removed.
 
-### S3. Duplicates
-Groups of |r| > 0.98 (connected components); one representative per group.
+### S3. Correlated pairs
+Pairs of |r| > 0.98 reported, not removed (changed after R7-01, §7).
 
 ### S4. RFE to 42
 One feature per step; the score curve is kept (Figure 22's base count).
@@ -153,4 +153,13 @@ Red flags:
 
 ## 7. Changes during the stage
 
-(filled in as they happen)
+- **R7-01, the duplicate step removed (2026-11-01).** The first run removed one representative
+  per connected group of |r| > 0.98. Groups chain (A ~ B and B ~ C put A and C in one group), and
+  on daytime rows every same-time-of-day variable follows the diurnal shape: the rolling means of
+  production went out as "duplicates" of `aoi`, and the power lags as duplicates of the
+  irradiance lags (33–43 features per set). The direct 05e sets then lost 0.4–0.5 points on
+  validation against the full pool. The January base stage, which fed the submission, had no
+  such step: its RFE, one feature per step with a refit, removes redundant copies one at a time.
+  The step now only reports the pairs above 0.98 (L-12, C2: checked, not removed); B4 is
+  answered by the RFE. The first run's validation comparison is void; the rerun is the one look
+  of S8, and the journal records both.

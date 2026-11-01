@@ -1,0 +1,84 @@
+[     0.0s] RUN     stage 07_feature_selection
+[     0.0s] RUN     command: python -m solarpv.selection.run
+[     0.2s] RUN     git commit: 98c208f
+[     0.2s] RUN     started (UTC): 2026-11-01T12:35:34+00:00
+[     0.2s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.2s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.2s] STEP    tables (train only) and k history ...
+[     1.0s] STEP    tables (train only) and k history done in 0.8s
+[     1.0s] STEP    S0 k history (D-24, inside train) ...
+[   102.3s] NOTE    S0 D+1: gain +0.026 pp, margin 0.054 pp, passes False
+[   190.5s] NOTE    S0 D+2: gain -0.043 pp, margin 0.113 pp, passes True
+[   255.1s] NOTE    S0 D+3: gain -0.016 pp, margin 0.065 pp, passes True
+[   255.3s] VALUE   k_history_admitted = False
+[   255.3s] STEP    S0 k history (D-24, inside train) done in 254.3s
+[   255.3s] STEP    S1-S7 indirect D+1 ...
+[   261.3s] NOTE    indirect D+1: pool 96, variance -0, MI -2, duplicates -41 -> 53
+[   273.5s] NOTE      RFE 43 left, score 7.702
+[   325.8s] NOTE    indirect D+1: RFE 42, 05c elbow 8 (score 7.655 at 42), stability 24, MI 42, consensus 24; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   325.8s] STEP    S1-S7 indirect D+1 done in 70.5s
+[   325.8s] STEP    S1-S7 indirect D+2 ...
+[   331.3s] NOTE    indirect D+2: pool 89, variance -0, MI -2, duplicates -37 -> 50
+[   391.2s] NOTE    indirect D+2: RFE 42, 05c elbow 4 (score 8.099 at 42), stability 22, MI 42, consensus 22; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   391.2s] STEP    S1-S7 indirect D+2 done in 65.4s
+[   391.2s] STEP    S1-S7 indirect D+3 ...
+[   396.2s] NOTE    indirect D+3: pool 82, variance -0, MI -2, duplicates -33 -> 47
+[   453.5s] NOTE    indirect D+3: RFE 42, 05c elbow 7 (score 8.254 at 42), stability 21, MI 42, consensus 21; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   453.5s] STEP    S1-S7 indirect D+3 done in 62.3s
+[   453.5s] STEP    S1-S7 direct D+1 ...
+[   459.2s] NOTE    direct D+1: pool 96, variance -0, MI -7, duplicates -43 -> 46
+[   556.6s] NOTE    direct D+1: RFE 42, 05c elbow 14 (score 7.801 at 42), stability 8, MI 42, consensus 14; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   556.6s] STEP    S1-S7 direct D+1 done in 103.1s
+[   556.6s] STEP    S1-S7 direct D+2 ...
+[   561.9s] NOTE    direct D+2: pool 89, variance -0, MI -6, duplicates -39 -> 44
+[   654.5s] NOTE    direct D+2: RFE 42, 05c elbow 9 (score 7.990 at 42), stability 10, MI 42, consensus 12; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   654.5s] STEP    S1-S7 direct D+2 done in 97.9s
+[   654.5s] STEP    S1-S7 direct D+3 ...
+[   659.6s] NOTE    direct D+3: pool 82, variance -0, MI -8, duplicates -35 -> 39
+[   742.5s] NOTE    direct D+3: RFE 39, 05c elbow 2 (score 8.417 at 39), stability 10, MI 39, consensus 10; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[   742.5s] STEP    S1-S7 direct D+3 done in 88.0s
+[   742.5s] STEP    S8 validation (once) ...
+[   754.2s] NOTE    S8 indirect D+1: 05e 6.820 vs full 6.853 (margin 0.086)
+[   767.1s] NOTE    S8 direct D+1: 05e 6.956 vs full 6.877 (margin 0.084)
+[   777.6s] NOTE    S8 indirect D+2: 05e 7.292 vs full 7.310 (margin 0.050)
+[   789.4s] NOTE    S8 direct D+2: 05e 7.489 vs full 7.063 (margin 0.050)
+[   799.9s] NOTE    S8 indirect D+3: 05e 6.807 vs full 6.715 (margin 0.069)
+[   811.2s] NOTE    S8 direct D+3: 05e 7.127 vs full 6.626 (margin 0.050)
+[   811.2s] STEP    S8 validation (once) done in 68.7s
+[   811.2s] STEP    outputs ...
+[   815.4s] STEP    outputs done in 4.2s
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D1.json sha256=ccd02585198ff549
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D1_05f.json sha256=79993a80b15fa1a4
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D2.json sha256=d49ef0ff5a186d4f
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D2_05f.json sha256=70f3a63cee44bf37
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D3.json sha256=e43ae9c3b300777b
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D3_05f.json sha256=be2284ea7c7a913f
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_direct_D1.json sha256=6630a44643529e67
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D1_05f.json sha256=6c8c0bc8e516024a
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_direct_D2.json sha256=cc88b9556dc26ea8
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D2_05f.json sha256=6cffdd79cd199f11
+[   815.4s] OUTPUT  outputs/07_feature_selection/final_features_direct_D3.json sha256=aae8529370a89968
+[   815.4s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D3_05f.json sha256=14110d87784b7b13
+[   815.4s] OUTPUT  outputs/07_feature_selection/base_stage.csv sha256=e1016f03f5675eb4
+[   815.4s] OUTPUT  outputs/07_feature_selection/rfe_history.csv sha256=b57d0ae1f6a74661
+[   815.4s] OUTPUT  outputs/07_feature_selection/shap_elimination_curves.csv sha256=81c344e50ce2ac5c
+[   815.4s] OUTPUT  outputs/07_feature_selection/selection_votes.csv sha256=5a1f82d5481a5ffa
+[   815.4s] OUTPUT  outputs/07_feature_selection/feature_availability_classification.csv sha256=abe6e5d651fef54b
+[   815.4s] OUTPUT  outputs/07_feature_selection/k_history_check.csv sha256=540099c830e11c33
+[   815.4s] OUTPUT  outputs/07_feature_selection/validation_check.csv sha256=9a0a2598e7c3b703
+[   815.4s] OUTPUT  outputs/07_feature_selection/figures/fig19_pipeline.png sha256=f12b2afa450415c1
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig20_shap_elimination.png sha256=90255664e9138118
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig21_stability.png sha256=be803cabe128a684
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig22_counts.png sha256=8c31cc009f9b382a
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig23_mi_stability.png sha256=56d25398d02f4016
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig24_availability.png sha256=17c7d0e0c3b1b563
+[   815.5s] OUTPUT  outputs/07_feature_selection/figures/fig25_floor_sensitivity.png sha256=96b10e8b12c47161
+[   815.5s] OUTPUT  outputs/07_feature_selection/selection_manifest.json sha256=cc19dfdac08a8459
+[   815.5s] OUTPUT  configs/k_history_decision.yaml sha256=3b3d00d1b34e44e2
+[   815.5s] RUN     warnings: 0
+[   815.5s] RUN     status: ok; duration 815.5s

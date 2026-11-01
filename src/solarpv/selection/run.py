@@ -90,16 +90,13 @@ def select(table: pd.DataFrame, target: str, horizon: int, extra: tuple[str, ...
     for f in mi_out:
         fate[f] = "mi"
     after_mi = [f for f in after_var if f not in mi_out]
-    groups = S.duplicate_groups(p.X, after_mi, p.fit)
-    dup = S.deduplicate(groups, mi_all, core)
-    for f, rep in dup.items():
-        fate[f] = f"duplicate of {rep}"
-    after_dup = [f for f in after_mi if f not in dup]
+    pairs = S.correlated_pairs(p.X, after_mi, p.fit)
     log.note(f"{target} D+{horizon}: pool {len(feats)}, variance -{len(var_out)}, "
-             f"MI -{len(mi_out)}, duplicates -{len(dup)} -> {len(after_dup)}")
+             f"MI -{len(mi_out)} -> {len(after_mi)}; {len(pairs)} pairs with |r| > "
+             f"{S.DUPLICATE_R} (reported, not removed)")
 
-    start, rfe_hist = S.rfe(p, after_dup, core, log=log)
-    for f in after_dup:
+    start, rfe_hist = S.rfe(p, after_mi, core, log=log)
+    for f in after_mi:
         if f not in start:
             fate[f] = "rfe"
     curve = S.elimination(p, start)
@@ -124,7 +121,7 @@ def select(table: pd.DataFrame, target: str, horizon: int, extra: tuple[str, ...
              f"(score {full_row['score']:.3f} at {len(start)}), stability "
              f"{int((prob >= S.STABILITY_VOTE).sum())}, MI {int(mi_votes.sum())}, consensus "
              f"{len(chosen)}; flags {flags}")
-    return {"target": target, "horizon": horizon, "pool": feats, "fate": fate, "groups": groups,
+    return {"target": target, "horizon": horizon, "pool": feats, "fate": fate, "pairs": pairs,
             "mi": mi_all, "rfe": rfe_hist, "start": start, "curve": curve, "elbows": elb,
             "shap_set": shap_set, "shap_rank": shap_rank, "shap_start": shap_start,
             "baseline": float(full_row["score"]), "prob": prob, "mi_votes": mi_votes,
@@ -235,7 +232,6 @@ def counts(r: dict) -> dict[str, int]:
     fate = pd.Series(r["fate"])
     return {"pool": len(r["pool"]),
             "after filters": int((~fate.isin(["variance", "mi"])).sum()),
-            "after duplicates": int(fate.isin(["kept", "rfe"]).sum()),
             "after RFE (05c start)": len(r["start"]), "05c elbow": len(r["shap_set"]),
             "stability votes": int((r["prob"] >= S.STABILITY_VOTE).sum()),
             "MI votes": int(r["mi_votes"].sum()), "05e consensus": len(r["chosen"]),
@@ -367,6 +363,9 @@ def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
         "group": [C.group(f) for f in r["fate"]], "outcome": list(r["fate"].values()),
         "mi": [round(float(r["mi"].get(f, np.nan)), 4) for f in r["fate"]]})
         for r in results]))
+    csv("correlated_pairs.csv", pd.concat([r["pairs"].assign(target=r["target"],
+                                                       horizon=r["horizon"])
+                                         for r in results]))
     csv("rfe_history.csv", pd.concat([r["rfe"].assign(target=r["target"], horizon=r["horizon"])
                                       for r in results]))
     csv("shap_elimination_curves.csv", pd.concat([

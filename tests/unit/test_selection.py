@@ -1,8 +1,8 @@
 """Stage-7 selection on synthetic data (docs/stage7_plan.md §5).
 
 T-47: train rows only; the allow-list refuses a leaking column.
-T-48: date folds, the kW score, duplicates, RFE keeps the core, the elbow rule, stability on whole
-      days, the MI vote against shuffled copies, consensus and 05f tiers.
+T-48: date folds, the kW score, correlated pairs, RFE keeps the core, the elbow rule,
+      stability on whole days, the MI vote against shuffled copies, consensus and 05f tiers.
 T-49: the k history follows the stage-6 rules (DST guard, lags per horizon, past only).
 """
 
@@ -87,13 +87,18 @@ def test_score_is_in_kw_for_both_targets():
     assert kw.max() <= AC_CAPACITY_KW  # k x theo, clipped to the capacity
 
 
-def test_duplicates_keep_the_highest_mi_and_the_core():
+def test_correlated_pairs_are_reported_without_chaining():
     t = synthetic()
-    groups = S.duplicate_groups(t, ["signal", "signal_copy", "noise"], t["daytime"])
-    assert groups == [["signal", "signal_copy"]]
-    mi = pd.Series({"signal": 0.5, "signal_copy": 0.6, "noise": 0.0})
-    assert S.deduplicate(groups, mi, core=set()) == {"signal": "signal_copy"}
-    assert S.deduplicate(groups, mi, core={"signal"}) == {"signal_copy": "signal"}
+    t["between"] = t["signal_copy"] + 0.35 * t["noise"].abs()  # ~ signal_copy, not ~ noise
+    pairs = S.correlated_pairs(t, ["signal", "signal_copy", "noise", "between"], t["daytime"])
+    assert [(a, b) for a, b in zip(pairs["a"], pairs["b"], strict=True)] == [
+        ("signal", "signal_copy")]  # pairs only: no group, nothing removed (R7-01)
+
+
+def test_rfe_removes_one_copy_of_a_duplicate_pair():
+    p = C.problem(synthetic(), "indirect")
+    kept, _ = S.rfe(p, ["signal", "signal_copy", "noise", "aoi"], protected={"aoi"}, target_n=2)
+    assert "aoi" in kept and len({"signal", "signal_copy"} & set(kept)) == 1
 
 
 def test_rfe_never_drops_the_core():
