@@ -48,6 +48,7 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-43 | GFS run choice per horizon, DST days, a later run changes nothing, downloader helpers | `unit/test_gfs.py` | ✅ stage 6b |
 | T-44 | Real GFS tables: coverage, horizons differ, ranges, sanity record (lag 0, no red flag), the D-12 decision follows the rule, no test row read | `contracts/test_gfs_output.py` | ✅ stage 6b |
 | T-45 | Audit of the original backup: the evidence supports F-26 (whole table), F-27 (DC in the direct selection) and F-28 (archive `gfs_seamless`, D+1-like skill, offset join); no coordinate written out | `contracts/test_original_backup_audit.py` | ✅ audit 2026-11-01 |
+| T-46 | Stage notebooks (00b, 01, 03, 04, 04c, 07): every recorded source unchanged, every code cell executed without error and followed by a markdown note | `contracts/test_stage_notebooks.py` | ✅ 2026-11-01 |
 | T-37 | Scope register: every v6 figure (1–25) and numbered section has exactly one row; the six v6 models stay in D-08 | `contracts/test_scope_register.py` | ✅ (2026-10-25) |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.
