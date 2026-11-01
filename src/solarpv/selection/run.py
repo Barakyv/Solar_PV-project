@@ -212,14 +212,16 @@ def validation_check(results: list[dict], k_admitted: bool, log) -> pd.DataFrame
             scores = {name: [C.cv_score(p, feats, FIXED_XGB, seed, with_shap=False,
                                         folds=folds)[0] for seed in RANDOM_SEEDS]
                       for name, feats in sets.items()}
-            gain, margin = margin_rule(scores["05e"], scores["full pool"])
+            # margin_rule(a, b) returns mean(a) - mean(b): here 05e minus the full pool, positive
+            # when the 05e set is worse (R7-02: the first version flipped this sign)
+            worse_by, margin = margin_rule(scores["05e"], scores["full pool"])
             for name, values in scores.items():
                 rows.append({"target": target, "horizon": h, "features": name,
                              "n_features": len(sets[name]),
                              "nrmse_kw_mean": float(np.mean(values)),
                              "nrmse_kw_std": float(np.std(values, ddof=1)),
-                             "05e_minus_full_pp": -gain, "margin_pp": margin,
-                             "red_flag": bool(-gain > margin)})
+                             "05e_minus_full_pp": worse_by, "margin_pp": margin,
+                             "red_flag": bool(worse_by > margin)})
             log.note(f"S8 {target} D+{h}: 05e {np.mean(scores['05e']):.3f} vs full "
                      f"{np.mean(scores['full pool']):.3f} (margin {margin:.3f})")
     return pd.DataFrame(rows)
@@ -438,8 +440,45 @@ def run() -> dict:
     return {"results": results, "k": k_decision}
 
 
+def validation_only() -> None:
+    """Recompute S8 from the saved 05e sets (the pools are rebuilt from the same allow-list),
+    rewrite validation_check.csv and the validation flags of the manifest. Deterministic: the
+    same seeds and rows as in `run`."""
+    with RunLog("07_feature_selection", "python -m solarpv.selection.run --validation-only",
+                out_dir=OUT) as log:
+        k_admitted = bool(yaml.safe_load(DECISION_FILE.read_text(encoding="utf-8"))["admitted"])
+        results = []
+        for target in C.TARGETS:
+            for h in HORIZONS:
+                t = C.train_table(h)
+                extra = ()
+                if target == "indirect" and k_admitted:
+                    t = t.join(C.k_history(t, h))
+                    extra = tuple(c for c in t.columns if c.startswith(C.K_PREFIX))
+                e = json.loads((OUT / f"final_features_{target}_D{h}.json").read_text(
+                    encoding="utf-8"))
+                results.append({"target": target, "horizon": h, "pool": C.pool(t, h, extra),
+                                "chosen": e["recommended"]["features"]})
+        with log.step("S8 validation (recomputed)"):
+            val = validation_check(results, k_admitted, log)
+        path = OUT / "validation_check.csv"
+        val.to_csv(path, index=False, lineterminator="\n")
+        manifest_path = OUT / "selection_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["validation_red_flags"] = {f"{t}_D{h}": bool(g["red_flag"].any())
+                                            for (t, h), g in val.groupby(["target", "horizon"])}
+        manifest["validation_run_log"] = str(log.path.relative_to(OUT.parent.parent)).replace(
+            "\\", "/")
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8",
+                                 newline="\n")
+        log.outputs([path, manifest_path])
+
+
 def main() -> int:
-    run()
+    if "--validation-only" in sys.argv[1:]:
+        validation_only()
+    else:
+        run()
     return 0
 
 

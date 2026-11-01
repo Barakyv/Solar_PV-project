@@ -80,5 +80,12 @@ def test_validation_comparison_and_availability_file():
         pytest.skip("run: python -m solarpv.selection.run")
     v = pd.read_csv(val)
     assert set(v["features"]) == {"05e", "full pool"} and len(v) == 12
+    m = _json("selection_manifest.json")
+    for (t, h), g in v.groupby(["target", "horizon"]):
+        score = g.set_index("features")["nrmse_kw_mean"]
+        gap = float(g["05e_minus_full_pp"].iloc[0])
+        assert abs(gap - (score["05e"] - score["full pool"])) < 1e-9  # sign (R7-02)
+        assert g["red_flag"].iloc[0] == (gap > g["margin_pp"].iloc[0])
+        assert m["validation_red_flags"][f"{t}_D{h}"] == bool(g["red_flag"].iloc[0])
     a = pd.read_csv(avail)
     assert set(a["availability"]) <= {"FORECAST_SAFE", "HORIZON_DEPENDENT", "PIPELINE_DEPENDENT"}
