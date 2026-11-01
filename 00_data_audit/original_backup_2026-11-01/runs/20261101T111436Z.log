@@ -1,0 +1,24 @@
+[     0.0s] RUN     stage audit
+[     0.0s] RUN     command: python 00_data_audit/original_backup_2026-11-01/weather_source.py
+[     0.1s] RUN     git commit: ea511c6+dirty
+[     0.1s] RUN     started (UTC): 2026-11-01T11:14:36+00:00
+[     3.0s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     3.0s] INPUT   old files/solar_ds_capstone/04_feature_engineering/.cache/http_cache.sqlite sha256=7f0c33e71c43d894
+[     3.0s] INPUT   data/external/original_backup_recovered/bb194fca9d7e.sqlite sha256=90bab1d11c7d16f4
+[     3.0s] INPUT   old files/solar_ds_capstone/04_feature_engineering/data/raw/ketura_gfs_forecast.parquet sha256=e45bc240bc380e8a
+[     3.0s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     3.0s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     3.0s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     3.0s] STEP    request ...
+[     3.0s] NOTE    http_cache.sqlite: https://archive-api.open-meteo.com/v1/archive {'end_date': '2025-05-31', 'format': 'flatbuffers', 'models': 'gfs_seamless', 'start_date': '2021-09-01', 'timezone': 'UTC'}
+[     3.0s] NOTE    bb194fca9d7e.sqlite: https://archive-api.open-meteo.com/v1/archive {'end_date': '2025-05-31', 'format': 'flatbuffers', 'models': 'gfs_seamless', 'start_date': '2021-09-01', 'timezone': 'UTC'}
+[     3.0s] STEP    request done in 0.0s
+[     3.0s] STEP    file ...
+[     3.2s] STEP    file done in 0.1s
+[     3.2s] STEP    skill on train and validation ...
+[     3.3s] NOTE    best shift -1 h; daily r train+val: original 0.822, GFS D+1 0.806; hourly r at the original joins: [0.301, 0.268]
+[     3.3s] STEP    skill on train and validation done in 0.1s
+[     3.3s] OUTPUT  00_data_audit/original_backup_2026-11-01/weather_source.json sha256=229d32438e00b8fa
+[     3.3s] OUTPUT  00_data_audit/original_backup_2026-11-01/weather_lag_scan.csv sha256=0fa7b265dd1c2ad2
+[     3.3s] RUN     warnings: 0
+[     3.3s] RUN     status: ok; duration 3.3s

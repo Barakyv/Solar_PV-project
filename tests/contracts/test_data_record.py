@@ -70,7 +70,7 @@ def test_every_cleaning_rule_is_described(record):
 def test_operation_ids_are_complete_and_unique(record):
     defined = re.findall(r"(?:\*\*|\| )OP-(\d{2})\b(?= —|\s\|)", record)
     numbers = [int(n) for n in defined]
-    assert len(numbers) >= 44, "OP pattern found too few entries"  # 44 documented on 2026-10-25
+    assert len(numbers) >= 45, "OP pattern found too few entries"  # 45 documented on 2026-11-01
     assert numbers == list(range(1, len(numbers) + 1)), numbers
     for ref in set(re.findall(r"OP-(\d{2})", record)):
         assert int(ref) <= len(numbers), f"OP-{ref} referenced but not defined"

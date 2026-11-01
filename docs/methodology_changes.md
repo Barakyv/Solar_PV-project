@@ -145,7 +145,7 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | As submitted | Now | Kind | Why / evidence |
 |---|---|---|---|
-| NWP from the Open-Meteo archive merged at the target hour; found to be leakage and removed; the final models have no weather forecast | GFS forecast runs from the NOAA archive (1°), only runs whose every file was public before issuance (T-17, actual upload times); own leads per horizon. **Admitted (D-12, 2026-10-25):** with the fixed XGBoost of D-11, validation nRMSE in kW falls by 0.9–1.7 pp at every horizon and for both targets | Decision (done, stage 6b) | **This is the report's first Future Work item**: "Replace same-timestamp reanalysis proxies with genuine T−24h NWP forecasts (e.g., ECMWF, GFS)". It also tests the report's own hypothesis in §13.1, that real NWP would widen the gap between feature-rich models and PatchTST. It is the same NWP model family as before (GFS), now taken at the right time |
+| NWP from the Open-Meteo archive merged at the target hour; found to be leakage and removed; the final models have no weather forecast. (The backup shows the request: the archive endpoint with `gfs_seamless`, one series valued at the target hour, joined 2–3 h off the clock; F-28) | GFS forecast runs from the NOAA archive (1°), only runs whose every file was public before issuance (T-17, actual upload times); own leads per horizon. **Admitted (D-12, 2026-10-25):** with the fixed XGBoost of D-11, validation nRMSE in kW falls by 0.9–1.7 pp at every horizon and for both targets | Decision (done, stage 6b) | **This is the report's first Future Work item**: "Replace same-timestamp reanalysis proxies with genuine T−24h NWP forecasts (e.g., ECMWF, GFS)". It also tests the report's own hypothesis in §13.1, that real NWP would widen the gap between feature-rich models and PatchTST. It is the same NWP model family as before (GFS), now taken at the right time |
 
 ### 2.8 Feature selection (§3.6)
 
@@ -153,6 +153,7 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 |---|---|---|---|
 | The 05e consensus sets are "the official modelling inputs" | The 05e sets, regenerated, are the XGB-Opt input per target × horizon, as the report describes. The full contract is compared once on validation, in an appendix | Completion (D-13, 2026-10-25) | The original XGB was in fact trained on all 76 non-excluded columns: the SHAP file has 76 rows (F-05), and the ablation script uses a blocklist (C-31). The errata states this |
 | 05e JSONs contain the leaky NWP columns, excluded at training time | Regenerated on the corrected data, with GFS candidates and without leaky columns | Correction | C-09 |
+| The base selection (before 05c/05e) read the whole table, validation and test included; the direct one kept the per-inverter DC power of the same hour | Selection on train only, from an allow-list; same steps and thresholds as the January 2026 base notebooks that fed the submission | Correction | F-26, F-27; evidence from the backup (`00_data_audit/original_backup_2026-11-01/`) |
 
 ## 3. Report text that is factually wrong and must be corrected in v7
 

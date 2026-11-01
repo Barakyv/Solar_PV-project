@@ -482,3 +482,38 @@ hashes, numbers) and the commit messages are the record:
 
 - The full suite passes: 317 tests, including T-17 row by row on the real tables and T-44.
 - OP-42–OP-44 and N13 are recorded; PROJECT_MASTER v3.0.
+
+## Audit: the original backup
+
+### 2026-11-01 · RA-01 · Inventory of the backup
+
+- **Purpose:** the user placed an older backup of the original project (about January 2026) in
+  `old files/solar_ds_capstone/` and asked for a thorough review: a step on the way, not the
+  final project.
+- **Command:** `python 00_data_audit/original_backup_2026-11-01/inventory.py`, log in
+  `00_data_audit/original_backup_2026-11-01/runs/`.
+- **Results:** 508 files in the working copy; a partial `.git` (no HEAD, config or root tree)
+  with 483 loose blobs, 400 of which match no working-copy file and were recovered with zlib
+  only. None of the final model code (xgb_sota, lstm_sota, TFT, PatchTST) or of 05c/05e/05f.
+- **Intermediate notes:** the first classification put the notebooks by words found anywhere in
+  their code (a feature notebook that loads a model file looked like modelling); it now uses the
+  title first and the code only as a fallback.
+
+### 2026-11-01 · RA-02 · Feature-selection evidence
+
+- **Command:** `python 00_data_audit/original_backup_2026-11-01/selection_evidence.py`.
+- **Results:** the January base notebooks end with the 42 starting features of the submitted D+1
+  05e files (both targets); D+2 and D+3 start from the same list without the unavailable lags.
+  No split or date filter (F-26). The direct one did not forbid per-inverter DC: 95 % of the SHAP
+  importance (F-27). Parameters: MI 0.02, a core of 12, RFE one feature per step to 42.
+
+### 2026-11-01 · RA-03 · The original weather source
+
+- **Command:** `python 00_data_audit/original_backup_2026-11-01/weather_source.py` (train and
+  validation only).
+- **Results:** the archive endpoint with `gfs_seamless`, one request for the whole period (F-28).
+  Best alignment at a one-hour shift (hourly r 0.631); 0.301 / 0.268 at the original 2–3 h join.
+  Daily r 0.822, against 0.806 for the real D+1 GFS run.
+- **Self-review:** the direction of the original offset was derived from F-01 (local labels
+  treated as UTC) and the hour-end label of the API; whichever direction, every shift other than
+  the best one keeps less than half of the hourly correlation.

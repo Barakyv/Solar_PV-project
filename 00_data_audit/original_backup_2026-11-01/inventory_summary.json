@@ -1,0 +1,246 @@
+{
+  "backup": "old files/solar_ds_capstone",
+  "status": "an older backup (about January 2026), a step on the way to the v6 submission; never treated as the final pipeline",
+  "git": {
+    "objects_by_kind": {
+      "blob": 483,
+      "tree": 2,
+      "commit": 1
+    },
+    "commits_in_reflog": [
+      {
+        "date_utc": "2025-10-17",
+        "message": "commit (initial): test"
+      },
+      {
+        "date_utc": "2025-10-17",
+        "message": "commit: test"
+      },
+      {
+        "date_utc": "2026-01-20",
+        "message": "commit: Initial commit"
+      },
+      {
+        "date_utc": "2026-01-20",
+        "message": "commit: Initial commit"
+      }
+    ],
+    "missing": "HEAD, config, index, the root tree"
+  },
+  "files": {
+    "working copy": 508,
+    "git history only": 400
+  },
+  "bytes": {
+    "git history only": 1347886366,
+    "working copy": 1003879116
+  },
+  "by_group": {
+    "EDA, ingest, preprocessing: superseded by stages 2-5": 578,
+    "figures": 171,
+    "modelling: intermediate": 56,
+    "feature engineering: intermediate": 39,
+    "raw export copies (same raw data as `Raw data/`)": 21,
+    "configuration, IDE and other": 17,
+    "feature selection: base stage that fed the submitted 05e": 13,
+    "data tables: intermediate": 9,
+    "weather source of the original NWP": 3,
+    "feature selection: earlier version (Dec 2025)": 1
+  },
+  "notebooks": [
+    {
+      "location": "git history only",
+      "item": "29921b07d713",
+      "title": "00 — Readiness Validator",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "git history only",
+      "item": "c65610e99954",
+      "title": "01 — Data Ingest & Cleaning (Per-Site, **Master Academic Edition**)",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "git history only",
+      "item": "cda53cf53835",
+      "title": "01_data_ingest — Ktora (UTC)",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "git history only",
+      "item": "d02a090050f0",
+      "title": "02\\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "git history only",
+      "item": "ef592aa5af89",
+      "title": "01 - Data Ingestion (Sites & Inverters)",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "01_data_ingest/old/01_data_ingest.ipynb",
+      "title": "01 — Data Ingest & Cleaning (Per-Site, Academic Version)",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "02_eda/EDA_1H/EDA Claude.ipynb",
+      "title": "Exploratory Data Analysis (EDA) - Ktora Solar Power Station",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "02_eda/EDA_1min/02_EDA_MultiResolution.ipynb",
+      "title": "x# 02\\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "02_eda/old/02_EDA_MultiResolution_2025-09-19_214713Z.ipynb",
+      "title": "02\\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "02_eda/old/02_eda.ipynb",
+      "title": "02 — Exploratory Data Analysis (Solar PV)",
+      "group": "EDA, ingest, preprocessing: superseded by stages 2-5"
+    },
+    {
+      "location": "working copy",
+      "item": "00_config/00_environment.ipynb",
+      "title": "00 - Environment & Project Charter",
+      "group": "configuration, IDE and other"
+    },
+    {
+      "location": "git history only",
+      "item": "85523353a8a9",
+      "title": "02 – Missing Feature Builder (Day‑Ahead PV, Ketura Site)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "c4d7766be200",
+      "title": "03 — Scalable Feature Engineering Pipeline (PV Power, D+1..D+3)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "c7c68df3c11d",
+      "title": "03 — Scalable Feature Engineering Pipeline (Rebuild)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "04_feature_engineering/04_feature_engineering_v2.ipynb",
+      "title": "Feature Engineering for Solar Power Forecasting - Version 2",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "04_feature_engineering/04_feature_engineering_v3.ipynb",
+      "title": "Feature Engineering for Solar Power Forecasting - Version 2",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "04_feature_engineering/04_feature_engineering_v5_multihorizon.ipynb",
+      "title": "Feature Engineering for Solar Power Forecasting — Multi-Horizon (D+1 to D+5)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "04_feature_engineering/old/03_feature_pipeline_scalable_merged.ipynb",
+      "title": "03 — Scalable Feature Engineering Pipeline (PV Power, D+1..D+3)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "04_feature_engineering/old/04_feature_engineering_old/04_feature_engineering.ipynb",
+      "title": "04 — Feature Engineering (Scalable, With Toggles & POC Export)",
+      "group": "feature engineering: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "17d0183ad2b9",
+      "title": "Feature Selection - Indirect Approach (Clear Sky Index Prediction)",
+      "group": "feature selection: base stage that fed the submitted 05e"
+    },
+    {
+      "location": "working copy",
+      "item": "05_feature_selection/old/05b_feature_selection_direct.ipynb",
+      "title": "Feature Selection - Direct Approach (Power Output Prediction (kW))",
+      "group": "feature selection: base stage that fed the submitted 05e"
+    },
+    {
+      "location": "git history only",
+      "item": "0756fbeea89a",
+      "title": "Feature Selection and Optimization - Hybrid Multi-Stage Approach",
+      "group": "feature selection: earlier version (Dec 2025)"
+    },
+    {
+      "location": "git history only",
+      "item": "281674aae1a9",
+      "title": "06 - XGBoost Modeling: Direct vs. Indirect Forecasting",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "32b41f1506d3",
+      "title": "06 - Modeling (Benchmark)",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "7bdc4f716f9d",
+      "title": "Cell 0: Imports & Environment Configuration",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "8dcb2f14ad26",
+      "title": "Check if model was saved by checkpoint",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "8f305940758e",
+      "title": "Cell 0: Imports & Environment Setup",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "ccd4e3a3fb2f",
+      "title": "Cell 0: Imports & Environment Configuration",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "f1e4b4e0a32b",
+      "title": "LSTM-Based Photovoltaic Power Forecasting: A Comparative Analysis...",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "git history only",
+      "item": "fa3e8a931f73",
+      "title": "Section 1: Configuration - Direct vs Indirect Forecasting",
+      "group": "modelling: intermediate"
+    },
+    {
+      "location": "working copy",
+      "item": "06_modeling/_06_model_experiments/New/06_xgboost_modeling_v2.ipynb",
+      "title": "06 - XGBoost Modeling: Direct vs. Indirect Forecasting",
+      "group": "modelling: intermediate"
+    }
+  ],
+  "notebooks_searched": 32,
+  "final_code_present": {
+    "xgb_sota.py": false,
+    "lstm_sota.py (PyTorch encoder-decoder)": false,
+    "TFT (pytorch-forecasting)": false,
+    "PatchTST": false,
+    "05c / 05e / 05f selection code": false
+  }
+}

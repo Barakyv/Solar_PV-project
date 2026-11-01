@@ -1,0 +1,26 @@
+[     0.0s] RUN     stage audit
+[     0.0s] RUN     command: python 00_data_audit/original_backup_2026-11-01/inventory.py
+[     0.1s] RUN     git commit: ea511c6+dirty
+[     0.1s] RUN     started (UTC): 2026-11-01T11:14:15+00:00
+[     3.0s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     3.0s] STEP    working copy ...
+[     5.4s] NOTE    508 files in the working copy
+[     5.4s] STEP    working copy done in 2.4s
+[     5.4s] STEP    git history ...
+[    13.6s] NOTE    loose objects {'blob': 483, 'tree': 2, 'commit': 1}; 400 blobs match no working-copy file
+[    13.7s] STEP    git history done in 8.2s
+[    13.7s] NOTE     578  EDA, ingest, preprocessing: superseded by stages 2-5
+[    13.7s] NOTE     171  figures
+[    13.7s] NOTE      56  modelling: intermediate
+[    13.7s] NOTE      39  feature engineering: intermediate
+[    13.7s] NOTE      21  raw export copies (same raw data as `Raw data/`)
+[    13.7s] NOTE      17  configuration, IDE and other
+[    13.7s] NOTE      13  feature selection: base stage that fed the submitted 05e
+[    13.7s] NOTE       9  data tables: intermediate
+[    13.7s] NOTE       3  weather source of the original NWP
+[    13.7s] NOTE       1  feature selection: earlier version (Dec 2025)
+[    13.7s] NOTE    final v6 code found: {'xgb_sota.py': False, 'lstm_sota.py (PyTorch encoder-decoder)': False, 'TFT (pytorch-forecasting)': False, 'PatchTST': False, '05c / 05e / 05f selection code': False}
+[    13.7s] OUTPUT  00_data_audit/original_backup_2026-11-01/inventory.csv sha256=834103db6a64a136
+[    13.7s] OUTPUT  00_data_audit/original_backup_2026-11-01/inventory_summary.json sha256=0055c9cfd210601f
+[    13.7s] RUN     warnings: 0
+[    13.7s] RUN     status: ok; duration 13.7s

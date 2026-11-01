@@ -1,0 +1,909 @@
+location,item,kind,size_bytes,title,group,used_in_audit
+git history only,0078bcbb8c4f,text,8951,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,00cbad6c7c96,text,21521864,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,04778c8b4a67,text,20761,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0651397e96d2,text,5311,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0742551e0a48,text,2056,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,08e7367c483b,text,386,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0937fed9fb9d,text,2569,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,095915cf008f,text,5615,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0a2dd3f92636,text,533,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0a69cb9d2507,text,198,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0e71eadd45cf,text,20761,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0f87be876792,text,3258999,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,1069d3bb37a7,text,9095,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,13a2274a4e09,text,2364,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,15367612ab76,text,1095,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,168fc1e8949c,text,22998,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,1c24a00c2ace,text,255,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,1d4e562b641b,text,356,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,1de81dfa6890,text,132778,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2062fa388293,text,142,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,20be084800d4,text,15053,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,21935572d016,text,194,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,22245ba92323,text,1449,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2440cba6b9f5,text,9460,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,253fe9e634c3,text,9384,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,25955ff2f289,text,2156,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,25bda467102e,text,201,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,26b8096ef8f6,text,286,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,28b0235f473c,text,269,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,291e2e850cbf,text,193,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,29921b07d713,notebook,4840,00 — Readiness Validator,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2b625e7f01a8,text,614,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2c2991d2bcaa,text,85747,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2d4843c714ab,text,193,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,2e6a58674915,text,4976125,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,32709d0ac00c,text,9100,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,33fe159a9070,text,464,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,3506c42d355a,text,3485,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,37b293460728,text,333,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,37ce3f8f6ba4,text,17506,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,3abdaaf1ece0,text,1295832,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,3e5071e01e82,text,1928,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,3e5091c3aaa7,text,100,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,3f0106c3c348,text,8290,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,41d1a7cf7ae9,text,286,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,44d69cdddde4,text,2080,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,47e9013527ba,text,169,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,493d70989127,text,1307,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,4ab3d39d7c6a,text,583,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,4b21ba7927a1,text,1827,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,4d3b0e72c4c1,text,8915,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,4e973f438264,text,3243,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,4f9592be2de4,text,4280,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,555457df09d0,text,6630,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,5588239d88e6,text,864,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,562ae46e93c3,text,1348,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,56a39b6bac88,text,2054,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,5c939319d6fb,text,228,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,5f41661043a4,text,149,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,608b9569f33b,text,9115,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,610d85625694,text,3367,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,644a582948b5,text,15029,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,65b61496dec6,text,221,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,6832312d9d00,text,9871,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,694a0685e59e,text,5146,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,69a76d9a1d3c,text,8840,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,6aa249fef76d,text,3915,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,6d2876538607,text,2533,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7625e6a222c9,text,988,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,77113a53f82c,text,3469,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,78426748c212,text,196,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7978af416259,text,98,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,797ced7d2184,text,9111,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7b9025461bae,text,2174,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7bfa2f70a1c6,text,2659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7c3a1a32a0be,text,85,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7cd021792775,text,3017,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7ea3f11b83b9,text,60721995,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7f0f8b403b50,text,84,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7f17ff92b41a,text,1621,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,7f711a11c7ac,text,8874,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,804d7bfc43bf,text,10556,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,82344321bc57,text,195,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,871287bffd69,text,2171,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,881e17cf19c6,text,6514,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,8b1ddf6e2529,text,7372986,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,8bae5133be87,text,10819,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,913429cff388,text,333,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,943e1729e576,text,726,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,97e7c7557fbf,text,8851,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,9b27046ec1f0,text,4023,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,9b44caa4eecc,text,1804,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,9d357a1e159b,text,8893,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,9e3fd1b0a62f,text,6645,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,a0c0495f6997,text,9343,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,a132cdc0b137,text,1355,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,a1f7983d24e0,text,7928,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,a6218fed0aeb,text,278,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,a9ca17151197,text,385,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ac5d4e98773d,text,633,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ae3aeddd175e,text,2659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,aefc01cd3853,text,2560,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,b1cf3e2121e5,text,3533,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,b7c286b56b54,text,1096,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,b9b5cbaa262d,text,170,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,bb7717c3f13c,text,683,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,beefac764258,text,737,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,bf7f2c897a5d,text,5065,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c0e8b91379f6,text,2659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c3567477d9c5,text,2465,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c3608b090332,text,2569,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c3d01df6704a,text,9116,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c429f8b0c766,text,12697,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c65610e99954,notebook,60180,"01 — Data Ingest & Cleaning (Per-Site, **Master Academic Edition**)","EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c6ccdfa3353b,text,1287,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,c7cc6f85b6a4,text,215,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,cbc8221c1b59,text,1025,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,cbdace62b0c2,text,1703,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,cda53cf53835,notebook,29766,01_data_ingest — Ktora (UTC),"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d02a090050f0,notebook,146039,02\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d2787f6c8c4a,text,3349,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d2af7db4a881,text,5089,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d4ea7dd93e1e,text,106,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d960ae960a66,text,188,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,d9b350680313,text,8865,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,da73de29d093,text,745,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,dbe41f33873a,text,680,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,dbec29e6c325,text,2189,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,dcfe8ab52795,text,15005,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e16c76dff888,text,3,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e1717d823fb7,text,5109631,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e19f6f5caee3,text,10204,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e1a7600510e6,text,180,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e1fd1d6c486f,text,883,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e462b0e61f7a,text,514,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e46665c604a3,text,3611,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e79f5e458057,text,3592,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e8aff8810abd,text,1131,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,e9fc622163af,text,3503,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,eb5ece5a2d8e,text,2166,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ebbbcab4abd8,text,3714,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ec0302f083bc,text,1926,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ed9ac25a846c,text,8769,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,ef592aa5af89,notebook,2735,01 - Data Ingestion (Sites & Inverters),"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f06135ab1484,text,1604,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f189d7813e9b,text,49,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f1cfa3faa4e8,text,3243,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f3a6222f929f,text,716,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f497fa7f64d0,text,746,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f6086220f175,text,225,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,f8d6e8b51783,text,38268749,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.gitignore,text,46,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.idea/misc.xml,text,401,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.idea/modules.xml,text,293,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.idea/solar_ds_capstone.iml,text,323,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.idea/vcs.xml,text,185,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,.idea/workspace.xml,text,193170,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,00_config/project_config.yaml,text,882,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,01_data_ingest/old/01_data_ingest.ipynb,notebook,41323,"01 — Data Ingest & Cleaning (Per-Site, Academic Version)","EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/EDA_1H/EDA Claude.ipynb,notebook,3957489,Exploratory Data Analysis (EDA) - Ktora Solar Power Station,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/EDA_1min/02_EDA_MultiResolution.ipynb,notebook,6051082,x# 02\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/old/02_EDA_MultiResolution_2025-09-19_214713Z.ipynb,notebook,4451768,02\_EDA — Multi-Resolution Exploratory Data Analysis for Solar PV Plant,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/old/02_eda.ipynb,notebook,53783,02 — Exploratory Data Analysis (Solar PV),"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/diag9/plots/pf_hist_active.png,png,19029,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/cross_features/scatter_matrix.png,png,270248,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/diag9/iec_candidates.csv,text,100,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/diag9/irr_bins_reference.csv,text,1069,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/diag9/plots/pf_hist_raw.png,png,22781,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/energy_balance/pf_anomalies.csv,text,115,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/energy_balance/plots/heatmap_curtail_rate_hour_by_month.png,png,33554,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/energy_balance/plots/scatter_residual_vs_irr.png,png,80085,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/energy_balance/residual_stats.csv,text,205,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/outliers/plots/ts_ambient_temp_with_outliers.png,png,46472,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/outliers/plots/ts_wind_speed_with_outliers.png,png,49156,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/outliers/sample_outliers_AC_sum_kW.csv,text,109,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/seasonality/inverter_share_by_hour.csv,text,1031,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/seasonality/inverter_share_by_month.csv,text,527,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/seasonality/monthly_ac_irr.png,png,58125,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T031416Z/seasonality/pr_proxy_monthly.png,png,35086,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/pca_loadings_PC1_daylight.png,png,43551,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/pca_loadings_PC2_daylight.png,png,44616,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/response_ambient_temp_site_daylight.png,png,54857,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/response_irradiance_daylight.png,png,61270,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/response_mod_temp1_highIrr.png,png,55219,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_best_viz/response_wind_speed_highIrr.png,png,48494,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/bar_corr_iec_pearson.png,png,22355,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/heatmap_iec_pearson.png,png,36951,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/heatmap_meteo_spearman.png,png,62114,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/response_ambient_temp_site_vs_AC_sum_kW_highIrr.png,png,44154,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/response_mod_temp1_vs_AC_sum_kW_highIrr.png,png,49386,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/response_soiling01_vs_AC_sum_kW_highIrr.png,png,34316,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cell7_cross_features_v3/response_wind_speed_vs_AC_sum_kW_daylight.png,png,41517,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_target/correlation_vs_target_daylight.csv,text,428,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/bar_corr_vs_target.csv,text,278,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/heatmap_all_spearman_daylight.png,png,132394,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/hexbin_irr_vs_target_daylight.png,png,93005,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/pca_loadings_PC2_daylight.png,png,57716,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/pca_scatter_hour_daylight.png,png,223690,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/response_ambient_temp_site_vs_AC_sum_kW_daylight.png,png,78402,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/cross_features_v2/response_wind_speed_vs_AC_sum_kW_daylight.png,png,58482,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/perf_proxy/plots/diurnal_heatmap_ac.png,png,47998,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/perf_proxy/plots/pr_proxy_diurnal.png,png,49429,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/perf_proxy/plots/pr_proxy_monthly.png,png,65050,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20250930T085223Z/response/daylight/response_irradiance_vs_AC_sum_kW_daylight.png,png,65494,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T145204Z/plots/heatmap_correlation_numeric.png,png,24095,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T145204Z/response/highIrr/response_soiling02_vs_AC_sum_kW_highIrr.png,png,57185,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T150135Z/perf_proxy_eda/plots/diurnal_heatmap_ac.png,png,48007,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T150135Z/response/daylight/response_ambient_temp_site_vs_AC_sum_kW_daylight.png,png,61543,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T150135Z/response/daylight/response_wind_speed_vs_AC_sum_kW_daylight.png,png,51048,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T150135Z/response/highIrr/response_wind_speed_vs_AC_sum_kW_highIrr.png,png,52455,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/outliers_eda/plots/ts_iec_q_with_outliers.png,png,79988,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/outliers_eda/plots/ts_irradiance_with_outliers.png,png,44460,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/outliers_eda/sample_outliers_iec_w.csv,text,9007,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/plots/bar_uptime_share.png,png,16972,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/reports/profile.json,json,178,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T152847Z/response/daylight/response_soiling02_vs_AC_sum_kW_daylight.png,png,71416,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T161206Z/diag9/nameplate_hint.csv,text,186,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T161206Z/energy_balance/curtailment_summary.csv,text,45,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T161206Z/energy_balance/plots/ts_pf_anomalies_active.png,png,62285,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T161206Z/meta.json,json,503,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T161206Z/outliers/daylight/sample_outliers_AC_sum_kW.csv,text,2732,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/energy_balance/clip_rate_hour_by_month.csv,text,1829,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/energy_balance/clipping_summary.csv,text,191,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/perf_proxy_eda/plots/diurnal_heatmap_ac.png,png,76125,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/perf_proxy_eda/plots/pr_proxy_diurnal.png,png,76864,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/perf_proxy_eda/plots/pr_proxy_monthly.png,png,66638,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162643Z/plots/ts_inverters_overlay.png,png,33890,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/corr_matrix_IEC_spearman_daylight.csv,text,744,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/crosscorr_irr_leads_target_daylight.png,png,38573,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/crosscorr_irr_leads_target_daylight_days.csv,text,224,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/heatmap_METEO_PERF_spearman_daylight.png,png,102590,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/response_ambient_temp_vs_AC_sum_kW_daylight.png,png,80000,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/response_ambient_temp_vs_AC_sum_kW_highIrr.png,png,87718,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/daylight_refined/response_mod_temp1_vs_AC_sum_kW_daylight.png,png,79884,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_corr_vs_target_by_month_ALL_EXCEPT_IEC_ALL_FEATURES_daylight.png,png,230037,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_corr_vs_target_by_month_METEO_PERF_daylight.png,png,182938,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_corr_vs_target_by_month_iec_inv_daylight.csv,text,12743,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_inverter_daylight_pearson.png,png,127933,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_inverter_daylight_spearman.png,png,128167,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/heatmap_meteo_daylight_pearson.png,png,142716,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/cross_features/response_ambient_temp_vs_AC_sum_kW_highIrr.png,png,80976,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/diag9/activity_masks.parquet,parquet,1111825,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/outliers_eda/plots/ts_irradiance_with_outliers.png,png,47373,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/plots/ts_total_ac_tail_14d.png,png,69207,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/tables/inverter_uptime_estimate.csv,text,88,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/outputs/EDA/output/site1/all/15min/20251004T162747Z/tables/monthly_energy_total.csv,text,2226,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_all_15min_inv2_AC_kVar.png,png,39642,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_all_15min_wind_dir.png,png,30619,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_ambient_temp.png,png,34610,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_inv1_PF.png,png,32939,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_inv2_AC_kVar.png,png,35896,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_inv2_DC_kW.png,png,35766,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_inv2_PF.png,png,31467,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_irradiance.png,png,32657,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_pyranometer.png,png,29459,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/hist_day_15min_soiling02.png,png,35929,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_215708Z/figures/seasonal_median_15min.png,png,133793,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_all_15min_ambient_temp_site.png,png,33576,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_all_15min_iec_mode.png,png,32948,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_all_15min_inv2_AC_kW.png,png,36476,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_all_15min_soiling02.png,png,32021,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_iec_mode.png,png,33911,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_iec_v.png,png,35796,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_inv1_AC_kW.png,png,37152,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_inv2_AC_kW.png,png,35877,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_inv2_DC_kW.png,png,32737,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_mod_temp2.png,png,34206,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_pyranometer.png,png,34791,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_soiling01.png,png,34249,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221105Z/figures/hist_day_15min_wind_speed.png,png,36885,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_inv2_AC_kVar.png,png,90665,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_inv2_DC_kW.png,png,88187,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_inv2_PF.png,png,79562,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_irradiance.png,png,82667,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_mod_temp2.png,png,87065,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_pyranometer.png,png,83325,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_soiling01.png,png,85922,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_3subplots_15min_wind_speed.png,png,92720,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_panel_15min_p2.png,png,91442,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/dist_panel_rows4_15min_p1.png,png,676628,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/distributions_overlaid_15min.png,png,139582,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/diurnal_median_15min.png,png,109465,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_ambient_temp.png,png,37012,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_iec_pf.png,png,36558,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_iec_q.png,png,32924,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_iec_w.png,png,30624,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_inv1_PF.png,png,28068,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_pyranometer.png,png,36306,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_all_15min_soiling01.png,png,33562,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_iec_q.png,png,27831,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_iec_w.png,png,31802,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_inv1_DC_kW.png,png,37050,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_inv2_AC_kW.png,png,34084,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_inv2_PF.png,png,33460,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_irradiance.png,png,32720,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_mod_temp2.png,png,34193,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_precipitation.png,png,35120,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_soiling01.png,png,34215,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_221240Z/figures/old/hist_day_15min_wind_dir.png,png,31433,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/csv/anomalies_consolidated_long_15min.csv,text,69010204,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/csv/corr_ALL_15min_rank_inv2_AC_kW.csv,text,2588,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/csv/normalized_AC_15min.csv,text,7504411,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/csv/normalized_AC_diff_15min.csv,text,5241056,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_all_15min_ambient_temp.png,png,37427,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_day_hour_15min_inv2_DC_kW.png,png,47667,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_day_hour_15min_irradiance.png,png,43723,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_day_month_15min_ambient_temp.png,png,36211,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_day_month_15min_mod_temp2.png,png,37036,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/box_day_month_15min_wind_speed.png,png,31962,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/dist_panel_rows5_15min_p1.png,png,878419,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/np_ac_diff_panel_15min.png,png,136846,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/np_total_ph_15min.png,png,129135,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/pearson_all_reduced_15min.png,png,202291,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/pearson_day_reduced_15min.png,png,213643,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/spearman_all_15min.png,png,154900,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250919_225829Z/figures/spearman_day_15min.png,png,155999,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121100Z/csv/basic_stats_15min.csv,text,4528,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121100Z/csv/missingness_15min.csv,text,640,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/csv/corr_ALL_15min_rank_inv1_AC_kW.csv,text,2479,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/csv/corr_DAY_15min_rank_ALL_targets.csv,text,4930,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/csv/corr_numeric_DAY_15min_rank_inv1_AC_kW.csv,text,2394,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/csv/corr_withStates_ALL_15min_rank_ALL_targets.csv,text,4696,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/csv/corr_withStates_DAY_15min_rank_ALL_targets.csv,text,4724,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/corr_mix_pearson_all_15min.png,png,441087,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/corr_num_pearson_all_15min.png,png,440577,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/corr_num_spearman_all_15min.png,png,459675,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/pearson_all_sep_inv1_AC_kW_15min.png,png,367976,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/pearson_day_reduced_15min.png,png,482544,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/spearman_day_reduced_15min.png,png,495025,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250924_121244Z/figures/spearman_day_sep_inv1_AC_kW_15min.png,png,384886,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,02_eda/reports/eda/20250927_005228Z/csv/missingness_15min.csv,text,1598,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,03_preprocessing/data/03_preprocessed/artifacts/qa_reports/qa_03_preprocessing.json,json,869,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,configs/decisions_cleaning.yaml,text,4927,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,configs/project_config.SITES.yaml,text,3566,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/cross_features/crosscorr_irr_leads_target_daylight.csv,text,203,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/cross_features/crosscorr_irr_leads_target_daylight.png,png,44288,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/cross_features/hexbin_irr_vs_target_daylight.png,png,248655,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/meta.json,json,503,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/outliers/daylight/flags_cooccurrence.csv,text,757,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/outliers/daylight/sample_outliers_mod_temp1.csv,text,9094,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/outliers_eda/outliers_summary.csv,text,1400,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/outliers_eda/plots/ts_iec_q_with_outliers.png,png,83920,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/outliers_eda/plots/ts_iec_v_with_outliers.png,png,43985,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/perf_proxy_eda/diurnal_irr_hour_by_month.csv,text,10468,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/perf_proxy_eda/plots/monthly_ac_irr.png,png,66739,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/heatmap_correlation_numeric.png,png,29204,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/hist_ambient_temp.png,png,25749,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/scatter_irradiance_vs_inv1.png,png,62505,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/scatter_irradiance_vs_inv2.png,png,89912,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/scatter_irradiance_vs_total_ac.png,png,67078,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T134247Z/plots/ts_total_ac_full.png,png,30059,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/heatmap_corr_vs_target_by_month_meteo_daylight.png,png,210708,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/heatmap_meteo_daylight_pearson.csv,text,3521,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/heatmap_meteo_daylight_pearson.png,png,129387,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/heatmap_meteo_daylight_spearman.png,png,129713,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/heatmap_quality_flags_by_month_iec_inv_daylight.png,png,260404,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/cross_features/response_ambient_temp_vs_AC_sum_kW_highIrr.png,png,82910,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/outliers/daylight/sample_outliers_ambient_temp.csv,text,2130,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/outliers_eda/outlier_flags.parquet,parquet,21314775,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/perf_proxy_eda/plots/monthly_ac_irr.png,png,64001,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/perf_proxy_eda/pr_proxy_monthly.csv,text,3063,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251007T161746Z/plots/hist_ambient_temp.png,png,24240,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/cross_features/crosscorr_irradiance_leads_AC_sum_kW_daylight_lags0to8_h+1d.png,png,58787,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/cross_features/crosscorr_irradiance_leads_AC_sum_kW_daylight_lags0to8_h+3d.csv,text,208,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/meta.json,json,503,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/outliers/daylight/sample_outliers_iec_q.csv,text,482,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/outliers/daylight/sample_outliers_mod_temp2.csv,text,9071,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/outliers_eda/sample_outliers_AC_sum_kW.csv,text,9119,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/outliers_eda/sample_outliers_iec_q.csv,text,9304,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/outliers_eda/sample_outliers_irradiance.csv,text,8952,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/perf_proxy_eda/plots/diurnal_heatmap_irr.png,png,49345,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/perf_proxy_eda/plots/pr_proxy_diurnal.png,png,49804,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/plots/bar_daily_energy_last30.png,png,38714,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/plots/scatter_irradiance_vs_inv1.png,png,59972,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/plots/scatter_irradiance_vs_total_ac.png,png,65076,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/plots/ts_total_ac_head_14d.png,png,65121,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000146Z/tables/correlation_numeric.csv,text,15057,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/corr_vs_target_by_month_IEC_ALL_FEATURES_daylight.csv,text,3760,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/heatmap_corr_vs_target_by_month_meteo_daylight.csv,text,9687,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/heatmap_iec_daylight_spearman.png,png,70936,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/heatmap_meteo_daylight_spearman.csv,text,3487,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/hexbin_irr_vs_target_daylight.png,png,242071,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_combo_scaling_stats.csv,text,363,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_components_loadings_daylight.csv,text,13546,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_evr_daylight.csv,text,1121,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_scaling_stats_daylight.csv,text,1211,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_scatter_hour_daylight.png,png,380708,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/pca_scree_daylight.png,png,49247,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/cross_features/response_ambient_temp_vs_AC_sum_kW_daylight.png,png,79061,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers/daylight/outliers_summary.csv,text,1318,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers/daylight/sample_outliers_iec_v.csv,text,9099,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/plots/ts_AC_sum_kW_with_outliers.png,png,41981,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/plots/ts_ambient_temp_with_outliers.png,png,44532,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/plots/ts_iec_v_with_outliers.png,png,41590,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/plots/ts_wind_speed_with_outliers.png,png,46668,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/sample_outliers_ambient_temp.csv,text,7237,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/outliers_eda/sample_outliers_wind_speed.csv,text,9031,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/perf_proxy_eda/monthly_ac_irr.csv,text,2217,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/perf_proxy_eda/pr_proxy_hour_by_month.csv,text,9650,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/plots/hist_irradiance.png,png,23661,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/plots/hist_wind_speed.png,png,23115,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/reports/numeric_stats.csv,text,3397,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/tables/daily_energy_total.csv,text,87117,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/tables/inverter_comparison.csv,text,182,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251009T000702Z/tables/weekly_energy_total.csv,text,9581,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/crosscorr_irr_leads_target_daylight.png,png,43560,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/heatmap_iec_daylight_pearson.csv,text,744,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/heatmap_iec_daylight_spearman.csv,text,744,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/heatmap_quality_flags_by_month_iec_inv_daylight.csv,text,3289,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/heatmap_quality_flags_by_month_meteo_daylight.csv,text,2705,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/heatmap_quality_flags_by_month_meteo_daylight.png,png,258367,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_combo_components.csv,text,827,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_combo_evr.csv,text,269,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_combo_loadings_PC1.png,png,46459,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_combo_loadings_PC2.png,png,46560,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_combo_scree.png,png,47667,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_loadings_PC2_daylight.png,png,77278,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/pca_scatter_hour_daylight.png,png,376615,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/response_mod_temp2_vs_AC_sum_kW_daylight.png,png,75196,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/cross_features/response_wind_speed_vs_AC_sum_kW_daylight.png,png,66093,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/df_all.parquet,parquet,21012250,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/meta.json,json,503,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers/daylight/outlier_flags.parquet,parquet,9178553,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers/daylight/sample_outliers_iec_w.csv,text,8045,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers/daylight/sample_outliers_wind_speed.csv,text,9301,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers_eda/flags_cooccurrence.csv,text,5659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers_eda/sample_outliers_iec_v.csv,text,9116,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers_eda/sample_outliers_mod_temp1.csv,text,5489,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/outliers_eda/sample_outliers_mod_temp2.csv,text,5432,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/perf_proxy_eda/diurnal_ac_hour_by_month.csv,text,10868,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/perf_proxy_eda/plots/pr_proxy_monthly.png,png,64840,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/plots/hist_total_ac.png,png,23168,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/plots/scatter_irradiance_vs_inv2.png,png,85699,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/plots/ts_inverters_overlay.png,png,32611,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/plots/ts_total_ac_full.png,png,29844,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/plots/ts_total_ac_tail_14d.png,png,69524,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/preview_head50.csv,text,20812,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/15min/20251014T173711Z/reports/inverter_quick_stats.csv,text,395,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/corr_vs_target_by_month_IEC_ALL_FEATURES_daylight.csv,text,3753,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/crosscorr_irr_leads_target_daylight.png,png,47621,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_corr_vs_target_by_month_iec_inv_daylight.png,png,251195,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_inverter_daylight_pearson.csv,text,2583,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_inverter_daylight_pearson.png,png,127719,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_inverter_daylight_spearman.csv,text,2603,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_inverter_daylight_spearman.png,png,127926,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_meteo_daylight_pearson.png,png,142460,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_missing_rate_by_month_iec_inv_daylight.csv,text,3289,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_missing_rate_by_month_iec_inv_daylight.png,png,287054,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_missing_rate_by_month_meteo_daylight.png,png,290191,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/heatmap_quality_flags_by_month_meteo_daylight.csv,text,2705,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/pca_combo_evr.csv,text,265,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/pca_combo_scatter_hour.png,png,148497,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/pca_combo_scatter_month.png,png,161068,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/pca_combo_scree.png,png,42078,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/cross_features/pca_loadings_PC1_daylight.png,png,70240,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers/daylight/sample_outliers_AC_sum_kW.csv,text,236,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/flags_cooccurrence.csv,text,5659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/plots/ts_ambient_temp_with_outliers.png,png,47080,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/plots/ts_iec_q_with_outliers.png,png,77953,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/plots/ts_irradiance_with_outliers.png,png,42055,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/sample_outliers_ambient_temp.csv,text,2506,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/outliers_eda/sample_outliers_irradiance.csv,text,8840,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/perf_proxy_eda/diurnal_irr_hour_by_month.csv,text,9896,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/perf_proxy_eda/pr_proxy_monthly.csv,text,3067,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/bar_daily_energy_last30.png,png,47203,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/hist_irradiance.png,png,23790,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/hist_total_ac.png,png,23687,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/hist_wind_speed.png,png,20107,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/scatter_irradiance_vs_total_ac.png,png,84746,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/plots/ts_total_ac_head_14d.png,png,64962,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/reports/missing_by_column.csv,text,1013,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/reports/numeric_stats.csv,text,3423,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/tables/correlation_numeric.csv,text,15033,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1h/20251026T071528Z/tables/weekly_energy_total.csv,text,9657,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/columns.txt,text,362,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/heatmap_inverter_daylight_pearson.csv,text,2581,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/heatmap_meteo_daylight_pearson.png,png,142343,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/heatmap_meteo_daylight_spearman.csv,text,3483,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/heatmap_missing_rate_by_month_meteo_daylight.csv,text,2705,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/heatmap_quality_flags_by_month_iec_inv_daylight.csv,text,3289,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/pca_combo_loadings_PC2.png,png,45844,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/pca_combo_scatter_month.png,png,60054,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/pca_combo_scree.png,png,48108,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/response_ambient_temp_vs_AC_sum_kW_daylight.png,png,76659,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/response_mod_temp1_vs_AC_sum_kW_daylight.png,png,76445,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/response_mod_temp1_vs_AC_sum_kW_highIrr.png,png,82954,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/cross_features/response_mod_temp2_vs_AC_sum_kW_daylight.png,png,76471,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers/daylight/flags_cooccurrence.csv,text,777,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers/daylight/outliers_summary.csv,text,1349,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers/daylight/sample_outliers_iec_v.csv,text,9147,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers/daylight/sample_outliers_mod_temp1.csv,text,9052,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers_eda/plots/ts_iec_q_with_outliers.png,png,67278,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers_eda/plots/ts_irradiance_with_outliers.png,png,60678,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers_eda/sample_outliers_iec_q.csv,text,9296,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers_eda/sample_outliers_iec_v.csv,text,9152,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/outliers_eda/sample_outliers_mod_temp1.csv,text,6831,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/perf_proxy_eda/diurnal_ac_hour_by_month.csv,text,11110,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/perf_proxy_eda/plots/diurnal_heatmap_ac.png,png,76705,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/perf_proxy_eda/pr_proxy_hour_by_month.csv,text,10844,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/perf_proxy_eda/pr_proxy_monthly.csv,text,3059,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/bar_uptime_share.png,png,17367,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/hist_ambient_temp.png,png,23224,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/scatter_irradiance_vs_inv1.png,png,102053,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/scatter_irradiance_vs_total_ac.png,png,99187,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/ts_total_ac_full.png,png,26477,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/plots/ts_total_ac_head_14d.png,png,63596,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/preview_head50.csv,text,17557,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/reports/profile.json,json,180,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/reports/time_gaps.csv,text,50,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/output/site1/all/1min/20251026T062617Z/tables/weekly_energy_total.csv,text,9540,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/cleaning_log.csv,text,182,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/efficiency_distribution_comparison.png,png,323949,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/inverter_comparison_summary.csv,text,289,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/missing_data_report.csv,text,609,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/per_inverter_comparison_aug2024_may2025.png,png,2518857,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/power_threshold_optimization.png,png,664083,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/s01_inv2_ac_vs_dc_anomaly_analysis.png,png,942840,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251018T125934Z/state_irradiance_anomaly_heatmap.png,png,582822,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/efficiency_comparison_stats.csv,text,388,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/power_irradiance_scatter_anomalies.png,png,2876919,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/s01_inv1_ac_vs_dc_anomaly_analysis.png,png,944052,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/s01_inv1_clusters.csv,text,14516,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/s01_inv2_ac_vs_dc_anomaly_analysis.png,png,911831,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251023T122729Z/state_irradiance_anomaly_detail.csv,text,4041,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/anomalies_gt105_detailed.csv,text,133822,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/cleaning_log.csv,text,542,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/df_clean_preview.csv,text,41362,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/inverter_summary.csv,text,224,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/irradiance_threshold_analysis.csv,text,1865,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/operational_context_aug2024_may2025.png,png,2986292,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/power_threshold_analysis.csv,text,2096,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/power_threshold_optimization.png,png,644854,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/s01_inv1_ac_vs_dc_anomaly_analysis.png,png,973323,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/state_analysis_aug2024_may2025.csv,text,8573,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T083444Z/state_anomaly_percentages.csv,text,201,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251025T114545Z/metadata.json,json,829,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/additional_cleaning_log.csv,text,173,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/df_clean.parquet,parquet,20964159,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/df_flagged.parquet,parquet,12435037,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/efficiency_analysis_irradiance_filtered.png,png,401211,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/efficiency_comparison_stats.csv,text,389,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/filtering_impact_analysis.png,png,910727,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/filtering_stages_comparison.csv,text,556,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/flagging_log.csv,text,188,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/irradiance_threshold_optimization.png,png,626029,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/numeric_summary_stats.csv,text,1780,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/power_irradiance_scatter_anomalies.png,png,2904368,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/preview_head50.csv,text,20812,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/15min/20251026T062156Z/state_anomaly_counts.csv,text,154,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/anomalies_gt105_detailed.csv,text,83273,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/df_clean_preview.csv,text,41683,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/df_flagged.parquet,parquet,3169814,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/efficiency_analysis_irradiance_filtered.png,png,378822,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/efficiency_anomaly_profiling.png,png,935834,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/irradiance_threshold_analysis.csv,text,1854,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/missing_data_report.csv,text,582,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/numeric_summary_stats.csv,text,1731,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/operational_context_aug2024_may2025.png,png,2917695,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/state_anomaly_distribution.png,png,422519,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1h/20251026T072019Z/state_irradiance_anomaly_detail.csv,text,2615,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/additional_cleaning_log.csv,text,175,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/cleaning_log.csv,text,550,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/df_all.parquet,parquet,218200860,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/metadata.json,json,829,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/numeric_summary_stats.csv,text,1829,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/state_analysis_aug2024_may2025.csv,text,10518,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/state_anomaly_distribution.png,png,572660,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251025T115722Z/state_irradiance_anomaly_heatmap.png,png,716991,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/df_clean.parquet,parquet,218050522,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/df_clean_preview.csv,text,34549,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/df_flagged.parquet,parquet,138975207,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/filtering_impact_analysis.png,png,928720,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/flagging_log.csv,text,192,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/irradiance_threshold_analysis.csv,text,1936,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/s01_inv1_ac_vs_dc_anomaly_analysis.png,png,1093587,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/s01_inv2_ac_vs_dc_anomaly_analysis.png,png,1087315,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,outputs/EDA/site1/1min/20251026T063718Z/state_irradiance_anomaly_detail.csv,text,5527,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+working copy,utils/__init__.py,text,500,,"EDA, ingest, preprocessing: superseded by stages 2-5",False
+git history only,0e2c273ef471,json,274,,"configuration, IDE and other",False
+git history only,4b6aa93cb414,json,496,,"configuration, IDE and other",False
+git history only,53d8d0fab219,json,16,,"configuration, IDE and other",False
+git history only,559b866e4d0d,json,503,,"configuration, IDE and other",False
+git history only,66ff50cc181c,json,1177,,"configuration, IDE and other",False
+git history only,67475a4f79f4,json,503,,"configuration, IDE and other",False
+git history only,7f09feb76892,json,785,,"configuration, IDE and other",False
+git history only,8a4b507a32b3,json,582,,"configuration, IDE and other",False
+git history only,9c61621b88aa,json,173,,"configuration, IDE and other",False
+git history only,9d3934f05471,json,3155,,"configuration, IDE and other",False
+git history only,a1a7cf3d3cc3,json,503,,"configuration, IDE and other",False
+git history only,b0dcde8e4817,json,975,,"configuration, IDE and other",False
+git history only,bdec1c1ea7b3,json,785,,"configuration, IDE and other",False
+git history only,c46efb02cfba,json,503,,"configuration, IDE and other",False
+git history only,e33183788f55,json,16,,"configuration, IDE and other",False
+git history only,f517c3cd7c0c,json,457,,"configuration, IDE and other",False
+working copy,00_config/00_environment.ipynb,notebook,2734,00 - Environment & Project Charter,"configuration, IDE and other",False
+git history only,3b7df6eb45d0,parquet,21011985,,data tables: intermediate,False
+git history only,71f67b83d8d6,parquet,5904444,,data tables: intermediate,False
+git history only,910609c060e2,parquet,22431193,,data tables: intermediate,False
+git history only,9ff338f45a3f,parquet,324912,,data tables: intermediate,False
+git history only,ae04068c073e,parquet,11617817,,data tables: intermediate,False
+git history only,b23c7f540f39,parquet,93664230,,data tables: intermediate,False
+git history only,f17b5d531526,parquet,1060005,,data tables: intermediate,False
+git history only,f6fbbd38f372,parquet,662754560,,data tables: intermediate,False
+git history only,fd1bb2940e4b,parquet,14938124,,data tables: intermediate,False
+git history only,85523353a8a9,notebook,39187,"02 – Missing Feature Builder (Day‑Ahead PV, Ketura Site)",feature engineering: intermediate,False
+git history only,c4d7766be200,notebook,21587,"03 — Scalable Feature Engineering Pipeline (PV Power, D+1..D+3)",feature engineering: intermediate,False
+git history only,c7c68df3c11d,notebook,6975,03 — Scalable Feature Engineering Pipeline (Rebuild),feature engineering: intermediate,False
+working copy,04_feature_engineering/04_feature_engineering_v2.ipynb,notebook,163518,Feature Engineering for Solar Power Forecasting - Version 2,feature engineering: intermediate,False
+working copy,04_feature_engineering/04_feature_engineering_v3.ipynb,notebook,161299,Feature Engineering for Solar Power Forecasting - Version 2,feature engineering: intermediate,False
+working copy,04_feature_engineering/04_feature_engineering_v5_multihorizon.ipynb,notebook,78129,Feature Engineering for Solar Power Forecasting — Multi-Horizon (D+1 to D+5),feature engineering: intermediate,False
+working copy,04_feature_engineering/CHECKLIST.md,text,10900,,feature engineering: intermediate,False
+working copy,04_feature_engineering/CONFIGURATION_TEMPLATE.md,text,11905,,feature engineering: intermediate,False
+working copy,04_feature_engineering/artifacts/04_feature_engineering/effective_config.json,json,1442,,feature engineering: intermediate,False
+working copy,04_feature_engineering/artifacts/04_feature_engineering/top_20_features.json,json,1689,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_feature_engineering/site1_s01_features_1D_AC.csv,text,3260369,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_feature_engineering/site1_s01_features_1D_AC.parquet,parquet,1578694,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_feature_engineering/site1_s01_features_1H_AC.csv,text,60754852,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_feature_engineering/site1_s01_features_4H_AC.csv,text,16386561,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_features_target_k/features_1D_target_k.csv,text,2243497,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/04_features_target_k/features_4H_target_k.csv,text,11082757,,feature engineering: intermediate,False
+working copy,04_feature_engineering/data/processed/artifacts/04_feature_engineering/selection_params.json,json,287,,feature engineering: intermediate,False
+working copy,04_feature_engineering/old/03_feature_pipeline_scalable_merged.ipynb,notebook,51243,"03 — Scalable Feature Engineering Pipeline (PV Power, D+1..D+3)",feature engineering: intermediate,False
+working copy,04_feature_engineering/old/04_feature_engineering_analysis.md,text,18559,,feature engineering: intermediate,False
+working copy,04_feature_engineering/old/04_feature_engineering_old/04_feature_engineering.ipynb,notebook,83974,"04 — Feature Engineering (Scalable, With Toggles & POC Export)",feature engineering: intermediate,False
+working copy,04_feature_engineering/old/config.yaml,text,706,,feature engineering: intermediate,False
+working copy,04_feature_engineering/outputs/04_feature_engineering/plots/feature_importance_top20.png,png,242194,,feature engineering: intermediate,False
+working copy,04_feature_engineering/outputs/features/old/features_15min.csv,text,56263861,,feature engineering: intermediate,False
+working copy,04_feature_engineering/outputs/features/old/features_15min.parquet,parquet,20192090,,feature engineering: intermediate,False
+working copy,04_feature_engineering/outputs/features/old/features_4h.parquet,parquet,1561037,,feature engineering: intermediate,False
+working copy,04_feature_engineering/reports/04_feature_engineering/feature_importance_preliminary.csv,text,2962,,feature engineering: intermediate,False
+working copy,04_feature_engineering/reports/04_feature_engineering/feature_quality_metrics_AC.csv,text,10128,,feature engineering: intermediate,False
+working copy,artifacts/04_feature_engineering/effective_config.04_feature_engineering.json,json,1480,,feature engineering: intermediate,False
+working copy,artifacts/04_feature_engineering/top_50_features.json,json,2981,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/bar_corr_iec_pearson.png,png,23708,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/crosscorr_irr_leads_target_daylags.png,png,29054,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/crosscorr_irr_leads_target_short.png,png,30431,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/heatmap_iec_pearson.png,png,37096,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/pca_scatter_month_daylight.png,png,80903,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/response_ambient_temp_site_vs_AC_sum_kW_highIrr.png,png,48844,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/response_irradiance_vs_AC_sum_kW_daylight.png,png,55170,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/response_mod_temp1_vs_AC_sum_kW_highIrr.png,png,54277,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/cell7_cross_features/response_wind_speed_vs_AC_sum_kW_daylight.png,png,44760,,feature engineering: intermediate,False
+working copy,outputs/04_feature_engineering/reports/feature_importance_preliminary.csv,text,1661,,feature engineering: intermediate,False
+git history only,17d0183ad2b9,notebook,100620,Feature Selection - Indirect Approach (Clear Sky Index Prediction),feature selection: base stage that fed the submitted 05e,True
+working copy,05_feature_selection/old/05b_feature_selection_direct.ipynb,notebook,67317,Feature Selection - Direct Approach (Power Output Prediction (kW)),feature selection: base stage that fed the submitted 05e,True
+working copy,artifacts/05_feature_selection/config.json,json,977,,feature selection: base stage that fed the submitted 05e,False
+working copy,artifacts/05_feature_selection/selected_features_direct.json,json,2023,,feature selection: base stage that fed the submitted 05e,True
+working copy,artifacts/05_feature_selection/stage2_domain_protected_features.json,json,2927,,feature selection: base stage that fed the submitted 05e,False
+working copy,artifacts/05_feature_selection/stage2_features_list.txt,text,1752,,feature selection: base stage that fed the submitted 05e,False
+working copy,artifacts/05_feature_selection/stage2_rfe_selected_features.json,json,1652,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/plots/stage4_shap_summary_indirect.png,png,445274,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/reports/feature_selection_report_indirect.md,text,3606,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/reports/stage1_mi_scores.csv,text,4109,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/reports/stage1_mi_scores_indirect.csv,text,3335,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/reports/stage3_rfe_results_direct.csv,text,3156,,feature selection: base stage that fed the submitted 05e,False
+working copy,outputs/05_feature_selection/reports/stage4_shap_importance_direct.csv,text,1647,,feature selection: base stage that fed the submitted 05e,True
+git history only,0756fbeea89a,notebook,209301,Feature Selection and Optimization - Hybrid Multi-Stage Approach,feature selection: earlier version (Dec 2025),True
+git history only,03ee0f51fed6,png,84493,,figures,False
+git history only,044e8b46d230,png,35237,,figures,False
+git history only,062c58adc260,png,401394,,figures,False
+git history only,0a1027b192c1,png,63977,,figures,False
+git history only,0a5e31676b0d,png,87525,,figures,False
+git history only,0aea77163a09,png,455483,,figures,False
+git history only,0d5d349bfdb7,png,80182,,figures,False
+git history only,0de80000b557,png,256932,,figures,False
+git history only,0e45746fcc79,png,130419,,figures,False
+git history only,112cb3937811,png,86072,,figures,False
+git history only,1284c5094c51,png,77586,,figures,False
+git history only,155438f8a00f,png,149631,,figures,False
+git history only,1950e5f9babf,png,908491,,figures,False
+git history only,1c11120ae041,png,44040,,figures,False
+git history only,1c13e52c00a9,png,77434,,figures,False
+git history only,1cde1204bedd,png,101842,,figures,False
+git history only,1d183b04ccd5,png,27063,,figures,False
+git history only,1d7f8dffa41b,png,196067,,figures,False
+git history only,1e2b04f2e313,png,71236,,figures,False
+git history only,1ec90005010e,png,96072,,figures,False
+git history only,1ed55b8837c7,png,35470,,figures,False
+git history only,1f0d7819c6d2,png,29448,,figures,False
+git history only,1fd3c3cbc660,png,47247,,figures,False
+git history only,21d18afa598c,png,60412,,figures,False
+git history only,2202511f9914,png,64634,,figures,False
+git history only,223acab8ba57,png,69301,,figures,False
+git history only,233fe43e34ce,png,75549,,figures,False
+git history only,25d4fa2ec6bc,png,50987,,figures,False
+git history only,27a29a31e7a8,png,106840,,figures,False
+git history only,29c8bb0405a2,png,49758,,figures,False
+git history only,2fce0ff79aff,png,49770,,figures,False
+git history only,3116dfae0594,png,71614,,figures,False
+git history only,3241a90248c3,png,70469,,figures,False
+git history only,324b2324de83,png,57910,,figures,False
+git history only,32da242f8237,png,998094,,figures,False
+git history only,34e3c37e9520,png,72090,,figures,False
+git history only,35ecb61814ec,png,25186,,figures,False
+git history only,3667e0622f98,png,47562,,figures,False
+git history only,36eed3386aaa,png,202142,,figures,False
+git history only,377186f9fbb9,png,57981,,figures,False
+git history only,37ac49a2bc29,png,39717,,figures,False
+git history only,37bab5f9dd7c,png,46247,,figures,False
+git history only,38a84413bab3,png,267219,,figures,False
+git history only,38e166b29284,png,81612,,figures,False
+git history only,3a174fdd77b7,png,46355,,figures,False
+git history only,3fce281ea515,png,51709,,figures,False
+git history only,409aabb67c6a,png,58083,,figures,False
+git history only,40bc68ec1bf6,png,222312,,figures,False
+git history only,40eef39a7b13,png,19467,,figures,False
+git history only,42b53f4020d3,png,31343,,figures,False
+git history only,43b620a850f9,png,66420,,figures,False
+git history only,4565ac341d39,png,47172,,figures,False
+git history only,457a9aa1cf3d,png,376117,,figures,False
+git history only,45f4253ec8c2,png,17329,,figures,False
+git history only,46d0eb9e92dc,png,46896,,figures,False
+git history only,478d2fb9194c,png,47124,,figures,False
+git history only,48420b62534e,png,84192,,figures,False
+git history only,4bde32c0d8f1,png,3224274,,figures,False
+git history only,4cf508c682ca,png,89924,,figures,False
+git history only,53978325c2cb,png,44204,,figures,False
+git history only,548d897a7b30,png,303253,,figures,False
+git history only,548e7a7c6db7,png,43725,,figures,False
+git history only,5665237f315a,png,50668,,figures,False
+git history only,587ec298782f,png,75565,,figures,False
+git history only,5a0183a4a2ad,png,25921,,figures,False
+git history only,5a1a6038f65d,png,61917,,figures,False
+git history only,5a26b5932833,png,34070,,figures,False
+git history only,5c32ade7b6f7,png,57906,,figures,False
+git history only,5db95ee5016d,png,23925,,figures,False
+git history only,5ebad847ea64,png,48899,,figures,False
+git history only,6056919ae011,png,34105,,figures,False
+git history only,606ab7a14238,png,48122,,figures,False
+git history only,63348b5e01d9,png,62852,,figures,False
+git history only,641f0f749e22,png,70541,,figures,False
+git history only,644c31869d32,png,335781,,figures,False
+git history only,652f6b2c7064,png,75041,,figures,False
+git history only,673417764a65,png,303022,,figures,False
+git history only,6ef1e90a6590,png,46202,,figures,False
+git history only,6f497a08b59f,png,47394,,figures,False
+git history only,709227c719ea,png,66471,,figures,False
+git history only,7472720c6a77,png,63441,,figures,False
+git history only,7ace71b83c72,png,120441,,figures,False
+git history only,7af5b8ab7c10,png,638641,,figures,False
+git history only,7b9472d3d65e,png,78265,,figures,False
+git history only,7c4f1b609b2b,png,214998,,figures,False
+git history only,7d16badce5e6,png,189767,,figures,False
+git history only,7ebef0b5309c,png,85489,,figures,False
+git history only,80d6c2064c25,png,46973,,figures,False
+git history only,822e5fd322be,png,45405,,figures,False
+git history only,839d18a7caef,png,70396,,figures,False
+git history only,83fe57f88b09,png,23443,,figures,False
+git history only,8423f83ec9d2,png,41133,,figures,False
+git history only,845882a6797e,png,313268,,figures,False
+git history only,8638cf203a7d,png,70023,,figures,False
+git history only,888f944890c4,png,372597,,figures,False
+git history only,8cabed9c5e3d,png,122547,,figures,False
+git history only,8cc9012210df,png,77314,,figures,False
+git history only,8cf220b521e9,png,94826,,figures,False
+git history only,8fa6bb20733c,png,39322,,figures,False
+git history only,907928372232,png,100361,,figures,False
+git history only,948dd46e9005,png,56007,,figures,False
+git history only,952abf9840cd,png,42930,,figures,False
+git history only,972e0b5adbd4,png,75786,,figures,False
+git history only,9b46e4425dce,png,94655,,figures,False
+git history only,9d0bd5d153ad,png,19087,,figures,False
+git history only,9ef6840d574f,png,77849,,figures,False
+git history only,9f6a0d0eaf59,png,2995821,,figures,False
+git history only,9fee91ef877e,png,36357,,figures,False
+git history only,a01ffcb5c468,png,36823,,figures,False
+git history only,a0e8041405e6,png,225134,,figures,False
+git history only,a233ca01b5de,png,58652,,figures,False
+git history only,a393c884e058,png,34299,,figures,False
+git history only,a3960ebb9fc3,png,60456,,figures,False
+git history only,a3cf54471948,png,149680,,figures,False
+git history only,a664489c3371,png,26443,,figures,False
+git history only,af0e0006f21d,png,49316,,figures,False
+git history only,b0493933295e,png,68904,,figures,False
+git history only,b52a76c8910e,png,16576,,figures,False
+git history only,b656563d3c01,png,45151,,figures,False
+git history only,b67ce285eb63,png,38279,,figures,False
+git history only,b6f4229c6465,png,34390,,figures,False
+git history only,b8686101ee41,png,252168,,figures,False
+git history only,b8ef60be0c68,png,45263,,figures,False
+git history only,b933ead602b6,png,37105,,figures,False
+git history only,baf8ba9a3ffb,png,35617,,figures,False
+git history only,bb017d805bf2,png,87394,,figures,False
+git history only,bca1ca7b6517,png,65110,,figures,False
+git history only,bd506d15f73e,png,60628,,figures,False
+git history only,bfb1e23e8bf9,png,83791,,figures,False
+git history only,c1533c57cb17,png,78206,,figures,False
+git history only,c1c959becd46,png,76263,,figures,False
+git history only,c4603c95f654,png,36253,,figures,False
+git history only,c57d8039acda,png,56138,,figures,False
+git history only,c63537a917b0,png,45220,,figures,False
+git history only,cab11f9642af,png,54348,,figures,False
+git history only,cc4d078ba267,png,34767,,figures,False
+git history only,cf37af42433c,png,39387,,figures,False
+git history only,d2040a9001e3,png,40651,,figures,False
+git history only,d2fcb4c63daa,png,91084,,figures,False
+git history only,d35679bccd31,png,91865,,figures,False
+git history only,d42e0036c61f,png,189597,,figures,False
+git history only,d669b9ce87cf,png,39124,,figures,False
+git history only,d89126c6686e,png,34155,,figures,False
+git history only,daf68fdbc01d,png,912952,,figures,False
+git history only,dccfb88544af,png,533077,,figures,False
+git history only,dd275d277fbb,png,84049,,figures,False
+git history only,dd389cf8024c,png,87907,,figures,False
+git history only,dd3bb8e3656f,png,31821,,figures,False
+git history only,de3c6ebb2337,png,303388,,figures,False
+git history only,e4fc93cfed8f,png,976995,,figures,False
+git history only,e53c11f468fb,png,86702,,figures,False
+git history only,e7994b127d7d,png,37088,,figures,False
+git history only,e79ad8f729fd,png,83845,,figures,False
+git history only,e9859599488f,png,131025,,figures,False
+git history only,ec76a6b43d81,png,57405,,figures,False
+git history only,ed176501da1a,png,72774,,figures,False
+git history only,f0e17ee13e7a,png,135327,,figures,False
+git history only,f3065d78934b,png,39002,,figures,False
+git history only,f35688063bf1,png,35527,,figures,False
+git history only,f39dafe3bac2,png,31814,,figures,False
+git history only,f441f80a17ca,png,41368,,figures,False
+git history only,f857cdf48b4f,png,62354,,figures,False
+git history only,f8a41b79b0c9,png,66216,,figures,False
+git history only,fae2c69f3a41,png,59530,,figures,False
+git history only,fb1763f789eb,png,75228,,figures,False
+git history only,fb34c5ff4ccc,png,31958,,figures,False
+git history only,fc9baf3e2d48,png,57135,,figures,False
+git history only,fd4fd467b253,png,150817,,figures,False
+git history only,fd5b9b914a5b,png,37067,,figures,False
+git history only,ff4a9cd98f0a,png,81115,,figures,False
+git history only,ff5ccf62f015,png,62365,,figures,False
+git history only,040bc0fbec18,text,96,,modelling: intermediate,False
+git history only,0a5d227bedaa,json,693902,,modelling: intermediate,False
+git history only,0e14db9b333f,zip (keras / torch),3551815,,modelling: intermediate,False
+git history only,0e623e4d3120,json,724403,,modelling: intermediate,False
+git history only,0f887b59c27b,json,6524,,modelling: intermediate,False
+git history only,12b821d78ad6,text,3396,,modelling: intermediate,False
+git history only,183d728dd40d,text,862,,modelling: intermediate,False
+git history only,1c71a851e53a,zip (keras / torch),5580989,,modelling: intermediate,False
+git history only,281674aae1a9,notebook,2263538,06 - XGBoost Modeling: Direct vs. Indirect Forecasting,modelling: intermediate,False
+git history only,28cbd24aaa1e,json,6018,,modelling: intermediate,False
+git history only,32b41f1506d3,notebook,2728,06 - Modeling (Benchmark),modelling: intermediate,False
+git history only,4069040e081c,zip (keras / torch),5575754,,modelling: intermediate,False
+git history only,6a92d587008e,json,1746480,,modelling: intermediate,False
+git history only,76d85d0d1837,json,5022,,modelling: intermediate,False
+git history only,7bdc4f716f9d,notebook,856294,Cell 0: Imports & Environment Configuration,modelling: intermediate,False
+git history only,8175e53ebd04,zip (keras / torch),266305,,modelling: intermediate,False
+git history only,8dcb2f14ad26,notebook,3155,Check if model was saved by checkpoint,modelling: intermediate,False
+git history only,8ed7bcf7c624,json,415,,modelling: intermediate,False
+git history only,8f305940758e,notebook,405681,Cell 0: Imports & Environment Setup,modelling: intermediate,False
+git history only,aa9acd46b32d,zip (keras / torch),4784171,,modelling: intermediate,False
+git history only,b44d03eb465d,json,733,,modelling: intermediate,False
+git history only,bd82e37f0387,binary,623,,modelling: intermediate,False
+git history only,c5fd5235af4e,json,416,,modelling: intermediate,False
+git history only,ccd4e3a3fb2f,notebook,2389069,Cell 0: Imports & Environment Configuration,modelling: intermediate,False
+git history only,f1e4b4e0a32b,notebook,856208,LSTM-Based Photovoltaic Power Forecasting: A Comparative Analysis...,modelling: intermediate,False
+git history only,fa3e8a931f73,notebook,333772,Section 1: Configuration - Direct vs Indirect Forecasting,modelling: intermediate,False
+working copy,06_modeling/_06_model_experiments/New/06_xgboost_modeling_v2.ipynb,notebook,2263867,06 - XGBoost Modeling: Direct vs. Indirect Forecasting,modelling: intermediate,False
+working copy,06_modeling/outputs/04_features_target_k/plots/benchmark_cv_results.png,png,98579,,modelling: intermediate,False
+working copy,models/06_xgboost/checkpoint_06_xgboost/metrics.json,json,17,,modelling: intermediate,False
+working copy,models/07_lstm/best_lstm_model.keras,zip (keras / torch),2027234,,modelling: intermediate,False
+working copy,models/07_lstm/direct/scaler_features.pkl,binary,1623,,modelling: intermediate,False
+working copy,models/07_lstm/direct/scaler_target.pkl,binary,623,,modelling: intermediate,False
+working copy,models/07_lstm/direct/training_history.json,json,6264,,modelling: intermediate,False
+working copy,models/07_lstm/feature_scaler.pkl,binary,7023,,modelling: intermediate,False
+working copy,models/07_lstm/indirect/scaler_target.pkl,binary,667,,modelling: intermediate,False
+working copy,models/07_lstm/target_scaler.pkl,binary,1023,,modelling: intermediate,False
+working copy,models/07_lstm_final/target_scaler_indirect.pkl,binary,719,,modelling: intermediate,False
+working copy,models/07_lstm_sota/best_model_indirect.keras,zip (keras / torch),4784214,,modelling: intermediate,False
+working copy,outputs/06_modeling/final_model_metrics.csv,text,641,,modelling: intermediate,False
+working copy,outputs/06_modeling/models/final_checkpoints/lstm_physics_final.pt,zip (keras / torch),266325,,modelling: intermediate,False
+working copy,outputs/06_modeling/models/final_checkpoints/xgb_physics_q50.json,json,6315881,,modelling: intermediate,True
+working copy,outputs/06_modeling/plots/01_data_distribution.png,png,431486,,modelling: intermediate,False
+working copy,outputs/06_modeling/plots/06_cross_validation_folds.png,png,175336,,modelling: intermediate,False
+working copy,outputs/06_modeling/plots/10_ensemble_cv_stability.png,png,175152,,modelling: intermediate,False
+working copy,outputs/06_modeling/plots/12_seasonal_performance_full.png,png,250985,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/accuracy_report.csv,text,1643,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/comparison_direct_vs_indirect.csv,text,871,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/daily_energy_accuracy.csv,text,647,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/final_report.txt,text,3494,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/metrics_indirect.csv,text,411,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/multi_horizon_results.csv,text,694,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/multi_horizon_results_extended.csv,text,1369,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/seasonal_performance.csv,text,840,,modelling: intermediate,False
+working copy,outputs/06_modeling/reports/seasonal_performance_full.csv,text,874,,modelling: intermediate,False
+working copy,outputs/07_lstm_sota/reports/model_metadata.json,json,1408,,modelling: intermediate,False
+working copy,outputs/07_lstm_sota/reports/sota_results_summary.csv,text,98,,modelling: intermediate,False
+git history only,03b9ec4ba040,text,18447008,,raw export copies (same raw data as `Raw data/`),False
+git history only,056117477d34,text,19218364,,raw export copies (same raw data as `Raw data/`),False
+git history only,072e03857468,text,17610471,,raw export copies (same raw data as `Raw data/`),False
+git history only,18fe31cf6ad2,text,1547,,raw export copies (same raw data as `Raw data/`),False
+git history only,196cf212117f,text,19369167,,raw export copies (same raw data as `Raw data/`),False
+git history only,1cecb314eeb5,text,18867234,,raw export copies (same raw data as `Raw data/`),False
+git history only,213903d9be8a,text,18701396,,raw export copies (same raw data as `Raw data/`),False
+git history only,255982545dd6,text,18010306,,raw export copies (same raw data as `Raw data/`),False
+git history only,545d1d3b615f,text,2078,,raw export copies (same raw data as `Raw data/`),False
+git history only,58b253fc2de9,text,19054002,,raw export copies (same raw data as `Raw data/`),False
+git history only,71cb29b70fde,text,18423861,,raw export copies (same raw data as `Raw data/`),False
+git history only,8fd6b4353cb1,text,1682,,raw export copies (same raw data as `Raw data/`),False
+git history only,a4d8a3973448,text,18965683,,raw export copies (same raw data as `Raw data/`),False
+git history only,a696af58418c,text,16753615,,raw export copies (same raw data as `Raw data/`),False
+git history only,a7aa075c07ae,text,2387,,raw export copies (same raw data as `Raw data/`),False
+git history only,bd0cb816de7d,text,19305902,,raw export copies (same raw data as `Raw data/`),False
+git history only,c5c54cd0889d,text,18506565,,raw export copies (same raw data as `Raw data/`),False
+git history only,d747d0a2108d,text,17351220,,raw export copies (same raw data as `Raw data/`),False
+git history only,e185c59b273a,text,18002591,,raw export copies (same raw data as `Raw data/`),False
+git history only,e90d2509004c,text,19007808,,raw export copies (same raw data as `Raw data/`),False
+git history only,ec4b810e1b43,text,18414765,,raw export copies (same raw data as `Raw data/`),False
+git history only,bb194fca9d7e,sqlite,815104,,weather source of the original NWP,True
+working copy,04_feature_engineering/.cache/http_cache.sqlite,sqlite,815104,,weather source of the original NWP,True
+working copy,04_feature_engineering/data/raw/ketura_gfs_forecast.parquet,parquet,504295,,weather source of the original NWP,True

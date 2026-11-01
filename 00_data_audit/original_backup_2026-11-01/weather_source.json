@@ -1,0 +1,105 @@
+{
+  "requests": {
+    "http_cache.sqlite": [
+      {
+        "coordinates": "present, not written out (private)",
+        "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+        "hourly_variables": [
+          "cloud_cover",
+          "diffuse_radiation",
+          "direct_radiation",
+          "shortwave_radiation",
+          "temperature_2m",
+          "wind_speed_10m"
+        ],
+        "parameters": {
+          "end_date": "2025-05-31",
+          "format": "flatbuffers",
+          "models": "gfs_seamless",
+          "start_date": "2021-09-01",
+          "timezone": "UTC"
+        }
+      }
+    ],
+    "bb194fca9d7e.sqlite": [
+      {
+        "coordinates": "present, not written out (private)",
+        "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+        "hourly_variables": [
+          "cloud_cover",
+          "diffuse_radiation",
+          "direct_radiation",
+          "shortwave_radiation",
+          "temperature_2m",
+          "wind_speed_10m"
+        ],
+        "parameters": {
+          "end_date": "2025-05-31",
+          "format": "flatbuffers",
+          "models": "gfs_seamless",
+          "start_date": "2021-09-01",
+          "timezone": "UTC"
+        }
+      }
+    ]
+  },
+  "file": {
+    "rows": 32856,
+    "start_utc": "2021-09-01 00:00:00+00:00",
+    "end_utc": "2025-05-31 23:00:00+00:00",
+    "columns": [
+      "fcst_temp_2m",
+      "fcst_cloud_cover",
+      "fcst_wind_speed",
+      "fcst_ghi",
+      "fcst_dni",
+      "fcst_dhi"
+    ],
+    "series": "one hourly series for the whole period, no issue time"
+  },
+  "skill": {
+    "hours": 11659,
+    "best_shift_h": -1,
+    "hourly_r_by_shift": {
+      "-3": 0.268,
+      "-2": 0.301,
+      "-1": 0.631,
+      "0": 0.073,
+      "1": 0.039,
+      "2": 0.044,
+      "3": 0.054
+    },
+    "hourly_r": {
+      "original": 0.631,
+      "gfs_d1": 0.644
+    },
+    "daily_r": {
+      "train_and_val": {
+        "days": 1124,
+        "original": 0.822,
+        "gfs_d1": 0.806
+      },
+      "train": {
+        "days": 881,
+        "original": 0.817,
+        "gfs_d1": 0.809
+      },
+      "val": {
+        "days": 243,
+        "original": 0.846,
+        "gfs_d1": 0.798
+      }
+    },
+    "cloudy_days": {
+      "rule": "measured daily index < 0.7",
+      "days": 70,
+      "original": 0.482,
+      "gfs_d1": 0.51
+    },
+    "original_join_shifts_h": [
+      -2,
+      -3
+    ],
+    "note": "the original pipeline joined this series 2-3 h off the true clock (F-01, N3); relative to the best shift that is 1-2 h further"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "base_notebooks": {
+    "direct": {
+      "target": "site_total_AC_kW",
+      "forbidden_features": [
+        "target_k",
+        "performance_ratio",
+        "site_loading",
+        "site_power_per_irr",
+        "site_total_DC_kW",
+        "s01_inv1_AC_kW",
+        "s01_inv2_AC_kW"
+      ],
+      "per_inverter_dc_forbidden": false,
+      "core_features": [
+        "solar_zenith",
+        "solar_azimuth",
+        "aoi",
+        "fcst_ghi",
+        "fcst_dni",
+        "fcst_dhi",
+        "fcst_temp_2m",
+        "fcst_cloud_cover",
+        "hour_sin",
+        "hour_cos",
+        "doy_sin",
+        "doy_cos"
+      ],
+      "category_min": {
+        "solar": 5,
+        "weather": 5,
+        "temporal": 4,
+        "lag": 6,
+        "rolling": 4
+      },
+      "variance_threshold": 0.001,
+      "mi_threshold": 0.02,
+      "target_n_features": 42,
+      "cv_splits": 5,
+      "reads_whole_table": true,
+      "row_filter_by_split_or_date": false,
+      "time_series_cv_over_all_rows": true,
+      "gap_fill_whole_column_median": false,
+      "gap_fill_zero_before_shap": true
+    },
+    "indirect": {
+      "target": "target_k",
+      "forbidden_features": [
+        "site_total_AC_kW",
+        "site_total_DC_kW",
+        "s01_inv1_AC_kW",
+        "s01_inv2_AC_kW",
+        "s01_inv1_DC_kW",
+        "s01_inv2_DC_kW",
+        "theoretical_power",
+        "performance_ratio",
+        "site_loading",
+        "inv1_efficiency",
+        "inv2_efficiency",
+        "site_avg_efficiency",
+        "site_power_per_irr"
+      ],
+      "per_inverter_dc_forbidden": true,
+      "core_features": [
+        "solar_zenith",
+        "solar_azimuth",
+        "aoi",
+        "fcst_ghi",
+        "fcst_dni",
+        "fcst_dhi",
+        "fcst_temp_2m",
+        "fcst_cloud_cover",
+        "hour_sin",
+        "hour_cos",
+        "doy_sin",
+        "doy_cos"
+      ],
+      "category_min": {
+        "solar": 5,
+        "weather": 5,
+        "temporal": 4,
+        "lag": 6,
+        "rolling": 4
+      },
+      "variance_threshold": 0.001,
+      "mi_threshold": 0.02,
+      "target_n_features": 42,
+      "cv_splits": 5,
+      "reads_whole_table": true,
+      "row_filter_by_split_or_date": false,
+      "time_series_cv_over_all_rows": true,
+      "gap_fill_whole_column_median": true,
+      "gap_fill_zero_before_shap": false
+    }
+  },
+  "fed_submitted_05e_D1": {
+    "direct": {
+      "n_base_output": 42,
+      "n_05e_start": 42,
+      "identical_sets": true,
+      "base_output_source": "selected_features_direct.json"
+    },
+    "indirect": {
+      "n_base_output": 42,
+      "n_05e_start": 42,
+      "identical_sets": true,
+      "base_output_source": "feature names of the intermediate XGBoost xgb_physics_q50.json"
+    }
+  },
+  "submitted_05e_start_sets": {
+    "direct_D1": {
+      "n_start": 42,
+      "subset_of_D1": true,
+      "dropped_from_D1": []
+    },
+    "direct_D2": {
+      "n_start": 36,
+      "subset_of_D1": true,
+      "dropped_from_D1": [
+        "ambient_temp_lag_1d",
+        "mod_temp1_lag_1d",
+        "mod_temp2_lag_1d",
+        "s01_inv1_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_1d",
+        "site_total_AC_kW_lag_1d"
+      ]
+    },
+    "direct_D3": {
+      "n_start": 34,
+      "subset_of_D1": true,
+      "dropped_from_D1": [
+        "ambient_temp_lag_1d",
+        "irradiance_lag_2d",
+        "mod_temp1_lag_1d",
+        "mod_temp2_lag_1d",
+        "s01_inv1_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_2d",
+        "site_total_AC_kW_lag_1d"
+      ]
+    },
+    "indirect_D1": {
+      "n_start": 42,
+      "subset_of_D1": true,
+      "dropped_from_D1": []
+    },
+    "indirect_D2": {
+      "n_start": 36,
+      "subset_of_D1": true,
+      "dropped_from_D1": [
+        "ambient_temp_lag_1d",
+        "irradiance_lag_1d",
+        "mod_temp1_lag_1d",
+        "s01_inv1_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_1d",
+        "site_total_AC_kW_lag_1d"
+      ]
+    },
+    "indirect_D3": {
+      "n_start": 35,
+      "subset_of_D1": true,
+      "dropped_from_D1": [
+        "ambient_temp_lag_1d",
+        "irradiance_lag_1d",
+        "mod_temp1_lag_1d",
+        "s01_inv1_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_2d",
+        "site_total_AC_kW_lag_1d"
+      ]
+    }
+  },
+  "earlier_notebook_05_dec2025": {
+    "variance_threshold": 0.001,
+    "mi_threshold": 0.01,
+    "core_features": [
+      "solar_zenith",
+      "solar_azimuth",
+      "sun_elevation",
+      "aoi",
+      "time_to_solar_noon",
+      "poa_global_clearsky",
+      "poa_direct_clearsky",
+      "poa_diffuse_clearsky",
+      "fcst_ghi",
+      "fcst_dni",
+      "fcst_dhi",
+      "fcst_temp_2m",
+      "fcst_wind_speed",
+      "fcst_cloud_cover",
+      "ghi_clearsky",
+      "dni_clearsky",
+      "dhi_clearsky"
+    ],
+    "rfe_xgb_max_depth": 6
+  },
+  "direct_shap": {
+    "top5": [
+      {
+        "feature": "s01_inv2_DC_kW",
+        "mean_abs_shap": 0.764848
+      },
+      {
+        "feature": "s01_inv1_DC_kW",
+        "mean_abs_shap": 0.180512
+      },
+      {
+        "feature": "s01_inv2_rolling_mean_7d_same_tod",
+        "mean_abs_shap": 0.043854
+      },
+      {
+        "feature": "doy_sin",
+        "mean_abs_shap": 0.001977
+      },
+      {
+        "feature": "month_sin",
+        "mean_abs_shap": 0.000882
+      }
+    ],
+    "dc_share_of_total": 0.9454,
+    "first_over_third": 17.4
+  }
+}

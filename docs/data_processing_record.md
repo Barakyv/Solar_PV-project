@@ -3,7 +3,7 @@
 Every operation performed on the data in the rebuild, in order, with its reason, method,
 parameters, result, verification and evidence. Written to be lifted into the final report
 (data chapter, "Reproduction and correction note", appendix). All numbers come from
-`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N13).
+`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N14).
 
 IDs: OP-xx = operation on the data (this file); F-xx finding, D-xx decision, A-xx assumption,
 T-xx test, all defined in `PROJECT_MASTER.md`. Corrections relative to the submitted report are
@@ -680,6 +680,13 @@ current manifest with a note under every code cell, and the claims of the notes 
 
 ## 14. Differences from the original data pipeline
 
+**OP-45 — Audit of the original backup (2026-11-01, no project data changed).** `00_data_audit/original_backup_2026-11-01/` (README, three scripts, run logs).
+- *Why:* the user added an older backup of the original project (about January 2026). It is a step on the way to the v6 submission, never the final pipeline; the submission prevails.
+- *Method:* an inventory of the working copy and of the partial `.git` folder (blobs read with zlib only, nothing executed or unpickled); the configurations of the base-selection notebooks parsed with `ast.literal_eval`; the original weather series compared with the measurement and with the real D+1 GFS run on train and validation only.
+- *Result (N14):* the base selection fed the submitted 05e files, read the whole table (F-26) and, for the direct target, kept the per-inverter DC power (F-27); the original NWP was the Open-Meteo archive with `gfs_seamless`, of about D+1 skill, joined 2-3 h off the clock (F-28).
+- *Verification:* T-45 (the claims follow from the tracked outputs; no coordinate is written out).
+
+
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
 | Time base | local time labelled UTC | true UTC, DST decoded | OP-04, F-01 |
@@ -703,6 +710,7 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Rows scored per model | 2,510–2,580, by input window; daytime in the common mask taken from the truth | every model on every daytime hour with truth; daytime from geometry only | OP-41, C-35 |
 | Skill reference | same time yesterday at every horizon | persistence of h days, DST-safe; climatology and clear sky added; CLIPER as an extra column | OP-40, C-08 |
 | Weather forecast | Open-Meteo archive at the target time (not known at issuance), one series for all horizons, backward fill; removed from the final v6 models | GFS runs public before issuance (T-17, actual upload times), own leads per horizon, no backward fill; admitted on validation (D-12) | OP-42–OP-44, C-06, F-11 |
+| Feature selection | whole table, validation and test included; per-inverter DC kept for the direct target | train only, from an allow-list (stage 7) | OP-45, F-26, F-27 |
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 
 ## 15. Limitations carried into the report

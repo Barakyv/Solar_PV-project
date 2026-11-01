@@ -57,6 +57,9 @@ SOURCES = {
     "gfs_diag": AUDIT_DIR / "gfs_value_2026-10-25" / "diagnose_sample.csv",
     "gfs_diag_boot": AUDIT_DIR / "gfs_value_2026-10-25" / "diagnose_sample_bootstrap.csv",
     "gfs_sample": AUDIT_DIR / "gfs_sample_2026-10-25" / "sample_summary.json",
+    "backup_inventory": AUDIT_DIR / "original_backup_2026-11-01" / "inventory_summary.json",
+    "backup_selection": AUDIT_DIR / "original_backup_2026-11-01" / "selection_evidence.json",
+    "backup_weather": AUDIT_DIR / "original_backup_2026-11-01" / "weather_source.json",
 }
 
 
@@ -421,6 +424,55 @@ def build() -> str:
         table(inner),
         "",
         table(gb.round(3)),
+        "",
+    ]
+    bi, bs, bw = load("backup_inventory"), load("backup_selection"), load("backup_weather")
+    fed = bs["fed_submitted_05e_D1"]
+    sel = pd.DataFrame([{"target": t, "per_inverter_dc_forbidden": n["per_inverter_dc_forbidden"],
+                         "row_filter_by_split_or_date": n["row_filter_by_split_or_date"],
+                         "mi_threshold": n["mi_threshold"],
+                         "core_features": len(n["core_features"]),
+                         "target_n_features": n["target_n_features"],
+                         "identical_to_05e_D1_start": fed[t]["identical_sets"]}
+                        for t, n in bs["base_notebooks"].items()])
+    starts = pd.DataFrame([{"set": k, "n_start": v["n_start"], "subset_of_D1": v["subset_of_D1"],
+                            "dropped": len(v["dropped_from_D1"])}
+                           for k, v in bs["submitted_05e_start_sets"].items()])
+    for frame in (sel, starts):
+        for col in frame.select_dtypes(include="bool").columns:
+            frame[col] = frame[col].map({True: "yes", False: "no"})
+    sk = bw["skill"]
+    daily = pd.DataFrame([{"sample": k, **v} for k, v in sk["daily_r"].items()])
+    req = next(iter(bw["requests"].values()))[0]
+    parts += [
+        "## N14. Audit of the original backup (2026-11-01)",
+        "",
+        "An older backup of the original project (about January 2026), a step on the way to the "
+        "v6 submission. Outputs of `00_data_audit/original_backup_2026-11-01/`.",
+        "",
+        kv({"files in the working copy / in git history only":
+                f"{bi['files']['working copy']} / {bi['files']['git history only']}",
+            "final v6 code present": ", ".join(k for k, v in bi["final_code_present"].items()
+                                               if v) or "none",
+            "direct SHAP: share of the two DC columns": bs["direct_shap"]["dc_share_of_total"],
+            "direct SHAP: first / third feature": bs["direct_shap"]["first_over_third"],
+            "original NWP request": f"{req['endpoint']} models={req['parameters']['models']}",
+            "original NWP: best shift / hourly r": f"{sk['best_shift_h']} h / "
+                                                   f"{sk['hourly_r']['original']}",
+            "hourly r at the original join (2-3 h off)": " / ".join(
+                str(sk["hourly_r_by_shift"][str(h)]) for h in sk["original_join_shifts_h"])}),
+        "",
+        "Base-selection notebooks (January 2026):",
+        "",
+        table(sel),
+        "",
+        "Starting sets of the submitted 05e files:",
+        "",
+        table(starts),
+        "",
+        "Daily r of the clear-sky index with the measurement (original series vs real GFS D+1):",
+        "",
+        table(daily),
         "",
     ]
     return "\n".join(parts)

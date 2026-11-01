@@ -480,3 +480,43 @@ Horizon order on an inner period of train (fit to 2023-04-30, scored 2023-05 to 
 |---|---|---|---|
 | indirect | -0.204 | -0.486 | 0.031 |
 | direct | -0.27 | -0.586 | 0.028 |
+
+## N14. Audit of the original backup (2026-11-01)
+
+An older backup of the original project (about January 2026), a step on the way to the v6 submission. Outputs of `00_data_audit/original_backup_2026-11-01/`.
+
+| item | value |
+|---|---|
+| files in the working copy / in git history only | 508 / 400 |
+| final v6 code present | none |
+| direct SHAP: share of the two DC columns | 0.9454 |
+| direct SHAP: first / third feature | 17.4 |
+| original NWP request | https://archive-api.open-meteo.com/v1/archive models=gfs_seamless |
+| original NWP: best shift / hourly r | -1 h / 0.631 |
+| hourly r at the original join (2-3 h off) | 0.301 / 0.268 |
+
+Base-selection notebooks (January 2026):
+
+| target | per_inverter_dc_forbidden | row_filter_by_split_or_date | mi_threshold | core_features | target_n_features | identical_to_05e_D1_start |
+|---|---|---|---|---|---|---|
+| direct | no | no | 0.02 | 12 | 42 | yes |
+| indirect | yes | no | 0.02 | 12 | 42 | yes |
+
+Starting sets of the submitted 05e files:
+
+| set | n_start | subset_of_D1 | dropped |
+|---|---|---|---|
+| direct_D1 | 42 | yes | 0 |
+| direct_D2 | 36 | yes | 6 |
+| direct_D3 | 34 | yes | 8 |
+| indirect_D1 | 42 | yes | 0 |
+| indirect_D2 | 36 | yes | 6 |
+| indirect_D3 | 35 | yes | 7 |
+
+Daily r of the clear-sky index with the measurement (original series vs real GFS D+1):
+
+| sample | days | original | gfs_d1 |
+|---|---|---|---|
+| train_and_val | 1,124 | 0.822 | 0.806 |
+| train | 881 | 0.817 | 0.809 |
+| val | 243 | 0.846 | 0.798 |

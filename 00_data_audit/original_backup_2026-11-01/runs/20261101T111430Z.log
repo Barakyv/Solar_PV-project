@@ -1,0 +1,20 @@
+[     0.0s] RUN     stage audit
+[     0.0s] RUN     command: python 00_data_audit/original_backup_2026-11-01/selection_evidence.py
+[     0.1s] RUN     git commit: ea511c6+dirty
+[     0.1s] RUN     started (UTC): 2026-11-01T11:14:30+00:00
+[     2.8s] RUN     versions: {"python": "3.11.17", "numpy": "2.4.6", "pandas": "3.0.6", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.8s] INPUT   old files/solar_ds_capstone/05_feature_selection/old/05b_feature_selection_direct.ipynb sha256=ff1ef1ede5f9f15f
+[     2.8s] INPUT   data/external/original_backup_recovered/17d0183ad2b9.ipynb sha256=d43d8f6b826f971d
+[     2.9s] INPUT   data/external/original_backup_recovered/0756fbeea89a.ipynb sha256=bad0f445cc121c6d
+[     2.9s] INPUT   old files/solar_ds_capstone/artifacts/05_feature_selection/selected_features_direct.json sha256=57a7e735d57dd372
+[     2.9s] INPUT   old files/solar_ds_capstone/outputs/06_modeling/models/final_checkpoints/xgb_physics_q50.json sha256=649178b88a06ce44
+[     2.9s] INPUT   old files/solar_ds_capstone/outputs/05_feature_selection/reports/stage4_shap_importance_direct.csv sha256=0a13dcacded6ddc8
+[     2.9s] INPUT   submission_evidence/09_feature_selection/final_features_direct_D1.json sha256=a167ab9c90bda9ff
+[     2.9s] INPUT   submission_evidence/09_feature_selection/final_features_indirect_D1.json sha256=5fd7ee2a2c019084
+[     3.1s] NOTE    direct: base output 42 features, identical to the submitted 05e D+1 start: True; per-inverter DC forbidden: False
+[     3.1s] NOTE    indirect: base output 42 features, identical to the submitted 05e D+1 start: True; per-inverter DC forbidden: True
+[     3.1s] NOTE    direct SHAP: DC share 0.9454, first / third 17.4
+[     3.1s] OUTPUT  00_data_audit/original_backup_2026-11-01/selection_evidence.json sha256=05070470f96d1271
+[     3.1s] OUTPUT  00_data_audit/original_backup_2026-11-01/selection_shap_direct_top.csv sha256=82011cac6cf123b7
+[     3.1s] RUN     warnings: 0
+[     3.1s] RUN     status: ok; duration 3.1s

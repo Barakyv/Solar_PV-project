@@ -5,6 +5,10 @@
 *.grib2
 *.grb2
 
+# --- older backup of the original project (2 GB, its own partial .git, private coordinates;
+#     read-only, audited in 00_data_audit/original_backup_2026-11-01/) ---
+/old files/solar_ds_capstone/
+
 # --- secrets / private config ---
 configs/site.private.yaml
 .env

@@ -1,0 +1,6 @@
+feature,mean_abs_shap,category
+s01_inv2_DC_kW,0.76484823,other
+s01_inv1_DC_kW,0.1805124,other
+s01_inv2_rolling_mean_7d_same_tod,0.043853823,rolling
+doy_sin,0.0019765364,temporal
+month_sin,0.0008824055,temporal
