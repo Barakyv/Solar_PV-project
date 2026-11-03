@@ -566,3 +566,25 @@ hashes, numbers) and the commit messages are the record:
 - **Indirect, a sample effect.** No gap inside train (−0.12 to +0.06 pp); the +0.09 pp at D+3 on
   validation is spread over the months, like the D+3 effect of R6b-07.
 - **Open:** how to fix the direct selection (user decision).
+
+## Hand-off to the college machine
+
+### 2026-11-03 · RH-01 · The package tested on an unpacked copy
+
+- **Purpose:** prove that the hand-off package (`scripts/handoff_pack.py`, `docs/HANDOFF.md`)
+  works before it leaves the laptop.
+- **Command and commit:** `python scripts/handoff_pack.py` at `b18ac63`, unpacked into a scratch
+  folder; there `python scripts/handoff_pack.py --verify`, `git status`, `git fsck` and the full
+  test suite with the copy's own `src/` first on the path.
+- **Results:** 3,477 files, 1.71 GB before compression and 1.07 GB packed. All 3,392 files outside
+  `.git` matched the manifest, `git status` showed only the untracked stage-7 outputs, and
+  `git fsck` found no errors (only dangling objects).
+- **Problems and fixes:** without `configs/site.private.yaml` (left out of the package, Q-16),
+  7 tests failed instead of being skipped. Eight contract tests compare the real outputs with the
+  sun of the true site: the five that use the `sun` fixture in `test_clean_output.py` and the
+  three clock tests in `test_preprocess_output.py`. With the placeholder site (longitude 34.9°)
+  solar noon moves and, for example, the meteo centroid offset reached 2.26 min, above the
+  2-minute tolerance. They now carry `needs_private_site`, as the tests of the daytime mask
+  already did. After the fix, on the copy without the file: 319 passed, 38 skipped, none failed.
+  On the laptop with the file: 357 passed.
+- **Decision / next:** the package is rebuilt at the commit of this fix.

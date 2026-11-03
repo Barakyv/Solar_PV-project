@@ -142,6 +142,7 @@ def _conditions(col, before, sun, after=None):
 
 # T-23 reconciliation ---------------------------------------------------------
 
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 @pytest.mark.parametrize("col", cleaned_columns())
 def test_every_change_is_explained_and_every_rule_hit_is_justified(col, before, after, sun):
@@ -164,6 +165,7 @@ def test_every_change_is_explained_and_every_rule_hit_is_justified(col, before, 
 
 # T-16 real production never removed -------------------------------------------
 
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 @pytest.mark.parametrize("col", AC_COLUMNS)
 def test_real_daytime_production_is_never_removed(col, before, after, sun):
@@ -184,6 +186,7 @@ def test_values_are_inside_the_policy_ranges(after):
         assert s.min() >= lo and s.max() <= hi, col
 
 
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_no_power_far_below_the_horizon_and_no_dead_dc(after, sun):
     elev, _ = sun
@@ -237,6 +240,7 @@ def _expected_derate(after, elev, i):
     return by_state.to_numpy() | by_ratio
 
 
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_flags_match_their_definition(after, sun):
     elev, poa = sun
@@ -289,6 +293,7 @@ def test_hourly_flags_and_source(hourly):
 
 # T-27 energy on fault-free days ------------------------------------------------------
 
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_energy_unchanged_on_fault_free_days(before, after, sun):
     elev, _ = sun

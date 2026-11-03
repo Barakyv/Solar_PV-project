@@ -91,6 +91,7 @@ def _monthly_centroid(minute, columns):
 
 
 @needs_output
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_meteo_clock_centred_on_solar_noon(minute):
     """T-08 (tightened by D-19), meteo clock: clear-day centroid of the in-plane irradiance
@@ -101,6 +102,7 @@ def test_meteo_clock_centred_on_solar_noon(minute):
 
 
 @needs_output
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_inverter_clock_matches_meteo_clock(minute):
     """T-08 (tightened by D-19), inverter clock: on the minute source, the DC-irradiance lag
@@ -125,6 +127,7 @@ def test_inverter_clock_matches_meteo_clock(minute):
 
 
 @needs_output
+@pytest.mark.needs_private_site  # compares with the true site's sun (RH-01)
 @pytest.mark.slow
 def test_dc_centroid_near_solar_noon(minute):
     """Coarse guard on the inverter group: DC centroid within +-3 min (physical asymmetry of up

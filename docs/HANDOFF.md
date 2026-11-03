@@ -60,9 +60,8 @@ Left out:
      record any difference;
    - the GPU environment does not exist yet. It is built here after the GPU is known, per
      `docs/stage9_plan.md` §5. `requirements-gpu.txt` lacks pytorch-forecasting 1.7.0.
-5. `pytest -q`. The baseline on the laptop, with the stage-7 outputs present and
-   `site.private.yaml` present, is recorded in §8. Without the private file, more tests are
-   skipped; nothing may fail.
+5. `pytest -q`. The baselines are in §8. Without the private file, the tests that need the true
+   site are skipped. Nothing may fail.
 6. Inspect the machine and record it in `docs/stage9_plan.md` §1 (this answers Q-15):
    - the OS;
    - the GPU, its memory, and the driver and CUDA versions (`nvidia-smi`);
@@ -180,6 +179,8 @@ Left out:
 
 - Laptop environment: Python 3.11.17, pandas 3.0.6, scikit-learn 1.9.1, xgboost 3.4.2,
   shap 0.51.0 (`environment.lock.yml`).
-- Test baseline on the laptop, at the hand-off commit: 357 passed, none skipped (about
-  2.5 minutes).
+- Test baselines at the hand-off commit:
+  - on the laptop, with `site.private.yaml`: 357 passed, none skipped (about 2.5 minutes);
+  - on an unpacked copy without it: 319 passed, 38 skipped, none failed (RH-01 in
+    `docs/run_journal.md`).
 - Git author: the local `.git/config` (it comes with the package).
