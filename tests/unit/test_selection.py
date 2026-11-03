@@ -1,9 +1,9 @@
 """Stage-7 selection on synthetic data (docs/stage7_plan.md §5).
 
 T-47: train rows only; the allow-list refuses a leaking column.
-T-48: date folds, the kW score, the selection model per route (R7-04), correlated pairs, RFE
-      keeps the core, the elbow rule, stability on whole days, the MI vote against shuffled
-      copies, consensus and 05f tiers.
+T-48: date folds, the kW score, the selection model per route (R7-04), the stage-9 input per
+      target × horizon (R7-04, F-29), correlated pairs, RFE keeps the core, the elbow rule, stability
+      on whole days, the MI vote against shuffled copies, consensus and 05f tiers.
 T-49: the k history follows the stage-6 rules (DST guard, lags per horizon, past only).
 """
 
@@ -105,6 +105,20 @@ def test_selection_model_is_the_fixed_xgboost_for_both_routes(monkeypatch):
     C.cv_score(C.problem(t, "direct"), ["signal", "clear"], C.SELECTION_XGB, with_shap=False)
     assert seen and all(p is C.SELECTION_XGB for p in seen)
     assert XGB_PARAMS["n_jobs"] == C.SELECTION_XGB["n_jobs"] == XGB_THREADS > 0
+
+
+def test_model_input_follows_the_registered_steps():
+    """R7-04 steps 3 and 4 (F-29): a failed inside-train check gives the full pool, and
+    validation cannot overturn it; a passed check gives the 05e set unless validation raises a
+    red flag."""
+    from solarpv.selection.run import decide_input
+
+    assert decide_input(False, None)[0] == "full pool"
+    assert decide_input(False, False)[0] == "full pool"  # validation is not used
+    assert decide_input(False, True)[0] == "full pool"
+    assert decide_input(True, None)[0] == "pending"
+    assert decide_input(True, True)[0] == "full pool"
+    assert decide_input(True, False)[0] == "05e"
 
 
 def test_correlated_pairs_are_reported_without_chaining():

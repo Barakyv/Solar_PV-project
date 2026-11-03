@@ -5,8 +5,9 @@
 S0 decides the k-history candidates inside train (D-24); S1–S7 select per target × horizon on
 train rows only; the inside-train check compares each 05e set with the full pool with the fixed
 XGBoost of D-11 (R7-04); S8 compares them once on validation (D-13). `--skip-validation` stops
-before S8 and `--validation-only` runs S8 alone on the saved sets (plan §7, R7-04). Outputs in
-outputs/07_feature_selection/ and configs/k_history_decision.yaml.
+before S8 and `--validation-only` runs S8 alone on the saved sets (plan §7, R7-04). The input of
+stage 9 per target × horizon, 05e set or full pool, is written to model_inputs.json (R7-04 steps
+3 and 4). Outputs in outputs/07_feature_selection/ and configs/k_history_decision.yaml.
 """
 
 import json
@@ -229,6 +230,34 @@ def inner_train_check(results: list[dict], tables: dict[int, pd.DataFrame], log)
     return pd.DataFrame(rows)
 
 
+def decide_input(inner_passes: bool, red_flag: bool | None) -> tuple[str, str]:
+    """(source, reason) of the stage-9 input of one target × horizon (R7-04 steps 3 and 4). A
+    failed inside-train check gives the full pool whatever validation shows; otherwise the 05e
+    set (D-13) unless validation raises a red flag; `red_flag` is None while S8 has not run."""
+    if not inner_passes:
+        return "full pool", "inside-train check failed (R7-04 step 3); validation not used"
+    if red_flag is None:
+        return "pending", "inside-train check passed; S8 not run"
+    if red_flag:
+        return "full pool", "validation red flag (R7-04 step 4)"
+    return "05e", "inside-train check passed, no validation red flag (D-13)"
+
+
+def model_inputs(results: list[dict], inner: pd.DataFrame, val: pd.DataFrame | None) -> dict:
+    passes = {(t, int(h)): bool(g["passes"].all())
+              for (t, h), g in inner.groupby(["target", "horizon"])}
+    flags = {} if val is None else {(t, int(h)): bool(g["red_flag"].any())
+                                    for (t, h), g in val.groupby(["target", "horizon"])}
+    out = {}
+    for r in results:
+        key = (r["target"], r["horizon"])
+        source, reason = decide_input(passes[key], flags.get(key))
+        feats = {"05e": r["chosen"], "full pool": r["pool"]}.get(source, [])
+        out[f"{r['target']}_D{r['horizon']}"] = {"source": source, "reason": reason,
+                                                  "n_features": len(feats), "features": feats}
+    return out
+
+
 # ── S8: one look at validation ────────────────────────────────────────────
 
 
@@ -430,6 +459,8 @@ def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
     csv("inner_train_check.csv", inner)
     if val is not None:
         csv("validation_check.csv", val)
+    inputs = model_inputs(results, inner, val)
+    dump("model_inputs.json", inputs)
     written += figures(results)
     manifest = {
         "stage": "07_feature_selection", "git_commit": git_commit(), "run_log": str(
@@ -448,6 +479,7 @@ def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
         "validation_red_flags": {} if val is None else {
             f"{t}_D{h}": bool(g["red_flag"].any()) for (t, h), g in
             val.groupby(["target", "horizon"])},
+        "model_input": {combo: v["source"] for combo, v in inputs.items()},
         "capacity_kw": AC_CAPACITY_KW}
     dump("selection_manifest.json", manifest)
     return written
@@ -493,8 +525,8 @@ def run(validation: bool = True) -> dict:
 
 def validation_only() -> None:
     """Recompute S8 from the saved 05e sets (the pools are rebuilt from the same allow-list),
-    rewrite validation_check.csv and the validation flags of the manifest. Deterministic: the
-    same seeds and rows as in `run`."""
+    rewrite validation_check.csv, model_inputs.json (with the saved inside-train check) and the
+    validation flags of the manifest. Deterministic: the same seeds and rows as in `run`."""
     with RunLog("07_feature_selection", "python -m solarpv.selection.run --validation-only",
                 out_dir=OUT) as log:
         k_admitted = bool(yaml.safe_load(DECISION_FILE.read_text(encoding="utf-8"))["admitted"])
@@ -514,16 +546,23 @@ def validation_only() -> None:
             val = validation_check(results, k_admitted, log)
         path = OUT / "validation_check.csv"
         val.to_csv(path, index=False, lineterminator="\n")
+        inputs = model_inputs(results, pd.read_csv(OUT / "inner_train_check.csv"), val)
+        inputs_path = OUT / "model_inputs.json"
+        inputs_path.write_text(json.dumps(inputs, indent=2) + "\n", encoding="utf-8",
+                               newline="\n")
+        for combo, v in inputs.items():
+            log.note(f"model input {combo}: {v['source']} ({v['n_features']}), {v['reason']}")
         manifest_path = OUT / "selection_manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         manifest["validation_read"] = "S8 only"
         manifest["validation_red_flags"] = {f"{t}_D{h}": bool(g["red_flag"].any())
                                             for (t, h), g in val.groupby(["target", "horizon"])}
+        manifest["model_input"] = {combo: v["source"] for combo, v in inputs.items()}
         manifest["validation_run_log"] = str(log.path.relative_to(OUT.parent.parent)).replace(
             "\\", "/")
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8",
                                  newline="\n")
-        log.outputs([path, manifest_path])
+        log.outputs([path, inputs_path, manifest_path])
 
 
 def main() -> int:

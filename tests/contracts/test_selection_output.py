@@ -3,7 +3,8 @@
 Twelve selection files in the schema of the submitted ones; every 05e feature comes from the
 allow-list of its pool and passes the leakage rules; the selection read train rows only; the
 k-history decision follows the D-24 rule; the selection model of each route is recorded and the
-inside-train check follows the margin rule (R7-04); the validation comparison is present.
+inside-train check follows the margin rule (R7-04); the stage-9 input per target × horizon
+follows the registered steps (R7-04, F-29); the validation comparison is present.
 """
 
 import json
@@ -94,6 +95,37 @@ def test_inner_train_check_follows_the_margin_rule():
     m = _json("selection_manifest.json")
     for (t, h), g in c.groupby(["target", "horizon"]):
         assert m["inner_train_passes"][f"{t}_D{h}"] == bool(g["passes"].all())
+
+
+def test_model_inputs_follow_the_inside_train_check_and_validation():
+    """F-29: model_inputs.json, the stage-9 input of every target × horizon, follows R7-04
+    steps 3 and 4: the 05e set or the full pool, never pending once S8 has run."""
+    import pandas as pd
+
+    from solarpv.selection.run import decide_input
+
+    inputs = _json("model_inputs.json")
+    inner = pd.read_csv(OUT / "inner_train_check.csv")
+    val_path = OUT / "validation_check.csv"
+    val = pd.read_csv(val_path) if val_path.exists() else None
+    m = _json("selection_manifest.json")
+    assert set(inputs) == {f"{t}_D{h}" for t, h in COMBOS}
+    for t, h in COMBOS:
+        v = inputs[f"{t}_D{h}"]
+        g = inner[(inner["target"] == t) & (inner["horizon"] == h)]
+        flag = None if val is None else bool(val.loc[(val["target"] == t)
+                                                     & (val["horizon"] == h), "red_flag"].any())
+        assert v["source"] == decide_input(bool(g["passes"].all()), flag)[0]
+        assert m["model_input"][f"{t}_D{h}"] == v["source"]
+        assert len(v["features"]) == v["n_features"] == len(set(v["features"]))
+        assert not [f for f in v["features"] if is_leaky(f)]
+        if v["source"] == "05e":
+            e = _json(f"final_features_{t}_D{h}.json")
+            assert v["features"] == e["recommended"]["features"]
+        elif v["source"] == "full pool":
+            assert v["n_features"] == int(g["n_full"].iloc[0])
+        if val is not None:
+            assert v["source"] != "pending"
 
 
 def test_validation_comparison_and_availability_file():

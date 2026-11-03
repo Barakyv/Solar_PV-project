@@ -195,3 +195,14 @@ Red flags:
      validation, which stage 9 uses for tuning anyway; the test split is not read.
   5. The MI vote stays as registered (D-23) and is reported as a limitation (R7-02); the user may
      still decide otherwise.
+  6. **The outcome** is written to `model_inputs.json`, the stage-9 input of every target ×
+     horizon: `source` (05e or full pool), the reason and the features (`run.decide_input`, T-48,
+     T-50). Stage 9 reads this file, not the 05e files.
+- **R7-04, the outcome inside train (2026-11-03, journal R7-04, F-29).** The indirect route
+  passes at every horizon; the direct route fails at every horizon on both samples, by 0.10 to
+  0.71 points. The larger model did not fix the direct selection: its SHAP importance is
+  concentrated (the top three features hold 37–65 %), so few features reach the 1 % share of the
+  stability vote, and the features left out still carry 14–29 % of the importance together. By
+  step 3 the direct route takes the full pool at every horizon (a deviation from D-13; the
+  original XGBoost was trained on all its columns anyway, C-31). The third validation look
+  decides the indirect route only; its direct rows are reported, not used.

@@ -567,6 +567,43 @@ hashes, numbers) and the commit messages are the record:
   validation is spread over the months, like the D+3 effect of R6b-07.
 - **Open:** how to fix the direct selection (user decision).
 
+### 2026-11-03 · R7-04 · Rerun with the D-11 model, and the inside-train check
+
+- **Command and commit:** `python -m solarpv.selection.run --skip-validation` at `190e4df` on the
+  college machine, log `outputs/07_feature_selection/runs/20261103T113918Z.log` (5,585 s, no
+  warnings). Both routes selected with the fixed XGBoost of D-11 on 8 threads (plan §7, R7-04).
+- **S0 (k history, inside train):** gain +0.048 / +0.059 / +0.020 pp at D+1 / D+2 / D+3 against
+  margins of 0.050 / 0.050 / 0.076 pp. D+1 misses its margin by 0.002 pp, so the k history is not
+  admitted (D-24), as on the laptop (R7-01). The rule is applied as registered.
+- **05e sets:** indirect 31 / 28 / 32, direct 18 / 19 / 15 (laptop R7-02: 25 / 26 / 26 and
+  19 / 16 / 12; in common with it: 24 / 23 / 23 and 17 / 14 / 12). The MI vote again endorsed all
+  42 starting features in every set (R7-02). No red flag of S7; GFS features lead every ranking.
+- **Inside-train check** (`inner_train_check.csv`, sha256 `c457837a60b2831e`): the 05e set minus
+  the full pool, date folds / inner hold-out, in pp, with the margins:
+  - indirect D+1: −0.058 / −0.012 (0.050 / 0.050), passes;
+  - indirect D+2: −0.074 / +0.054 (0.081 / 0.093), passes;
+  - indirect D+3: −0.014 / −0.029 (0.053 / 0.067), passes;
+  - direct D+1: +0.287 / +0.206 (0.050 / 0.050), fails;
+  - direct D+2: +0.102 / +0.131 (0.064 / 0.070), fails;
+  - direct D+3: +0.714 / +0.202 (0.170 / 0.082), fails.
+  Sanity: the full-pool error rises with the horizon on both samples and in both routes.
+- **Finding F-29, the direct sets are too small for a reason the model does not change.** From
+  `selection_votes.csv` (mean |SHAP| of the 42 starting features): in the direct route the top
+  three features hold 64.5 / 54.4 / 37.0 % of the importance, against 31.2 / 31.7 / 27.6 % in the
+  indirect route, and only 15 / 16 / 19 of the 42 hold at least 1 %, against 34 / 38 / 35. The
+  stability vote needs a 1 % share, so it keeps 12 / 11 / 15 features; the 24 / 23 / 27 starting
+  features left out of 05e still carry 14.1 / 14.7 / 29.1 % of the importance together. The 05c
+  curve is one seed and noisy: at direct D+3 one feature scores 8.516 against 8.531 for all 42,
+  so the 1 % elbow is a single feature; that 1 % (0.085 pp) equals one pooled seed std of the
+  score (the margin of 0.170 pp is two). A limitation of the registered rules (a relative
+  share and a one-seed curve), not a code bug. The original pipeline never compared its 05e sets
+  with the full pool, so it could not see it.
+- **Decision, before the validation look (R7-04 steps 3 and 4):** the direct route takes the full
+  pool at every horizon (96 / 89 / 82 features); validation is not used for that decision. The
+  indirect route passed, so the third validation look decides between its 05e set and its full
+  pool; the direct rows of that look are reported only. New `model_inputs.json`, written by
+  `run.decide_input` (unit and contract tests, T-48 and T-50), records the input of stage 9.
+
 ## Hand-off to the college machine
 
 ### 2026-11-03 · RH-01 · The package tested on an unpacked copy
