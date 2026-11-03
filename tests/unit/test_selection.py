@@ -2,8 +2,8 @@
 
 T-47: train rows only; the allow-list refuses a leaking column.
 T-48: date folds, the kW score, the selection model per route (R7-04), the stage-9 input per
-      target × horizon (R7-04, F-29), correlated pairs, RFE keeps the core, the elbow rule, stability
-      on whole days, the MI vote against shuffled copies, consensus and 05f tiers.
+      target × horizon (R7-04, F-29), correlated pairs, RFE keeps the core, the elbow rule,
+      stability on whole days, the MI vote against shuffled copies, consensus and 05f tiers.
 T-49: the k history follows the stage-6 rules (DST guard, lags per horizon, past only).
 """
 

@@ -1,0 +1,17 @@
+# D-24 k-history candidates; written by python -m solarpv.selection.run
+decision: D-24
+admitted: false
+results:
+  indirect_D1:
+    gain_pp: 0.0482
+    margin_pp: 0.05
+    passes: false
+  indirect_D2:
+    gain_pp: 0.059
+    margin_pp: 0.05
+    passes: true
+  indirect_D3:
+    gain_pp: 0.0199
+    margin_pp: 0.0761
+    passes: true
+git_commit: 190e4df

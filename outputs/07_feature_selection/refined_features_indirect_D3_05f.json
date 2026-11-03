@@ -1,0 +1,162 @@
+{
+  "source": "05f \u2014 post-hoc audit of 05e",
+  "target": "target_k",
+  "target_label": "indirect",
+  "horizon": 3,
+  "note": "05f is an audit only; the modelling input is the 05e set (D-13)",
+  "05e_recommended_n": 32,
+  "stability_axis": {
+    "stable_core": 0.75,
+    "moderate": 0.5,
+    "unstable_threshold": 0.3
+  },
+  "mi_75th_percentile": 0.3073,
+  "tiers": {
+    "CORE": {
+      "n": 26,
+      "features": [
+        "ghi_clearsky",
+        "dni_clearsky",
+        "poa_direct_clearsky",
+        "ambient_temp_lag_7d",
+        "aoi",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "fcst_gfs_kt",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_hcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday"
+      ]
+    },
+    "SUPPORTED": {
+      "n": 6,
+      "features": [
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "irradiance_lag_3d",
+        "mod_temp2_lag_3d",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_14d",
+        "fcst_gfs_tcc"
+      ]
+    },
+    "CONDITIONAL": {
+      "n": 1,
+      "features": [
+        "fcst_gfs_poa"
+      ]
+    },
+    "EXCLUDED": {
+      "n": 9,
+      "features": [
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "s01_inv2_rolling_std_7d_same_tod",
+        "irradiance_lag_7d",
+        "mod_temp1_lag_14d",
+        "hour_sin",
+        "hour_cos",
+        "solar_azimuth",
+        "solar_zenith",
+        "fcst_gfs_ghi"
+      ],
+      "reasons": {
+        "s01_inv2_rolling_mean_3d_same_tod": "stability_too_low (0.07 < 0.30 floor)",
+        "s01_inv2_rolling_std_7d_same_tod": "unstable_and_weak_MI (stab=0.40, MI=0.082)",
+        "irradiance_lag_7d": "unstable_and_weak_MI (stab=0.33, MI=0.298)",
+        "mod_temp1_lag_14d": "unstable_and_weak_MI (stab=0.30, MI=0.275)",
+        "hour_sin": "stability_too_low (0.00 < 0.30 floor)",
+        "hour_cos": "stability_too_low (0.17 < 0.30 floor)",
+        "solar_azimuth": "stability_too_low (0.07 < 0.30 floor)",
+        "solar_zenith": "stability_too_low (0.23 < 0.30 floor)",
+        "fcst_gfs_ghi": "stability_too_low (0.00 < 0.30 floor)"
+      }
+    }
+  },
+  "recommended_05f": {
+    "features": [
+      "ghi_clearsky",
+      "dni_clearsky",
+      "poa_direct_clearsky",
+      "s01_inv2_rolling_mean_7d_same_tod",
+      "irradiance_lag_3d",
+      "mod_temp2_lag_3d",
+      "ambient_temp_lag_3d",
+      "ambient_temp_lag_7d",
+      "ambient_temp_lag_14d",
+      "aoi",
+      "doy_sin",
+      "doy_cos",
+      "day_length",
+      "time_to_solar_noon",
+      "fcst_gfs_kt",
+      "fcst_gfs_poa",
+      "fcst_gfs_kt_poa_ma3",
+      "fcst_gfs_kt_poa_daymean",
+      "fcst_gfs_tcc",
+      "fcst_gfs_lcc",
+      "fcst_gfs_mcc",
+      "fcst_gfs_hcc",
+      "fcst_gfs_tcc_mean3x3",
+      "fcst_gfs_tcc_std3x3",
+      "fcst_gfs_tcc_daymean",
+      "fcst_gfs_t2m",
+      "fcst_gfs_rh2m",
+      "fcst_gfs_pwat",
+      "fcst_gfs_wind10",
+      "fcst_gfs_sunsd",
+      "fcst_gfs_tcell",
+      "fcst_gfs_k_phys",
+      "irradiance_clear_index_prevday"
+    ],
+    "n": 33,
+    "method": "tiered_CORE_SUPPORTED_CONDITIONAL"
+  },
+  "floor_sensitivity": [
+    {
+      "floor": 0.25,
+      "CORE": 26,
+      "EXCLUDED": 9,
+      "SUPPORTED": 6,
+      "CONDITIONAL": 1,
+      "recommended": 33
+    },
+    {
+      "floor": 0.3,
+      "CORE": 26,
+      "EXCLUDED": 9,
+      "SUPPORTED": 6,
+      "CONDITIONAL": 1,
+      "recommended": 33
+    },
+    {
+      "floor": 0.35,
+      "CORE": 26,
+      "EXCLUDED": 9,
+      "SUPPORTED": 6,
+      "CONDITIONAL": 1,
+      "recommended": 33
+    },
+    {
+      "floor": 0.4,
+      "CORE": 26,
+      "EXCLUDED": 9,
+      "SUPPORTED": 6,
+      "CONDITIONAL": 1,
+      "recommended": 33
+    }
+  ]
+}

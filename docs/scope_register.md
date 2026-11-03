@@ -35,11 +35,11 @@ Changes of method are recorded in `docs/methodology_changes.md`. This register i
 | S-03 | 3.3 | The two targets and MEAN_DAYTIME_K | — | — | 6 | ✅ (stage 6) |
 | S-04 | 3.4 | Feature table, inputs of the sequence models (TFT known reals, PatchTST target only) | — | all | 6, 9 | ✅ tabular (stage 6) / ⬜ sequence inputs (stage 9) |
 | S-05 | 3.5 | End-to-end milestones table | — | — | 11 | 📝 |
-| S-06 | 3.6.1–3.6.3 | Candidate pool, stage-1 screening, SHAP backward elimination | 19, 20 | XGB-Opt | 7 | ⬜ |
-| S-07 | 3.6.4 | Three-method consensus (05e), counts per method and loop | 21, 22 | XGB-Opt | 7 | ⬜ |
-| S-08 | 3.6.5 | 05f tiered audit | 23 | — | 7 | ⬜ |
-| S-09 | 3.6.6 | Operational availability classes | 24 | — | 7 | ⬜ |
-| S-10 | 3.6.7–3.6.8 | Stability-floor sensitivity; findings carried into modelling | 25 | — | 7 | ⬜ |
+| S-06 | 3.6.1–3.6.3 | Candidate pool, stage-1 screening, SHAP backward elimination | 19, 20 | XGB-Opt | 7 | ✅ (stage 7) |
+| S-07 | 3.6.4 | Three-method consensus (05e), counts per method and loop | 21, 22 | XGB-Opt | 7 | ✅ (stage 7) |
+| S-08 | 3.6.5 | 05f tiered audit | 23 | — | 7 | ✅ (stage 7) |
+| S-09 | 3.6.6 | Operational availability classes | 24 | — | 7 | ✅ (stage 7) |
+| S-10 | 3.6.7–3.6.8 | Stability-floor sensitivity; findings carried into modelling (the input of stage 9 per target × horizon, `model_inputs.json`) | 25 | — | 7 | ✅ (stage 7) |
 | S-11 | 3.7 | Anti-leakage protocol and leakage list | — | all | 1, G-1 | ✅ list and tests (stage 1) / ⬜ manual audit (G-1) |
 | S-12 | 3.8 | Split table and timeline | 11 | — | 3, 11 | ✅ table (stage 3) / ⬜ figure |
 | S-13 | 3.9 | Lag exclusion per horizon | — | — | 6 | ✅ (stage 6) |

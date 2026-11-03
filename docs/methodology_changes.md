@@ -111,7 +111,7 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 | Weekend Saturday–Sunday; solar noon = local hour − 12; approximate day length | Friday–Saturday; solar noon from the solar transit; day length from sunrise and sunset | Correction | F-25, OP-39 |
 | Lagged power used even in curtailed or stopped hours | Masked before lags and rolling | Decision | A curtailed hour is not weather (D-22, OP-36) |
 | A quality flag (`has_statistical_outlier`) in the candidate pool | Quality columns can never be inputs | Correction | T-01 (F-17) |
-| §3.4 lists `target_k_lag_1d` | No lag of k exists in the original 05e sets or in the 76 XGB inputs | Report text | The table does not match the evidence. Lags of k are proposed for stage 7, to be tested on validation; if adopted, the text becomes true |
+| §3.4 lists `target_k_lag_1d` | No lag of k exists in the original 05e sets or in the 76 XGB inputs | Report text | The table does not match the evidence. Lags of k were tested in stage 7, inside train, and not admitted (D-24, OP-46): the gain at D+1 missed its margin by 0.002 pp. The text is corrected in v7 (C-32) |
 | 19 leaky features excluded (count varies: 17 / 19 / 20) | One updated list (20) and an automated check | Completion | C-02, T-01. The rebuild also found leaks the original audit missed: rolling at D+2/D+3, `theoretical_power`, and the backward fill. It **extends contribution 1 of the report** (the anti-leakage framework) rather than replacing it |
 
 ### 2.5 Models (§4.1, §5)
@@ -151,7 +151,8 @@ says so: "Absent" / "Partial". The rebuild found that this stage carried the lar
 
 | As submitted | Now | Kind | Why / evidence |
 |---|---|---|---|
-| The 05e consensus sets are "the official modelling inputs" | The 05e sets, regenerated, are the XGB-Opt input per target × horizon, as the report describes. The full contract is compared once on validation, in an appendix | Completion (D-13, 2026-10-25) | The original XGB was in fact trained on all 76 non-excluded columns: the SHAP file has 76 rows (F-05), and the ablation script uses a blocklist (C-31). The errata states this |
+| The 05e consensus sets are "the official modelling inputs" | Each regenerated 05e set is compared with the full pool inside train and once on validation, with the rule fixed in advance. Indirect route: the 05e sets are the XGB-Opt input, as the report describes. Direct route: the full pool, because its 05e sets are worse inside train at every horizon (F-29). The input per target × horizon is in `outputs/07_feature_selection/model_inputs.json` | Completion (D-13, 2026-10-25), and a correction for the direct route (R7-04, 2026-11-03) | The original XGB was in fact trained on all 76 non-excluded columns: the SHAP file has 76 rows (F-05), and the ablation script uses a blocklist (C-31). The errata states this |
+| Selection model: the XGBoost of the base notebooks (100 trees, depth 5, learning rate 0.1) | The fixed XGBoost of D-11 (400 trees, depth 6, learning rate 0.05), for both routes, on a fixed thread count | Decision (Q-17, user, 2026-11-03) | The weaker model found little beyond the GFS power features, so its direct sets were too small (R7-03); one model for every stage-6 and stage-7 decision |
 | 05e JSONs contain the leaky NWP columns, excluded at training time | Regenerated on the corrected data, with GFS candidates and without leaky columns | Correction | C-09 |
 | The base selection (before 05c/05e) read the whole table, validation and test included; the direct one kept the per-inverter DC power of the same hour | Selection on train only, from an allow-list; same steps and thresholds as the January 2026 base notebooks that fed the submission | Correction | F-26, F-27; evidence from the backup (`00_data_audit/original_backup_2026-11-01/`) |
 
@@ -194,8 +195,9 @@ work, and that is what was approved".
      v6 budgets.
    - Every deliverable of v6 (S-01–S-45, all 25 figures) is tracked in `docs/scope_register.md`.
    - T-37 fails if one of them leaves the plan.
-2. **05e as the modelling input (D-13):** the new pipeline does what the report says. The errata
-   records that the old code used the full matrix (C-31).
+2. **05e as the modelling input (D-13):** the new pipeline does what the report says for the
+   indirect route. The direct route keeps the full pool, by a rule fixed before validation was
+   read (R7-04, F-29). The errata records that the old code used the full matrix (C-31).
 3. **No refit on train+val (D-10):** as in v6.
 4. **Literature extensions:** only those that strengthen an existing chapter. Ideas that add model
    families or blending (L-17, L-18) are outside the approved scope; at most a marked appendix,

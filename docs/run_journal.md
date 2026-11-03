@@ -603,6 +603,30 @@ hashes, numbers) and the commit messages are the record:
   indirect route passed, so the third validation look decides between its 05e set and its full
   pool; the direct rows of that look are reported only. New `model_inputs.json`, written by
   `run.decide_input` (unit and contract tests, T-48 and T-50), records the input of stage 9.
+  Committed as `ed78b59` before the look.
+
+### 2026-11-03 · R7-05 · The third validation look, and the input of stage 9
+
+- **Command and commit:** `python -m solarpv.selection.run --validation-only` at `ed78b59`
+  (clean), log `outputs/07_feature_selection/runs/20261103T131740Z.log` (75 s). The third look of
+  stage 7: R7-01 (void) and R7-02 were the first two, on the laptop with the same data.
+- **Results** (`validation_check.csv`; the 05e set minus the full pool, pp, with the margin):
+  - indirect: +0.021 (0.050) / −0.016 (0.078) / +0.033 (0.122) at D+1 / D+2 / D+3, no red flag;
+  - direct, reported only: −0.068 (0.058) / +0.192 (0.101) / +0.378 (0.089), red flags at D+2
+    and D+3.
+- **Input of stage 9** (`model_inputs.json`): indirect, the 05e sets of 31 / 28 / 32 features;
+  direct, the full pool of 96 / 89 / 82 (decided in R7-04).
+- **Review (forecasting-validity-review):**
+  - Train rows only for the selection; validation read once, by the registered step; test not
+    read (manifest: `splits_read_for_selection` = train, `validation_read` = S8 only).
+  - The indirect D+3 red flag of R7-02 is gone with the larger selection model.
+  - For the direct route at D+1 inside train and validation disagree (+0.29 / +0.21 pp inside
+    train, −0.068 pp on validation). The registered rule decides, so the full pool stays; a
+    choice made from this number would be a fourth look. Reported as a limitation.
+  - The error on validation is lower at D+3 than at D+1 in both routes. This is the
+    validation-sample effect examined in R6b-07 (inner train in the expected order, bootstrap
+    interval including 0), not a new finding; inside train the order is D+1 < D+2 < D+3 here.
+- **Decision / next:** stage 7 is closed. Next: notebook 05, then stage 9 with these inputs.
 
 ## Hand-off to the college machine
 

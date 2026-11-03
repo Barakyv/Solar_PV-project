@@ -135,12 +135,14 @@ Left out:
 
 ## 6. Work order on the college machine
 
-1. **Finish stage 7** after Q-17:
+1. **Finish stage 7** after Q-17 (done on 2026-11-03 except the notebook: run journal R7-04 and
+   R7-05, `PROJECT_MASTER.md` §17):
    - the rerun (direct route; indirect unchanged unless the user decides otherwise);
    - `docs/data_processing_record.md`: a section "Feature selection (stage 7)" with OP-46,
      OP-47 and OP-48;
-   - renumber the sections that follow it from 14–17 to 15–18, and change the cross-reference
-     "§15" (line 269) to "§16";
+   - renumber the sections that follow it (done: the backup audit OP-45 got its own §14, so the
+     OP numbers stay in order; feature selection is §15, and the sections after it 16–19; the
+     cross-reference to the limitations is now "§17");
    - section N15 in `scripts/build_data_record.py`, then run it;
    - errata statuses:
      - F-26 and F-27: fixed;

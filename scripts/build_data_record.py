@@ -60,6 +60,12 @@ SOURCES = {
     "backup_inventory": AUDIT_DIR / "original_backup_2026-11-01" / "inventory_summary.json",
     "backup_selection": AUDIT_DIR / "original_backup_2026-11-01" / "selection_evidence.json",
     "backup_weather": AUDIT_DIR / "original_backup_2026-11-01" / "weather_source.json",
+    "selection_manifest": OUTPUTS_DIR / "07_feature_selection" / "selection_manifest.json",
+    "k_history_decision": CONFIGS_DIR / "k_history_decision.yaml",
+    "selection_votes": OUTPUTS_DIR / "07_feature_selection" / "selection_votes.csv",
+    "selection_inner": OUTPUTS_DIR / "07_feature_selection" / "inner_train_check.csv",
+    "selection_val": OUTPUTS_DIR / "07_feature_selection" / "validation_check.csv",
+    "selection_inputs": OUTPUTS_DIR / "07_feature_selection" / "model_inputs.json",
 }
 
 
@@ -473,6 +479,75 @@ def build() -> str:
         "Daily r of the clear-sky index with the measurement (original series vs real GFS D+1):",
         "",
         table(daily),
+        "",
+    ]
+    sm, kd = load("selection_manifest"), load("k_history_decision")
+    votes, inner = load("selection_votes"), load("selection_inner")
+    val, inputs = load("selection_val"), load("selection_inputs")
+    k_rows = pd.DataFrame([{"set": k, **v} for k, v in kd["results"].items()])
+    counts = pd.DataFrame([{"set": k, **v} for k, v in sm["counts"].items()])
+    shares = []
+    for (t, h), g in votes.groupby(["target", "horizon"], sort=False):
+        share = (g.set_index("feature")["shap_mean_abs"] / g["shap_mean_abs"].sum()).sort_values(
+            ascending=False)
+        out = share[~share.index.isin(g.loc[g["in_05e"], "feature"])]
+        shares.append({"set": f"{t}_D{h}", "first feature": share.index[0],
+                       "first share": round(float(share.iloc[0]), 3),
+                       "top-3 share": round(float(share.iloc[:3].sum()), 3),
+                       "features with share >= 1 %": int((share >= 0.01).sum()),
+                       "share left out of 05e": round(float(out.sum()), 3),
+                       "features left out": len(out)})
+    inner_t = inner.drop(columns=["nrmse_05e", "nrmse_full"]).round(3)
+    val_t = val.pivot_table(index=["target", "horizon"], columns="features",
+                            values="nrmse_kw_mean", sort=False).round(3).reset_index()
+    flags = val.drop_duplicates(["target", "horizon"]).set_index(["target", "horizon"])
+    val_t["05e minus full"] = [round(float(flags.loc[(t, h), "05e_minus_full_pp"]), 3)
+                               for t, h in zip(val_t["target"], val_t["horizon"], strict=True)]
+    val_t["margin"] = [round(float(flags.loc[(t, h), "margin_pp"]), 3)
+                       for t, h in zip(val_t["target"], val_t["horizon"], strict=True)]
+    val_t["red flag"] = [bool(flags.loc[(t, h), "red_flag"])
+                         for t, h in zip(val_t["target"], val_t["horizon"], strict=True)]
+    val_t.columns = [str(c) for c in val_t.columns]
+    stage9 = pd.DataFrame([{"set": k, "source": v["source"], "features": v["n_features"],
+                            "reason": v["reason"]} for k, v in inputs.items()])
+    for frame in (k_rows, inner_t, val_t):
+        for col in frame.select_dtypes(include="bool").columns:
+            frame[col] = frame[col].map({True: "yes", False: "no"})
+    parts += [
+        "## N15. Feature selection (stage 7)",
+        "",
+        f"Selection at commit {sm['git_commit']} (log `{sm['run_log']}`); the validation look and "
+        f"the stage-9 inputs from log `{sm['validation_run_log']}`. nRMSE in % of 3,449 kW; the "
+        "fixed XGBoost of D-11, 3 seeds where two sets are compared.",
+        "",
+        kv({"splits read for selection": ", ".join(sm["splits_read_for_selection"]),
+            "validation read": sm["validation_read"],
+            "selection model, indirect / direct": " / ".join(sm["selection_model"].values()),
+            "k history admitted (D-24)": "yes" if kd["admitted"] else "no"}),
+        "",
+        "k-history candidates inside train (gain and margin of the D-12 rule, pp):",
+        "",
+        table(k_rows),
+        "",
+        "Features per step:",
+        "",
+        table(counts),
+        "",
+        "Mean |SHAP| of the 42 starting features (share of the total):",
+        "",
+        table(pd.DataFrame(shares)),
+        "",
+        "Inside-train check, the 05e set minus the full pool (pp; R7-04):",
+        "",
+        table(inner_t),
+        "",
+        "Validation, once (S8; the direct rows are reported only):",
+        "",
+        table(val_t),
+        "",
+        "Input of stage 9 (`model_inputs.json`):",
+        "",
+        table(stage9),
         "",
     ]
     return "\n".join(parts)

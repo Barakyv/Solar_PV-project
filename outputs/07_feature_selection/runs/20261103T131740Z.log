@@ -1,0 +1,24 @@
+[     0.0s] RUN     stage 07_feature_selection
+[     0.0s] RUN     command: python -m solarpv.selection.run --validation-only
+[     0.2s] RUN     git commit: ed78b59
+[     0.2s] RUN     started (UTC): 2026-11-03T13:17:40+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.7s] STEP    S8 validation (recomputed) ...
+[    13.5s] NOTE    S8 indirect D+1: 05e 6.836 vs full 6.814 (margin 0.050)
+[    27.9s] NOTE    S8 direct D+1: 05e 6.829 vs full 6.897 (margin 0.058)
+[    38.6s] NOTE    S8 indirect D+2: 05e 7.257 vs full 7.273 (margin 0.078)
+[    51.9s] NOTE    S8 direct D+2: 05e 7.277 vs full 7.085 (margin 0.101)
+[    62.8s] NOTE    S8 indirect D+3: 05e 6.708 vs full 6.675 (margin 0.122)
+[    74.7s] NOTE    S8 direct D+3: 05e 7.005 vs full 6.627 (margin 0.089)
+[    74.7s] STEP    S8 validation (recomputed) done in 74.0s
+[    74.7s] NOTE    model input indirect_D1: 05e (31), inside-train check passed, no validation red flag (D-13)
+[    74.7s] NOTE    model input indirect_D2: 05e (28), inside-train check passed, no validation red flag (D-13)
+[    74.7s] NOTE    model input indirect_D3: 05e (32), inside-train check passed, no validation red flag (D-13)
+[    74.7s] NOTE    model input direct_D1: full pool (96), inside-train check failed (R7-04 step 3); validation not used
+[    74.7s] NOTE    model input direct_D2: full pool (89), inside-train check failed (R7-04 step 3); validation not used
+[    74.7s] NOTE    model input direct_D3: full pool (82), inside-train check failed (R7-04 step 3); validation not used
+[    74.7s] OUTPUT  outputs/07_feature_selection/validation_check.csv sha256=ce350060a1e4d855
+[    74.7s] OUTPUT  outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[    74.7s] OUTPUT  outputs/07_feature_selection/selection_manifest.json sha256=73070f3da08f8dc4
+[    74.7s] RUN     warnings: 0
+[    74.7s] RUN     status: ok; duration 74.7s

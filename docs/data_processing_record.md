@@ -3,7 +3,7 @@
 Every operation performed on the data in the rebuild, in order, with its reason, method,
 parameters, result, verification and evidence. Written to be lifted into the final report
 (data chapter, "Reproduction and correction note", appendix). All numbers come from
-`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N14).
+`docs/data_record_numbers.md`, which is generated from the stage manifests (sections N1–N15).
 
 IDs: OP-xx = operation on the data (this file); F-xx finding, D-xx decision, A-xx assumption,
 T-xx test, all defined in `PROJECT_MASTER.md`. Corrections relative to the submitted report are
@@ -35,6 +35,7 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | 6 | stage-5 hourly data and minute flags | panel orientation, solar geometry, targets and D-11, D-22 masks, lags and rolling statistics, imputation, calendar (OP-32–OP-39) | `data/processed/06_features/`, `outputs/06_features/`, `configs/target.yaml`, `configs/derived_constants.yaml`, `notebooks/04b_features_target.ipynb` | `stage-06-passed` |
 | 8B | stage-6 tables | truth, reference forecasts, evaluation rules and views, on validation only (OP-40, OP-41) | `outputs/07_evaluation/` | `stage-08b-passed` |
 | 6b | NOAA GFS archive (AWS), stage-6 tables | download of the runs public before issuance, hourly reconstruction, candidate features per horizon, sanity and value check (OP-42–OP-44) | `data/processed/06b_gfs/`, `outputs/06b_gfs/`, `configs/nwp_decision.yaml` | `stage-06b-passed` |
+| 7 | stage-6 and stage-6b tables, train rows | k-history check, selection per target × horizon, inside-train check, one validation look, the input of stage 9 (OP-46–OP-48) | `outputs/07_feature_selection/`, `configs/k_history_decision.yaml` | — |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
@@ -266,7 +267,7 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§15). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§17). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
@@ -678,7 +679,7 @@ current manifest with a note under every code cell, and the claims of the notes 
   - Conclusion: a property of the validation sample (D+3 GFS happened to be as good as D+1
     there), not a leak (`00_data_audit/gfs_value_2026-10-25/`).
 
-## 14. Differences from the original data pipeline
+## 14. Audit of the original backup (2026-11-01)
 
 **OP-45 — Audit of the original backup (2026-11-01, no project data changed).** `00_data_audit/original_backup_2026-11-01/` (README, three scripts, run logs).
 - *Why:* the user added an older backup of the original project (about January 2026). It is a step on the way to the v6 submission, never the final pipeline; the submission prevails.
@@ -686,6 +687,94 @@ current manifest with a note under every code cell, and the claims of the notes 
 - *Result (N14):* the base selection fed the submitted 05e files, read the whole table (F-26) and, for the direct target, kept the per-inverter DC power (F-27); the original NWP was the Open-Meteo archive with `gfs_seamless`, of about D+1 skill, joined 2-3 h off the clock (F-28).
 - *Verification:* T-45 (the claims follow from the tracked outputs; no coordinate is written out).
 
+## 15. Feature selection (stage 7, `solarpv.selection`)
+
+**Records and conventions.**
+- Plan written before the code: `docs/stage7_plan.md`, with a self-review of the original
+  selection and of my own spec; changes during the stage in its §7 (R7-01, R7-04).
+- Outputs: `outputs/07_feature_selection/` (the twelve 05e and 05f files in the schema of the
+  submitted ones, the step tables, figures 19–25, `model_inputs.json`, the manifest) and
+  `configs/k_history_decision.yaml`.
+- Run journal: R7-01 to R7-05; the canonical run is the college one (R7-04), the laptop outputs
+  are kept in `00_data_audit/selection_2026-11-03/laptop_r7-02/`. Numbers: N15.
+- Selection reads train rows only; validation is read once, at the end (S8); the test split is
+  not read.
+- Every score is nRMSE in kW (% of 3,449 kW); for the indirect route k × theoretical power first.
+  Models: the fixed XGBoost of D-11 (3 seeds where two sets are compared, 8 threads, RH-03).
+
+**OP-46 — Selection tables and the k-history candidates; decision D-24 (`solarpv.selection.common`).**
+- *Why:* the original selection read the whole table, validation and test included (F-26); the
+  report shows `target_k_lag_1d` (C-32), which is in no set.
+- *Method:*
+  - The stage-6 table of each horizon joined with the GFS candidates admitted by D-12, train
+    rows only (`train_table` refuses any other split, T-47).
+  - k history: `target_k_lag_{d}d` for the lags known at T0 (1, 2, 3, 7, 14; no lag 1 at D+2,
+    no lag 1 or 2 at D+3) and the 3- and 7-day same-hour rolling means, from hours with k valid,
+    theoretical power > 50 kW and no operational limit; DST guard and past-only imputation as in
+    stage 6 (T-49).
+  - Admission inside train: the pool with and without the k history, 5 expanding date folds
+    with a 3-day gap, the D-12 rule (gain at D+1 above max(0.05 pp, 2 × pooled seed std), D+2
+    and D+3 not worse by more than that).
+- *Result (N15):* the gain at D+1 is 0.002 pp short of its margin, so the k history is **not
+  admitted** (D-24), as in the laptop run.
+- *Verification:* T-49; T-50 checks the decision against the rule.
+- *Original:* no k history in any set, while the report shows one (C-32): a text correction in
+  stage 11.
+
+**OP-47 — Selection per target × horizon, S1–S7 (`solarpv.selection.steps`, `run`).**
+- *Method:*
+  - **Pool:** an allow-list, the feature contract of the horizon plus the admitted GFS
+    candidates, checked by `assert_no_leakage` (F-27).
+  - **Filters:** variance < 0.001 and MI < 0.02 (5 neighbours), with a core of 11 exempt. Pairs
+    with |r| > 0.98 are reported, not removed (R7-01).
+  - **RFE** one feature per step to 42, by mean |SHAP| on held-out folds; the core is kept.
+  - **05c:** backward elimination from the 42 with a refit at each size; elbow = the smallest set
+    within 1 % of the score of the 42.
+  - **05e:** three votes (SHAP elbow; stability, 30 subsamples of 70 % of the train days, a share
+    of at least 1 % of the mean |SHAP|, probability ≥ 0.6; MI above a shuffled null) and a
+    consensus of 2 of 3. **05f:** tiers, an audit only.
+  - Selection model: the fixed XGBoost of D-11 for both routes (R7-04; the submission used the
+    base-notebook model of 100 trees).
+- *Result (N15):*
+  - Pools of 96 / 89 / 82 features at D+1 / D+2 / D+3.
+  - 05e sets: indirect 31 / 28 / 32, direct 18 / 19 / 15.
+  - GFS features lead every ranking; no dominant feature.
+  - The MI vote endorsed all 42 starting features in every set, so the consensus is the union of
+    the elbow and stability votes (R7-02, kept as registered).
+- *Verification:* T-47, T-48 (synthetic data: date folds, the kW score, the selection model,
+  RFE, elbow, stability, MI vote, consensus, tiers), T-50 (the twelve files, the allow-list, no
+  leaky name, train only).
+- *Original:* the whole table (F-26); for the direct target the per-inverter DC power of the same
+  hour stayed in until after the ranking (F-27).
+
+**OP-48 — Inside-train check, the validation look and the input of stage 9 (R7-04).**
+- *Why:* the submitted 05e sets went into the models without a comparison with the full pool
+  (F-29); on the laptop the direct sets were worse than the full pool inside train and on
+  validation (R7-03).
+- *Method, with the rule fixed before the run (`docs/stage7_plan.md` §7, R7-04):*
+  - Inside train, every target × horizon: the 05e set against the full pool on the date folds
+    and on an inner hold-out (fit to 2023-04-30, scored May 2023 to January 2024), 3 seeds. A
+    set passes when on both it is worse by at most the D-12 margin.
+  - A set that fails takes the full pool, and validation is not used for it. The others get one
+    look at validation (train fit, validation scored; the third look of stage 7, counting the
+    two laptop runs): the 05e set unless a red flag.
+  - `run.decide_input` writes the outcome to `model_inputs.json`, which stage 9 reads.
+- *Result (N15):*
+  - **Indirect:** passes inside train at every horizon, and validation shows no red flag. Input
+    of stage 9: the 05e sets of 31 / 28 / 32 features.
+  - **Direct:** fails at every horizon on both samples, by 0.10–0.71 pp. Input of stage 9: the
+    full pool of 96 / 89 / 82 features. The importance is concentrated (top three features
+    37–65 % of the mean |SHAP|), so few features reach the 1 % share of the stability vote, and
+    those left out carry 14–29 % of it together.
+  - Validation, reported only for the direct route: red flags at D+2 and D+3, as inside train;
+    at D+1 the 05e set is 0.068 pp better than the full pool (margin 0.058 pp), the opposite of
+    inside train.
+- *Verification:* T-48 (`decide_input`: a failed inside-train check cannot be overturned by
+  validation), T-50 (`model_inputs.json` follows both checks and the manifest; no leaky name).
+- *Original:* no such comparison; the 05e sets were described as the model input (§3.6), while
+  the original XGBoost was trained on all its columns (C-31).
+
+## 16. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
@@ -710,10 +799,10 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Rows scored per model | 2,510–2,580, by input window; daytime in the common mask taken from the truth | every model on every daytime hour with truth; daytime from geometry only | OP-41, C-35 |
 | Skill reference | same time yesterday at every horizon | persistence of h days, DST-safe; climatology and clear sky added; CLIPER as an extra column | OP-40, C-08 |
 | Weather forecast | Open-Meteo archive at the target time (not known at issuance), one series for all horizons, backward fill; removed from the final v6 models | GFS runs public before issuance (T-17, actual upload times), own leads per horizon, no backward fill; admitted on validation (D-12) | OP-42–OP-44, C-06, F-11 |
-| Feature selection | whole table, validation and test included; per-inverter DC kept for the direct target | train only, from an allow-list (stage 7) | OP-45, F-26, F-27 |
+| Feature selection | whole table, validation and test included; per-inverter DC kept for the direct target; the selected sets never compared with the full pool | train only, from an allow-list; each set checked against the full pool inside train and once on validation, with the rule fixed in advance; the direct route keeps its full pool | OP-45–OP-48, F-26, F-27, F-29 |
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 
-## 15. Limitations carried into the report
+## 17. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -749,8 +838,17 @@ current manifest with a note under every code cell, and the claims of the notes 
   from the site.
 - Two runs were replaced by the 06Z run of the same day because a file had been re-uploaded
   after the issuance time (OP-42).
+- Feature selection (OP-47, OP-48): the MI vote endorsed every starting feature, so in practice
+  the consensus rests on the SHAP elbow and the stability vote; the 1 % share of the stability
+  vote is relative, so a route with concentrated importance gets small sets (the direct route
+  keeps its full pool for this reason); the 05c curve is one seed, and its 1 % tolerance is about
+  one seed std of the score.
+- The k history missed its D+1 margin by 0.002 pp (OP-46); the rule is applied as registered.
+- For the direct route at D+1, inside train and validation disagree on the sign of the 05e
+  gap (OP-48); the full pool follows the registered rule, and its cost on validation is
+  0.068 pp.
 
-## 16. Reproduction
+## 18. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -772,11 +870,13 @@ python -m solarpv.nwp.gfs
 python -m solarpv.nwp.check                  # writes configs/nwp_decision.yaml (committed)
 python -m solarpv.evaluation.evaluate        # validation; the test needs --allow-test
 python -m solarpv.evaluation.evaluate --fixture
+python -m solarpv.selection.run --skip-validation   # about 95 min on 8 threads; writes configs/k_history_decision.yaml
+python -m solarpv.selection.run --validation-only   # the one validation look; writes model_inputs.json
 python scripts/build_data_record.py
 pytest
 ```
 
-## 17. Pending operations (documented here when performed)
+## 19. Pending operations (documented here when performed)
 
-Stage 7 feature selection (05e as the input, D-13), with the admitted GFS candidates (including the proposal of k lags
-for the indirect route, §11); stage 9 models and the D-21 robustness check on val.
+Stage 9 models, with the inputs of `outputs/07_feature_selection/model_inputs.json` (OP-48), and
+the D-21 robustness check on val.

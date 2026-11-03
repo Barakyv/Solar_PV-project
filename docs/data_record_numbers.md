@@ -520,3 +520,83 @@ Daily r of the clear-sky index with the measurement (original series vs real GFS
 | train_and_val | 1,124 | 0.822 | 0.806 |
 | train | 881 | 0.817 | 0.809 |
 | val | 243 | 0.846 | 0.798 |
+
+## N15. Feature selection (stage 7)
+
+Selection at commit 190e4df (log `outputs/07_feature_selection/runs/20261103T113918Z.log`); the validation look and the stage-9 inputs from log `outputs/07_feature_selection/runs/20261103T131740Z.log`. nRMSE in % of 3,449 kW; the fixed XGBoost of D-11, 3 seeds where two sets are compared.
+
+| item | value |
+|---|---|
+| splits read for selection | train |
+| validation read | S8 only |
+| selection model, indirect / direct | the fixed XGBoost of D-11 (R7-04) / the fixed XGBoost of D-11 (Q-17, R7-04) |
+| k history admitted (D-24) | no |
+
+k-history candidates inside train (gain and margin of the D-12 rule, pp):
+
+| set | gain_pp | margin_pp | passes |
+|---|---|---|---|
+| indirect_D1 | 0.0482 | 0.05 | no |
+| indirect_D2 | 0.059 | 0.05 | yes |
+| indirect_D3 | 0.0199 | 0.0761 | yes |
+
+Features per step:
+
+| set | pool | after filters | after RFE (05c start) | 05c elbow | stability votes | MI votes | 05e consensus | 05f recommended |
+|---|---|---|---|---|---|---|---|---|
+| indirect_D1 | 96 | 94 | 42 | 17 | 31 | 42 | 31 | 31 |
+| indirect_D2 | 89 | 87 | 42 | 10 | 28 | 42 | 28 | 31 |
+| indirect_D3 | 82 | 80 | 42 | 30 | 27 | 42 | 32 | 33 |
+| direct_D1 | 96 | 89 | 42 | 16 | 12 | 42 | 18 | 13 |
+| direct_D2 | 89 | 83 | 42 | 15 | 11 | 42 | 19 | 13 |
+| direct_D3 | 82 | 74 | 42 | 1 | 15 | 42 | 15 | 16 |
+
+Mean |SHAP| of the 42 starting features (share of the total):
+
+| set | first feature | first share | top-3 share | features with share >= 1 % | share left out of 05e | features left out |
+|---|---|---|---|---|---|---|
+| indirect_D1 | fcst_gfs_kt_poa_daymean | 0.162 | 0.312 | 34 | 0.104 | 11 |
+| indirect_D2 | fcst_gfs_kt_poa_daymean | 0.171 | 0.317 | 38 | 0.152 | 14 |
+| indirect_D3 | fcst_gfs_kt_poa_daymean | 0.135 | 0.276 | 35 | 0.088 | 10 |
+| direct_D1 | fcst_gfs_poa | 0.288 | 0.645 | 15 | 0.141 | 24 |
+| direct_D2 | fcst_gfs_poa | 0.285 | 0.544 | 16 | 0.147 | 23 |
+| direct_D3 | poa_global_clearsky | 0.157 | 0.37 | 19 | 0.291 | 27 |
+
+Inside-train check, the 05e set minus the full pool (pp; R7-04):
+
+| target | horizon | sample | n_05e | n_full | 05e_minus_full_pp | margin_pp | passes |
+|---|---|---|---|---|---|---|---|
+| indirect | 1 | date folds | 31 | 96 | -0.058 | 0.05 | yes |
+| indirect | 1 | inner hold-out | 31 | 96 | -0.012 | 0.05 | yes |
+| indirect | 2 | date folds | 28 | 89 | -0.074 | 0.081 | yes |
+| indirect | 2 | inner hold-out | 28 | 89 | 0.054 | 0.093 | yes |
+| indirect | 3 | date folds | 32 | 82 | -0.014 | 0.053 | yes |
+| indirect | 3 | inner hold-out | 32 | 82 | -0.029 | 0.067 | yes |
+| direct | 1 | date folds | 18 | 96 | 0.287 | 0.05 | no |
+| direct | 1 | inner hold-out | 18 | 96 | 0.206 | 0.05 | no |
+| direct | 2 | date folds | 19 | 89 | 0.102 | 0.064 | no |
+| direct | 2 | inner hold-out | 19 | 89 | 0.131 | 0.07 | no |
+| direct | 3 | date folds | 15 | 82 | 0.714 | 0.17 | no |
+| direct | 3 | inner hold-out | 15 | 82 | 0.202 | 0.082 | no |
+
+Validation, once (S8; the direct rows are reported only):
+
+| target | horizon | 05e | full pool | 05e minus full | margin | red flag |
+|---|---|---|---|---|---|---|
+| indirect | 1 | 6.836 | 6.814 | 0.021 | 0.05 | no |
+| indirect | 2 | 7.257 | 7.273 | -0.016 | 0.078 | no |
+| indirect | 3 | 6.708 | 6.675 | 0.033 | 0.122 | no |
+| direct | 1 | 6.829 | 6.897 | -0.068 | 0.058 | no |
+| direct | 2 | 7.277 | 7.085 | 0.192 | 0.101 | yes |
+| direct | 3 | 7.005 | 6.627 | 0.378 | 0.089 | yes |
+
+Input of stage 9 (`model_inputs.json`):
+
+| set | source | features | reason |
+|---|---|---|---|
+| indirect_D1 | 05e | 31 | inside-train check passed, no validation red flag (D-13) |
+| indirect_D2 | 05e | 28 | inside-train check passed, no validation red flag (D-13) |
+| indirect_D3 | 05e | 32 | inside-train check passed, no validation red flag (D-13) |
+| direct_D1 | full pool | 96 | inside-train check failed (R7-04 step 3); validation not used |
+| direct_D2 | full pool | 89 | inside-train check failed (R7-04 step 3); validation not used |
+| direct_D3 | full pool | 82 | inside-train check failed (R7-04 step 3); validation not used |
