@@ -21,7 +21,40 @@ and final training happens only on the code tagged `g1-frozen` (D-08).
 | Baselines | Done (`solarpv.models.baselines`) |
 | Model code | `xgb_sota.py`, `lstm_sota.py`, `patchtst_model.py` are docstrings only; nothing for the TFT models |
 | GPU requirements | `requirements-gpu.txt` lists neuralforecast 3.1.7 and lightning, but not pytorch-forecasting 1.7.0, which §6.11 names for the TFT models: to fix |
-| College machine | Unknown: operating system, GPU and CUDA, memory, disk, internet access, scheduler, time limits (Q-15) |
+| College machine | Inspected on 2026-11-03 (§1.1): a VMware Horizon virtual desktop with an NVIDIA GRID P40-24Q vGPU (24 GB, Pascal, CUDA ≤ 12.2), 8 vCPUs, 64 GB RAM, 228 GB free. No Python, git or conda on arrival; Miniforge and Git were installed per user the same day, and all 357 tests pass. Still unknown: the longest allowed job and whether the desktop survives logoff (Q-15, part) |
+
+### 1.1 The college machine (inspected 2026-11-03, first session; answers Q-15)
+
+Read-only inspection with PowerShell, `nvidia-smi` and HTTPS HEAD requests. Nothing was
+installed or changed.
+
+| Item | Finding |
+|---|---|
+| Access | VMware Horizon virtual desktop of the college VDI (brokers `vdi-broker-1/2.management.afeka.local`), host `GPU-STUD-164V6`, domain `ACADEMIC`. The VM is `VMware7,1` with a hypervisor present |
+| OS | Windows 11 Pro 21H2, 10.0.22000, 64-bit |
+| GPU | NVIDIA GRID P40-24Q: a 24 GB vGPU profile of a Tesla P40 (Pascal, compute capability 6.1), WDDM mode, also drives the desktop (about 0.75 GB in use at idle) |
+| Driver and CUDA | Driver 538.46; highest CUDA runtime it supports: 12.2. No CUDA toolkit (`nvcc` absent, `CUDA_PATH` unset), which PyTorch wheels do not need |
+| CPU | 2 sockets × 4 cores, Intel Xeon Gold 6136 at 3.0 GHz: 8 logical CPUs |
+| RAM | 64 GB (48.5 GB free at inspection) |
+| Disk | `C:` 300 GB NTFS, 228 GB free. `X:` is a network share (`\\192.168.20.27\TecShare`, 757 GB free); it is shared, so neither the data nor `site.private.yaml` go there. `D:` is empty |
+| Internet | Direct, no proxy. HTTPS reachable: `pypi.org`, `files.pythonhosted.org`, `conda.anaconda.org/conda-forge`, `repo.anaconda.com`, `github.com`, `download.pytorch.org` |
+| Scheduler | None: no SLURM, PBS or HPC Pack. Jobs run inside the interactive desktop session |
+| Longest job | Unknown. It depends on the Horizon session policies (disconnect and logoff timers): to ask the college IT |
+| Persistence | Unknown. The Horizon Instant Clone Agent is installed, the user profile is local and not roaming and was created at the first login (2026-11-03 10:45), and the VM was booted on 2026-10-14. Whether `C:` keeps the project after logoff, and whether the next login returns to the same VM, is to ask IT before any long run |
+| Software on arrival | No Python (only the Microsoft Store aliases), no git, no conda or mamba, no Docker. `winget` and `wsl.exe` exist (WSL not checked). The user account is in the local Administrators group, but the session runs unelevated |
+| Installed 2026-11-03 | With the user's approval, per user and not on `PATH`: Miniforge 26.9.4-1 in `C:\Users\204323141\miniforge3` and PortableGit 2.56.0.4 in `C:\Users\204323141\PortableGit`. The CPU environment `solar` was created from `environment.yml`; its differences from `environment.lock.yml` are in RH-02 of `docs/run_journal.md`. The user kept it as created rather than aligning it with the laptop lock |
+
+What this means for the plan (decided in §5 when the GPU environment is built):
+
+- **PyTorch build.** Pascal (sm_61) with a driver capped at CUDA 12.2: use wheels built for CUDA
+  12.1 or 11.8, and check that `torch.cuda.get_arch_list()` lists `sm_61` before any run. The
+  versions pinned in `requirements-gpu.txt` must be checked against this.
+- **Precision.** The P40 has very low FP16 throughput, so the neural models train in FP32 (no
+  16-bit mixed precision).
+- **CPU.** Eight logical CPUs bound XGBoost (`hist`, CPU, §5), the stage-7 rerun and the data
+  loaders; `n_jobs` ≤ 8.
+- **No scheduler.** A run lives in the desktop session, so `--resume` (§3) and atomic outputs
+  matter more; the session timers decide how a long run is split.
 
 ## 2. What runs where
 

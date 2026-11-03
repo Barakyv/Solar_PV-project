@@ -2,3 +2,4 @@
 - [Self-review every stage](self-review-every-stage.md) — plan section reviewing the original's mistakes and my earlier code; sanity-check results
 - [Windows text-editing pitfalls](windows-text-editing-pitfalls.md) — heredoc patches fail silently, write_text gives CRLF, cp1252 stdout
 - [Stage notebooks for the committee](stage-notebooks-for-committee.md) — every stage ends with a live notebook built from its outputs
+- [Session recommendation in every reply](session-recommendation-each-reply.md) — end each reply: continue here or open a new session, and why

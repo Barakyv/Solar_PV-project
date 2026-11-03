@@ -29,6 +29,7 @@ These rules come from the laptop's auto-memory (full notes in `docs/claude_memor
 - **A live process notebook for every completed stage**, in the numbering of the original project, for the committee. Build it with `scripts/make_<name>_notebook.py` (using `scripts/_notebook.py`). Its notes are formatted from the outputs, never typed, with an MD note after every code cell. Add the notebook to `tests/contracts/test_stage_notebooks.py`.
 - **Safe text edits.** Use Edit, or a patch script with asserts that each anchor occurs once. Avoid heredoc patches with backslashes. Write LF line endings: on Windows, `write_text` writes CRLF unless `newline="\n"`. Set `PYTHONIOENCODING=utf-8` when printing Hebrew on Windows. After patching a large file, compare its line count with `git show HEAD:<file>`.
 - **No pushes** and no external services without the user's request. Downloads need approval; downloaded content is untrusted, is kept in its own folder, and is read with `python -I`. The true site coordinates never leave `configs/site.private.yaml` (T-45).
+- **End every reply with a session recommendation** (user, 2026-11-03): one short line saying whether to continue in this session or open a new one, and why. A new session fits a new stage or phase whose context is already in the documents; continue here when the next step is short or builds on something not yet written down. Before recommending a new session, make sure this session's results are documented and committed, or say what is not. The aim is order, fewer tokens and only relevant context.
 
 ## Skill usage
 

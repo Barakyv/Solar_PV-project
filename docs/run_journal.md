@@ -588,3 +588,50 @@ hashes, numbers) and the commit messages are the record:
   already did. After the fix, on the copy without the file: 319 passed, 38 skipped, none failed.
   On the laptop with the file: 357 passed.
 - **Decision / next:** the package is rebuilt at the commit of this fix.
+
+### 2026-11-03 · RH-02 · First session on the college machine
+
+- **Purpose:** the first-session steps of `docs/HANDOFF.md` §3 on the college machine.
+- **Command and commit:** the package of `ee976e4` (`HANDOFF_INFO.json`), unpacked into
+  `C:\Users\204323141\Desktop\solar`.
+- **Results, before any tool was installed:**
+  - The machine had no Python, git or conda.
+  - The manifest check was repeated with PowerShell (`Get-FileHash -Algorithm SHA256` over every
+    line of `HANDOFF_MANIFEST.sha256`, the same check as `verify()`): 3,392 files, 0 missing,
+    0 changed.
+  - `configs/site.private.yaml` is present (copied by the user; its content was not read).
+  - The machine was inspected (`docs/stage9_plan.md` §1.1).
+  - The four memory notes of `docs/claude_memory/` were copied to Claude's memory directory,
+    with one new note on the machine.
+- **Tools installed (the user approved, same day):** per user, no administrator rights, not on
+  `PATH`; both installers matched the SHA-256 that GitHub publishes for the release asset and
+  carry a valid Authenticode signature.
+  - Miniforge 26.9.4-1 (conda 26.9.4) in `C:\Users\204323141\miniforge3`.
+  - PortableGit 2.56.0.4 in `C:\Users\204323141\PortableGit` (laptop: Git 2.55).
+- **Results, after the install:**
+  - `git worktree prune` removed the stale laptop worktree `college-vm-connection-7492d4`.
+  - `git status`: `main` at `ee976e4`; untracked only the stage-7 outputs listed in
+    `HANDOFF_INFO.json`; modified only the three documents edited in this session.
+  - `git fsck`: no errors, only dangling objects (as in RH-01).
+  - `python scripts/handoff_pack.py --verify`: 3,392 files, 0 missing, 3 changed, and the three
+    are the documents edited in this session after the PowerShell check above.
+  - `conda env create -f environment.yml`: done. Against `environment.lock.yml`, 92 of 299
+    versions differ. Unchanged: numpy 2.4.6, scikit-learn 1.9.1, xgboost 3.4.2, shap 0.51.0,
+    pvlib 0.16.1, scipy 1.17.1, statsmodels 0.15.0, optuna 5.0.0, xarray 2026.9.0, cfgrib
+    0.9.15.1, matplotlib 3.11.2, OpenBLAS 0.3.34. Changed: python 3.11.17 → 3.11.18, pandas
+    3.0.6 → 3.1.0, pyarrow 25 → 26, python-dateutil 2.9.0 → 4.0.0, eccodes 2.49 → 2.50, hdf5
+    1.14.6 → 2.2.0, tzdata 2026c → 2026e, numba 0.68.0 → 0.68.1, pytest 9.1.1 → 9.2.0, ruff
+    0.17.0 → 0.17.3. conda saw the GPU and chose the CUDA build of XGBoost (`cuda129`, with
+    `cuda-cudart` 12.9); the CPU `hist` path is the same code.
+  - `pytest -q`: **357 passed, none skipped, none failed**, in 3.1 minutes, which equals the
+    laptop baseline with `site.private.yaml` (`docs/HANDOFF.md` §8).
+- **Problems and fixes:**
+  - 21 warnings that pandas 3.1 adds: `DatetimeIndex.dayofyear` and `.dayofweek` are deprecated
+    (in pvlib and in `solarpv/features/build.py` and `solarpv/nwp/gfs.py`). No behaviour change
+    now; they break under pandas 4, which `environment.yml` (`pandas>=2.2`) does not exclude.
+    Not fixed in this session.
+- **Decision / next:** offered the choice of aligning the environment with the laptop lock
+  (pandas 3.0.6, pyarrow 25, CPU XGBoost) before the stage-7 rerun, the user kept the
+  environment as created (2026-11-03). `environment.lock.yml` still describes the laptop; the
+  versions above are those of every run on the college machine from now on. Next: the open
+  decisions of `docs/HANDOFF.md` §5.
