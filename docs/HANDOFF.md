@@ -135,8 +135,8 @@ Left out:
 
 ## 6. Work order on the college machine
 
-1. **Finish stage 7** after Q-17 (done on 2026-11-03 except the notebook: run journal R7-04 and
-   R7-05, `PROJECT_MASTER.md` §17):
+1. **Finish stage 7** after Q-17 (done on 2026-11-03, the notebook included: run journal R7-04,
+   R7-05 and RH-04, `PROJECT_MASTER.md` §17):
    - the rerun (direct route; indirect unchanged unless the user decides otherwise);
    - `docs/data_processing_record.md`: a section "Feature selection (stage 7)" with OP-46,
      OP-47 and OP-48;
@@ -151,18 +151,22 @@ Left out:
    - the D-24 row in `PROJECT_MASTER.md` §3, the status of L-12, and `docs/scope_register.md`
      S-06 to S-10;
    - `docs/methodology_changes.md`;
-   - the notebook builder `scripts/make_feature_selection_notebook.py`:
+   - the notebook builder `scripts/make_feature_selection_notebook.py` (done, RH-04):
      - fill the placeholders (`PLACEHOLDER_K`, `_SETS`, `_VAL`, `_OLD`);
      - drop the removed "after duplicates" count column;
-     - build `notebooks/05_feature_selection.ipynb`;
+     - build `notebooks/05_feature_selection.ipynb`, with the inside-train check, F-29, the
+       third validation look and `model_inputs.json`;
      - add `"05_feature_selection"` to `tests/contracts/test_stage_notebooks.py`;
+     - no Jupyter kernel can start on this machine (libzmq), so the builder ran the cells in
+       process (`scripts/_notebook.py`, RH-04);
    - commit the outputs with their OP entries; update `PROJECT_MASTER.md` §1 and §17.
 2. **Stage 9 and the runner**, per `docs/stage9_plan.md` W1–W6. Development and smoke runs now
    happen on the college machine (`smoke` and `dev` modes, validation only). Before writing the
    sequence models, fix the input contract of §4.2 (encoder, decoder, the 18 known reals, the
    decoder-to-horizon mapping by local day, T-02).
-3. **Stage notebooks:** `05_feature_selection` (stage 7) and `06_models` (stage 9), each built
-   from the outputs.
+3. **Stage notebooks:** `05_feature_selection` (stage 7, done on 2026-11-03) and `06_models`
+   (stage 9), each built from the outputs. A live run in Jupyter on this machine needs the
+   libzmq problem of RH-04 solved first (user's decision).
 4. **Then G-1, the tag `g1-frozen`, and the `final` run** (stage 10). Every evaluation or
    selection result goes through the `forecasting-validity-review` skill before it is accepted.
 

@@ -716,3 +716,36 @@ hashes, numbers) and the commit messages are the record:
   laptop numbers are not reproduced; the college runs are canonical from here.
   `environment.lock.yml` regenerated from the college environment (the laptop's lock stays in git
   history).
+
+### 2026-11-03 · RH-04 · No Jupyter kernel on the college machine; notebook 05 built in process
+
+- **Purpose:** build `notebooks/05_feature_selection.ipynb`, the last open item of stage 7.
+- **Problem:** `python scripts/make_feature_selection_notebook.py` aborted as soon as nbclient
+  started the kernel: `Bad file descriptor (...\zeromq...\src\epoll.cpp:73)`, exit code
+  0x40000015. A bare `zmq.Context().socket(zmq.PAIR)` aborts the same way, inside and outside the
+  command sandbox, so no Jupyter kernel or notebook server can start on this machine. pyzmq
+  27.2.0 with the conda-forge libzmq 4.3.5, whose Windows poller (wepoll) cannot be created
+  here. `netsh winsock show catalog` lists no layered provider on TCP (only Microsoft providers
+  and VMware vSockets), so the cause is outside the repository, most likely the VDI's endpoint
+  security; not confirmed.
+- **Fix, without changing the environment:** `scripts/_notebook.py` checks in a child process
+  whether a zmq socket can be created (libzmq aborts the whole process, so the check cannot run
+  in the builder). If not, the cells run in an IPython shell in the builder's process; stdout,
+  display calls and the cell's value are stored as nbclient stores them, a failing cell raises,
+  and the notebook metadata records the executor. Where a kernel starts (the laptop) nothing
+  changes. Test: `tests/unit/test_notebook_helper.py`.
+- **Results:** notebook 05 built and executed in 11 s, 12 code cells, each followed by a note
+  formatted from the outputs; every interpretive sentence is guarded by an assert in the
+  builder. `ruff check src scripts tests notebooks` clean; `pytest -q`: 372 passed, none skipped,
+  none failed (369 + notebook 05 + 2 executor tests). The 227 ruff findings of `ruff check .`
+  are all in the third-party `.claude/skills/` and predate this session.
+- **Review (forecasting-validity-review) of the numbers shown:** train only for the selection,
+  validation once (S8), test not read (manifest); both routes scored on the same 9,508 hours in
+  kW; margins fixed in advance, three seeds; `assert_no_leakage` on every stage-9 input in the
+  notebook; the decision rule recomputed from the two checks gives the recorded source for all
+  six sets; D+3 below D+1 on validation is the R6b-07 sample effect, inside train the order is
+  the expected one. No new decision.
+- **Decision / next:** a live demonstration in Jupyter is not possible on this machine until the
+  libzmq problem is solved (for example a libzmq built with the `select` poller, which needs a
+  download, or a fix on the machine: the user's decision). Next: stage 9 per
+  `docs/stage9_plan.md` W1–W6.

@@ -16,7 +16,7 @@ by its builder in `scripts/`, so it can be shown live and rebuilt after any reru
 | `04_cleaning.ipynb` | 5 | `make_cleaning_notebook.py` | `solarpv.data.clean` |
 | `04b_features_target.ipynb` | 6 | `make_features_notebook.py` | `solarpv.features.build`, `solarpv.features.target` |
 | `04c_nwp_gfs.ipynb` | 6b | `make_nwp_gfs_notebook.py` | `solarpv.nwp` |
-| `05_feature_selection.ipynb` | 7 | to come | — |
+| `05_feature_selection.ipynb` | 7 | `make_feature_selection_notebook.py` | `solarpv.selection` |
 | `06_models.ipynb` | 9, 10 | to come | `solarpv.models` |
 | `07_evaluation.ipynb` | 8 (11 later) | `make_evaluation_notebook.py` | `solarpv.evaluation` |
 | `08_reporting.ipynb` | 11 | to come | — |
@@ -24,3 +24,7 @@ by its builder in `scripts/`, so it can be shown live and rebuilt after any reru
 The builders added on 2026-11-01 share `scripts/_notebook.py`, which records the sha256 of every
 source file in the notebook metadata; `tests/contracts/test_stage_notebooks.py` fails when a
 source changed and the notebook was not rebuilt.
+
+On the college machine no Jupyter kernel can start (libzmq aborts, run journal RH-04), so
+`_notebook.py` runs the cells in an IPython shell in the builder's own process there, with the
+same outputs; the notebook metadata records the executor (`solarpv.executor`).
