@@ -9,6 +9,11 @@
 #     read-only, audited in 00_data_audit/original_backup_2026-11-01/) ---
 /old files/solar_ds_capstone/
 
+# --- hand-off packages (scripts/handoff_pack.py, docs/HANDOFF.md) ---
+/handoff/
+/HANDOFF_MANIFEST.sha256
+/HANDOFF_INFO.json
+
 # --- secrets / private config ---
 configs/site.private.yaml
 .env
