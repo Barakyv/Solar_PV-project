@@ -635,3 +635,23 @@ hashes, numbers) and the commit messages are the record:
   environment as created (2026-11-03). `environment.lock.yml` still describes the laptop; the
   versions above are those of every run on the college machine from now on. Next: the open
   decisions of `docs/HANDOFF.md` §5.
+
+### 2026-11-03 · RH-03 · Provenance and thread count on the college machine
+
+- **Purpose:** the first stage-7 run here (`92a2309`, log `20261103T112436Z.log`, stopped after
+  S0 and indirect D+1 when the user changed the selection model, R7-04) showed two machine
+  effects.
+- **Problem 1, provenance:** `git_commit()` returned `unknown`, because git is the per-user
+  PortableGit, not on `PATH`, and the fallback was the laptop's `C:\Program Files\Git`. Every
+  manifest written here would have lost its commit. Fix: `find_git()` also tries
+  `~\PortableGit\cmd\git.exe` (`tests/unit/test_provenance.py`).
+- **Problem 2, thread count:** S0 at D+1 gave a gain of +0.048 pp against a margin of 0.050 pp,
+  where the laptop gave +0.026 pp against 0.054 pp (R7-01). Same XGBoost 3.4.2. Check: the same
+  `cv_score` twice with all cores gave the same value (7.620977), with 4 threads 0.013 pp less.
+  `hist` sums its histograms per thread, so the result depends on the thread count, and
+  `n_jobs=-1` made it depend on the machine. Fix: `XGB_THREADS = 8` in every XGBoost parameter
+  set; on this machine (8 vCPUs) 8 threads reproduce the all-core value exactly (difference 0.0).
+- **Decision / next:** the laptop work is a bootstrap, not a target (user, 2026-11-03), so
+  laptop numbers are not reproduced; the college runs are canonical from here.
+  `environment.lock.yml` regenerated from the college environment (the laptop's lock stays in git
+  history).

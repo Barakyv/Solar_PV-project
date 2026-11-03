@@ -56,7 +56,8 @@ Left out:
 4. Environment:
    - `conda env create -f environment.yml` creates the CPU environment `solar`, which installs
      the package with `pip install -e .`;
-   - `environment.lock.yml` is the laptop's lock (Windows). On another OS, compare versions and
+   - `environment.lock.yml` is the college machine's lock since 2026-11-03 (Windows; the
+     laptop's lock is in git history before that date). On another OS, compare versions and
      record any difference;
    - the GPU environment does not exist yet. It is built here after the GPU is known, per
      `docs/stage9_plan.md` §5. `requirements-gpu.txt` lacks pytorch-forecasting 1.7.0.

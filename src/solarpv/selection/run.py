@@ -144,7 +144,7 @@ def json_05e(r: dict) -> dict:
         "n_pool": len(r["pool"]), "n_starting_features": len(r["start"]),
         "selection_model": {"source": C.SELECTION_MODEL_SOURCE[r["target"]], **{
             k: v for k, v in C.SELECTION_MODEL[r["target"]].items()
-            if k not in ("random_state", "n_jobs", "verbosity")}, "seed": C.SEED},
+            if k not in ("random_state", "verbosity")}, "seed": C.SEED},
         "methods": {
             "shap_elbow": {
                 "description": "SHAP-guided backward elimination (05c); elbow = smallest set "

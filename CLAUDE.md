@@ -18,7 +18,7 @@ Read `PROJECT_MASTER.md` before doing anything. It is the single source of truth
 
 ## Machines
 
-On 2026-11-03 the work moved from the laptop to the college machine, which has the resources for training (user request). In the first session on a new machine, read `docs/HANDOFF.md` and do its first-session steps before anything else. No model is trained on the laptop (user, 2026-11-01). Code and documents move with `git bundle`, data with `python scripts/handoff_pack.py`; never unpack a package over an existing copy.
+On 2026-11-03 the work moved from the laptop to the college machine, which has the resources for training (user request). **The laptop work was only a bootstrap and is not binding** (user, 2026-11-03): college runs need not match laptop runs, and a laptop-era decision is changed when a better-justified one exists, documented as usual. The limit is the original plan: the rebuild must not contradict the submitted project it reconstructs, but may improve it (D-01). Validation looks made on the laptop still count (same data). In the first session on a new machine, read `docs/HANDOFF.md` and do its first-session steps before anything else. No model is trained on the laptop (user, 2026-11-01). Code and documents move with `git bundle`, data with `python scripts/handoff_pack.py`; never unpack a package over an existing copy.
 
 ## Working with the user
 

@@ -88,22 +88,23 @@ def test_score_is_in_kw_for_both_targets():
     assert kw.max() <= AC_CAPACITY_KW  # k x theo, clipped to the capacity
 
 
-def test_selection_model_follows_the_target(monkeypatch):
-    """R7-04: the direct route is selected with the fixed XGBoost of D-11, the indirect route
-    with the base notebooks' model; an explicit model still wins."""
+def test_selection_model_is_the_fixed_xgboost_for_both_routes(monkeypatch):
+    """R7-04: both routes are selected with the fixed XGBoost of D-11; an explicit model still
+    wins; the thread count is fixed (RH-03), never "all cores"."""
+    from solarpv.config.constants import XGB_THREADS
     from solarpv.features.decide_k import XGB_PARAMS
 
     seen, real = [], C.model
     monkeypatch.setattr(C, "model", lambda params, seed: seen.append(params) or real(params, seed))
     t = synthetic(days=30)
-    C.cv_score(C.problem(t, "indirect"), ["signal", "clear"], with_shap=False)
-    assert all(p is C.SELECTION_XGB for p in seen)
-    seen.clear()
-    C.cv_score(C.problem(t, "direct"), ["signal", "clear"], with_shap=False)
-    assert seen and all(p is XGB_PARAMS for p in seen)
+    for target in ("indirect", "direct"):
+        seen.clear()
+        C.cv_score(C.problem(t, target), ["signal", "clear"], with_shap=False)
+        assert seen and all(p is XGB_PARAMS for p in seen)
     seen.clear()
     C.cv_score(C.problem(t, "direct"), ["signal", "clear"], C.SELECTION_XGB, with_shap=False)
-    assert all(p is C.SELECTION_XGB for p in seen)
+    assert seen and all(p is C.SELECTION_XGB for p in seen)
+    assert XGB_PARAMS["n_jobs"] == C.SELECTION_XGB["n_jobs"] == XGB_THREADS > 0
 
 
 def test_correlated_pairs_are_reported_without_chaining():

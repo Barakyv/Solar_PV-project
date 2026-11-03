@@ -58,6 +58,9 @@ SIGNIFICANCE_LEVEL = 0.05
 # ── Reproducibility ────────────────────────────────────────────────────────
 RANDOM_SEEDS = (42, 123, 777)
 DEV_SEED = 42
+# XGBoost threads, fixed: `hist` results move with the thread count (0.013 pp between 4 and 8
+# threads, RH-03); 8 is the college machine's vCPU count, where n_jobs=-1 meant 8 as well
+XGB_THREADS = 8
 DEV_OPTUNA_TRIALS = 20  # D-17
 FINAL_OPTUNA_TRIALS = 60
 

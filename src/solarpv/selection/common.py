@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 
-from solarpv.config.constants import AC_CAPACITY_KW
+from solarpv.config.constants import AC_CAPACITY_KW, XGB_THREADS
 from solarpv.features import build
 from solarpv.features.contract import FEATURE_GROUPS, GFS_PREFIX, features_for_horizon
 from solarpv.features.decide_k import XGB_PARAMS as FIXED_XGB
@@ -27,12 +27,13 @@ CORE = ("solar_zenith", "solar_azimuth", "aoi", "fcst_gfs_ghi", "fcst_gfs_poa", 
 # fcst_cloud_cover -> fcst_gfs_tcc
 SELECTION_XGB = {"n_estimators": 100, "max_depth": 5, "learning_rate": 0.1, "subsample": 0.8,
                  "colsample_bytree": 0.8, "min_child_weight": 3, "gamma": 0.1,
-                 "reg_alpha": 0.1, "reg_lambda": 1.0, "tree_method": "hist", "n_jobs": -1,
-                 "verbosity": 0}  # the base notebooks' RFE model
-# R7-04 (Q-17): the direct route is selected with the fixed XGBoost of D-11; with the base model
-# its sets were too small for the model that uses them, inside train as well (R7-03)
-SELECTION_MODEL = {"indirect": SELECTION_XGB, "direct": FIXED_XGB}
-SELECTION_MODEL_SOURCE = {"indirect": "the January base notebooks' RFE model (D-23)",
+                 "reg_alpha": 0.1, "reg_lambda": 1.0, "tree_method": "hist",
+                 "n_jobs": XGB_THREADS, "verbosity": 0}  # the base notebooks' RFE model
+# R7-04 (Q-17): both routes are selected with the fixed XGBoost of D-11, the model of every other
+# stage-6 and stage-7 decision. With the base model the direct sets were too small for the model
+# that uses them, inside train as well (R7-03); the indirect route follows for one method
+SELECTION_MODEL = {"indirect": FIXED_XGB, "direct": FIXED_XGB}
+SELECTION_MODEL_SOURCE = {"indirect": "the fixed XGBoost of D-11 (R7-04)",
                           "direct": "the fixed XGBoost of D-11 (Q-17, R7-04)"}
 SEED = 42
 N_FOLDS = 5

@@ -65,7 +65,7 @@ Fixed before any result. "Original" = January base notebooks and the submitted f
 | Rows | train, not warm-up, not op-limited; indirect k_valid and theo > 50 kW; direct AC present | as in training (D-11, D-22) |
 | Folds | 5 expanding folds by date over train (6 equal blocks of days), 3-day gap | P11 (deviation) |
 | Score | nRMSE kW on held-out daytime hours with AC, pooled over the folds | P6 (deviation) |
-| Selection model | XGBoost 100 trees, depth 5, learning rate 0.1, subsample 0.8, colsample 0.8, min_child_weight 3, gamma 0.1, alpha 0.1, lambda 1, seed 42. **Direct route: the fixed XGBoost of D-11 since R7-04 (§7)** | original; direct changed (Q-17) |
+| Selection model | XGBoost 100 trees, depth 5, learning rate 0.1, subsample 0.8, colsample 0.8, min_child_weight 3, gamma 0.1, alpha 0.1, lambda 1, seed 42. **Both routes: the fixed XGBoost of D-11 since R7-04 (§7)** | original; changed (Q-17, R7-04) |
 | Filters | variance < 0.001 removed; MI < 0.02 removed (5 neighbours, seed 42); core exempt | original |
 | Core (11) | `solar_zenith`, `solar_azimuth`, `aoi`, `fcst_gfs_ghi`, `fcst_gfs_poa` (for DNI and DHI, which GFS does not give), `fcst_gfs_t2m`, `fcst_gfs_tcc`, `hour_sin`, `hour_cos`, `doy_sin`, `doy_cos` | original, mapped |
 | Correlated pairs | \|Pearson r\| > 0.98 on selection rows, reported only (R7-01) | L-12 |
@@ -166,22 +166,29 @@ Red flags:
 - **R7-04, the selection model of the direct route (2026-11-03, Q-17, user decision).** R7-03
   found the direct gap inside train as well: the base-notebook model (100 trees, depth 5) cannot
   use much beyond the GFS power features, so its sets were too small for the model that uses
-  them. The direct route is now selected with the fixed XGBoost of D-11 (400 trees, depth 6,
+  them. Both routes are now selected with the fixed XGBoost of D-11 (400 trees, depth 6,
   learning rate 0.05, subsample 0.8, colsample 0.8, min_child_weight 5) in the RFE, 05c, the
-  stability votes and the SHAP ranking. The indirect route keeps the base-notebook model (no gap
-  inside train). A deviation from D-23. Fixed before the rerun:
+  stability votes and the SHAP ranking. The user chose it for the direct route (Q-17) and then
+  for the indirect route too (2026-11-03): the indirect route showed no gap inside train, but one
+  model for every stage-6 and stage-7 decision is the simpler and more defensible method, and the
+  laptop results it would have preserved are not a target. The reason is the method, not the
+  indirect D+3 validation number. XGBoost now runs on a fixed 8 threads (`XGB_THREADS`; RH-03):
+  `hist` results move with the thread count, which is why the S0 numbers of this machine
+  differ from the laptop's; on this machine 8 threads equal the former "all cores" exactly.
+  A deviation from D-23. Fixed before the rerun:
   1. **Rerun:** `python -m solarpv.selection.run --skip-validation` on the college machine, both
-     routes. The indirect parameters are unchanged, so its sets must equal those of R7-02 (a
-     cross-machine check; pandas 3.1.0 here, 3.0.6 on the laptop). The laptop outputs are moved
-     first to `00_data_audit/selection_2026-11-03/laptop_r7-02/`.
+     routes. This run is the canonical one: the laptop work was a bootstrap and is not a target
+     (user, 2026-11-03), so the college sets need not equal those of R7-02; any difference is
+     reported, not corrected. The laptop outputs are kept as history in
+     `00_data_audit/selection_2026-11-03/laptop_r7-02/`.
   2. **Inside-train check** (`inner_train_check.csv`, every target × horizon): the fixed XGBoost,
      3 seeds, the 05e set against the full pool on the 5 date folds and on the inner hold-out of
-     R7-03 (fit to 2023-04-30, scored May 2023 to January 2024). A direct horizon passes when on
-     both samples the 05e set is worse by at most the margin of the D-12 rule. Both samples lie
-     inside the rows the selection used, so this check can refute the fix but not prove it;
+     R7-03 (fit to 2023-04-30, scored May 2023 to January 2024). A target × horizon passes when
+     on both samples the 05e set is worse by at most the margin of the D-12 rule. Both samples
+     lie inside the rows the selection used, so this check can refute the fix but not prove it;
      validation is the real test.
-  3. **A direct horizon that fails step 2** takes the full pool; validation is not used for that
-     decision.
+  3. **A target × horizon that fails step 2** takes the full pool; validation is not used for
+     that decision.
   4. **Otherwise the third validation look** (`--validation-only`, documented as the third). No
      red flag: the 05e set is the input (D-13). A red flag that persists: the full pool at that
      horizon, with no further iteration. This is one registered choice between two sets on

@@ -74,11 +74,10 @@ def test_manifest_train_only_and_decisions():
 
 @pytest.mark.parametrize(("target", "horizon"), COMBOS)
 def test_selection_model_recorded_per_route(target, horizon):
-    """R7-04: the direct route was selected with the fixed XGBoost of D-11."""
+    """R7-04: both routes were selected with the fixed XGBoost of D-11."""
     e = _json(f"final_features_{target}_D{horizon}.json")
     model = e["selection_model"]
-    expected = (400, 6, 0.05) if target == "direct" else (100, 5, 0.1)
-    assert (model["n_estimators"], model["max_depth"], model["learning_rate"]) == expected
+    assert (model["n_estimators"], model["max_depth"], model["learning_rate"]) == (400, 6, 0.05)
 
 
 def test_inner_train_check_follows_the_margin_rule():

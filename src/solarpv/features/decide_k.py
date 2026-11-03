@@ -45,6 +45,7 @@ from solarpv.config.constants import (  # noqa: E402
     DEV_SEED,
     RANDOM_SEEDS,
     TIMEZONE_LOCAL,
+    XGB_THREADS,
 )
 from solarpv.config.paths import PROCESSED_DIR, output_dir  # noqa: E402
 from solarpv.config.provenance import git_commit  # noqa: E402
@@ -57,7 +58,7 @@ FEATURES_D1 = PROCESSED_DIR / "06_features" / "features_1H_D1.parquet"
 HOURLY_FILE = PROCESSED_DIR / "05_clean" / "scada_1H_clean.parquet"
 XGB_PARAMS = {"n_estimators": 400, "max_depth": 6, "learning_rate": 0.05, "subsample": 0.8,
               "colsample_bytree": 0.8, "min_child_weight": 5, "tree_method": "hist",
-              "random_state": DEV_SEED, "n_jobs": -1}
+              "random_state": DEV_SEED, "n_jobs": XGB_THREADS}
 THEO_THRESHOLDS = (50.0, 100.0, 150.0)
 MIN_GAIN_PP = 0.05
 ELEVATION_BANDS = [0, 5, 10, 15, 30, 90]
