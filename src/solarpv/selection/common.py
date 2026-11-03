@@ -15,6 +15,7 @@ import xgboost as xgb
 from solarpv.config.constants import AC_CAPACITY_KW
 from solarpv.features import build
 from solarpv.features.contract import FEATURE_GROUPS, GFS_PREFIX, features_for_horizon
+from solarpv.features.decide_k import XGB_PARAMS as FIXED_XGB
 from solarpv.features.leakage import assert_no_leakage
 from solarpv.nwp import check as nwp_check
 
@@ -28,6 +29,11 @@ SELECTION_XGB = {"n_estimators": 100, "max_depth": 5, "learning_rate": 0.1, "sub
                  "colsample_bytree": 0.8, "min_child_weight": 3, "gamma": 0.1,
                  "reg_alpha": 0.1, "reg_lambda": 1.0, "tree_method": "hist", "n_jobs": -1,
                  "verbosity": 0}  # the base notebooks' RFE model
+# R7-04 (Q-17): the direct route is selected with the fixed XGBoost of D-11; with the base model
+# its sets were too small for the model that uses them, inside train as well (R7-03)
+SELECTION_MODEL = {"indirect": SELECTION_XGB, "direct": FIXED_XGB}
+SELECTION_MODEL_SOURCE = {"indirect": "the January base notebooks' RFE model (D-23)",
+                          "direct": "the fixed XGBoost of D-11 (Q-17, R7-04)"}
 SEED = 42
 N_FOLDS = 5
 GAP_DAYS = 3
@@ -177,10 +183,12 @@ def model(params: dict, seed: int) -> xgb.XGBRegressor:
     return xgb.XGBRegressor(**{**params, "random_state": seed})
 
 
-def cv_score(problem: Problem, feats: list[str], params: dict = SELECTION_XGB, seed: int = SEED,
+def cv_score(problem: Problem, feats: list[str], params: dict | None = None, seed: int = SEED,
              with_shap: bool = True, folds=None) -> tuple[float, pd.Series | None]:
     """Pooled nRMSE in kW (% of capacity) over the held-out daytime hours of the date folds, and
-    the mean |SHAP| of every feature on those held-out hours (P6, P7)."""
+    the mean |SHAP| of every feature on those held-out hours (P6, P7). Without `params`, the
+    selection model of the target (SELECTION_MODEL)."""
+    params = SELECTION_MODEL[problem.target] if params is None else params
     folds = folds if folds is not None else date_folds(problem.day)
     errors, shap_sum, n = [], np.zeros(len(feats)), 0
     for train_rows, test_rows in folds:

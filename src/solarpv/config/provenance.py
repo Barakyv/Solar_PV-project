@@ -9,12 +9,23 @@ from solarpv.config.paths import REPO_ROOT
 
 # what produces the outputs; a modified output file does not make the code dirty
 CODE_PATHS = ("src", "scripts", "configs", "pyproject.toml", "environment.yml")
+# git off PATH: the laptop's system install, the college machine's per-user PortableGit (RH-02)
+GIT_FALLBACKS = (Path(r"C:\Program Files\Git\cmd\git.exe"),
+                 Path.home() / "PortableGit" / "cmd" / "git.exe")
+
+
+def find_git() -> str:
+    """git on PATH, else the first fallback that exists; 'git' (which then fails) otherwise."""
+    found = shutil.which("git")
+    if found:
+        return found
+    return next((str(p) for p in GIT_FALLBACKS if p.exists()), "git")
 
 
 def git_commit() -> str:
     """Short hash of HEAD, with '+dirty' if tracked code or configuration is modified;
     'unknown' without git."""
-    git = shutil.which("git") or r"C:\Program Files\Git\cmd\git.exe"
+    git = find_git()
     try:
         head = subprocess.run([git, "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT,
                               capture_output=True, text=True, check=True).stdout.strip()

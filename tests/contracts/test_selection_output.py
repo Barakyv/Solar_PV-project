@@ -2,7 +2,8 @@
 
 Twelve selection files in the schema of the submitted ones; every 05e feature comes from the
 allow-list of its pool and passes the leakage rules; the selection read train rows only; the
-k-history decision follows the D-24 rule; the single validation comparison is present.
+k-history decision follows the D-24 rule; the selection model of each route is recorded and the
+inside-train check follows the margin rule (R7-04); the validation comparison is present.
 """
 
 import json
@@ -69,6 +70,31 @@ def test_manifest_train_only_and_decisions():
         assert v["passes"] == rule, name
     for combo in [f"{t}_D{h}" for t, h in COMBOS]:
         assert combo in m["counts"] and combo in m["validation_red_flags"]
+
+
+@pytest.mark.parametrize(("target", "horizon"), COMBOS)
+def test_selection_model_recorded_per_route(target, horizon):
+    """R7-04: the direct route was selected with the fixed XGBoost of D-11."""
+    e = _json(f"final_features_{target}_D{horizon}.json")
+    model = e["selection_model"]
+    expected = (400, 6, 0.05) if target == "direct" else (100, 5, 0.1)
+    assert (model["n_estimators"], model["max_depth"], model["learning_rate"]) == expected
+
+
+def test_inner_train_check_follows_the_margin_rule():
+    import pandas as pd
+
+    path = OUT / "inner_train_check.csv"
+    if not path.exists():
+        pytest.skip("run: python -m solarpv.selection.run --skip-validation")
+    c = pd.read_csv(path)
+    assert len(c) == 12 and set(c["sample"]) == {"date folds", "inner hold-out"}
+    assert (abs(c["05e_minus_full_pp"] - (c["nrmse_05e"] - c["nrmse_full"])) < 1e-9).all()
+    assert (c["passes"] == (c["05e_minus_full_pp"] <= c["margin_pp"])).all()
+    assert (c["margin_pp"] >= 0.05).all()
+    m = _json("selection_manifest.json")
+    for (t, h), g in c.groupby(["target", "horizon"]):
+        assert m["inner_train_passes"][f"{t}_D{h}"] == bool(g["passes"].all())
 
 
 def test_validation_comparison_and_availability_file():

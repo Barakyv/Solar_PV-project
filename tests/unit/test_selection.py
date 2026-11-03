@@ -1,8 +1,9 @@
 """Stage-7 selection on synthetic data (docs/stage7_plan.md §5).
 
 T-47: train rows only; the allow-list refuses a leaking column.
-T-48: date folds, the kW score, correlated pairs, RFE keeps the core, the elbow rule,
-      stability on whole days, the MI vote against shuffled copies, consensus and 05f tiers.
+T-48: date folds, the kW score, the selection model per route (R7-04), correlated pairs, RFE
+      keeps the core, the elbow rule, stability on whole days, the MI vote against shuffled
+      copies, consensus and 05f tiers.
 T-49: the k history follows the stage-6 rules (DST guard, lags per horizon, past only).
 """
 
@@ -85,6 +86,24 @@ def test_score_is_in_kw_for_both_targets():
     rows = p.score
     kw = C.to_kw(p, np.full(int(rows.sum()), 2.0), rows)
     assert kw.max() <= AC_CAPACITY_KW  # k x theo, clipped to the capacity
+
+
+def test_selection_model_follows_the_target(monkeypatch):
+    """R7-04: the direct route is selected with the fixed XGBoost of D-11, the indirect route
+    with the base notebooks' model; an explicit model still wins."""
+    from solarpv.features.decide_k import XGB_PARAMS
+
+    seen, real = [], C.model
+    monkeypatch.setattr(C, "model", lambda params, seed: seen.append(params) or real(params, seed))
+    t = synthetic(days=30)
+    C.cv_score(C.problem(t, "indirect"), ["signal", "clear"], with_shap=False)
+    assert all(p is C.SELECTION_XGB for p in seen)
+    seen.clear()
+    C.cv_score(C.problem(t, "direct"), ["signal", "clear"], with_shap=False)
+    assert seen and all(p is XGB_PARAMS for p in seen)
+    seen.clear()
+    C.cv_score(C.problem(t, "direct"), ["signal", "clear"], C.SELECTION_XGB, with_shap=False)
+    assert all(p is C.SELECTION_XGB for p in seen)
 
 
 def test_correlated_pairs_are_reported_without_chaining():

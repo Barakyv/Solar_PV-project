@@ -1,0 +1,154 @@
+{
+  "stage": "07_feature_selection",
+  "git_commit": "82fc921",
+  "run_log": "outputs/07_feature_selection/runs/20261101T125246Z.log",
+  "rows": {
+    "indirect_D1": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "indirect_D2": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "indirect_D3": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "direct_D1": {
+      "fit": 20393,
+      "score": 9508
+    },
+    "direct_D2": {
+      "fit": 20393,
+      "score": 9508
+    },
+    "direct_D3": {
+      "fit": 20393,
+      "score": 9508
+    }
+  },
+  "splits_read_for_selection": [
+    "train"
+  ],
+  "validation_read": "S8 only",
+  "counts": {
+    "indirect_D1": {
+      "pool": 96,
+      "after filters": 94,
+      "after RFE (05c start)": 42,
+      "05c elbow": 7,
+      "stability votes": 25,
+      "MI votes": 42,
+      "05e consensus": 25,
+      "05f recommended": 28
+    },
+    "indirect_D2": {
+      "pool": 89,
+      "after filters": 87,
+      "after RFE (05c start)": 42,
+      "05c elbow": 4,
+      "stability votes": 26,
+      "MI votes": 42,
+      "05e consensus": 26,
+      "05f recommended": 27
+    },
+    "indirect_D3": {
+      "pool": 82,
+      "after filters": 80,
+      "after RFE (05c start)": 42,
+      "05c elbow": 7,
+      "stability votes": 26,
+      "MI votes": 42,
+      "05e consensus": 26,
+      "05f recommended": 26
+    },
+    "direct_D1": {
+      "pool": 96,
+      "after filters": 89,
+      "after RFE (05c start)": 42,
+      "05c elbow": 16,
+      "stability votes": 11,
+      "MI votes": 42,
+      "05e consensus": 19,
+      "05f recommended": 13
+    },
+    "direct_D2": {
+      "pool": 89,
+      "after filters": 83,
+      "after RFE (05c start)": 42,
+      "05c elbow": 13,
+      "stability votes": 10,
+      "MI votes": 42,
+      "05e consensus": 16,
+      "05f recommended": 15
+    },
+    "direct_D3": {
+      "pool": 82,
+      "after filters": 74,
+      "after RFE (05c start)": 42,
+      "05c elbow": 1,
+      "stability votes": 12,
+      "MI votes": 42,
+      "05e consensus": 12,
+      "05f recommended": 14
+    }
+  },
+  "k_history": {
+    "decision": "D-24",
+    "admitted": false,
+    "results": {
+      "indirect_D1": {
+        "gain_pp": 0.026,
+        "margin_pp": 0.0544,
+        "passes": false
+      },
+      "indirect_D2": {
+        "gain_pp": -0.043,
+        "margin_pp": 0.1125,
+        "passes": true
+      },
+      "indirect_D3": {
+        "gain_pp": -0.0162,
+        "margin_pp": 0.0646,
+        "passes": true
+      }
+    }
+  },
+  "red_flags": {
+    "indirect_D1": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "indirect_D2": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "indirect_D3": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D1": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D2": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D3": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    }
+  },
+  "validation_red_flags": {
+    "direct_D1": false,
+    "direct_D2": true,
+    "direct_D3": true,
+    "indirect_D1": false,
+    "indirect_D2": false,
+    "indirect_D3": true
+  },
+  "capacity_kw": 3449.0,
+  "validation_run_log": "outputs/07_feature_selection/runs/20261101T132514Z.log"
+}

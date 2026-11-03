@@ -1,9 +1,11 @@
 """Stage 7: run the selection for every target × horizon (docs/stage7_plan.md).
 
-    python -m solarpv.selection.run
+    python -m solarpv.selection.run [--skip-validation | --validation-only]
 
 S0 decides the k-history candidates inside train (D-24); S1–S7 select per target × horizon on
-train rows only; S8 compares each 05e set with the full pool once on validation (D-13). Outputs in
+train rows only; the inside-train check compares each 05e set with the full pool with the fixed
+XGBoost of D-11 (R7-04); S8 compares them once on validation (D-13). `--skip-validation` stops
+before S8 and `--validation-only` runs S8 alone on the saved sets (plan §7, R7-04). Outputs in
 outputs/07_feature_selection/ and configs/k_history_decision.yaml.
 """
 
@@ -35,6 +37,7 @@ IRRADIANCE_GFS = ("fcst_gfs_ghi", "fcst_gfs_kt", "fcst_gfs_poa", "fcst_gfs_kt_po
                   "fcst_gfs_kt_poa_ma3", "fcst_gfs_kt_poa_daymean", "fcst_gfs_pv_kw",
                   "fcst_gfs_k_phys")
 DOMINANCE_FACTOR = 10.0  # red flag: first SHAP feature > 10 × the third (the DC case was 17)
+INNER_TRAIN_END = pd.Timestamp("2023-04-30 23:59", tz="UTC")  # the inner hold-out of R7-03
 
 
 def margin_rule(without: list[float], with_: list[float]) -> tuple[float, float]:
@@ -139,6 +142,9 @@ def json_05e(r: dict) -> dict:
         "rows": "train only (stage 7, P1); score: nRMSE in kW (% of 3,449 kW) on held-out "
                 "daytime hours of 5 expanding date folds with a 3-day gap",
         "n_pool": len(r["pool"]), "n_starting_features": len(r["start"]),
+        "selection_model": {"source": C.SELECTION_MODEL_SOURCE[r["target"]], **{
+            k: v for k, v in C.SELECTION_MODEL[r["target"]].items()
+            if k not in ("random_state", "n_jobs", "verbosity")}, "seed": C.SEED},
         "methods": {
             "shap_elbow": {
                 "description": "SHAP-guided backward elimination (05c); elbow = smallest set "
@@ -191,6 +197,36 @@ def json_05f(r: dict) -> dict:
         "recommended_05f": {"features": kept, "n": len(kept),
                             "method": "tiered_CORE_SUPPORTED_CONDITIONAL"},
         "floor_sensitivity": r["sensitivity"].to_dict("records")}
+
+
+# ── inside-train check (R7-04) ────────────────────────────────────────────
+
+
+def inner_train_check(results: list[dict], tables: dict[int, pd.DataFrame], log) -> pd.DataFrame:
+    """The fixed XGBoost of D-11, 3 seeds, each 05e set against its full pool inside train: the
+    date folds and the inner hold-out of R7-03 (fit to April 2023, scored from May 2023). Both
+    samples lie inside the selection's rows, so the check can refute a selection, not prove it."""
+    rows = []
+    for r in results:
+        t = tables[r["horizon"]]
+        p = C.problem(t, r["target"])
+        holdout = [(pd.Series(t.index <= INNER_TRAIN_END, index=t.index),
+                    pd.Series(t.index > INNER_TRAIN_END, index=t.index))]
+        sets = {"05e": r["chosen"], "full pool": r["pool"]}
+        for sample, folds in (("date folds", None), ("inner hold-out", holdout)):
+            scores = {name: [C.cv_score(p, feats, FIXED_XGB, seed, with_shap=False,
+                                        folds=folds)[0] for seed in RANDOM_SEEDS]
+                      for name, feats in sets.items()}
+            worse_by, margin = margin_rule(scores["05e"], scores["full pool"])
+            rows.append({"target": r["target"], "horizon": r["horizon"], "sample": sample,
+                         "n_05e": len(r["chosen"]), "n_full": len(r["pool"]),
+                         "nrmse_05e": float(np.mean(scores["05e"])),
+                         "nrmse_full": float(np.mean(scores["full pool"])),
+                         "05e_minus_full_pp": worse_by, "margin_pp": margin,
+                         "passes": bool(worse_by <= margin)})
+            log.note(f"inner {r['target']} D+{r['horizon']} {sample}: 05e minus full "
+                     f"{worse_by:+.3f} pp (margin {margin:.3f})")
+    return pd.DataFrame(rows)
 
 
 # ── S8: one look at validation ────────────────────────────────────────────
@@ -344,7 +380,8 @@ def _save(fig, name: str):
 
 
 def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
-                  val: pd.DataFrame, log) -> list:
+                  inner: pd.DataFrame, val: pd.DataFrame | None, log) -> list:
+    """`val` is None with --skip-validation: no validation_check.csv until --validation-only."""
     written = []
 
     def dump(name: str, obj) -> None:
@@ -390,7 +427,9 @@ def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
         "availability": [C.availability(f) for f in union],
         **{f"{r['target']}_D{r['horizon']}": [f in r["chosen"] for f in union] for r in results}}))
     csv("k_history_check.csv", k_table)
-    csv("validation_check.csv", val)
+    csv("inner_train_check.csv", inner)
+    if val is not None:
+        csv("validation_check.csv", val)
     written += figures(results)
     manifest = {
         "stage": "07_feature_selection", "git_commit": git_commit(), "run_log": str(
@@ -398,20 +437,26 @@ def write_outputs(results: list[dict], k_table: pd.DataFrame, k_decision: dict,
         "rows": {f"{r['target']}_D{r['horizon']}": {"fit": r["n_fit_rows"],
                                                      "score": r["n_score_rows"]}
                  for r in results},
-        "splits_read_for_selection": ["train"], "validation_read": "S8 only",
+        "splits_read_for_selection": ["train"],
+        "validation_read": "S8 only" if val is not None else "not yet (S8 pending)",
+        "selection_model": C.SELECTION_MODEL_SOURCE,
         "counts": {f"{r['target']}_D{r['horizon']}": counts(r) for r in results},
         "k_history": k_decision,
         "red_flags": {f"{r['target']}_D{r['horizon']}": r["flags"] for r in results},
-        "validation_red_flags": {f"{t}_D{h}": bool(g["red_flag"].any()) for (t, h), g in
-                                 val.groupby(["target", "horizon"])},
+        "inner_train_passes": {f"{t}_D{h}": bool(g["passes"].all()) for (t, h), g in
+                               inner.groupby(["target", "horizon"])},
+        "validation_red_flags": {} if val is None else {
+            f"{t}_D{h}": bool(g["red_flag"].any()) for (t, h), g in
+            val.groupby(["target", "horizon"])},
         "capacity_kw": AC_CAPACITY_KW}
     dump("selection_manifest.json", manifest)
     return written
 
 
-def run() -> dict:
+def run(validation: bool = True) -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
-    with RunLog("07_feature_selection", "python -m solarpv.selection.run", out_dir=OUT) as log:
+    command = "python -m solarpv.selection.run" + ("" if validation else " --skip-validation")
+    with RunLog("07_feature_selection", command, out_dir=OUT) as log:
         log.inputs([PROCESSED_DIR / "06_features" / f"features_1H_D{h}.parquet" for h in HORIZONS]
                    + [PROCESSED_DIR / "06b_gfs" / f"gfs_features_D{h}.parquet" for h in HORIZONS])
         with log.step("tables (train only) and k history"):
@@ -432,10 +477,16 @@ def run() -> dict:
                     if (target == "indirect" and k_decision["admitted"]) else ()
                 with log.step(f"S1-S7 {target} D+{h}"):
                     results.append(select(t, target, h, extra, log))
-        with log.step("S8 validation (once)"):
-            val = validation_check(results, k_decision["admitted"], log)
+        with log.step("inside-train check (R7-04)"):
+            inner = inner_train_check(results, tables, log)
+        val = None
+        if validation:
+            with log.step("S8 validation (once)"):
+                val = validation_check(results, k_decision["admitted"], log)
+        else:
+            log.note("S8 not run: python -m solarpv.selection.run --validation-only")
         with log.step("outputs"):
-            written = write_outputs(results, k_table, k_decision, val, log)
+            written = write_outputs(results, k_table, k_decision, inner, val, log)
         log.outputs(written + [DECISION_FILE])
     return {"results": results, "k": k_decision}
 
@@ -465,6 +516,7 @@ def validation_only() -> None:
         val.to_csv(path, index=False, lineterminator="\n")
         manifest_path = OUT / "selection_manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["validation_read"] = "S8 only"
         manifest["validation_red_flags"] = {f"{t}_D{h}": bool(g["red_flag"].any())
                                             for (t, h), g in val.groupby(["target", "horizon"])}
         manifest["validation_run_log"] = str(log.path.relative_to(OUT.parent.parent)).replace(
@@ -478,7 +530,7 @@ def main() -> int:
     if "--validation-only" in sys.argv[1:]:
         validation_only()
     else:
-        run()
+        run(validation="--skip-validation" not in sys.argv[1:])
     return 0
 
 
