@@ -353,3 +353,144 @@ From `PROJECT_MASTER.md` §16b and `docs/literature_review.md` ("Stages 9–10")
   the `evaluate` step reuses unchanged; no new decision.
 - **L-12:** the input of the sequence models is fixed in W3.
 - No idea is adopted in W1, so nothing is tested on validation in this work item.
+
+## 13. W2: blocking decisions and self-review before the code (2026-11-05)
+
+Written before any code of the `xgb` step and before any XGB-Opt result.
+
+### 13.1 Blocking decisions (`PROJECT_MASTER.md` §3)
+
+None is open for W2. D-08 (scope), D-10 (no refit), D-11 (k), D-12 (GFS), D-13 with R7-04
+(the inputs, `model_inputs.json`), D-22 (op-limited hours out of the loss) and D-23/D-24 are
+decided; D-17 was approved on 2026-11-05 (20 trials, seed 42). D-15 is not a blocker: it is the
+question W2 decides, by the rule of §14 written now. D-14 (DM) and D-16 (T0) are "proposed" but
+already implemented in stages 6 and 8 and not changed by W2; D-06 and D-07 concern the
+environment and the repository location.
+
+### 13.2 The original project (M7–M12)
+
+Sources: `submission_evidence/12_scripts/run_ablation_study.py` (the only surviving XGB training
+code), and v6 §3.6, §4.1 and §5.1 for the lost `xgb_sota.py`.
+
+| ID | Mistake | Where | Fix in W2 | Test | Errata |
+|---|---|---|---|---|---|
+| M7 | Monotone constraints by substring: +1 on every column whose name contains `irradiance`, `ghi`, `fcst_ghi`, `fcst_dni`, `fcst_dhi`, `poa_global`, `ghi_clearsky`, `sun_elevation` …, for both targets. The report names three features; the code also constrains lags and rolling means of the measured irradiance, and in this rebuild's names it would hit `fcst_gfs_ghi`, `irradiance_lag_3d` and `irradiance_clear_index_prevday`. On the k target the marginal sign in train is negative (C-33) | `build_monotone` | The explicit list of D-15 (`ghi_clearsky`, `poa_global_clearsky`, `sun_elevation`), matched by exact name and passed to XGBoost as a name → sign map; the map of every target × horizon is recorded; for k it follows the registered D-15 rule (§14.3). In the inputs of stage 7 only `ghi_clearsky` is in the indirect sets (all three horizons), and all three are in the direct full pool | T-56 | C-20, C-33 |
+| M8 | `fillna(0)` on the features of train and test: a missing GFS value or lag becomes a physical zero (0 W/m², 0 °C, 0 kW), the model cannot tell missing from zero, and XGBoost's own handling of missing values is bypassed | `X_train = ….fillna(0)` | No imputation in the model step: NaN goes to XGBoost, which learns a default branch per split. The NaN count of every feature is logged on the fit, early-stopping and predicted rows. On the real tables NaN is rare: `irradiance_clear_index_prevday` on 5–9 train scoring hours, and GFS ratios at night in the direct fit rows (about 9,600 of 20,393) | T-57 | C-42 |
+| M9 | Post-processing scattered over scripts and not in the prediction files: the ablation clips every prediction at 0 before scoring (both targets), `compare_routes.py` clips kW at [0, capacity], FINDINGS describes a clip at [0, capacity]; with the training target clipped at 1.2 (F-06), the score of a forecast depended on the script that scored it | `np.clip(model.predict(X_test), 0, None)` | The prediction file holds the raw model output (k is never clipped, F-06). The only post-processing is the evaluation layer's `evaluate.to_kw` (indirect: clip(k × theo, 0, capacity); direct: as is), the same for every model. The Optuna objective calls that same function, so the tuning score equals the evaluation's `nRMSE_kW_pct` | T-58 | C-43 |
+| M10 | Saved hyper-parameters were not the model: `load_saved_hparams` set `n_estimators` to `num_boosted_rounds()` of the saved booster, which after early stopping holds the best iteration plus the 50 rounds of patience; the constraints and the feature order were rebuilt by substring instead of read; a missing file gave defaults (C-39). The ablation "baseline" was therefore not the XGB-Opt it was compared with | `load_saved_hparams` | Per target × horizon × seed the step records the full parameter set (constraints, feature order, seed, threads), the best iteration, the rounds used (best + 1) and the best validation RMSE, and saves the booster. Predictions use `iteration_range=(0, best + 1)` explicitly; a reloaded booster reproduces the step's predictions exactly | T-59 | C-44 |
+| M11 | Training rows: both targets were trained on every train hour, including night hours (where the old k was 0), invalid k, and stopped or curtailed hours, so the indirect model learned k = 0 at night and at stops | `train_mask = df.index <= TRAIN_END` | Fit masks: indirect, not warm-up, not op-limited (D-22), k valid and theo > 50 kW (L-04); direct, not warm-up, not op-limited, AC present (stage 7, D-12). The early-stopping rows are the validation rows with the same mask. Counts recorded | T-57 | C-45 |
+| M12 | The lost `xgb_sota.py` as v6 describes it: (a) the features were the 05e set minus a block-list (v6 §3.6, "EXCL, lines 51–73"), while the SHAP file shows 76 inputs (C-31, F-05); (b) the same validation split chose the hyper-parameters ("daytime nRMSE on the validation set", §4.1) and the stopping round ("50 rounds on validation RMSE", §5.1) and was then reported, so validation numbers are optimistic by construction; the unit of the indirect objective (k or kW) is not stated; (c) "three independent runs (seeds 42, 123, 777)" does not say whether the seed drives the Optuna sampler, the XGBoost subsampling, or both; (d) `n_estimators` [200, 2000] is searched together with early stopping, so a trial can stop at its cap before converging, and no best iteration is reported | v6 §3.6, §4.1, §5.1 | (a) Allow-list from `model_inputs.json`, each feature checked against the stage-7 pool and `assert_no_leakage`, the order recorded. (b) D-10 keeps the design (no refit); every dev number is labelled as a tuning-split number, the test stays the only unbiased estimate; the objective unit is fixed in §14.1 and both units are logged per trial. (c) The seed drives both, `TPESampler(seed=S)` and `random_state=S`, recorded; the dev run has one seed (D-17); the D-15 and L-09 margins use fit-only seeds with fixed hyper-parameters. (d) The best iteration is logged and a warning is raised when it reaches the cap | T-56, T-59 | C-46 |
+
+### 13.3 My own code that W2 builds on (X10–X13)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X10 | The stage-6b and stage-7 loaders read the whole parquet, test rows included, into pandas and filter afterwards. A model step built on them would break "smoke and dev never load a test row" (T-52, X3) | `nwp.check.load`, `selection.common.train_table` | A loader of the runner, `solarpv.pipeline.data.model_table(h, splits)`, filters inside the parquet reader: the feature table by `split`, the GFS table (no split column) by `timestamp_utc < TEST_START`; it asserts that no test row is left. The test rows of a final run are read only to be predicted, with `allow_test`. The stage loaders stay as they are (they are the record of their stages) | T-60 |
+| X11 | `model_inputs.json` is checked only as an unmodified git file. Nothing ties it to the tables it was selected on: after a rerun of stage 6 or 6b, `check` would pass (new tables, new manifests) while the sets were chosen on the old tables | `pipeline/checks.py` | `check` adds one row per stage-7 input: the SHA-256 prefix recorded in the stage-7 run log named by `selection_manifest.json` must match the current table; a mismatch is an error | T-60 |
+| X12 | The k → kW conversion exists in four copies (`evaluate.to_kw`, `selection.common.to_kw`, `nwp.check.fit_score`, `features.target.to_kw` used by `decide_k`). They agree today, but a fifth copy in the model step could drift from the evaluation | the modules named | The `xgb` step and the D-15 and L-09 checks call `evaluate.to_kw` only; a test asserts that the copies agree on random inputs (negative k, theo 0, values above capacity) | T-58 |
+| X13 | The fixed XGBoost of D-11 (`decide_k.XGB_PARAMS`) is one mutable dict imported as the decision model of stages 6, 6b and 7. The D-15 check adds `monotone_constraints` to it: an in-place update would silently change every later decision model in the same process | `features/decide_k.py`, `selection/common.py` | Every use builds a new dict (`{**XGB_PARAMS, …}`); a test asserts the dict is unchanged after the D-15 check | T-62 |
+
+### 13.4 Design of the `xgb` step that follows
+
+- **Data:** `model_table(h)` per horizon, the inputs of `model_inputs.json` per target × horizon.
+  Training rows: dev and final, all of train; smoke, the last 56 local days of train. Tuning and
+  early-stopping rows: the evaluation window of the mode (smoke: the 28-day window of W1; dev and
+  final: the whole validation split).
+- **Search:** Optuna TPE, `TPESampler(seed=S)`, the space of §6.11, `tree_method="hist"`,
+  `n_jobs = XGB_THREADS` (8), `eval_metric="rmse"`, early stopping 50 rounds on the validation
+  rows; budgets per mode (smoke 1 trial, dev 20 trials, final 60 trials and three seeds). One
+  study per target × horizon × seed, in `xgb/optuna.db` (SQLite, not in git).
+- **Final fit:** the best trial's parameters, refitted with the same rows and early stopping (the
+  same model the best trial trained; no refit on train+val, D-10).
+- **Outputs:** `predictions_xgb_sota_seed<S>.csv` (every hour of the window, the contract of
+  §6.10); `trials.csv` (every trial: parameters, value in kW, value in k for the indirect route,
+  state, best iteration, duration); `learning_curves.csv` (train and validation RMSE per round of
+  every final fit); `best_params.json`; `xgb_config.json` (search space, constraint maps, feature
+  lists, row counts, NaN counts, seeds); the boosters in `models/` (not in git); two figures
+  (learning curves, optimisation histories); the automatic warnings of §3.5.
+- **The checks of §14** run as their own commands (`python -m solarpv.models.xgb_checks`), like
+  `decide_k` and `nwp.check`: they write decision files in `configs/` and never write
+  `predictions_*` into a run folder (the `evaluate` step scores every such file of a model step).
+
+## 14. W2: decision rules, registered before any XGB result (2026-11-05)
+
+Written and committed before the D-15 check, the smoke run and the dev run. Every decision is
+taken on validation only; the test split is not read.
+
+### 14.1 The tuning objective
+
+Daytime nRMSE in kW (% of 3,449 kW) on the daytime hours of the evaluation window that have AC
+truth, op-limited hours included (the primary definition of D-22); the indirect forecast is
+converted with `evaluate.to_kw`. Why kW for both targets: one score drives every decision of the
+rebuild (D-11, D-12, D-23, D-24); the route comparison and the use of the forecast are in kW; the
+k-unit nRMSE gives full weight to low-sun hours where k is unstable and the power small (L-04).
+v6 says "daytime nRMSE on the validation set" without a unit, so this is a choice within the
+original plan. The k-unit nRMSE (RMSE of k / MEAN_DAYTIME_K) is logged for every trial, so the
+other choice can be read from `trials.csv`.
+
+### 14.2 Rows and early stopping
+
+Fit rows as in M11; early stopping on the RMSE in the training unit (k or kW) over the
+validation rows with the same mask, 50 rounds, the last evaluation set decides; no refit (D-10).
+
+### 14.3 D-15, monotone constraints for k
+
+- **Settings compared:** A, +1 on the D-15 features present in the indirect input (`ghi_clearsky`
+  at D+1, D+2, D+3), as v6 §5.1 describes; B, no constraint.
+- **Model:** the fixed XGBoost of D-11 (400 trees, depth 6, learning rate 0.05), seeds 42, 123 and
+  777, trained on the indirect fit rows of train with the stage-7 inputs, scored by §14.1 on the
+  whole validation split. A fixed model is used, as for every earlier decision, so the result does
+  not depend on hyper-parameters tuned under one of the two settings.
+- **Rule:** gain_h = mean_A − mean_B (positive: dropping helps), margin_h = max(0.05 pp, 2 × pooled
+  seed std). B is adopted for k at every horizon only if gain_1 > margin_1 and gain_h > −margin_h
+  at D+2 and D+3 (the D-12 form). Otherwise A, the v6 setting, stays: D-15 asks whether to keep
+  the constraint, so dropping it is the change that needs evidence. Either way the result and the
+  marginal sign (C-33) are reported.
+- **Direct target:** the D-15 list with +1, as in v6 (physical: more irradiance, more power); not
+  part of the question.
+- **Output:** `configs/monotone_decision.yaml`, read by the `xgb` step.
+
+### 14.4 L-09, bias correction (MOS) of the final kW forecast
+
+- **Base model:** per target × horizon, the best parameters of the dev study, with a fixed number
+  of rounds equal to the dev final fit's best iteration + 1 (no early stopping inside train);
+  seeds 42, 123 and 777.
+- **Correction:** out-of-fold predictions on train from the five expanding date folds of stage 7
+  (`selection.common.date_folds`, 3-day gap), in kW (`evaluate.to_kw`); ordinary least squares
+  y = a + b × ŷ on the out-of-fold daytime hours with AC truth, not op-limited and not warm-up
+  (D-22: those hours are outside every loss); per seed.
+- **Applied** to the validation forecast of the same base model trained on all of train:
+  clip(a + b × ŷ, 0, capacity) on daytime hours; scored by §14.1.
+- **Rule, per target:** gain_h = mean(uncorrected) − mean(corrected), margin_h as in §14.3;
+  adopted for the target only if gain_1 > margin_1 and gain_h > −margin_h at D+2 and D+3.
+  Otherwise reported as tested and not adopted.
+- **Output:** `configs/mos_decision.yaml`. If adopted, the correction becomes part of the `xgb`
+  step in a later commit, before G-1.
+
+### 14.5 R-14, mean bias of the direct target on validation
+
+Reported, not decided. The mean bias error (forecast − actual) of the dev XGB forecast on the
+validation daytime hours with truth, in kW and in % of capacity, with a 95 % circular block
+bootstrap interval (block 24 h, 1,000 resamples, seed 42, as §6.9), overall and per month; the
+indirect route in kW alongside. R-14 predicts a positive bias for the direct target (output per
+unit irradiance falls about 1 % a year, so a model trained to January 2024 forecasts too high). If
+the interval excludes 0 with a positive sign, R-14 is confirmed and stays a declared limitation;
+no trend feature is added (it would be a new idea with its own rule), and a level correction is
+the business of L-09.
+
+### 14.6 A-14, no validation information in a fitted transform
+
+The `xgb` step fits no scaler and no imputer (M8); the boosters see train rows only, and
+validation enters only as the early-stopping set and the Optuna objective (D-10, the v6 design).
+Verified by tests: with a fixed number of rounds the predictions do not depend on the validation
+labels, and the MOS coefficients do not depend on them either (T-61). Then A-14 is ✅ for XGB.
+
+### 14.7 Acceptance of the dev run (`PROJECT_MASTER.md` §7, stage 9)
+
+- XGB-dev has a lower `nRMSE_kW_pct` than persistence and climatology on validation for every
+  target × horizon.
+- The error is expected to rise with the horizon. If it is flat or falls, the inside-train order
+  of R6b-07 and R7-05 is checked first (the validation sample showed D+3 below D+1 before), then
+  T-09.
+- The automatic warnings of §3.5 are read; the `forecasting-validity-review` skill is applied
+  before any number is accepted.
