@@ -122,7 +122,9 @@ Left out:
    - It endorsed all 42 starting features in every run, so the consensus equals the union of
      the elbow and stability sets.
    - Recommendation: keep it as registered (D-23) and report it as a limitation.
-3. **Q-16, the coordinates:** may `configs/site.private.yaml` be copied to the college machine?
+3. ~~**Q-16, the coordinates:** may `configs/site.private.yaml` be copied to the college
+   machine?~~ **Closed (user, 2026-11-05):** the user copied the file (RH-02); every run here
+   records `site_private: true`.
 4. **Answered or moot:**
    - Q-15 is answered by the inspection in §3.6;
    - Q-18 (smoke runs on the laptop) is moot, since the development runs move to the college
@@ -171,7 +173,10 @@ Left out:
 4. **Then G-1, the tag `g1-frozen`, and the `final` run** (stage 10). Every evaluation or
    selection result goes through the `forecasting-validity-review` skill before it is accepted.
 
-## 7. Bringing the work back to the laptop
+## 7. Bringing the work back to the laptop (not planned)
+
+**Not planned (user, 2026-11-05, `docs/stage9_plan.md` §11):** all work stays on the college
+machine and nothing is brought back; `collect` was dropped. Kept as history.
 
 - **Code, documents and tracked outputs:** run `git bundle create solar_<date>.bundle main` on
   the college machine. On the laptop, run `git pull <path>/solar_<date>.bundle main`. Never

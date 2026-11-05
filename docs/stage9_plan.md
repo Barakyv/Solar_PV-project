@@ -16,7 +16,7 @@ and final training happens only on the code tagged `g1-frozen` (D-08).
 | Item | State |
 |---|---|
 | Data | Stages 2–6b done: `data/processed/06_features/features_1H_D{h}.parquet`, `06b_gfs/gfs_features_D{h}.parquet`, with manifests and hashes. The models need nothing earlier |
-| Feature selection | Stage 7 outputs exist; one decision is open: the direct-route sets are too small because of the weak selection model (R7-03) |
+| Feature selection | Stage 7 closed on 2026-11-03 (R7-04, R7-05). The input of every model is `outputs/07_feature_selection/model_inputs.json`: the 05e sets for the indirect route, the full pool for the direct route (F-29). *Updated 2026-11-05 (§11, approved).* At writing (2026-11-01) one decision was open: the direct-route sets were too small because of the weak selection model (R7-03) |
 | Evaluation | Stage 8 done: `solarpv.evaluation.evaluate.run` scores prediction files in the contract of §6.10, val by default, test only with `allow_test` and logged |
 | Baselines | Done (`solarpv.models.baselines`) |
 | Model code | `xgb_sota.py`, `lstm_sota.py`, `patchtst_model.py` are docstrings only; nothing for the TFT models |
@@ -58,15 +58,13 @@ What this means for the plan (decided in §5 when the GPU environment is built):
 
 ## 2. What runs where
 
-| Where | What |
-|---|---|
-| Laptop | Writing the code, the unit tests, documentation, notebooks, and **smoke runs only**: a few days of data, one trial, one or two epochs, minutes in total, to prove the code runs before it is shipped (needs the user's approval, Q-18). No real training |
-| College machine | Everything heavy: the stage-7 selection rerun, the development runs of stage 9 (validation only), the final runs of stage 10 (frozen code), the test evaluation, SHAP, attention, ablation |
+Everything runs on the college machine: the code, the unit tests, the documents and notebooks,
+the smoke, dev and final runs, the test evaluation, SHAP, attention and the ablation.
 
-**Changed on 2026-11-03 (user):** the work itself moves to the college machine, so the code is
-written and the smoke runs are made there too; the laptop row above applies only if work returns
-to the laptop, and Q-18 is moot. The transfer is the package of `scripts/handoff_pack.py` (no
-GitHub remote exists yet), described in `docs/HANDOFF.md`.
+*History (§11, approved 2026-11-05).* The plan of 2026-11-01 split the work: the laptop wrote the
+code and made smoke runs only (Q-18), the college machine ran everything heavy. On 2026-11-03 the
+user moved the work to the college machine; the laptop was only a bootstrap and is not used, and
+the one transfer was the package of `scripts/handoff_pack.py` (`docs/HANDOFF.md`).
 
 ## 3. The runner
 
@@ -77,18 +75,22 @@ GitHub remote exists yet), described in `docs/HANDOFF.md`.
 | Command | Purpose |
 |---|---|
 | `list` | The steps, in order, with what each needs and produces |
-| `check` | Environment (Python, packages, CUDA, GPU, CPU, memory, disk), data (every file against the bundle's SHA-256 manifest), gates (mode, git commit, tag, clean tree). Nothing is trained |
+| `check` | Environment (Python, packages, CUDA, GPU, CPU, memory, disk), data (every input against the SHA-256 recorded by the stage manifest that produced it, and git-tracked inputs unmodified), gates (mode, git commit, tag, clean tree). Nothing is trained |
 | `run` | Runs the selected steps in order (§3.3) |
 | `status` | What has completed, with which code, configuration and data |
-| `bundle` | On the laptop: packs the processed data and configuration the runner needs, with a manifest |
-| `collect` | On the college machine: packs a run's logs, predictions, metrics and figures to bring back (checkpoints optional) |
+
+*Dropped (§11, approved 2026-11-05):* `bundle` (packed the processed data on the laptop) and
+`collect` (packed a run to bring back to the laptop): nothing moves between machines, and the
+stage manifests are a better reference than a bundle manifest. An optional `archive` command, to
+pack a run with its hashes as a backup off the VDI (whose persistence after logoff is unknown,
+§1.1), stays an idea for W5.
 
 ### 3.2 The steps
 
 | Step | Stage | What it does | Device |
 |---|---|---|---|
 | `env` | — | Environment report | — |
-| `data` | — | Verifies the bundle | — |
+| `data` | — | Verifies the inputs against the stage manifests (and git) | — |
 | `select` | 7 | Feature selection (after the open decision); writes the 05e sets | CPU |
 | `baselines` | 8 | Persistence, climatology, clear sky × MEAN_DAYTIME_K | CPU |
 | `xgb` | 9/10 | XGB-Opt | CPU |
@@ -141,8 +143,8 @@ Every step writes:
   - a seed spread above 0.15 pp (the acceptance rule of stage 10).
 
 Layout: `outputs/runs/<run_id>/` with `run.json`, `env.json`, `config.yaml` and one folder per
-step; the prediction files also go to the paths of §6.10 for the evaluation. Checkpoints in
-`models/` (not in git).
+step. Smoke and dev runs write only inside their run folder (X8, §10.2); copying a final run to
+the paths of §6.10 is a separate, explicit step (W5/W6). Checkpoints in `models/` (not in git).
 
 ### 3.6 Safety rules enforced by the code
 
@@ -180,6 +182,10 @@ step; the prediction files also go to the paths of §6.10 for the evaluation. Ch
 
 Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budgets of D-08.
 
+**D-17 approved on 2026-11-05 (user) for XGB only:** the dev budget is 20 Optuna trials with
+seed 42; 60 trials and the three seeds only in the final run (stage 10). The neural dev budgets
+above stay a proposal, to be decided in W4.
+
 ## 5. The environment on the college machine
 
 - `environment-gpu.yml`: the CPU environment plus PyTorch built for the machine's CUDA,
@@ -188,43 +194,46 @@ Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budge
 - `check` prints every version and fails on a mismatch.
 - XGBoost stays on the CPU with `hist`, as in v6 (§6.11).
 
-## 6. Moving code, data and results
+## 6. Code, data and results
 
-- **Code:** a private GitHub repository (an open item of stage 0) and a `git clone` of the commit
-  to run; otherwise a zip of one commit.
-- **Data:** `python -m solarpv.pipeline bundle` packs only what the runner reads (the stage-6 and
-  stage-6b tables, the configs, the stage-7 sets) with a SHA-256 manifest; the raw data stay on
-  the laptop. The true site coordinates (`site.private.yaml`) go only with the user's approval
-  (Q-16).
-- **Results:** `collect` packs the run; it is unpacked on the laptop into `outputs/runs/`, where
-  the notebooks and the record are updated.
+- **Code:** the local git repository on the college machine; no push without the user's request.
+- **Data and results:** stay on this machine. Backups per `PROJECT_MASTER.md` §5.3.
+- *Replaced (§11, approved 2026-11-05):* code by a GitHub clone or a zip, data by `bundle`,
+  results by `collect` back to the laptop, and the site file only with approval (Q-16, closed:
+  the user copied it, RH-02).
 
 ## 7. Order of the work
 
 | # | Work | Verified by |
 |---|---|---|
-| W1 | Runner: steps, selection of steps, modes, logs, `env`, `data`, `bundle`, `collect`, `status`; the `baselines` and `evaluate` steps (no training) | unit tests; `check` and `run --only baselines,evaluate` locally |
+| W1 | Runner: steps, selection of steps, modes, logs, `env`, `data`, `status`; the `baselines` and `evaluate` steps (no training) | unit tests; `check` and `run --only baselines,evaluate` on the college machine |
 | W2 | `xgb` with its training logs | unit tests; smoke |
 | W3 | Datasets of the sequence models: windows, the decoder mapping, the known reals | T-02 and unit tests on synthetic series, including DST days |
-| W4 | `bilstm`, `tft96`, `tft168`, `tftbase`, `patchtst` | smoke on the laptop (CPU) |
-| W5 | `select`, `explain`, `report`, the final gate, the runbook, notebook `06_models.ipynb` | unit tests; smoke of the whole sequence |
-| W6 | Hand-off: a `dev` run on the college machine, review (`forecasting-validity-review`), then gate G-1, the tag, and the `final` run | the run's report |
+| W4 | `bilstm`, `tft96`, `tft168`, `tftbase`, `patchtst` | smoke on the college machine, on the GPU environment of §5 once the user approves it |
+| W5 | `select`, `explain`, `report`, the final gate, the runbook, notebook `06_models.ipynb`; optionally `archive` (§3.1) | unit tests; smoke of the whole sequence |
+| W6 | Dev run, review (`forecasting-validity-review`), gate G-1, the tag, and the `final` run, all on the college machine | the run's report |
+
+*Wording of W1, W4 and W6 changed by §11 (approved 2026-11-05): W1 was "with `bundle`, `collect`,
+verified locally", W4 "smoke on the laptop (CPU)", W6 "hand-off: a dev run on the college
+machine".*
 
 **Status (2026-11-05):** W1 done (`solarpv.pipeline`, commit `c70af25` and the records commit
-after it; run journal R9-01, R9-02), without `bundle` and `collect`, which wait for the decision
-of §11. `check`, `run --only baselines,evaluate` (smoke and dev), `--resume` and `status` work on
-the college machine; the dev run equals the stage-8B validation tables.
+after it; run journal R9-01, R9-02). `bundle` and `collect` were dropped (§11, approved).
+`check`, `run --only baselines,evaluate` (smoke and dev), `--resume` and `status` work on the
+college machine; the dev run equals the stage-8B validation tables.
 
 ## 8. Questions for the user
 
-- **Q-15, the college machine:** operating system; GPU model, memory and CUDA version; CPU cores
-  and RAM; free disk; internet access (pip, conda, GitHub); a scheduler such as SLURM or a
-  direct session; the longest allowed job; how you connect to it.
-- **Q-16, transfer:** a private GitHub repository? May the true site coordinates be copied there?
-- **Q-17, stage 7:** the fix of the direct-route selection (open since R7-03). It becomes the
-  `select` step on the college machine.
-- **Q-18:** smoke runs on the laptop (minutes, a few weeks of data, one trial), only to prove the
-  code runs before it is shipped?
+Status on 2026-11-05 (§11, approved):
+
+- **Q-15, the college machine:** answered by the inspection of 2026-11-03 (§1.1). Still unknown:
+  the longest allowed job and whether the desktop survives logoff (to ask the college IT before
+  any long run).
+- **Q-16, transfer and coordinates:** closed. The user copied `configs/site.private.yaml` to the
+  college machine (RH-02), and every run here records `site_private: true`. No GitHub repository
+  is needed: nothing moves between machines (§6).
+- **Q-17, stage 7:** answered on 2026-11-03 (R7-04): the fixed XGBoost of D-11 in both routes.
+- **Q-18:** moot since 2026-11-03 (the laptop is not used); removed from the open list.
 
 ## 9. Tests (IDs continue PROJECT_MASTER.md §8.2)
 
@@ -299,11 +308,17 @@ a test and a run-journal note (R9-01).
 - **What goes into git.** Run folders are committed for their logs, records and tables; the
   prediction CSVs of `outputs/runs/` are ignored (about 10 MB per dev run of references alone).
 
-## 11. Changes after the move to the college machine (proposed 2026-11-05, waiting for the user)
+## 11. Changes after the move to the college machine (proposed 2026-11-05; approved and applied 2026-11-05)
+
+**Approved by the user on 2026-11-05: all the proposals below. Applied the same day** in §1,
+§2, §3.1, §3.2, §3.5 (the X8 fix), §6, §7 (W1, W4, W6) and §8 (Q-15 to Q-18), and in
+`docs/HANDOFF.md` (§7 and the Q-16 item marked not planned / closed). `bundle` and `collect` are
+dropped; an optional `archive` for backups off the VDI stays an idea for W5. The table is kept as
+the record of what changed.
 
 The plan was written on the laptop and assumed that the training would be shipped to the college
 machine. The laptop was only a bootstrap and all work now happens here (`CLAUDE.md`,
-"Machines"). Nothing below has been dropped yet; W1 implements none of the items marked "drop".
+"Machines").
 
 | Where | Text now | Proposal | Why |
 |---|---|---|---|
