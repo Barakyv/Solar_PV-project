@@ -1,0 +1,86 @@
+{
+  "step": "evaluate",
+  "run_id": "20261105T195802Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-05T19:58:05.494014+00:00",
+  "commit": "c70af25",
+  "fingerprint": "8e488aa428d65b85693fd611bddd1629b6dd137ea016a0d571b4a0a0c60b9a7a",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "outputs/runs/20261105T195802Z_smoke/baselines/predictions_clearsky_k.csv": "c3d4f5d603a06aea4a4d9473f745ea230614b94d9339064f173b106f7dfb1200",
+    "outputs/runs/20261105T195802Z_smoke/baselines/predictions_climatology.csv": "276ed1fefa47427bf2adc58345dbc6f48872207086da37267236d8b5efef4eb4",
+    "outputs/runs/20261105T195802Z_smoke/baselines/predictions_persistence.csv": "d8eedb200f086804e41dbc36a598f68fc36473a6a5233c9c54e736851934097a"
+  },
+  "log": "outputs/runs/20261105T195802Z_smoke/logs/evaluate_20261105T195805Z.log",
+  "status": "ok",
+  "folder": "evaluate",
+  "finished_utc": "2026-11-05T19:58:07.000410+00:00",
+  "duration_s": 1.5,
+  "outputs": {
+    "val/benchmark_summary.csv": "f0ef4cf9a6519e8ae6eb16a4b21501d5e3c9f0d0637a8c2e2852b23f97af3e8f",
+    "val/benchmark_views.csv": "a9204564bba760b07e0241fa7dfd788cb8bc316d5de45f3d6f39f89ca874c97b",
+    "val/common_mask_sensitivity.csv": "4ffa4d583fba6eb22446636ba8c4f896738a03f66629f56e0e04a32fab15f9cc",
+    "val/common_mask_summary.csv": "f631f5163e6f0a61b498bdb6e59fe7758280f9d67985a9ad1234905695571b06",
+    "val/dm_tests.csv": "5d0e144b59938e949694be43ffdd2c9f86f865176d3d10c03a35fe6f0c5f5228",
+    "val/route_comparison.csv": "0cb1de867be821203582723f88cc4cefd8387da7f19b66f26073493e50a6bafe",
+    "val/seasonal_metrics.csv": "8b72847130e89ed5b03abfbba68907d1c6bfb7ca3ae58b72bccc407bccc571e1",
+    "val/seed_variability_summary.csv": "c84c28b853c2e48d431bda705367852e177630b9512fc9f81213bca89aaf273a",
+    "val/manifest.json": "261dbc94e9c469fb3eceece65a33ed897acfca799833b00a9c847e0d7ba72121"
+  },
+  "values": {
+    "files_scored": [
+      "predictions_clearsky_k.csv",
+      "predictions_climatology.csv",
+      "predictions_persistence.csv"
+    ]
+  },
+  "notes": {
+    "models_missing": []
+  },
+  "summary": [
+    "val, local days 2024-03-15 to 2024-04-11: nRMSE in kW (% of capacity), n daytime hours",
+    "  direct   D+1 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  direct   D+1 climatology  seed  -1:  12.78 %  (n = 321)",
+    "  direct   D+1 persistence  seed  -1:  16.21 %  (n = 321)",
+    "  direct   D+2 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  direct   D+2 climatology  seed  -1:  12.78 %  (n = 321)",
+    "  direct   D+2 persistence  seed  -1:  17.51 %  (n = 321)",
+    "  direct   D+3 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  direct   D+3 climatology  seed  -1:  12.78 %  (n = 321)",
+    "  direct   D+3 persistence  seed  -1:  17.19 %  (n = 321)",
+    "  indirect D+1 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  indirect D+1 climatology  seed  -1:  12.88 %  (n = 321)",
+    "  indirect D+1 persistence  seed  -1:  16.21 %  (n = 321)",
+    "  indirect D+2 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  indirect D+2 climatology  seed  -1:  12.88 %  (n = 321)",
+    "  indirect D+2 persistence  seed  -1:  17.52 %  (n = 321)",
+    "  indirect D+3 clearsky_k   seed  -1:  14.04 %  (n = 321)",
+    "  indirect D+3 climatology  seed  -1:  12.88 %  (n = 321)",
+    "  indirect D+3 persistence  seed  -1:  17.22 %  (n = 321)"
+  ],
+  "warnings": []
+}

@@ -151,12 +151,20 @@ def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS) -> list[dict]:
 
 
 def git_state() -> dict:
+    """`tree_clean`: no tracked file modified anywhere, and no untracked file in the code paths
+    (`git_commit()` not '+dirty'). Untracked outputs, such as the folders of earlier runs, do not
+    count: they do not change the code that runs (X9 of docs/stage9_plan.md)."""
+    commit = git_commit()
     tags = _git("tag", "--points-at", "HEAD")
-    status = _git("status", "--porcelain")
+    status = _git("status", "--porcelain", "--untracked-files=no")
+    clean = (status.stdout.strip() == "" and not commit.endswith("+dirty")
+             if status.returncode == 0 else None)
     return {
-        "commit": git_commit(),
+        "commit": commit,
         "tags_on_head": tags.stdout.split() if tags.returncode == 0 else None,
-        "tree_clean": status.stdout.strip() == "" if status.returncode == 0 else None,
+        "tree_clean": clean,
+        "untracked_outputs": len([line for line in _git("status", "--porcelain").stdout
+                                  .splitlines() if line.startswith("??")]),
     }
 
 
@@ -170,7 +178,8 @@ def gate_problems(mode: str, state: dict, site_private: bool) -> tuple[list[str]
             errors.append(f"HEAD does not carry the tag {FROZEN_TAG!r} (final runs only after "
                           "gate G-1, D-08)")
         if state["tree_clean"] is not True:
-            errors.append("the working tree is not clean (git status --porcelain)")
+            errors.append("the working tree is not clean: a tracked file is modified or "
+                          "uncommitted code exists")
         if not site_private:
             errors.append("configs/site.private.yaml is missing: final results need the true "
                           "site")

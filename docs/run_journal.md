@@ -815,3 +815,81 @@ hashes, numbers) and the commit messages are the record:
   about the filter is optional (the user's decision). The older builders
   `make_eda_notebook.py`, `make_features_notebook.py` and `make_quality_notebook.py` call
   NotebookClient directly and would still abort here; they are not in the stage-notebook list.
+
+## Stage 9: models and the runner
+
+### 2026-11-05 · R9-01 · Self-review before the runner code (W1)
+
+- **Purpose:** the review the project rules ask for before the code of a stage
+  (`docs/stage9_plan.md` §10): the original orchestration, modelling and evaluation scripts
+  (`submission_evidence/12_scripts/`), and my earlier code that the runner builds on.
+- **Blocking decisions (§3):** none for W1. §1 lists no blocker. D-17 (development budgets) is
+  "proposed" and is used only from W2; D-15 is decided on validation inside stage 9 (W2).
+- **Findings in the original (M1–M6, errata C-36–C-41):** the reproduction went on after a
+  failed step and scored whatever files were in `outputs/`; it printed hard-coded "expected"
+  results; it overwrote its logs and outputs with no provenance; it fell back silently to default
+  hyper-parameters and skipped missing seed files; it evaluated the test split in every run, and
+  the ablation's `--quick` smoke test was scored on test; duplicated LSTM forecasts were dropped
+  with `keep="last"` after an unstable sort.
+- **Findings in my code (X1–X8):** reproduced before the fix where possible.
+  - X2: two copies of one prediction file doubled the benchmark n (54 → 108, synthetic data);
+    the run then failed in the DM table with an unrelated shape error.
+  - X5: with a fixed clock, two `RunLog`s opened in the same second shared one file, and the
+    first run's note was lost.
+  - X1, X3, X4, X6, X7 and X8 were read from the code: a glob in `evaluate.main`, test rows read
+    in every mode, the stale manifest, untracked code under a clean commit, split labels
+    filtered silently, and the plan's copy of every prediction file to the canonical paths.
+- **Fixes and tests:** T-51–T-55 (`tests/unit/test_pipeline_runner.py`,
+  `tests/contracts/test_pipeline_output.py`, and new cases in `test_evaluation_8b.py`,
+  `test_runlog.py`, `test_provenance.py`). Full suite: 407 passed, none skipped (376 + 31).
+- **Laptop-era items of the plan** (`bundle`, `collect`, transfer, Q-16, Q-18): proposals in
+  §11 of the plan, waiting for the user; none was implemented or dropped.
+- **Literature (§12 of the plan):** L-09 registered for W2 with the D-12 margin and three seeds;
+  nothing adopted in W1, so nothing was tested on validation.
+- **Commit:** `c70af25` (code, tests, OP-49, errata).
+
+### 2026-11-05 · R9-02 · `check` and `run --only baselines,evaluate` in smoke and dev mode
+
+- **Purpose:** the acceptance of W1: the runner checks the environment and the inputs, runs the
+  two steps that train nothing, and records everything; the dev run must equal the stage-8B
+  validation tables, which were made by the evaluation layer alone.
+- **Commands and commit,** all at `c70af25` with a clean code tree:
+  - `python -m solarpv.pipeline check --mode smoke`: passed. Python 3.11.18, pandas 3.1.0,
+    xgboost 3.4.2; torch, lightning, pytorch-forecasting and neuralforecast absent (needed from
+    W4); 8 CPUs, 64 GB, GRID P40-24Q; private site; 11 of 11 inputs as recorded by their stage
+    manifests or git.
+  - `python -m solarpv.pipeline run --mode smoke --only baselines,evaluate`: run
+    `outputs/runs/20261105T195802Z_smoke/`, ok; baselines 0.8 s, evaluate 1.5 s.
+  - `python -m solarpv.pipeline run --mode dev --only baselines,evaluate`: run
+    `outputs/runs/20261105T195821Z_dev/`, ok; baselines 2.1 s, evaluate 5.0 s.
+  - The same dev command with `--resume 20261105T195821Z_dev`: both steps "skipped (up to
+    date)"; `status` shows both outputs as recorded.
+  - `check --mode final`: refused, as it must be (no `g1-frozen` tag).
+- **Results:**
+  - Smoke window: local days 2024-03-15 to 2024-04-11, 671 hours with the spring DST day, 321
+    daytime hours with truth for every reference, target and horizon. The numbers (for example
+    persistence D+1 16.21 %, climatology 12.78 % of capacity for the direct target) are a code
+    check on four spring weeks, not a result of the study.
+  - Dev run: all eight tables equal the committed `outputs/07_evaluation/val/` tables with a
+    largest difference of 0 at the written precision (N12: 2,901 daytime hours; direct D+1
+    persistence 9.68 %, climatology 8.04 %, clear sky 8.96 %), although the runner never loaded
+    a test row and took the references from its own prediction files.
+  - Nothing outside `outputs/runs/` changed (git status), and the test-access log was not
+    touched.
+- **Review (forecasting-validity-review):** issuance: the references only use the truth before T0
+  (persistence DST-safe, T-38); split isolation: no test row loaded (spy in T-55); comparable
+  evaluation: every reference on the same hours of each window, in kW; no decision taken, so no
+  margin is needed; provenance: logs, step records with commit and hashes, OP-49. Persistence
+  D+3 is slightly better than D+2 in both windows (dev 10.72 % against 10.82 %): persistence of h
+  days is not a forecast that must degrade monotonically, and this is the validation-sample
+  pattern of R6b-07; no action.
+- **Problems and fixes:**
+  - **X9 (found by this run):** `check` reported `clean tree False` for the dev run, because the
+    smoke run folder was untracked. The final gate would then refuse after any smoke run,
+    although the code was exactly the commit. Fix: a clean tree means no modified tracked file
+    and no untracked file in the code paths; untracked outputs are counted but do not block. Test
+    added (T-52). The smoke and dev runs above are unaffected (the gate applies to final only).
+  - The `OUTPUT` lines of a step log name the temporary folder (`.evaluate.tmp/`), because the
+    log is written before the rename; `step.json` holds the final paths. Left as is.
+- **Decision / next:** W1 is done. Next: W2 (`xgb` with its training logs), after the user's
+  answer on the proposals of §11 and a confirmation of D-17.

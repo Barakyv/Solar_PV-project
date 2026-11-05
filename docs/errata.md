@@ -55,6 +55,7 @@ validation tables exactly (T-55, R9-02).
 | X6 | `git_commit()` ignored untracked files, so a new uncommitted module ran under a clean commit | Untracked, not ignored files under the code paths make the commit `+dirty` (T-54) | no case is known; earlier manifests were not re-checked |
 | X7 | `evaluate.run` silently dropped prediction rows labelled with another split | In smoke and dev the runner refuses any prediction row in the test split (T-52) | none |
 | X8 | The stage-9 plan sent the prediction files of every run also to the canonical paths of §6.10, so a smoke or dev run would have overwritten them | Smoke and dev write only inside their run folder (T-53, T-55) | none: plan text, no code had done it |
+| X9 | Found by the first real runs (R9-02): the runner's clean-tree check counted the untracked folders of earlier runs, so the final gate would have refused after any smoke run | A clean tree means no modified tracked file and no untracked code; untracked outputs are reported only (T-52) | none: the gate applies to final runs only |
 
 ## Old vs new results
 

@@ -147,6 +147,31 @@ def test_final_gate():
     assert not errors and any("uncommitted" in w for w in warnings)
 
 
+def test_untracked_run_outputs_do_not_make_the_tree_dirty(monkeypatch):
+    """X9: after a smoke run its untracked folder blocked the final gate."""
+    class Done:
+        def __init__(self, out):
+            self.returncode, self.stdout = 0, out
+
+    def fake_git(*args):
+        if args[0] == "tag":
+            return Done("g1-frozen\n")
+        if "--untracked-files=no" in args:
+            return Done(tracked)
+        return Done(tracked + "?? outputs/runs/20261105T000000Z_smoke/\n")
+    monkeypatch.setattr(checks, "_git", fake_git)
+    monkeypatch.setattr(checks, "git_commit", lambda: "abc1234")
+    tracked = ""
+    state = checks.git_state()
+    assert state["tree_clean"] is True and state["untracked_outputs"] == 1
+    assert checks.gate_problems("final", state, True) == ([], [])
+    tracked = " M outputs/07_evaluation/val/benchmark_summary.csv\n"
+    assert checks.git_state()["tree_clean"] is False
+    tracked = ""
+    monkeypatch.setattr(checks, "git_commit", lambda: "abc1234+dirty")  # untracked code
+    assert checks.git_state()["tree_clean"] is False
+
+
 def test_a_failed_preflight_refuses_the_run(tmp_path, source):
     r = make_runner(tmp_path, {"baselines": fake("b", source)},
                     report=fake_report("final", errors=["HEAD does not carry the tag"]))

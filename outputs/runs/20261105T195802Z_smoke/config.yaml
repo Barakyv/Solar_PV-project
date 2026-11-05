@@ -1,0 +1,36 @@
+mode: smoke
+windows:
+- split: val
+  start: '2024-03-14T22:00:00+00:00'
+  end: '2024-04-11T21:00:00+00:00'
+  label: local days 2024-03-15 to 2024-04-11
+allow_test: false
+targets:
+- indirect
+- direct
+horizons:
+- 1
+- 2
+- 3
+seeds: null
+budgets:
+  xgb:
+    trials: 1
+    seeds:
+    - 42
+  bilstm:
+    trials: 1
+    epochs_trial: 2
+    epochs_final: 2
+    seeds:
+    - 42
+  tft:
+    trials: 1
+    epochs: 2
+    seeds:
+    - 42
+  patchtst:
+    epochs: 2
+    seeds:
+    - 42
+xgb_threads: 8

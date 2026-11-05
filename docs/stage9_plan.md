@@ -210,6 +210,11 @@ Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budge
 | W5 | `select`, `explain`, `report`, the final gate, the runbook, notebook `06_models.ipynb` | unit tests; smoke of the whole sequence |
 | W6 | Hand-off: a `dev` run on the college machine, review (`forecasting-validity-review`), then gate G-1, the tag, and the `final` run | the run's report |
 
+**Status (2026-11-05):** W1 done (`solarpv.pipeline`, commit `c70af25` and the records commit
+after it; run journal R9-01, R9-02), without `bundle` and `collect`, which wait for the decision
+of §11. `check`, `run --only baselines,evaluate` (smoke and dev), `--resume` and `status` work on
+the college machine; the dev run equals the stage-8B validation tables.
+
 ## 8. Questions for the user
 
 - **Q-15, the college machine:** operating system; GPU model, memory and CUDA version; CPU cores
@@ -257,7 +262,7 @@ a test and a run-journal note (R9-01).
 | M5 | No separation of development and final runs: the reproduction evaluates the test split every time, and the `--quick` "smoke test" of the ablation trains on train and scores on the test split | `reproduce_paper_results.py`, `run_ablation_study.py --quick` | Modes `smoke`, `dev` and `final`. In smoke and dev the loaders exclude test rows before they reach pandas, and a prediction row in the test split is an error. The test split is evaluated only in `final`, on the commit tagged `g1-frozen` with a clean tree, with `--allow-test`, and logged | T-52 | C-40 |
 | M6 | Duplicated forecasts were removed silently: `drop_duplicates(keep="last")` after a sort by timestamp only (not stable), so which of several forecasts of the same hour was scored is arbitrary, and the alignment bug behind the duplicates was hidden | `align_and_evaluate.py` (`align_lstm`) | Duplicates are an error, within a file (8B) and now across the files of a run (X2) | T-54 | C-41 |
 
-### 10.2 My own earlier code (X1–X8)
+### 10.2 My own earlier code (X1–X8), and one finding of the first runs (X9)
 
 | ID | Problem | Where | Fix | Test |
 |---|---|---|---|---|
@@ -269,6 +274,7 @@ a test and a run-journal note (R9-01).
 | X6 | `git_commit()` ignores untracked files (`--untracked-files=no`): a new module in `src/` that is not committed runs while the manifest records a clean commit | `solarpv/config/provenance.py` | Untracked, not ignored files under the code paths make the commit `+dirty` | T-54 |
 | X7 | `evaluate.run` keeps only the rows labelled with the evaluated split: a dev prediction file with test rows is filtered silently, although a model that predicted test hours has read test features | `evaluate.run` | In smoke and dev the runner refuses any prediction row whose timestamp is in the test split, whatever its label | T-52 |
 | X8 | This plan (§3.5) said the prediction files "also go to the paths of §6.10": a smoke or dev run would overwrite the canonical `outputs/06_<model>/` files | §3.5 above | Smoke and dev write only inside their run folder. Copying a final run to the §6.10 paths is a separate, explicit step (W5/W6) | T-53 |
+| X9 | Found by the first real runs (R9-02), after the code: the clean-tree check counted the untracked folders of earlier runs, so the final gate would refuse after any smoke run | `pipeline/checks.py` | A clean tree: no modified tracked file and no untracked code; untracked outputs are reported only | T-52 |
 
 ### 10.3 Design decisions of W1 that follow from the review
 
