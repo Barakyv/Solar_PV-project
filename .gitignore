@@ -22,6 +22,10 @@ configs/site.private.yaml
 outputs/**/models/
 outputs/**/*.db
 outputs/**/lightning_logs/
+# runner (docs/stage9_plan.md §10.3): run records, logs and tables are committed; the bulky
+# prediction files and interrupted temporary folders are not
+/outputs/runs/**/predictions_*.csv
+/outputs/runs/**/.*.tmp/
 
 # --- python ---
 __pycache__/

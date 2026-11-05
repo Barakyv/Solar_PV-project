@@ -1,8 +1,11 @@
 """Authoritative evaluation (stages 8A and 8B; PROJECT_MASTER.md §6.9-§6.10, docs/stage8b_plan.md).
 
     python -m solarpv.evaluation.evaluate                          # validation (default)
+    python -m solarpv.evaluation.evaluate --predictions a.csv b.csv  # files named explicitly
     python -m solarpv.evaluation.evaluate --split test --allow-test  # final evaluation only
     python -m solarpv.evaluation.evaluate --fixture                # old LSTM predictions (T-15)
+
+The stage-9 runner (`python -m solarpv.pipeline`) calls `run` with the files of its own run.
 
 Rules:
   * predictions follow the file contract (§6.10): one row per model/seed/target/horizon/ts;
@@ -419,21 +422,35 @@ def seed_variability_table(bench: pd.DataFrame) -> pd.DataFrame:
 # ── run ────────────────────────────────────────────────────────────────────
 
 
+def _repo_rel(path: Path) -> str:
+    path = Path(path)
+    return path.relative_to(REPO_ROOT).as_posix() if path.is_relative_to(REPO_ROOT) \
+        else path.as_posix()
+
+
 def _log_test_access(files: list[Path], out_dir: Path, command: str) -> None:
     TEST_ACCESS_LOG.parent.mkdir(parents=True, exist_ok=True)
     new = not TEST_ACCESS_LOG.exists()
     with TEST_ACCESS_LOG.open("a", encoding="utf-8", newline="\n") as f:
         if new:
             f.write("utc_time,git_commit,command,out_dir,prediction_files\n")
-        rel = ";".join(p.relative_to(REPO_ROOT).as_posix() if p.is_relative_to(REPO_ROOT)
-                       else p.as_posix() for p in files)
+        rel = ";".join(_repo_rel(p) for p in files)
         f.write(f"{datetime.now(UTC).isoformat(timespec='seconds')},{git_commit()},"
-                f"\"{command}\",{out_dir.relative_to(REPO_ROOT).as_posix()},\"{rel}\"\n")
+                f"\"{command}\",{_repo_rel(out_dir)},\"{rel}\"\n")
 
 
 def _empty_predictions() -> pd.DataFrame:
     return pd.DataFrame({c: pd.Series(dtype=float) for c in REQUIRED_COLUMNS}).assign(
         seed=pd.Series(dtype=int), timestamp=pd.Series(dtype="datetime64[ns, UTC]"))
+
+
+def check_unique(preds: pd.DataFrame, what: str) -> None:
+    """One row per (model, seed, target, horizon, timestamp) over all files of a run (X2 of
+    docs/stage9_plan.md): a model given twice would be scored on doubled rows."""
+    dup = preds.duplicated(subset=KEY + ["timestamp"], keep=False)
+    if dup.any():
+        keys = preds.loc[dup, KEY].drop_duplicates().to_dict(orient="records")
+        raise EvaluationError(f"{int(dup.sum())} rows occur more than once {what}: {keys}")
 
 
 def run(
@@ -447,17 +464,24 @@ def run(
     strict: bool = True,
     reference: str | None = None,
     with_persistence: bool = True,
+    with_references: bool = True,
     ci: bool = True,
     log: RunLog | None = None,
     command: str = "",
+    record_dir: Path | None = None,
 ) -> dict[str, pd.DataFrame]:
     """Evaluate prediction files. With `truth` (the feature table) this is the stage-8B
-    evaluation on `split`; without it, the fixture mode of stage 8A (file truth, old n)."""
+    evaluation on `split`; without it, the fixture mode of stage 8A (file truth, old n).
+
+    `with_references=False` when the references come as prediction files (the runner's
+    `baselines` step). `record_dir` is the folder named in the test-access log, when the tables
+    are written to a temporary folder first."""
     files = [Path(f) for f in files]
     site = site or load_site()
     note = log.note if log else (lambda _: None)
     preds = (pd.concat([load_predictions(f) for f in files], ignore_index=True) if files
              else _empty_predictions())
+    check_unique(preds, f"across the prediction files {[f.name for f in files]}")
     checks: dict[str, object] = {}
 
     if truth is None:  # fixture mode (T-15)
@@ -472,7 +496,7 @@ def run(
             raise PermissionError("the test split is evaluated only with allow_test=True "
                                   "(final evaluation, after g1-frozen)")
         if split == "test":
-            _log_test_access(files, out_dir, command)
+            _log_test_access(files, record_dir or out_dir, command)
             if log:
                 log.warn("TEST SPLIT EVALUATED; recorded in outputs/07_evaluation/"
                          "test_access_log.csv")
@@ -487,8 +511,13 @@ def run(
         checks["coverage"] = coverage.to_dict(orient="records")
         if strict and (coverage["missing"] > 0).any():
             raise EvaluationError(f"incomplete predictions:\n{coverage[coverage['missing'] > 0]}")
-        refs = attach_truth(reference_predictions(truth, split, mean_k), truth)
-        preds = refs if preds.empty else pd.concat([preds, refs], ignore_index=True)
+        if with_references:
+            refs = attach_truth(reference_predictions(truth, split, mean_k), truth)
+            preds = refs if preds.empty else pd.concat([preds, refs], ignore_index=True)
+            check_unique(preds, "after adding the computed references (a reference given as "
+                                "a file needs with_references=False)")
+        if preds.empty:
+            raise EvaluationError("nothing to evaluate: no prediction file and no reference")
         preds["seed"] = preds["seed"].astype(int)
         preds["horizon"] = preds["horizon"].astype(int)
         check_truth_consistency(preds)
@@ -517,22 +546,24 @@ def run(
         })
 
     out_dir.mkdir(parents=True, exist_ok=True)
+    # a folder with a manifest looks complete: drop the previous one before the first table, so a
+    # failure while writing never leaves new tables beside an old manifest (X4)
+    (out_dir / "manifest.json").unlink(missing_ok=True)
     written = []
     for name, table in tables.items():
         path = out_dir / f"{name}.csv"
         table.to_csv(path, index=False, float_format="%.6f", lineterminator="\n")
         written.append(path)
     manifest = {
-        "inputs": [f.relative_to(REPO_ROOT).as_posix() if f.is_relative_to(REPO_ROOT)
-                   else f.as_posix() for f in files],
+        "inputs": [_repo_rel(f) for f in files],
         "inputs_sha256": {f.name: sha256(f) for f in files},
         "git_commit": git_commit(),
         "mode": "feature table" if truth is not None else "fixture (prediction-file truth)",
         "split": split if truth is not None else "test (fixture)",
         "mean_daytime_k": mean_k,
         "dm_reference": reference,
-        "truth": FEATURES_FILE.relative_to(REPO_ROOT).as_posix() if truth is not None
-        else "prediction files",
+        "references": "computed from the truth" if with_references else "from the files",
+        "truth": _repo_rel(FEATURES_FILE) if truth is not None else "prediction files",
         "truth_sha256": sha256(FEATURES_FILE) if truth is not None else None,
         "cliper_rmse": {f"{t}_D{h}": v for (t, h), v in cliper.items()} if cliper else None,
         "site_private": site.is_private,
@@ -558,6 +589,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="required for --split test (final evaluation only)")
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--no-ci", action="store_true", help="skip bootstrap CIs (faster)")
+    parser.add_argument("--predictions", type=Path, nargs="*", default=[],
+                        help="prediction files to score with the references; named explicitly, "
+                             "never found by a glob (X1). The runner passes those of its run")
     args = parser.parse_args(argv)
     command = "python -m solarpv.evaluation.evaluate " + " ".join(argv or sys.argv[1:])
 
@@ -567,7 +601,7 @@ def main(argv: list[str] | None = None) -> int:
                      ci=not args.no_ci)
     else:
         out = args.out or EVAL_DIR / args.split
-        files = sorted(OUTPUTS_DIR.glob("06_*/predictions_*.csv"))
+        files = list(args.predictions)
         with RunLog("07_evaluation", command.strip(), out_dir=EVAL_DIR) as log:
             mean_k = mean_daytime_k()
             log.note(f"split {args.split}; MEAN_DAYTIME_K {mean_k}; {len(files)} prediction "

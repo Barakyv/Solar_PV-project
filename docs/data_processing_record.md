@@ -36,6 +36,7 @@ listed in `docs/errata.md`; accepted deviations from a plan in `docs/deviations.
 | 8B | stage-6 tables | truth, reference forecasts, evaluation rules and views, on validation only (OP-40, OP-41) | `outputs/07_evaluation/` | `stage-08b-passed` |
 | 6b | NOAA GFS archive (AWS), stage-6 tables | download of the runs public before issuance, hourly reconstruction, candidate features per horizon, sanity and value check (OP-42–OP-44) | `data/processed/06b_gfs/`, `outputs/06b_gfs/`, `configs/nwp_decision.yaml` | `stage-06b-passed` |
 | 7 | stage-6 and stage-6b tables, train rows | k-history check, selection per target × horizon, inside-train check, one validation look, the input of stage 9 (OP-46–OP-48) | `outputs/07_feature_selection/`, `configs/k_history_decision.yaml` | — |
+| 9 (W1) | stage-6 table without the test rows, stage manifests | runner: input check, evaluation window, references as prediction files, evaluation per run (OP-49) | `outputs/runs/<run_id>/` | — |
 
 ¹ The stage-2 commit missed `src/solarpv/data/` because of an unanchored `.gitignore` pattern;
 the ingestion code entered git with the stage-4 commit (`0b856c9`). The stage-2 output is
@@ -267,7 +268,7 @@ computed on train only. Results (N9):
 
 *Fed back into stage 5:* the R3 margin (OP-20) and rule R7 (OP-24, F-19). *Noted as a
 limitation:* minute-source hours after the 2025 switch use the last estimated legacy offset
-(§17). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
+(§18). Rerun after the stage-3b changes to cleaning (fig09 now also shows F3). *Verification:* T-30 (every planned output exists, tables agree with the stage-5
 manifest and with physics, outputs made from the current inputs).
 
 ## 9. Evaluation-code check (stage 8A)
@@ -774,7 +775,56 @@ current manifest with a note under every code cell, and the claims of the notes 
 - *Original:* no such comparison; the 05e sets were described as the model input (§3.6), while
   the original XGBoost was trained on all its columns (C-31).
 
-## 16. Differences from the original data pipeline
+## 16. The stage-9 runner (W1, `solarpv.pipeline`)
+
+**Records.**
+- Plan written before the code: `docs/stage9_plan.md`, with a self-review (§10) against the
+  original orchestration scripts (M1–M6) and against my earlier code (X1–X8).
+- Each run writes `outputs/runs/<run_id>/`: `run.json`, `config.yaml`, invocation records, step
+  records (`step.json`) and logs. The prediction CSVs of the runs are not in git.
+- No model is trained in W1. Only validation rows are scored; smoke and dev runs never load a
+  test row.
+
+**OP-49 — The runner: input check, evaluation window, references as files, evaluation
+(`solarpv.pipeline`).**
+- *Why:* one command runs every step of stages 9–11 in sequence, with the same rules for every
+  model (§3 of the plan). W1 brings the two steps that train nothing: `baselines` and `evaluate`.
+- *Method:*
+  - **Input check (preflight of every run, and `check`):** every input is compared with the
+    SHA-256 recorded by the stage that produced it (the stage-6 and stage-6b manifests: the three
+    feature tables, the three GFS tables, the two dictionaries, `configs/derived_constants.yaml`);
+    `model_inputs.json` and `configs/split_manifest.yaml` must be tracked and unmodified in git.
+    A missing or changed input stops the run (M4).
+  - **Reading the truth:** the stage-6 D+1 table with `exclude_splits=("test",)`: the parquet
+    reader drops the test rows, so they never reach pandas. The table has one row group, so the
+    bytes are decoded by the reader, but no project code sees a test row (X3).
+  - **Evaluation window:**
+    - smoke: the 28 local days 2024-03-15 to 2024-04-11 of validation (671 hours: the window
+      contains the 23-hour day of the spring DST change, 2024-03-29);
+    - dev and final: the whole validation split;
+    - final with `--allow-test`: also the whole test split (stage 11 only).
+    Rows of the split before the window are relabelled `<split>_context` and feed only the
+    persistence reference; rows after the window are dropped.
+  - **References (`baselines` step):** OP-40 unchanged, for every row of the window, written as
+    prediction files in the contract of §6.10 (`predictions_<reference>.csv`, seed −1). They then
+    pass the alignment and coverage checks of OP-41 like any model.
+  - **Evaluation (`evaluate` step):** OP-41 unchanged, on the prediction files of the completed
+    steps of the same run only, each checked against the hash in its step record (M1, X1); the
+    references are taken from those files (`with_references=False`); rows duplicated across files
+    are an error (X2); in smoke and dev a prediction row in the test split is an error (X7).
+- *Result (run journal R9-02):* the numbers of the smoke window are a code check, not a result
+  of the study; the dev run equals the stage-8B validation tables (N12).
+- *Verification:*
+  - **T-55 (real data):** a dev run of `baselines,evaluate` reproduces the eight committed
+    stage-8B validation tables (`outputs/07_evaluation/val/`) to the written precision, with no
+    test row loaded; the smoke window is covered on every daytime hour; nothing outside the run
+    folder changes.
+  - **T-51–T-54:** step selection, modes and budgets, the gates, records, resume and the fixes
+    of X1–X8 on synthetic tables.
+- *Original:* one script trained, evaluated and reported in sequence, scoring whatever files were
+  in `outputs/`, overwriting its logs, and evaluating the test split every time (C-36–C-41).
+
+## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
 |---|---|---|---|
@@ -801,8 +851,9 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Weather forecast | Open-Meteo archive at the target time (not known at issuance), one series for all horizons, backward fill; removed from the final v6 models | GFS runs public before issuance (T-17, actual upload times), own leads per horizon, no backward fill; admitted on validation (D-12) | OP-42–OP-44, C-06, F-11 |
 | Feature selection | whole table, validation and test included; per-inverter DC kept for the direct target; the selected sets never compared with the full pool | train only, from an allow-list; each set checked against the full pool inside train and once on validation, with the rule fixed in advance; the direct route keeps its full pool | OP-45–OP-48, F-26, F-27, F-29 |
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
+| Model runs | one script; failed steps ignored; whatever files were in `outputs/` scored; logs overwritten; test evaluated in every run | one runner with smoke, dev and final modes; inputs checked against the stage manifests; each run in its own folder with hashes; only the run's own files scored; no test row loaded outside final | OP-49, C-36–C-41 |
 
-## 17. Limitations carried into the report
+## 18. Limitations carried into the report
 
 - Absolute clock frame about ±2 min (depends on the sensor orientation and the clear-sky
   model); residual relative alignment ≤ 2 min (OP-09).
@@ -848,7 +899,7 @@ current manifest with a note under every code cell, and the claims of the notes 
   gap (OP-48); the full pool follows the registered rule, and its cost on validation is
   0.068 pp.
 
-## 18. Reproduction
+## 19. Reproduction
 
 ```
 python scripts/make_checksums.py --verify "Raw data"
@@ -872,11 +923,13 @@ python -m solarpv.evaluation.evaluate        # validation; the test needs --allo
 python -m solarpv.evaluation.evaluate --fixture
 python -m solarpv.selection.run --skip-validation   # about 95 min on 8 threads; writes configs/k_history_decision.yaml
 python -m solarpv.selection.run --validation-only   # the one validation look; writes model_inputs.json
+python -m solarpv.pipeline check --mode dev
+python -m solarpv.pipeline run --mode dev --only baselines,evaluate   # equals the stage-8B tables
 python scripts/build_data_record.py
 pytest
 ```
 
-## 19. Pending operations (documented here when performed)
+## 20. Pending operations (documented here when performed)
 
-Stage 9 models, with the inputs of `outputs/07_feature_selection/model_inputs.json` (OP-48), and
-the D-21 robustness check on val.
+Stage 9 models (W2–W4), with the inputs of `outputs/07_feature_selection/model_inputs.json`
+(OP-48), and the D-21 robustness check on val.

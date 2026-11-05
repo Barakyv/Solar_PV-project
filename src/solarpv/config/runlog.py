@@ -56,23 +56,39 @@ def _rel(path: Path) -> str:
         return str(path)
 
 
+def _open_new(path: Path):
+    """Create `path`, or `<stem>_2`, `<stem>_3`, ... if it exists: two runs that start in the
+    same second never share a file (X5 of docs/stage9_plan.md)."""
+    candidate, n = path, 1
+    while True:
+        try:
+            return candidate, candidate.open("x", encoding="utf-8", newline="\n")
+        except FileExistsError:
+            n += 1
+            candidate = path.with_name(f"{path.stem}_{n}{path.suffix}")
+
+
 class RunLog:
-    """Written record of one run; use as a context manager (see the module docstring)."""
+    """Written record of one run; use as a context manager (see the module docstring).
+
+    The file is `<out_dir or outputs/<stage>>/runs/<UTC second>.log`, or `path` if given."""
 
     def __init__(self, stage: str, command: str, out_dir: Path | None = None,
-                 echo: bool = True):
+                 echo: bool = True, path: Path | None = None):
         self.stage = stage
         self.command = command
         self.echo = echo
         self.values: dict = {}
         self.warnings: list[str] = []
+        self._logged: dict[str, str] = {}
         self.started = datetime.now(UTC)
         self._t0 = time.perf_counter()
         stamp = self.started.strftime("%Y%m%dT%H%M%SZ")
-        self.dir = (out_dir or OUTPUTS_DIR / stage) / "runs"
+        if path is None:
+            path = (out_dir or OUTPUTS_DIR / stage) / "runs" / f"{stamp}.log"
+        self.dir = Path(path).parent
         self.dir.mkdir(parents=True, exist_ok=True)
-        self.path = self.dir / f"{stamp}.log"
-        self._file = self.path.open("w", encoding="utf-8", newline="\n")
+        self.path, self._file = _open_new(Path(path))
         self._write("RUN", f"stage {stage}")
         self._write("RUN", f"command: {command}")
         self._write("RUN", f"git commit: {git_commit()}")
@@ -113,12 +129,15 @@ class RunLog:
         return out
 
     def outputs(self, paths) -> dict:
-        """Log and return the sha256 of every output file."""
+        """Log and return the sha256 of every output file; a file already logged with the same
+        hash is not written again."""
         out = {}
         for p in paths:
             digest = sha256(Path(p))
             out[_rel(p)] = digest
-            self._write("OUTPUT", f"{_rel(p)} sha256={digest[:16]}")
+            if self._logged.get(_rel(p)) != digest:
+                self._write("OUTPUT", f"{_rel(p)} sha256={digest[:16]}")
+            self._logged[_rel(p)] = digest
         return out
 
     @contextmanager
@@ -126,7 +145,12 @@ class RunLog:
         """Mark the start and end (with duration) of one step of the run."""
         start = time.perf_counter()
         self._write("STEP", f"{name} ...")
-        yield
+        try:
+            yield
+        except BaseException as exc:
+            self._write("STEP", f"{name} failed after {time.perf_counter() - start:.1f}s "
+                                f"({type(exc).__name__})")
+            raise
         self._write("STEP", f"{name} done in {time.perf_counter() - start:.1f}s")
 
     # ── closing ────────────────────────────────────────────────────────────

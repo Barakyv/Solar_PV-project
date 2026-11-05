@@ -17,9 +17,16 @@ COLUMNS = {"target_k": "indirect", "site_total_AC_kW": "direct", "theo_kw": "the
            "op_limited_flag": "op_limited_flag", "hour_source": "hour_source"}
 
 
-def load_truth(path=FEATURES_FILE) -> pd.DataFrame:
-    """Truth table on the complete hourly UTC grid, columns renamed for the evaluation."""
-    table = pd.read_parquet(path, columns=list(COLUMNS)).rename(columns=COLUMNS)
+def load_truth(path=FEATURES_FILE, exclude_splits: tuple[str, ...] = ()) -> pd.DataFrame:
+    """Truth table on the complete hourly UTC grid, columns renamed for the evaluation.
+
+    `exclude_splits` drops those splits inside the parquet reader, so their rows never reach
+    pandas (X3 of docs/stage9_plan.md: smoke and dev runs exclude the test split). The test split
+    is the tail of the data, so the grid stays complete."""
+    filters = [("split", "not in", list(exclude_splits))] if exclude_splits else None
+    table = pd.read_parquet(path, columns=list(COLUMNS), filters=filters).rename(columns=COLUMNS)
+    if exclude_splits and table["split"].isin(exclude_splits).any():
+        raise ValueError(f"rows of {list(exclude_splits)} were read")
     if table.index.tz is None or str(table.index.tz) != "UTC":
         raise ValueError("the feature table must have a tz-aware UTC index")
     expected = pd.date_range(table.index[0], table.index[-1], freq="h")

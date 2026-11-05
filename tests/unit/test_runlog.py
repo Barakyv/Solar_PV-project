@@ -1,7 +1,10 @@
 """Run log (solarpv.config.runlog): every run leaves a complete, readable record."""
 
+from datetime import UTC, datetime
+
 import pytest
 
+from solarpv.config import runlog
 from solarpv.config.runlog import RunLog
 
 
@@ -28,6 +31,35 @@ def test_a_successful_run_is_fully_recorded(tmp_path):
     assert log.values == {"rows": 42}
     assert len(next(iter(hashes.values()))) == 64  # full sha256 returned to the caller
     assert log.path.parent == tmp_path / "runs"
+
+
+def test_two_runs_in_the_same_second_keep_two_logs(tmp_path, monkeypatch):
+    """X5 (T-54): the second log used to erase the first one."""
+    fixed = datetime(2026, 11, 5, 12, 0, 0, tzinfo=UTC)
+
+    class Clock:
+        @staticmethod
+        def now(tz=None):
+            return fixed
+    monkeypatch.setattr(runlog, "datetime", Clock)
+    first = RunLog("s", "first", out_dir=tmp_path, echo=False)
+    first.note("from the first run")
+    second = RunLog("s", "second", out_dir=tmp_path, echo=False)
+    first.close()
+    second.close()
+    assert first.path != second.path and second.path.name == "20261105T120000Z_2.log"
+    assert "from the first run" in first.path.read_text(encoding="utf-8")
+    explicit = RunLog("s", "third", path=tmp_path / "logs" / "step.log", echo=False)
+    explicit.close()
+    assert explicit.path == tmp_path / "logs" / "step.log"
+
+
+def test_a_failing_step_writes_its_end_line(tmp_path):
+    with pytest.raises(ValueError):
+        with RunLog("s", "demo", out_dir=tmp_path, echo=False) as log:
+            with log.step("the step"):
+                raise ValueError("bad")
+    assert "the step failed after" in log.path.read_text(encoding="utf-8")
 
 
 def test_a_failed_run_keeps_its_log_and_the_traceback(tmp_path):

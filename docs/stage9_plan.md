@@ -226,3 +226,109 @@ Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budge
 To be numbered when the code is written: step selection (`--only`, `--from`/`--to`), `--resume`
 and `--force`, the final gate refusing an untagged or dirty tree, `dev` never reading test rows,
 atomic outputs, the prediction contract of every model, T-02 for every sequence model.
+
+**Numbered for W1 (2026-11-05):**
+
+| ID | Test | File |
+|---|---|---|
+| T-51 | Step selection (`--only`, `--from`/`--to`, unknown and unimplemented steps), the three modes and their budgets, the smoke window, `--dry-run` runs nothing | `tests/unit/test_pipeline_runner.py` |
+| T-52 | Safety: smoke and dev load no test row; a prediction row in the test split fails a dev run; `final` refuses an untagged or dirty tree; `--allow-test` is refused outside `final` | `tests/unit/test_pipeline_runner.py` |
+| T-53 | Records: one folder per run, never overwritten; a step is complete only with its `step.json`; a failed step keeps its log and no completion marker; `--resume`, `--force`, `--keep-going`; `evaluate` reads only the run's own files, checked by hash; `check` compares every input with its stage manifest; nothing is written outside the run folder | `tests/unit/test_pipeline_runner.py` |
+| T-54 | Fixes to earlier code (X1–X6 of §10): duplicates across prediction files, no stale manifest after a failed evaluation, no glob in `evaluate.main`, run-log names, untracked code in `git_commit()` | `tests/unit/test_evaluation_8b.py`, `test_runlog.py`, `test_provenance.py` |
+| T-55 | Real data: a dev run of `baselines,evaluate` equals the committed stage-8B validation tables without loading a test row; the smoke window is fully covered and contains the spring DST day | `tests/contracts/test_pipeline_output.py` |
+
+## 10. Self-review before the code of W1 (2026-11-05)
+
+Written before the runner code, at the start of the work on the college machine. It covers the
+original project's orchestration, modelling and evaluation scripts that the runner replaces
+(`submission_evidence/12_scripts/`), and my own earlier code that the runner builds on. The
+evaluation scripts themselves were reviewed in stage 8B (E1–E11, A1–A6 of
+`docs/stage8b_plan.md`); those findings are not repeated. Every finding below has an errata row,
+a test and a run-journal note (R9-01).
+
+### 10.1 The original project (M1–M6)
+
+| ID | Mistake | Where | Fix in the runner | Test | Errata |
+|---|---|---|---|---|---|
+| M1 | A failed training step is collected in a list and the sequence goes on: the evaluation then scores whatever prediction files are in `outputs/`, including those of earlier runs, and only the exit code shows the failure. The evaluation is not tied to the predictions of the run | `reproduce_paper_results.py` (phases 1–2), `align_and_evaluate.py` (a missing file is skipped) | `evaluate` reads only the prediction files written by the completed steps of the same run, each checked against the hash in its step record. A failed step stops the run; with `--keep-going` the model is reported as missing and never replaced by an older file | T-53 | C-36 |
+| M2 | After a run without failures the script prints "Expected paper results" (29.09 %, 12.06 %, 30.48 %, 12.60 %, "indirect outperforms direct by 1.7–2.1 pp") from constants in the code, whatever the run produced | `reproduce_paper_results.py`, end of `main()` | The run summary is read from the run's own output tables; no result number lives in the runner code | T-53 | C-37 |
+| M3 | No history and no provenance: each step log is opened with `"w"` in the fixed `outputs/reproduction_logs/`, so every reproduction overwrites the previous logs; no commit, versions, configuration or input hashes are recorded; the outputs go to fixed folders and are overwritten too (`align_and_evaluate.py` copies over the canonical file) | `reproduce_paper_results.py` (`run_step`), `align_and_evaluate.py` | One folder per run (`outputs/runs/<run_id>/`) with `run.json`, `env.json`, `config.yaml` and one folder per step; a step rerun with `--force` moves the earlier one aside instead of deleting it | T-53 | C-38 |
+| M4 | Silent fallbacks: the ablation uses default hyper-parameters when the trained model file is missing, the seed table drops a missing seed file with a printed note, and the prerequisite check only tests that the feature parquet exists, not which version it is | `run_ablation_study.py` (`load_saved_hparams`), `compile_seed_variability.py`, `reproduce_paper_results.py` | `check` compares every input with the hash recorded by the stage that produced it (or with git for tracked files); a missing or changed input is an error, never a default | T-53 | C-39 |
+| M5 | No separation of development and final runs: the reproduction evaluates the test split every time, and the `--quick` "smoke test" of the ablation trains on train and scores on the test split | `reproduce_paper_results.py`, `run_ablation_study.py --quick` | Modes `smoke`, `dev` and `final`. In smoke and dev the loaders exclude test rows before they reach pandas, and a prediction row in the test split is an error. The test split is evaluated only in `final`, on the commit tagged `g1-frozen` with a clean tree, with `--allow-test`, and logged | T-52 | C-40 |
+| M6 | Duplicated forecasts were removed silently: `drop_duplicates(keep="last")` after a sort by timestamp only (not stable), so which of several forecasts of the same hour was scored is arbitrary, and the alignment bug behind the duplicates was hidden | `align_and_evaluate.py` (`align_lstm`) | Duplicates are an error, within a file (8B) and now across the files of a run (X2) | T-54 | C-41 |
+
+### 10.2 My own earlier code (X1–X8)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X1 | `evaluate.main()` picks the prediction files by a glob, `outputs/06_*/predictions_*.csv`: a stale or smoke file would be scored next to the current ones (M1 in my own code) | `solarpv/evaluation/evaluate.py` | The files are named explicitly (`--predictions`); without them only the references are scored. The runner passes the files of the run | T-54 |
+| X2 | Duplicates are checked inside one prediction file only. Two files of the same model and seed are both scored: on synthetic data the benchmark n went from 54 to 108 (the intervals shrink), and the run failed later in the DM table with an unrelated shape error. The references computed by `evaluate.run` would also be counted twice if the runner passes them as files | `evaluate.run` | Duplicates across files are an error that names the files; `with_references=False` when the references come as files | T-54 |
+| X3 | `load_truth()` reads every row, test included, in every mode; the split is chosen afterwards. "Dev mode never reads test rows" was not true at the reader | `solarpv/evaluation/truth.py` | `load_truth(exclude_splits=("test",))` filters the rows inside the parquet reader; the runner uses it in smoke and dev and asserts that no test row is left | T-52, T-55 |
+| X4 | `evaluate.run` writes its tables one by one into an existing folder and the manifest last: a failure in the middle leaves new tables next to the previous run's manifest, a folder that looks complete and consistent | `evaluate.run` | The old manifest is removed before the first table is written; the runner writes every step into a temporary folder, renamed only on success, and a step is complete only with its `step.json` | T-53, T-54 |
+| X5 | `RunLog` names its file by the UTC second and opens it with `"w"`: two runs that start in the same second in the same folder share one file, and the second erases the first (reproduced with a fixed clock: one file, the first run's note lost). A step that fails writes no end line | `solarpv/config/runlog.py` | Exclusive creation with a numbered suffix, an optional explicit path, and a "failed after" line for a failing step | T-54 |
+| X6 | `git_commit()` ignores untracked files (`--untracked-files=no`): a new module in `src/` that is not committed runs while the manifest records a clean commit | `solarpv/config/provenance.py` | Untracked, not ignored files under the code paths make the commit `+dirty` | T-54 |
+| X7 | `evaluate.run` keeps only the rows labelled with the evaluated split: a dev prediction file with test rows is filtered silently, although a model that predicted test hours has read test features | `evaluate.run` | In smoke and dev the runner refuses any prediction row whose timestamp is in the test split, whatever its label | T-52 |
+| X8 | This plan (§3.5) said the prediction files "also go to the paths of §6.10": a smoke or dev run would overwrite the canonical `outputs/06_<model>/` files | §3.5 above | Smoke and dev write only inside their run folder. Copying a final run to the §6.10 paths is a separate, explicit step (W5/W6) | T-53 |
+
+### 10.3 Design decisions of W1 that follow from the review
+
+- **Steps and preflight.** `env` and `data` run first in every `run` (they are what `check`
+  prints); the work steps are `select`, `baselines`, the six model steps, `evaluate`, `explain`
+  and `report`, in that order. W1 implements `baselines` and `evaluate`; naming another step is an
+  error that says which work item brings it.
+- **The evaluation window.** The coverage rule of stage 8B (every model on every daytime hour of
+  the split) holds inside a window: dev and final use the whole validation split; smoke uses the
+  28 local days 2024-03-15 to 2024-04-11, which contain the spring DST change of 2024-03-29.
+  Rows of the split before the window stay as context for the persistence reference; rows after
+  it are dropped. Every model and every reference is scored on the same window.
+- **References as prediction files.** The `baselines` step writes the three references in the
+  file contract (§6.10), so they pass the same alignment and coverage checks as a model, and
+  `evaluate` scores them from those files (`with_references=False`).
+- **Completion and resume.** A step's fingerprint is the hash of its mode, resolved
+  configuration, code commit and input hashes. `--resume <run_id>` skips a completed step with
+  the same fingerprint, refuses a different one unless `--force`, and never trusts a `+dirty`
+  commit.
+- **Final gate.** `final` starts only when `HEAD` carries the tag `g1-frozen` and
+  `git status --porcelain` is empty; the site file must be the private one.
+- **What goes into git.** Run folders are committed for their logs, records and tables; the
+  prediction CSVs of `outputs/runs/` are ignored (about 10 MB per dev run of references alone).
+
+## 11. Changes after the move to the college machine (proposed 2026-11-05, waiting for the user)
+
+The plan was written on the laptop and assumed that the training would be shipped to the college
+machine. The laptop was only a bootstrap and all work now happens here (`CLAUDE.md`,
+"Machines"). Nothing below has been dropped yet; W1 implements none of the items marked "drop".
+
+| Where | Text now | Proposal | Why |
+|---|---|---|---|
+| §1, "Feature selection" | one decision is open (R7-03) | Update: stage 7 closed (R7-04, R7-05); the input is `model_inputs.json` | Fact changed on 2026-11-03 |
+| §2 | the laptop row (code, smoke runs only, Q-18) | Drop the laptop row; one line: everything runs on the college machine | The laptop is no longer used |
+| §3.1 `bundle` | packs the processed data on the laptop with a manifest | Drop. `check` verifies the inputs against the hashes of the stage manifests that produced them (implemented in W1) | The data are already here; the stage manifests are the better reference |
+| §3.1 `collect` | packs a run to bring back to the laptop | Drop as a transfer. If you want a copy of the runs outside the VDI (its persistence after logoff is unknown, §1.1), an `archive` command could pack a run with its hashes (W5) | Nothing is carried back, but a backup may still be needed |
+| §3.2 `data` | verifies the bundle | Verifies the inputs against the stage manifests | Follows from `bundle` |
+| §6 | code by GitHub or zip, data by `bundle`, results by `collect` | Replace with: code in the local git repository (no push without your request); data and results stay on this machine; backups per §5.3 | Nothing moves between machines |
+| §7, W1 | `bundle`, `collect`; verified "locally" | W1 without `bundle` and `collect`; verified on the college machine | As above |
+| §7, W4 | smoke "on the laptop (CPU)" | Smoke on the college machine, on the GPU environment of §5 once you approve it | The laptop is not used |
+| §7, W6 | "Hand-off: a dev run on the college machine" | "Dev run, review, G-1, tag, final run", all here | No hand-off left |
+| §8, Q-16 | may `site.private.yaml` be copied to the college machine? | Close: you copied it (RH-02), and every run here records `site_private: true` | Answered by your action |
+| §8, Q-18 | smoke runs on the laptop | Already moot (3.11); remove from the open list | — |
+| `docs/HANDOFF.md` §7 | bringing the work back to the laptop | Keep as history, marked "not planned" | The laptop is not used |
+
+## 12. Literature ideas for stage 9 (read on 2026-11-05)
+
+From `PROJECT_MASTER.md` §16b and `docs/literature_review.md` ("Stages 9–10").
+
+- **L-09, bias correction (MOS) of the final forecast.** Model level, so it cannot be tested
+  before W2 (the references are not models). Registered now, before any model result: in W2 a
+  linear correction of the final kW forecast of XGB-dev is fitted on out-of-fold train
+  predictions (the date folds of stage 7), applied to validation, and adopted only if it beats the
+  D-12 margin, max(0.05 pp, 2 × pooled seed std), with three seeds. Otherwise it is reported as
+  tested and not adopted.
+- **L-17 and L-18** (more light models, blending): outside the approved scope (25.10); not
+  tested.
+- **L-19:** decided (PatchTST univariate, as in v6); the smoke test of W4 records whether
+  neuralforecast's PatchTST uses future exogenous inputs, for the report only.
+- **L-13 and L-16** (CLIPER skill, nRMSE by the mean): already in the evaluation layer, which
+  the `evaluate` step reuses unchanged; no new decision.
+- **L-12:** the input of the sequence models is fixed in W3.
+- No idea is adopted in W1, so nothing is tested on validation in this work item.

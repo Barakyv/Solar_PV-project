@@ -5,7 +5,11 @@ T-38  references: persistence with the DST guard and gap filling from earlier da
 T-39  evaluation rules: split guard, alignment, coverage, zero-output hours kept (E3), paired
       route comparison (E2), clear-sky route advantage = 0
 T-40  metrics: CLIPER, nRMSE by the mean, kW conversion, seed table, DM CI, views
+T-54  (part) fixes of the stage-9 self-review: duplicates across files, no stale manifest after a
+      failure, no glob in main(), the truth without the test split
 """
+
+import json
 
 import numpy as np
 import pandas as pd
@@ -16,6 +20,7 @@ from solarpv.config.site import EXAMPLE_FILE, load_site
 from solarpv.evaluation import evaluate as E
 from solarpv.evaluation.daytime import daytime_mask
 from solarpv.evaluation.metrics import bootstrap_mean_ci, cliper_rmse
+from solarpv.evaluation.truth import load_truth
 from solarpv.features.build import issuance_utc
 from solarpv.models.baselines import clearsky_k, climatology, persistence, reference_predictions
 
@@ -257,3 +262,74 @@ def test_persistence_does_not_beat_the_cliper_reference(tmp_path):
     tables = E.run([], tmp_path / "out", MEAN_K, site=SITE, truth=_truth(), ci=False)
     bench = tables["benchmark_summary"]
     assert (bench.loc[bench["model"] == "persistence", "skill_cliper"] <= 0.02).all()
+
+
+# ── T-54 fixes found by the stage-9 self-review (docs/stage9_plan.md §10.2) ──
+
+def test_duplicates_across_prediction_files_are_refused(tmp_path):
+    """X2: two files of the same model and seed doubled n (54 -> 108) before the fix."""
+    t = _truth()
+    a = _write(_model_preds(t), tmp_path / "predictions_xgb_sota.csv")
+    b = _write(_model_preds(t), tmp_path / "predictions_xgb_sota_copy.csv")
+    with pytest.raises(E.EvaluationError, match="more than once"):
+        E.run([a, b], tmp_path / "out", MEAN_K, site=SITE, truth=t, ci=False)
+    refs = reference_predictions(t, "val", MEAN_K)
+    c = _write(refs[refs["model"] == "persistence"], tmp_path / "predictions_persistence.csv")
+    with pytest.raises(E.EvaluationError, match="with_references=False"):
+        E.run([c], tmp_path / "out", MEAN_K, site=SITE, truth=t, ci=False)
+    tables = E.run([c], tmp_path / "out", MEAN_K, site=SITE, truth=t, ci=False,
+                   with_references=False)
+    assert set(tables["benchmark_summary"]["model"]) == {"persistence"}
+
+
+def test_a_failed_evaluation_leaves_no_manifest(tmp_path, monkeypatch):
+    """X4: new tables next to an old manifest looked like a complete run."""
+    t = _truth()
+    out = tmp_path / "out"
+    E.run([], out, MEAN_K, site=SITE, truth=t, ci=False)
+    assert (out / "manifest.json").exists()
+    real, calls = pd.DataFrame.to_csv, []
+
+    def failing(self, *args, **kwargs):
+        calls.append(1)
+        if len(calls) == 3:
+            raise OSError("disk full")
+        return real(self, *args, **kwargs)
+    monkeypatch.setattr(pd.DataFrame, "to_csv", failing)
+    with pytest.raises(OSError):
+        E.run([], out, MEAN_K, site=SITE, truth=t, ci=False)
+    assert not (out / "manifest.json").exists()
+
+
+def test_main_never_globs_for_prediction_files(tmp_path, monkeypatch):
+    """X1: a stale file under outputs/06_* was scored by the glob of evaluate.main."""
+    stale = tmp_path / "outputs" / "06_xgb_sota" / "predictions_xgb_sota.csv"
+    stale.parent.mkdir(parents=True)
+    _write(_model_preds(_truth()), stale)
+    site = load_site()  # main() uses the default site
+    idx = pd.date_range("2022-10-01", "2022-11-20", freq="h", tz="UTC", inclusive="left")
+    truth = _truth().assign(daytime=daytime_mask(idx, site))
+    monkeypatch.setattr(E, "OUTPUTS_DIR", tmp_path / "outputs")
+    monkeypatch.setattr(E, "EVAL_DIR", tmp_path / "eval")
+    monkeypatch.setattr(E, "FEATURES_FILE", stale)  # any file: only its hash is recorded
+    monkeypatch.setattr(E, "load_truth", lambda: truth)
+    monkeypatch.setattr(E, "mean_daytime_k", lambda: MEAN_K)
+    assert E.main(["--no-ci", "--out", str(tmp_path / "out")]) == 0
+    manifest = json.loads((tmp_path / "out" / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["inputs"] == [] and manifest["references"] == "computed from the truth"
+
+
+def test_load_truth_can_exclude_the_test_split(tmp_path):
+    """X3: the test rows are dropped inside the parquet reader."""
+    t = _truth()
+    table = t.rename(columns={"indirect": "target_k", "direct": "site_total_AC_kW"})
+    table = table.sort_index()
+    table.index.name = "timestamp_utc"
+    # the synthetic splits interleave by day; keep a test tail so the grid stays complete
+    table["split"] = np.where(table.index < table.index[-24 * 5], "val", "test")
+    path = tmp_path / "features.parquet"
+    table.to_parquet(path)
+    full = load_truth(path)
+    part = load_truth(path, exclude_splits=("test",))
+    assert set(part["split"]) == {"val"}
+    pd.testing.assert_frame_equal(part, full[full["split"] != "test"])
