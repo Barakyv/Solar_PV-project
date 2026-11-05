@@ -749,3 +749,69 @@ hashes, numbers) and the commit messages are the record:
   libzmq problem is solved (for example a libzmq built with the `select` poller, which needs a
   download, or a fix on the machine: the user's decision). Next: stage 9 per
   `docs/stage9_plan.md` W1–W6.
+
+### 2026-11-05 · RH-05 · Jupyter kernels start on the college machine: libzmq on TCP via a long TMP
+
+- **Purpose:** a real Jupyter kernel on the college machine (the open item of RH-04), so the stage
+  notebooks can be run live for the committee.
+- **Diagnosis, with nothing changed:**
+  - The abort is not in wepoll. Repeated with ctypes, every call wepoll makes succeeds:
+    `NtCreateKeyedEvent`, a new I/O completion port, `NtCreateFile` on `\Device\Afd\Wepoll` with
+    its port association and completion modes, and `SIO_BASE_HANDLE` on a TCP and an AF_UNIX
+    socket (both Microsoft IFS providers, protocol chain of length 1).
+  - `epoll.cpp:73` is the assert after `epoll_ctl(ADD)` in `add_fd`, not the creation of the
+    poller. The socket it adds belongs to the pair that libzmq builds behind every zmq socket
+    (the mailbox signaler).
+  - This libzmq is built with ipc (`zmq.has('ipc')` is true), so on Windows it builds that pair
+    over AF_UNIX, with a socket file in `GetTempPath()`, which reads TMP first. Here `bind`
+    succeeds and `connect` fails with `WSAEINVAL` (10022), in the temp folder under its short and
+    its long name, inside and outside the command sandbox.
+  - libzmq falls back to its TCP loopback pair only when the AF_UNIX socket or address cannot be
+    made. After a successful `bind` it returns an error instead, the signaler keeps an invalid
+    socket, and `epoll_ctl` rejects it (EBADF). Each failed probe left two `xNNN.N\socket`
+    folders in the temp folder (26 by now).
+  - Those socket files cannot be opened, not even with `FILE_FLAG_OPEN_REPARSE_POINT`, nor
+    deleted (`ERROR_CANT_ACCESS_FILE`, 1920). A file-system filter of the VDI most likely rejects
+    the AF_UNIX reparse tag. Not identified: `fltmc` needs administrator rights, and the
+    registered filters are Microsoft's plus `vmwcdrfilter` (Horizon client drive redirection).
+- **Correction to RH-04 (self-review):** the poller was not the cause, so a libzmq with the
+  `select` poller would have aborted the same way. RH-04's "cannot create its poller" is wrong;
+  the cause is the AF_UNIX signaler.
+- **Fix, with no download and no environment change:** an AF_UNIX address holds 108 bytes
+  (`sun_path`). With a longer TMP libzmq cannot form it and uses its TCP loopback pair, as it does
+  where AF_UNIX is missing.
+  - `scripts/_notebook.py`: `enable_kernel()` sets TMP to
+    `%LOCALAPPDATA%\solarpv\zmq-tmp\path-longer-than-af-unix-sun-path-rh05_…` (109 characters
+    here) and probes zmq in a child process; the kernel inherits TMP. This is tried first on
+    every machine, because a failed AF_UNIX probe leaves another undeletable file in the temp
+    folder; only if it fails is the plain TMP tried, and then the in-process executor of RH-04.
+  - Python's `tempfile` reads TEMP before TMP, so its files do not move.
+  - On the TCP fallback libzmq leaves one empty folder per socket pair; `clean_zmq_tmp()`
+    removes the empty folders after the run.
+  - The notebook metadata keeps `executor` and adds `zmq` when the long TMP was used.
+  - `scripts/jupyter_lab.py` starts JupyterLab on the repository with the same TMP, for a live
+    run.
+- **Tests:** four new tests in `tests/unit/test_notebook_helper.py`: the TMP is longer than 108
+  characters for any base folder; the long TMP is tried first and TMP is restored when it fails;
+  only empty folders are removed; a zmq socket can be created on this machine.
+- **Results:**
+  - The plain probe still aborts (the machine is unchanged); with the long TMP it passes.
+  - `python scripts/make_feature_selection_notebook.py`: built through nbclient in 26 s,
+    `executor` = "nbclient, python3 kernel". Same source hashes, the same 12 code cells and output
+    types, no error, and the HTML of every table and every text output are equal to the
+    in-process build. The only difference is the plain-text form of wide tables: the in-process
+    shell had cut them to the terminal width ("..."), the kernel wraps them. Jupyter shows the
+    HTML, so nothing visible changed; this is a known limitation of the RH-04 fallback.
+  - `scripts/jupyter_lab.py`: JupyterLab 4.6.5 (Jupyter Server 2.21.1) started on localhost; a
+    kernel opened through the REST API ran a cell, with the 109-character TMP inherited; the
+    server stopped cleanly, and no folder was left.
+  - No new folder in the temp folder after the final build (26 before and after).
+  - `ruff check src scripts tests notebooks` clean; `pytest -q`: 376 passed, none skipped,
+    none failed (372 + 4).
+- **Left on the machine:** the 26 libzmq folders and 9 socket files of this diagnosis in
+  `%TEMP%`, 0 bytes each, which cannot be deleted (1920). They are harmless; a refresh of the VDI
+  or the college IT can remove them.
+- **Decision / next:** a live run: `python scripts/jupyter_lab.py`. A report to the college IT
+  about the filter is optional (the user's decision). The older builders
+  `make_eda_notebook.py`, `make_features_notebook.py` and `make_quality_notebook.py` call
+  NotebookClient directly and would still abort here; they are not in the stage-notebook list.

@@ -157,16 +157,17 @@ Left out:
      - build `notebooks/05_feature_selection.ipynb`, with the inside-train check, F-29, the
        third validation look and `model_inputs.json`;
      - add `"05_feature_selection"` to `tests/contracts/test_stage_notebooks.py`;
-     - no Jupyter kernel can start on this machine (libzmq), so the builder ran the cells in
-       process (`scripts/_notebook.py`, RH-04);
+     - first built in process, because no Jupyter kernel could start here (RH-04); rebuilt
+       through nbclient once the libzmq problem was solved (RH-05, 2026-11-05);
    - commit the outputs with their OP entries; update `PROJECT_MASTER.md` §1 and §17.
 2. **Stage 9 and the runner**, per `docs/stage9_plan.md` W1–W6. Development and smoke runs now
    happen on the college machine (`smoke` and `dev` modes, validation only). Before writing the
    sequence models, fix the input contract of §4.2 (encoder, decoder, the 18 known reals, the
    decoder-to-horizon mapping by local day, T-02).
 3. **Stage notebooks:** `05_feature_selection` (stage 7, done on 2026-11-03) and `06_models`
-   (stage 9), each built from the outputs. A live run in Jupyter on this machine needs the
-   libzmq problem of RH-04 solved first (user's decision).
+   (stage 9), each built from the outputs. For a live run in Jupyter on this machine start
+   JupyterLab with `python scripts/jupyter_lab.py`: it sets the long TMP that libzmq needs here
+   (RH-05).
 4. **Then G-1, the tag `g1-frozen`, and the `final` run** (stage 10). Every evaluation or
    selection result goes through the `forecasting-validity-review` skill before it is accepted.
 
