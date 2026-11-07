@@ -1,0 +1,189 @@
+[     0.0s] RUN     stage runs/20261107T104151Z_dev/xgb
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate
+[     0.2s] RUN     git commit: 45c7a84
+[     0.2s] RUN     started (UTC): 2026-11-07T10:41:57+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.4s] INPUT   configs/monotone_decision.yaml sha256=141636b887c1d672
+[     0.4s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.8s] NOTE    budget 20 trials, seeds [42], tuning window the whole val split, training rows all of train; MEAN_DAYTIME_K 0.788157; D-15 settings {'indirect': 'A', 'direct': 'A'}
+[     2.0s] NOTE    indirect_D1: 31 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[     2.0s] NOTE    indirect_D1: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 6}
+[     2.0s] STEP    indirect_D1_seed42: 20 trial(s) ...
+[     3.8s] NOTE    indirect_D1_seed42 trial 0: 6.9943 % kW, 13.7368 % k, best iteration 21 of 874, 1.54 s
+[     7.1s] NOTE    indirect_D1_seed42 trial 1: 6.9217 % kW, 13.6648 % k, best iteration 278 of 1282, 3.0 s
+[     8.1s] NOTE    indirect_D1_seed42 trial 2: 6.8392 % kW, 13.4741 % k, best iteration 81 of 747, 0.7 s
+[    11.7s] NOTE    indirect_D1_seed42 trial 3: 6.8138 % kW, 13.4653 % k, best iteration 198 of 1021, 3.33 s
+[    13.1s] NOTE    indirect_D1_seed42 trial 4: 6.9888 % kW, 14.1247 % k, best iteration 9 of 317, 1.18 s
+[    15.0s] NOTE    indirect_D1_seed42 trial 5: 6.9214 % kW, 13.5803 % k, best iteration 367 of 419, 1.58 s
+[    15.5s] NOTE    indirect_D1_seed42 trial 6: 7.0970 % kW, 13.9512 % k, best iteration 27 of 1184, 0.24 s
+[    16.7s] NOTE    indirect_D1_seed42 trial 7: 7.0317 % kW, 13.7375 % k, best iteration 358 of 359, 0.94 s
+[    18.3s] NOTE    indirect_D1_seed42 trial 8: 6.8884 % kW, 13.5401 % k, best iteration 256 of 705, 1.33 s
+[    19.6s] NOTE    indirect_D1_seed42 trial 9: 6.9809 % kW, 13.7506 % k, best iteration 24 of 209, 1.0 s
+[    21.3s] NOTE    indirect_D1_seed42 trial 10: 6.9005 % kW, 13.5252 % k, best iteration 112 of 793, 1.33 s
+[    22.7s] NOTE    indirect_D1_seed42 trial 11: 6.8785 % kW, 13.5077 % k, best iteration 88 of 325, 1.1 s
+[    24.3s] NOTE    indirect_D1_seed42 trial 12: 6.9519 % kW, 13.6254 % k, best iteration 259 of 656, 1.28 s
+[    26.8s] NOTE    indirect_D1_seed42 trial 13: 6.8798 % kW, 13.4970 % k, best iteration 177 of 1249, 2.21 s
+[    29.2s] NOTE    indirect_D1_seed42 trial 14: 6.8486 % kW, 13.5111 % k, best iteration 131 of 1027, 2.12 s
+[    31.6s] NOTE    indirect_D1_seed42 trial 15: 6.8747 % kW, 13.5424 % k, best iteration 110 of 980, 2.08 s
+[    33.7s] NOTE    indirect_D1_seed42 trial 16: 6.8183 % kW, 13.4151 % k, best iteration 119 of 586, 1.81 s
+[    34.8s] NOTE    indirect_D1_seed42 trial 17: 6.8010 % kW, 13.4170 % k, best iteration 45 of 604, 0.74 s
+[    41.3s] NOTE    indirect_D1_seed42 trial 18: 6.7922 % kW, 13.4374 % k, best iteration 340 of 699, 6.21 s
+[    44.4s] NOTE    indirect_D1_seed42 trial 19: 6.8205 % kW, 13.4456 % k, best iteration 283 of 607, 2.73 s
+[    50.5s] WARN    indirect_D1_seed42: validation RMSE 0.1004 is 2.7 x the train RMSE 0.03769 at the best iteration
+[    50.5s] WARN    indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10, learning_rate = 0.01031
+[    50.5s] NOTE    indirect_D1_seed42: best trial 18, validation 6.7922 % of capacity, best iteration 340 of 699
+[    50.5s] STEP    indirect_D1_seed42: 20 trial(s) done in 48.6s
+[    50.6s] NOTE    direct_D1: 96 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[    50.6s] NOTE    direct_D1: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 13}
+[    50.6s] NOTE    direct_D1: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[    50.6s] STEP    direct_D1_seed42: 20 trial(s) ...
+[    54.1s] NOTE    direct_D1_seed42 trial 0: 6.8327 % kW, best iteration 35 of 874, 3.2 s
+[    66.8s] NOTE    direct_D1_seed42 trial 1: 6.7911 % kW, best iteration 420 of 1282, 12.42 s
+[    69.9s] NOTE    direct_D1_seed42 trial 2: 6.8108 % kW, best iteration 104 of 747, 2.85 s
+[    81.3s] NOTE    direct_D1_seed42 trial 3: 6.7681 % kW, best iteration 224 of 1021, 11.08 s
+[    84.5s] NOTE    direct_D1_seed42 trial 4: 6.9253 % kW, best iteration 15 of 317, 2.98 s
+[    91.2s] NOTE    direct_D1_seed42 trial 5: 6.7218 % kW, best iteration 381 of 419, 6.38 s
+[    92.5s] NOTE    direct_D1_seed42 trial 6: 6.7261 % kW, best iteration 11 of 1184, 1.01 s
+[    97.2s] NOTE    direct_D1_seed42 trial 7: 6.7630 % kW, best iteration 357 of 359, 4.44 s
+[   102.6s] NOTE    direct_D1_seed42 trial 8: 6.6731 % kW, best iteration 268 of 705, 5.13 s
+[   106.6s] NOTE    direct_D1_seed42 trial 9: 6.9102 % kW, best iteration 51 of 209, 3.67 s
+[   108.8s] NOTE    direct_D1_seed42 trial 10: 6.7195 % kW, best iteration 41 of 1011, 1.99 s
+[   111.0s] NOTE    direct_D1_seed42 trial 11: 6.6625 % kW, best iteration 38 of 1161, 1.93 s
+[   115.3s] NOTE    direct_D1_seed42 trial 12: 6.6874 % kW, best iteration 214 of 905, 3.95 s
+[   119.0s] NOTE    direct_D1_seed42 trial 13: 6.7145 % kW, best iteration 182 of 866, 3.4 s
+[   120.3s] NOTE    direct_D1_seed42 trial 14: 6.6887 % kW, best iteration 25 of 643, 0.99 s
+[   122.9s] NOTE    direct_D1_seed42 trial 15: 6.7073 % kW, best iteration 99 of 498, 2.27 s
+[   124.8s] NOTE    direct_D1_seed42 trial 16: 6.7133 % kW, best iteration 15 of 1140, 1.52 s
+[   132.4s] NOTE    direct_D1_seed42 trial 17: 6.6638 % kW, best iteration 344 of 1173, 7.36 s
+[   135.6s] NOTE    direct_D1_seed42 trial 18: 6.7102 % kW, best iteration 90 of 1420, 2.86 s
+[   138.0s] NOTE    direct_D1_seed42 trial 19: 6.6562 % kW, best iteration 45 of 1110, 2.1 s
+[   140.2s] WARN    direct_D1_seed42: best trial on the edge of the search space for min_child_weight = 20
+[   140.2s] NOTE    direct_D1_seed42: best trial 19, validation 6.6562 % of capacity, best iteration 45 of 1110
+[   140.2s] STEP    direct_D1_seed42: 20 trial(s) done in 89.7s
+[   140.3s] NOTE    indirect_D2: 28 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[   140.3s] STEP    indirect_D2_seed42: 20 trial(s) ...
+[   141.3s] NOTE    indirect_D2_seed42 trial 0: 7.2669 % kW, 14.4644 % k, best iteration 22 of 874, 0.61 s
+[   143.9s] NOTE    indirect_D2_seed42 trial 1: 7.2931 % kW, 14.4253 % k, best iteration 294 of 1282, 2.34 s
+[   144.8s] NOTE    indirect_D2_seed42 trial 2: 7.2579 % kW, 14.3011 % k, best iteration 78 of 747, 0.64 s
+[   147.3s] NOTE    indirect_D2_seed42 trial 3: 7.2538 % kW, 14.3754 % k, best iteration 148 of 1021, 2.21 s
+[   148.3s] NOTE    indirect_D2_seed42 trial 4: 7.6430 % kW, 15.2191 % k, best iteration 8 of 317, 0.69 s
+[   149.7s] NOTE    indirect_D2_seed42 trial 5: 7.2368 % kW, 14.2314 % k, best iteration 308 of 419, 1.1 s
+[   150.2s] NOTE    indirect_D2_seed42 trial 6: 7.2117 % kW, 14.3178 % k, best iteration 34 of 1184, 0.18 s
+[   151.6s] NOTE    indirect_D2_seed42 trial 7: 7.2504 % kW, 14.2120 % k, best iteration 354 of 359, 1.17 s
+[   152.9s] NOTE    indirect_D2_seed42 trial 8: 7.2091 % kW, 14.2136 % k, best iteration 213 of 705, 0.95 s
+[   154.0s] NOTE    indirect_D2_seed42 trial 9: 7.3673 % kW, 14.7166 % k, best iteration 20 of 209, 0.81 s
+[   154.6s] NOTE    indirect_D2_seed42 trial 10: 7.1802 % kW, 14.0965 % k, best iteration 25 of 1011, 0.38 s
+[   155.3s] NOTE    indirect_D2_seed42 trial 11: 7.1861 % kW, 14.1722 % k, best iteration 21 of 1161, 0.38 s
+[   156.2s] NOTE    indirect_D2_seed42 trial 12: 7.1420 % kW, 14.1717 % k, best iteration 36 of 933, 0.46 s
+[   156.8s] NOTE    indirect_D2_seed42 trial 13: 7.3519 % kW, 14.4477 % k, best iteration 17 of 681, 0.35 s
+[   157.4s] NOTE    indirect_D2_seed42 trial 14: 7.2292 % kW, 14.4308 % k, best iteration 12 of 706, 0.23 s
+[   158.1s] NOTE    indirect_D2_seed42 trial 15: 7.2429 % kW, 14.4163 % k, best iteration 18 of 277, 0.39 s
+[   158.9s] NOTE    indirect_D2_seed42 trial 16: 7.2142 % kW, 14.3030 % k, best iteration 18 of 748, 0.5 s
+[   159.7s] NOTE    indirect_D2_seed42 trial 17: 7.1223 % kW, 14.0736 % k, best iteration 29 of 871, 0.45 s
+[   160.4s] NOTE    indirect_D2_seed42 trial 18: 7.1354 % kW, 14.1704 % k, best iteration 37 of 1551, 0.43 s
+[   161.1s] NOTE    indirect_D2_seed42 trial 19: 7.2498 % kW, 14.2655 % k, best iteration 47 of 1978, 0.38 s
+[   161.6s] NOTE    indirect_D2_seed42: best trial 17, validation 7.1223 % of capacity, best iteration 29 of 871
+[   161.6s] STEP    indirect_D2_seed42: 20 trial(s) done in 21.2s
+[   161.6s] NOTE    direct_D2: 89 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[   161.6s] NOTE    direct_D2: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 14}
+[   161.6s] NOTE    direct_D2: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[   161.6s] STEP    direct_D2_seed42: 20 trial(s) ...
+[   164.7s] NOTE    direct_D2_seed42 trial 0: 6.9693 % kW, best iteration 29 of 874, 2.8 s
+[   174.5s] NOTE    direct_D2_seed42 trial 1: 7.0229 % kW, best iteration 400 of 1282, 9.51 s
+[   177.1s] NOTE    direct_D2_seed42 trial 2: 6.9218 % kW, best iteration 89 of 747, 2.35 s
+[   186.1s] NOTE    direct_D2_seed42 trial 3: 6.9251 % kW, best iteration 203 of 1021, 8.73 s
+[   189.0s] NOTE    direct_D2_seed42 trial 4: 6.9970 % kW, best iteration 13 of 317, 2.67 s
+[   194.1s] NOTE    direct_D2_seed42 trial 5: 6.9055 % kW, best iteration 353 of 419, 4.76 s
+[   195.2s] NOTE    direct_D2_seed42 trial 6: 7.0400 % kW, best iteration 19 of 1184, 0.82 s
+[   198.9s] NOTE    direct_D2_seed42 trial 7: 6.9440 % kW, best iteration 344 of 359, 3.43 s
+[   203.1s] NOTE    direct_D2_seed42 trial 8: 6.9085 % kW, best iteration 241 of 705, 3.96 s
+[   206.2s] NOTE    direct_D2_seed42 trial 9: 6.9790 % kW, best iteration 33 of 209, 2.78 s
+[   210.8s] NOTE    direct_D2_seed42 trial 10: 6.8113 % kW, best iteration 212 of 213, 4.35 s
+[   214.6s] NOTE    direct_D2_seed42 trial 11: 6.9397 % kW, best iteration 162 of 606, 3.51 s
+[   218.8s] NOTE    direct_D2_seed42 trial 12: 6.9028 % kW, best iteration 141 of 438, 3.92 s
+[   223.3s] NOTE    direct_D2_seed42 trial 13: 6.8734 % kW, best iteration 161 of 405, 4.21 s
+[   226.6s] NOTE    direct_D2_seed42 trial 14: 6.8602 % kW, best iteration 104 of 252, 3.03 s
+[   229.0s] NOTE    direct_D2_seed42 trial 15: 6.9089 % kW, best iteration 58 of 213, 2.0 s
+[   232.0s] NOTE    direct_D2_seed42 trial 16: 6.9721 % kW, best iteration 75 of 286, 2.67 s
+[   234.1s] NOTE    direct_D2_seed42 trial 17: 6.9230 % kW, best iteration 60 of 255, 1.81 s
+[   239.6s] NOTE    direct_D2_seed42 trial 18: 6.9313 % kW, best iteration 223 of 224, 5.23 s
+[   245.6s] NOTE    direct_D2_seed42 trial 19: 6.8993 % kW, best iteration 246 of 788, 5.67 s
+[   250.1s] WARN    direct_D2_seed42: best iteration 212 at the cap of 213 rounds: it may not have converged (M12d)
+[   250.1s] WARN    direct_D2_seed42: best trial on the edge of the search space for n_estimators = 213
+[   250.1s] NOTE    direct_D2_seed42: best trial 10, validation 6.8113 % of capacity, best iteration 212 of 213
+[   250.1s] STEP    direct_D2_seed42: 20 trial(s) done in 88.5s
+[   250.2s] NOTE    indirect_D3: 32 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[   250.2s] NOTE    indirect_D3: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 10}
+[   250.2s] STEP    indirect_D3_seed42: 20 trial(s) ...
+[   251.3s] NOTE    indirect_D3_seed42 trial 0: 6.8195 % kW, 13.8508 % k, best iteration 23 of 874, 0.8 s
+[   254.4s] NOTE    indirect_D3_seed42 trial 1: 6.7344 % kW, 13.7426 % k, best iteration 323 of 1282, 2.82 s
+[   255.4s] NOTE    indirect_D3_seed42 trial 2: 6.6975 % kW, 13.6398 % k, best iteration 95 of 747, 0.71 s
+[   258.6s] NOTE    indirect_D3_seed42 trial 3: 6.6729 % kW, 13.6023 % k, best iteration 197 of 1021, 2.89 s
+[   259.6s] NOTE    indirect_D3_seed42 trial 4: 6.8750 % kW, 14.1807 % k, best iteration 8 of 317, 0.69 s
+[   261.2s] NOTE    indirect_D3_seed42 trial 5: 6.7849 % kW, 13.6938 % k, best iteration 360 of 419, 1.38 s
+[   261.7s] NOTE    indirect_D3_seed42 trial 6: 6.9641 % kW, 13.9179 % k, best iteration 14 of 1184, 0.21 s
+[   262.9s] NOTE    indirect_D3_seed42 trial 7: 6.8929 % kW, 13.7420 % k, best iteration 356 of 359, 0.84 s
+[   264.4s] NOTE    indirect_D3_seed42 trial 8: 6.7379 % kW, 13.6686 % k, best iteration 261 of 705, 1.2 s
+[   265.6s] NOTE    indirect_D3_seed42 trial 9: 6.7432 % kW, 13.8241 % k, best iteration 25 of 209, 0.93 s
+[   267.1s] NOTE    indirect_D3_seed42 trial 10: 6.7301 % kW, 13.6522 % k, best iteration 112 of 793, 1.2 s
+[   268.2s] NOTE    indirect_D3_seed42 trial 11: 6.7650 % kW, 13.6971 % k, best iteration 113 of 325, 0.87 s
+[   270.0s] NOTE    indirect_D3_seed42 trial 12: 6.8102 % kW, 13.7140 % k, best iteration 263 of 656, 1.44 s
+[   272.6s] NOTE    indirect_D3_seed42 trial 13: 6.7562 % kW, 13.7421 % k, best iteration 207 of 1249, 2.31 s
+[   275.4s] NOTE    indirect_D3_seed42 trial 14: 6.6629 % kW, 13.6000 % k, best iteration 210 of 1027, 2.56 s
+[   278.3s] NOTE    indirect_D3_seed42 trial 15: 6.7393 % kW, 13.7133 % k, best iteration 114 of 985, 2.62 s
+[   280.2s] NOTE    indirect_D3_seed42 trial 16: 6.6822 % kW, 13.5607 % k, best iteration 112 of 605, 1.62 s
+[   281.6s] NOTE    indirect_D3_seed42 trial 17: 6.6564 % kW, 13.5058 % k, best iteration 92 of 928, 1.05 s
+[   282.7s] NOTE    indirect_D3_seed42 trial 18: 6.7536 % kW, 13.7672 % k, best iteration 49 of 1213, 0.75 s
+[   289.9s] NOTE    indirect_D3_seed42 trial 19: 6.6896 % kW, 13.6572 % k, best iteration 383 of 1335, 6.93 s
+[   291.0s] NOTE    indirect_D3_seed42: best trial 17, validation 6.6564 % of capacity, best iteration 92 of 928
+[   291.0s] STEP    indirect_D3_seed42: 20 trial(s) done in 40.8s
+[   291.0s] NOTE    direct_D3: 82 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[   291.0s] NOTE    direct_D3: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 24}
+[   291.0s] NOTE    direct_D3: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[   291.0s] STEP    direct_D3_seed42: 20 trial(s) ...
+[   293.5s] NOTE    direct_D3_seed42 trial 0: 6.6167 % kW, best iteration 31 of 874, 2.18 s
+[   303.0s] NOTE    direct_D3_seed42 trial 1: 6.6102 % kW, best iteration 431 of 1282, 9.24 s
+[   305.5s] NOTE    direct_D3_seed42 trial 2: 6.5314 % kW, best iteration 100 of 747, 2.26 s
+[   313.7s] NOTE    direct_D3_seed42 trial 3: 6.5627 % kW, best iteration 224 of 1021, 7.93 s
+[   316.1s] NOTE    direct_D3_seed42 trial 4: 6.8671 % kW, best iteration 13 of 317, 2.03 s
+[   320.8s] NOTE    direct_D3_seed42 trial 5: 6.5433 % kW, best iteration 413 of 419, 4.53 s
+[   321.9s] NOTE    direct_D3_seed42 trial 6: 6.7099 % kW, best iteration 23 of 1184, 0.82 s
+[   325.3s] NOTE    direct_D3_seed42 trial 7: 6.5572 % kW, best iteration 350 of 359, 3.14 s
+[   329.4s] NOTE    direct_D3_seed42 trial 8: 6.4746 % kW, best iteration 260 of 705, 3.77 s
+[   332.2s] NOTE    direct_D3_seed42 trial 9: 6.6346 % kW, best iteration 40 of 209, 2.43 s
+[   334.0s] NOTE    direct_D3_seed42 trial 10: 6.4261 % kW, best iteration 31 of 1011, 1.56 s
+[   336.1s] NOTE    direct_D3_seed42 trial 11: 6.5459 % kW, best iteration 41 of 1161, 1.72 s
+[   337.6s] NOTE    direct_D3_seed42 trial 12: 6.5753 % kW, best iteration 60 of 839, 1.22 s
+[   343.0s] NOTE    direct_D3_seed42 trial 13: 6.4993 % kW, best iteration 306 of 421, 5.1 s
+[   344.3s] NOTE    direct_D3_seed42 trial 14: 6.6712 % kW, best iteration 19 of 768, 1.01 s
+[   345.6s] NOTE    direct_D3_seed42 trial 15: 6.5265 % kW, best iteration 20 of 618, 1.01 s
+[   347.9s] NOTE    direct_D3_seed42 trial 16: 6.4929 % kW, best iteration 129 of 382, 2.02 s
+[   352.1s] NOTE    direct_D3_seed42 trial 17: 6.4525 % kW, best iteration 257 of 905, 3.9 s
+[   353.7s] NOTE    direct_D3_seed42 trial 18: 6.5490 % kW, best iteration 76 of 1228, 1.33 s
+[   358.9s] NOTE    direct_D3_seed42 trial 19: 6.4718 % kW, best iteration 337 of 752, 4.95 s
+[   360.5s] NOTE    direct_D3_seed42: best trial 10, validation 6.4261 % of capacity, best iteration 31 of 1011
+[   360.5s] STEP    direct_D3_seed42: 20 trial(s) done in 69.5s
+[   361.1s] NOTE    seed spread: one seed per target x horizon, not computed
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/predictions_xgb_sota_seed42.csv sha256=f111d5b1dad08d27
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/trials.csv sha256=dcfd7c3f637866ab
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/learning_curves.csv sha256=57aaccf917f57cdd
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/best_params.json sha256=97bd6764951c950e
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/xgb_config.json sha256=ca92afa647ec94db
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/figures/learning_curves.png sha256=137809c6e3ad5755
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/figures/optimization_history.png sha256=d65f968e3430af13
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/optuna.db sha256=67449b18bd3da974
+[   362.9s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_direct_D1_seed42.ubj sha256=cc264a41e21e641c
+[   363.0s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_direct_D2_seed42.ubj sha256=b1cba2f909fd0192
+[   363.0s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_direct_D3_seed42.ubj sha256=3c9e0758fa76fb0f
+[   363.0s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_indirect_D1_seed42.ubj sha256=a863741b3bab6d40
+[   363.0s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_indirect_D2_seed42.ubj sha256=f24dddc5390cdb99
+[   363.0s] OUTPUT  outputs/runs/20261107T104151Z_dev/.xgb.tmp/models/xgb_sota_indirect_D3_seed42.ubj sha256=c5ffa83f784de190
+[   363.0s] RUN     warnings: 5
+[   363.0s] RUN     status: ok; duration 363.0s

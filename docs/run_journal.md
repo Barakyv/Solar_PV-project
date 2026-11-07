@@ -976,3 +976,166 @@ hashes, numbers) and the commit messages are the record:
 - **Review (forecasting-validity-review):** issuance: the inputs are those of stage 7 (T-17,
   T-18 hold); split isolation: no test row read (X10); identical rows for A and B; the margin is
   the registered D-12 form; validation is used as a decision split, as every earlier decision.
+- **Commit:** `45c7a84` (the decision file, `outputs/09_xgb_checks/`, this entry).
+
+### 2026-11-07 · R9-05 · Smoke run of `baselines,xgb,evaluate`
+
+- **Purpose:** the acceptance of W2's code on the real tables: the step runs end to end, its
+  predictions pass the evaluation's checks, and the records are complete. Not a result.
+- **Command and commit:** `python -m solarpv.pipeline run --mode smoke --only
+  baselines,xgb,evaluate` at `45c7a84`; run `outputs/runs/20261107T104110Z_smoke/`, ok in 25 s
+  (xgb 19 s). Preflight: 19 of 19 inputs as recorded (the D-15 decision now present).
+- **Rows** (D+1 to D+3 alike): fit 496 indirect and 1,239 direct (the last 56 local days of
+  train); early stopping 296 and 631 rows of the 28-day window; objective 321 daytime hours, 40
+  of them op-limited. NaN passed to XGBoost: `irradiance_clear_index_prevday` on 6 and 10
+  indirect fit rows (D+1, D+3), the GFS ratios at night on about 690 direct fit and 302
+  early-stopping rows; none on a scoring row.
+- **Evaluation:** every reference and XGB on the same 321 hours; the values are a code check on
+  four spring weeks with one random trial, not a result (for example XGB direct D+1 12.25 %
+  against climatology 12.78 %).
+- **Warnings (12, all expected with one trial on 56 days):** at every target × horizon, the one
+  trial has `max_depth` = 10 (the bound) and the validation RMSE is 2.7–2,836 times the train
+  RMSE (depth 10 on about 500–1,200 rows fits train almost exactly). The first trial of every
+  study is the same draw, because every study is seeded with the same seed (M12c).
+- **Records:** predictions, trials, learning curves, best parameters, configuration, two
+  figures, six boosters and the Optuna study, all hashed in `step.json`.
+
+### 2026-11-07 · R9-06 · Dev run of `baselines,xgb,evaluate` (D-17: 20 trials, seed 42), and its review
+
+- **Purpose:** XGB-dev of stage 9 and the acceptance of §14.7. Every number below is a
+  **tuning-split number**: validation chose the hyper-parameters and the stopping round (D-10,
+  M12b), so it is optimistic by construction; the test split stays the only unbiased estimate.
+- **Command and commit:** `python -m solarpv.pipeline run --mode dev --only
+  baselines,xgb,evaluate` at `45c7a84`, clean tree, 19 of 19 inputs as recorded; run
+  `outputs/runs/20261107T104151Z_dev/`, ok in 6.2 min (xgb 363 s, about 1 s per indirect and
+  4 s per direct trial on 8 threads).
+- **Rows** (equal to the counts checked before the session): fit 9,575 indirect and 20,393
+  direct (nights included); early stopping 2,825 and 5,685 validation rows; objective 2,901
+  daytime hours, 146 op-limited. NaN passed to XGBoost: `irradiance_clear_index_prevday` on 6
+  and 10 indirect fit rows (D+1, D+3); the GFS ratios at night on about 9,650 direct fit rows,
+  2,469 early-stopping rows and 2,469 predicted validation rows; none on a scoring hour.
+- **Results** (nRMSE in kW, % of 3,449 kW, the 2,901 validation daytime hours; from
+  `evaluate/val/benchmark_summary.csv`):
+
+  | Target | Horizon | XGB-dev | Persistence | Climatology | Clear sky | Skill vs persistence | Skill vs CLIPER |
+  |---|---|---|---|---|---|---|---|
+  | indirect | D+1 | 6.79 | 9.68 | 8.06 | 8.96 | 0.33 | 0.21 |
+  | indirect | D+2 | 7.12 | 10.84 | 8.06 | 8.96 | 0.37 | 0.22 |
+  | indirect | D+3 | 6.66 | 10.76 | 8.06 | 8.96 | 0.40 | 0.26 |
+  | direct | D+1 | 6.66 | 9.68 | 8.04 | 8.96 | 0.31 | 0.29 |
+  | direct | D+2 | 6.81 | 10.82 | 8.04 | 8.96 | 0.37 | 0.34 |
+  | direct | D+3 | 6.43 | 10.72 | 8.04 | 8.96 | 0.40 | 0.38 |
+
+  The indirect route in k: 13.44 / 14.07 / 13.51 % of MEAN_DAYTIME_K. Normal-operation view
+  (D-22, 2,755 hours): 4.85 / 5.36 / 4.75 indirect, 4.85 / 5.38 / 4.67 direct; the 146
+  op-limited hours carry a large share of the error. Route comparison (paired, actual AC):
+  the direct route is better by 0.14, 0.31 and 0.23 pp (v6 reported the opposite, by 1.7–2.1
+  pp; one seed on the tuning split, so this is no conclusion; C2 is decided on test in stage 11).
+  Against the fixed model of stage 7 on the same inputs (R7-05: 6.84 / 7.26 / 6.71 indirect,
+  6.90 / 7.08 / 6.63 direct), tuning gains 0.04–0.27 pp.
+- **Acceptance of §14.7:**
+  1. XGB-dev is below persistence and climatology at every target × horizon: **yes** (DM with
+     HLN and Bonferroni significant against all three references at every target × horizon;
+     the smallest gap is 0.94 pp, indirect D+2 against climatology).
+  2. Error rising with the horizon: **no, D+3 is below D+1 in both routes**, so the order was
+     checked as the rule says. Inside train the order is normal for the same inputs (stage-7
+     date folds: indirect 7.57 / 7.87 / 8.25, direct full pool 7.66 / 7.94 / 8.35; inner
+     hold-out alike). On validation the paired circular block bootstrap of the squared-error
+     difference D+3 − D+1 includes 0 in both routes (indirect −2,171 kW², 95 % CI [−5,852,
+     1,000]; direct −3,582 kW², [−8,057, 102]); D+2 is the high one (D+3 − D+2 below 0 in both
+     routes). T-09 passes. This is the validation-sample pattern of R6b-07 and R7-05; no action.
+  3. The warnings were read (five): indirect D+1 validation RMSE 2.7 times the train RMSE and
+     `max_depth` 10 and `learning_rate` 0.0103 at the edges; direct D+1 `min_child_weight` 20
+     at the edge; **direct D+2 stopped at its cap** (best iteration 212 of 213 rounds,
+     `n_estimators` near its lower bound, learning rate 0.014): the best of 20 trials had not
+     converged. In all, 3 of the 120 trials stopped at their cap (two of direct D+2, one of
+     indirect D+1). None is a defect of the code;
+     they say that 20 trials leave the search unfinished, and that the v6 space is tight at
+     some bounds. The space of §6.11 is not changed here (a change would be a new decision with
+     its own rule); listed for G-1.
+- **Review (forecasting-validity-review):**
+  - Issuance: inputs from `model_inputs.json` through the allow-list and the leakage rules; GFS
+    rows guarded by T-17; lags and rolling windows by T-09, T-18.
+  - Split isolation: fit on train rows only; validation as the early-stopping set and the
+    objective (the registered design); no test row read (X10); `test_access_log.csv` and
+    `outputs/07_evaluation/` untouched (git status).
+  - Comparable evaluation: every model on the same 2,901 hours, truth from the stage-6 table,
+    kW for both routes, paired route comparison, CLIPER skill positive everywhere.
+  - Uncertainty: one seed (D-17); bootstrap intervals of nRMSE (for example direct D+1
+    [5.59, 7.79] %); no decision is taken from these numbers.
+  - Red flags: no dominant feature by the stage-7 measure (mean |SHAP| on the validation
+    daytime hours; top over third at most 6.7 for direct D+1, threshold 10): the leaders are
+    GFS forecasts (`fcst_gfs_poa`, `fcst_gfs_pv_kw` for direct; `fcst_gfs_kt_poa_daymean`,
+    `fcst_gfs_k_phys` for k), all public before T0. By total gain the two direct GFS features
+    are 94 % at D+1, which is the gain measure's concentration on the first splits, not a
+    leak. The horizon order is explained above. The margin over the references is plausible
+    (skill vs persistence 0.31–0.40).
+  - Provenance: the run folder with logs, step records and hashes; commit `45c7a84`; OP-50.
+- **Decision / next:** XGB-dev is accepted as the stage-9 light model. Next: L-09 and R-14 on
+  this run (§14.4, §14.5).
+
+### 2026-11-07 · R9-07 · L-09 (bias correction), R-14 (mean bias) and A-14 on the dev run
+
+- **Commands and commit:** at `45c7a84`, clean code tree, on the dev run of R9-06 (read only,
+  every file checked against its step record):
+  - `python -m solarpv.models.xgb_checks l09 --run 20261107T104151Z_dev`: 2.5 min, log
+    `outputs/09_xgb_checks/runs/20261107T105022Z.log`;
+  - `python -m solarpv.models.xgb_checks r14 --run 20261107T104151Z_dev`: 1 s, log
+    `outputs/09_xgb_checks/runs/20261107T105328Z.log`.
+- **L-09 (§14.4, registered before any model result):** base model the dev best parameters
+  with the dev rounds fixed, seeds 42, 123, 777; OLS on 7,834 out-of-fold daytime train hours
+  (five expanding date folds, normal operation); applied to the 2,901 validation daytime hours.
+  Seed 42 on all of train with the dev rounds reproduces the dev forecast exactly (largest
+  difference 0.0), so the base model is the dev final fit.
+
+  | Target | Horizon | Uncorrected | Corrected | Gain | Margin | Passes | a (kW) | b |
+  |---|---|---|---|---|---|---|---|---|
+  | indirect | D+1 | 6.809 | 6.699 | +0.110 | 0.050 | yes | +15.0 | 0.985 |
+  | indirect | D+2 | 7.216 | 7.001 | +0.216 | 0.175 | yes | +20.1 | 0.971 |
+  | indirect | D+3 | 6.692 | 6.599 | +0.093 | 0.089 | yes | +29.8 | 0.979 |
+  | direct | D+1 | 6.704 | 6.762 | −0.058 | 0.076 | no | −34.9 | 1.020 |
+  | direct | D+2 | 6.805 | 6.936 | −0.131 | 0.050 | no | −65.0 | 1.058 |
+  | direct | D+3 | 6.451 | 6.562 | −0.111 | 0.076 | no | −40.1 | 1.029 |
+
+  (means over the three seeds, nRMSE in kW, %.) **By the rule: adopted for the indirect route,
+  not adopted for the direct route** (`configs/mos_decision.yaml`). Reading: for k the
+  correction lowers the kW forecast slightly (b < 1, small positive a), which removes part of the
+  positive level bias found by R-14 below. For the direct target the out-of-fold fit asks to
+  stretch the forecast (b > 1, negative a): the fold models with the few dev rounds (31–212)
+  trained on less data are flatter than the full model, and on validation the stretch hurts.
+  Side note: the tuned seed is the best of the three at every target × horizon (the
+  hyper-parameters were chosen with it), so its value is optimistic by 0.02–0.09 pp against the
+  three-seed mean.
+- **Not yet done for L-09:** §14.4 says that an adopted correction "becomes part of the `xgb`
+  step in a later commit, before G-1". That is a design change of the step (the correction
+  must be refitted in every run from that run's best parameters and seeds, and the indirect
+  prediction file holds k, so the corrected kW must be mapped back to k on daytime hours, or
+  written as a separate model). It is left for the next session, with its own short design note
+  before the code.
+- **R-14 (§14.5, reported, not decided):** mean bias error of the dev forecast (forecast −
+  actual) on the 2,901 validation daytime hours, 95 % circular block bootstrap interval (block
+  24, 1,000 resamples, seed 42):
+
+  | Target | Horizon | MBE (kW) | MBE (% of capacity) | 95 % CI (%) | Sign |
+  |---|---|---|---|---|---|
+  | direct | D+1 | +25.5 | +0.74 | [+0.31, +1.21] | positive |
+  | direct | D+2 | −6.6 | −0.19 | [−0.70, +0.34] | includes 0 |
+  | direct | D+3 | +24.2 | +0.70 | [+0.23, +1.19] | positive |
+  | indirect | D+1 | +45.0 | +1.31 | [+0.88, +1.77] | positive |
+  | indirect | D+2 | +44.8 | +1.30 | [+0.78, +1.80] | positive |
+  | indirect | D+3 | +42.5 | +1.23 | [+0.76, +1.72] | positive |
+
+  **R-14 is confirmed for the direct target at D+1 and D+3, not at D+2**, and it stays a
+  declared limitation (no trend feature, as registered). By month the direct bias is largest in
+  April and May (+2.5 % and +1.4 % at D+1) and about 0 in August and September. The indirect
+  route over-forecasts more and at every horizon. Part of both biases comes from the 146
+  op-limited hours, which are in the objective but not in the fit rows (curtailment cannot be
+  forecast); the per-view bias is not computed here.
+- **A-14 (§14.6):** the `xgb` step fits no scaler and no imputer; the boosters see train rows
+  only, and validation enters only as the early-stopping set and the objective. T-61 shows that
+  permuted validation labels change only the stopping round, never the trees, and do not change
+  the L-09 coefficients. **A-14 is ✅ for XGB**; the scalers of the sequence models are checked in
+  W4.
+- **Review (forecasting-validity-review):** the rules and margins are the registered ones
+  (§14.4, §14.5); three seeds for the decision; train folds chronological with a 3-day gap; the
+  correction is fitted on train only and validated once; the test split is not read.

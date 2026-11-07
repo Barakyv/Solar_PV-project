@@ -1,0 +1,40 @@
+[     0.0s] RUN     stage 09_xgb_checks
+[     0.0s] RUN     command: python -m solarpv.models.xgb_checks l09 --run 20261107T104151Z_dev
+[     0.2s] RUN     git commit: 45c7a84
+[     0.2s] RUN     started (UTC): 2026-11-07T10:50:22+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261107T104151Z_dev/xgb/best_params.json sha256=97bd6764951c950e
+[     0.2s] INPUT   outputs/runs/20261107T104151Z_dev/xgb/step.json sha256=6707b4cb772b4559
+[     0.4s] STEP    L-09: out-of-fold linear correction of the kW forecast, three seeds ...
+[    22.9s] NOTE    L-09 indirect D+1 seed 42: a +14.62 kW, b 0.9853 on 7834 OOF hours; validation 6.7922 -> 6.6856 %
+[    43.9s] NOTE    L-09 indirect D+1 seed 123: a +15.19 kW, b 0.9839 on 7834 OOF hours; validation 6.8164 -> 6.6963 %
+[    66.3s] NOTE    L-09 indirect D+1 seed 777: a +15.33 kW, b 0.9853 on 7834 OOF hours; validation 6.8184 -> 6.7138 %
+[    71.4s] NOTE    L-09 direct D+1 seed 42: a -35.80 kW, b 1.0212 on 7834 OOF hours; validation 6.6562 -> 6.7246 %
+[    76.6s] NOTE    L-09 direct D+1 seed 123: a -34.66 kW, b 1.0193 on 7834 OOF hours; validation 6.7200 -> 6.7766 %
+[    81.6s] NOTE    L-09 direct D+1 seed 777: a -34.22 kW, b 1.0180 on 7834 OOF hours; validation 6.7365 -> 6.7857 %
+[    82.7s] NOTE    L-09 indirect D+2 seed 42: a +18.71 kW, b 0.9722 on 7834 OOF hours; validation 7.1223 -> 6.9109 %
+[    83.8s] NOTE    L-09 indirect D+2 seed 123: a +18.41 kW, b 0.9744 on 7834 OOF hours; validation 7.2156 -> 7.0251 %
+[    84.9s] NOTE    L-09 indirect D+2 seed 777: a +23.15 kW, b 0.9673 on 7834 OOF hours; validation 7.3112 -> 7.0656 %
+[    99.5s] NOTE    L-09 direct D+2 seed 42: a -62.48 kW, b 1.0571 on 7834 OOF hours; validation 6.8113 -> 6.9389 %
+[   114.4s] NOTE    L-09 direct D+2 seed 123: a -64.87 kW, b 1.0586 on 7834 OOF hours; validation 6.8034 -> 6.9363 %
+[   128.6s] NOTE    L-09 direct D+2 seed 777: a -67.71 kW, b 1.0594 on 7834 OOF hours; validation 6.8008 -> 6.9339 %
+[   132.0s] NOTE    L-09 indirect D+3 seed 42: a +28.08 kW, b 0.9791 on 7834 OOF hours; validation 6.6564 -> 6.5545 %
+[   135.4s] NOTE    L-09 indirect D+3 seed 123: a +31.63 kW, b 0.9787 on 7834 OOF hours; validation 6.6829 -> 6.5934 %
+[   138.7s] NOTE    L-09 indirect D+3 seed 777: a +29.62 kW, b 0.9801 on 7834 OOF hours; validation 6.7364 -> 6.6503 %
+[   142.2s] NOTE    L-09 direct D+3 seed 42: a -40.94 kW, b 1.0304 on 7834 OOF hours; validation 6.4261 -> 6.5530 %
+[   145.6s] NOTE    L-09 direct D+3 seed 123: a -36.17 kW, b 1.0257 on 7834 OOF hours; validation 6.5002 -> 6.5975 %
+[   149.1s] NOTE    L-09 direct D+3 seed 777: a -43.29 kW, b 1.0304 on 7834 OOF hours; validation 6.4256 -> 6.5351 %
+[   149.1s] STEP    L-09: out-of-fold linear correction of the kW forecast, three seeds done in 148.6s
+[   149.1s] VALUE   l09_max_abs_diff_seed42_vs_dev_predictions = 0.0
+[   149.1s] VALUE   l09_adopted_indirect = True
+[   149.1s] NOTE    L-09 indirect D1: 6.8090 -> 6.6986 %, gain +0.1104 pp, margin 0.0500 pp, passes True
+[   149.1s] NOTE    L-09 indirect D2: 7.2164 -> 7.0005 %, gain +0.2159 pp, margin 0.1753 pp, passes True
+[   149.1s] NOTE    L-09 indirect D3: 6.6919 -> 6.5994 %, gain +0.0925 pp, margin 0.0892 pp, passes True
+[   149.1s] VALUE   l09_adopted_direct = False
+[   149.1s] NOTE    L-09 direct D1: 6.7042 -> 6.7623 %, gain -0.0581 pp, margin 0.0759 pp, passes False
+[   149.1s] NOTE    L-09 direct D2: 6.8051 -> 6.9364 %, gain -0.1312 pp, margin 0.0500 pp, passes False
+[   149.1s] NOTE    L-09 direct D3: 6.4506 -> 6.5619 %, gain -0.1112 pp, margin 0.0759 pp, passes False
+[   149.4s] OUTPUT  outputs/09_xgb_checks/l09_check.csv sha256=247bfd7f32c0476a
+[   149.4s] OUTPUT  configs/mos_decision.yaml sha256=20d159081fdd8093
+[   149.4s] RUN     warnings: 0
+[   149.4s] RUN     status: ok; duration 149.4s

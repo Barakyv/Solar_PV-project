@@ -1,0 +1,7 @@
+model,target,horizon,n_seeds,nRMSE_mean,nRMSE_std,nRMSE_min,nRMSE_max,nRMSE_range
+xgb_sota,direct,1,1,12.252963,,12.252963,12.252963,0.000000
+xgb_sota,direct,2,1,11.598139,,11.598139,11.598139,0.000000
+xgb_sota,direct,3,1,12.604406,,12.604406,12.604406,0.000000
+xgb_sota,indirect,1,1,20.403758,,20.403758,20.403758,0.000000
+xgb_sota,indirect,2,1,23.606806,,23.606806,23.606806,0.000000
+xgb_sota,indirect,3,1,23.554928,,23.554928,23.554928,0.000000

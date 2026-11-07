@@ -1,0 +1,149 @@
+# L-09: bias correction (MOS) of the XGB kW forecast. Written by
+# python -m solarpv.models.xgb_checks l09 (stage 9, docs/stage9_plan.md §14.4).
+# Evidence: outputs/09_xgb_checks/l09_check.csv. Not read by the xgb step unless adopted
+# in a later commit.
+decision: L-09
+decided_on: '2026-11-07'
+adopted:
+  indirect: true
+  direct: false
+rule: 'per target: adopted only if gain_1 > margin_1 and gain_h > -margin_h at D+2
+  and D+3; gain = mean(uncorrected) - mean(corrected); margin = max(0.05 pp, 2 x pooled
+  seed std) (docs/stage9_plan.md §14.4)'
+base_model: best parameters of the dev study, fixed rounds = best iteration + 1, no
+  early stopping; seeds 42, 123, 777
+correction: OLS y = a + b * y_hat on out-of-fold kW predictions of the five expanding
+  date folds of train (3-day gap), daytime, AC truth, not op-limited, not warm-up;
+  applied as clip(a + b * y_hat, 0, 3449)
+source_run: 20261107T104151Z_dev
+best_params_sha256: 97bd6764951c950eb6024c16cfdabf9a3c3674df3b3f4b8f897db9d706df318a
+results:
+  indirect:
+    adopted: true
+    by_horizon:
+      D1:
+        uncorrected_mean: 6.809
+        corrected_mean: 6.6986
+        gain_pp: 0.1104
+        margin_pp: 0.05
+        a_mean_kw: 15.047
+        b_mean: 0.98482
+        passes: true
+      D2:
+        uncorrected_mean: 7.2164
+        corrected_mean: 7.0005
+        gain_pp: 0.2159
+        margin_pp: 0.1753
+        a_mean_kw: 20.092
+        b_mean: 0.97131
+        passes: true
+      D3:
+        uncorrected_mean: 6.6919
+        corrected_mean: 6.5994
+        gain_pp: 0.0925
+        margin_pp: 0.0892
+        a_mean_kw: 29.775
+        b_mean: 0.9793
+        passes: true
+  direct:
+    adopted: false
+    by_horizon:
+      D1:
+        uncorrected_mean: 6.7042
+        corrected_mean: 6.7623
+        gain_pp: -0.0581
+        margin_pp: 0.0759
+        a_mean_kw: -34.894
+        b_mean: 1.01951
+        passes: false
+      D2:
+        uncorrected_mean: 6.8051
+        corrected_mean: 6.9364
+        gain_pp: -0.1312
+        margin_pp: 0.05
+        a_mean_kw: -65.018
+        b_mean: 1.05836
+        passes: false
+      D3:
+        uncorrected_mean: 6.4506
+        corrected_mean: 6.5619
+        gain_pp: -0.1112
+        margin_pp: 0.0759
+        a_mean_kw: -40.135
+        b_mean: 1.02884
+        passes: false
+coefficients:
+  indirect_D1_seed42:
+    a_kw: 14.6201
+    b: 0.985296
+    n_oof: 7834
+  indirect_D1_seed123:
+    a_kw: 15.1876
+    b: 0.983867
+    n_oof: 7834
+  indirect_D1_seed777:
+    a_kw: 15.3328
+    b: 0.985294
+    n_oof: 7834
+  direct_D1_seed42:
+    a_kw: -35.8021
+    b: 1.021191
+    n_oof: 7834
+  direct_D1_seed123:
+    a_kw: -34.662
+    b: 1.0193
+    n_oof: 7834
+  direct_D1_seed777:
+    a_kw: -34.217
+    b: 1.018027
+    n_oof: 7834
+  indirect_D2_seed42:
+    a_kw: 18.7093
+    b: 0.972206
+    n_oof: 7834
+  indirect_D2_seed123:
+    a_kw: 18.4129
+    b: 0.974403
+    n_oof: 7834
+  indirect_D2_seed777:
+    a_kw: 23.1543
+    b: 0.967326
+    n_oof: 7834
+  direct_D2_seed42:
+    a_kw: -62.4812
+    b: 1.057128
+    n_oof: 7834
+  direct_D2_seed123:
+    a_kw: -64.8658
+    b: 1.058576
+    n_oof: 7834
+  direct_D2_seed777:
+    a_kw: -67.7064
+    b: 1.059381
+    n_oof: 7834
+  indirect_D3_seed42:
+    a_kw: 28.0762
+    b: 0.979129
+    n_oof: 7834
+  indirect_D3_seed123:
+    a_kw: 31.6296
+    b: 0.978669
+    n_oof: 7834
+  indirect_D3_seed777:
+    a_kw: 29.6198
+    b: 0.980105
+    n_oof: 7834
+  direct_D3_seed42:
+    a_kw: -40.9449
+    b: 1.03045
+    n_oof: 7834
+  direct_D3_seed123:
+    a_kw: -36.1728
+    b: 1.025704
+    n_oof: 7834
+  direct_D3_seed777:
+    a_kw: -43.2873
+    b: 1.03038
+    n_oof: 7834
+max_abs_diff_seed42_vs_dev: 0.0
+git_commit: 45c7a84

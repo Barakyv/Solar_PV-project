@@ -1,0 +1,54 @@
+{
+  "run_id": "20261107T104151Z_dev",
+  "mode": "dev",
+  "created_utc": "2026-11-07T10:41:51.487904+00:00",
+  "config_sha256": "b90ae1586d445b963a317f19c2d7da80524adfeab2f01baf1a6d33ae36f0bb86",
+  "steps": {
+    "baselines": {
+      "status": "ok",
+      "folder": "baselines",
+      "fingerprint": "3acf95c14be30f615f52856d47475341ff72803e290695b012ecd06d592db646",
+      "commit": "45c7a84",
+      "finished_utc": "2026-11-07T10:41:56.558601+00:00",
+      "duration_s": 2.4
+    },
+    "xgb": {
+      "status": "ok",
+      "folder": "xgb",
+      "fingerprint": "34f9168dd3ee2e927f28610ccfd9f35194a6e3b4731c792d6c33f5ec6b1859cb",
+      "commit": "45c7a84",
+      "finished_utc": "2026-11-07T10:48:00.754443+00:00",
+      "duration_s": 363.0
+    },
+    "evaluate": {
+      "status": "ok",
+      "folder": "evaluate",
+      "fingerprint": "833ae01c5c21814882cd419266b1d6b4c2f41ab2a4a1cb24c42cd063bc61773e",
+      "commit": "45c7a84",
+      "finished_utc": "2026-11-07T10:48:08.103009+00:00",
+      "duration_s": 7.0
+    }
+  },
+  "invocations": [
+    {
+      "started_utc": "2026-11-07T10:41:53.233771+00:00",
+      "command": "python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate",
+      "commit": "45c7a84",
+      "steps": [
+        "baselines",
+        "xgb",
+        "evaluate"
+      ],
+      "force": false,
+      "keep_going": false,
+      "preflight": "invocations/20261107T104153Z.json",
+      "results": {
+        "baselines": "ok",
+        "xgb": "ok",
+        "evaluate": "ok"
+      },
+      "log": "outputs/runs/20261107T104151Z_dev/logs/run_20261107T104153Z.log",
+      "status": "ok"
+    }
+  ]
+}

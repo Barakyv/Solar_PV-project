@@ -1,0 +1,17 @@
+[     0.0s] RUN     stage 09_xgb_checks
+[     0.0s] RUN     command: python -m solarpv.models.xgb_checks r14 --run 20261107T104151Z_dev
+[     0.2s] RUN     git commit: 45c7a84+dirty
+[     0.2s] RUN     started (UTC): 2026-11-07T10:53:28+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261107T104151Z_dev/xgb/predictions_xgb_sota_seed42.csv sha256=f111d5b1dad08d27
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     1.2s] NOTE    R-14 direct D+1: MBE +25.53 kW (+0.740 % of capacity), 95 % CI [+0.314, +1.208] %, positive (n = 2901)
+[     1.2s] NOTE    R-14 direct D+2: MBE -6.56 kW (-0.190 % of capacity), 95 % CI [-0.698, +0.335] %, includes 0 (n = 2901)
+[     1.2s] NOTE    R-14 direct D+3: MBE +24.22 kW (+0.702 % of capacity), 95 % CI [+0.229, +1.190] %, positive (n = 2901)
+[     1.2s] NOTE    R-14 indirect D+1: MBE +45.02 kW (+1.305 % of capacity), 95 % CI [+0.877, +1.774] %, positive (n = 2901)
+[     1.2s] NOTE    R-14 indirect D+2: MBE +44.82 kW (+1.299 % of capacity), 95 % CI [+0.780, +1.804] %, positive (n = 2901)
+[     1.2s] NOTE    R-14 indirect D+3: MBE +42.46 kW (+1.231 % of capacity), 95 % CI [+0.762, +1.718] %, positive (n = 2901)
+[     1.2s] VALUE   r14_direct_positive_at_every_horizon = False
+[     1.2s] OUTPUT  outputs/09_xgb_checks/r14_bias.csv sha256=1899b1161f20ef85
+[     1.2s] RUN     warnings: 0
+[     1.2s] RUN     status: ok; duration 1.2s

@@ -222,6 +222,15 @@ after it; run journal R9-01, R9-02). `bundle` and `collect` were dropped (§11, 
 `check`, `run --only baselines,evaluate` (smoke and dev), `--resume` and `status` work on the
 college machine; the dev run equals the stage-8B validation tables.
 
+**Status (2026-11-07):** W2 done except one follow-up. The `xgb` step, `pipeline.data`, the
+stage-7 provenance check and `python -m solarpv.models.xgb_checks` (commit `a3b8467`; T-56–T-63;
+run journal R9-03). D-15 decided by §14.3: the v6 constraint stays for k (R9-04). Smoke passes
+(R9-05). The dev run (20 trials, seed 42) passes the acceptance of §14.7, with D+3 below D+1
+explained as the validation sample (R9-06). L-09 by §14.4: adopted for the indirect route, not
+for the direct route; R-14 confirmed for the direct target at D+1 and D+3; A-14 ✅ for XGB
+(R9-07). **Open:** the adopted L-09 correction is not yet part of the `xgb` step (§14.4: a later
+commit, before G-1).
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -481,6 +490,9 @@ validation rows with the same mask, 50 rounds, the last evaluation set decides; 
   Otherwise reported as tested and not adopted.
 - **Output:** `configs/mos_decision.yaml`. If adopted, the correction becomes part of the `xgb`
   step in a later commit, before G-1.
+- *Result (2026-11-07, R9-07):* adopted for the indirect route (gain 0.11 / 0.22 / 0.09 pp
+  against margins 0.05 / 0.18 / 0.09), not adopted for the direct route (worse at every
+  horizon). The step change is still to be made.
 
 ### 14.5 R-14, mean bias of the direct target on validation
 
