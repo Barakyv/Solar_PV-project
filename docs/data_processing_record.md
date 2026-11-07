@@ -1019,9 +1019,17 @@ amendment of 2026-11-07).**
     datasets of every model × target and checks them against theory; it writes
     `outputs/09_sequence_data/dataset_report_<mode>.json`, `checks_<mode>.csv` and a run log, and
     no array.
-- *Result:* run journal R9-12 on (after the commit of the code).
+- *Result (run journal R9-13, commit `854b0f7`):* every check passes on train and validation for
+  the five models and both targets. 872 training and 246 validation origins; three-day decoders
+  of 72 steps, and of 71 / 73 on the 6 / 9 training origins and the 3 validation origins around a
+  DST day; every D+h block that ends before its limit is its local day (23, 24 or 25 hours);
+  every hour of the scope exactly once per horizon (20,859 train hours after the warm-up, 5,832
+  validation hours); the loss rows equal the XGB-dev fit and early-stopping rows exactly (9,575 /
+  2,825 indirect, 20,393 / 5,685 direct); the encoder series equal the stage-6 `lag_1d` with 0
+  mismatches; the scaler is fitted on 20,859 train hours. Missing known inputs take the train
+  mean: `airmass` at night (direct route) and `irradiance_clear_index_prevday` on 24 train hours.
 - *Verification:* T-66–T-71 (synthetic, both DST days), T-02 (the real train and validation
-  tables).
+  tables, 16 cases).
 - *Original:* naive local clock, hourly origins with fixed leads (BiLSTM) or steps by number
   (TFT), windows inside each split, a different set of scored hours per model, the 05e sets for
   the BiLSTM and 18 calendar and irradiance known reals for the TFT, no weather forecast.

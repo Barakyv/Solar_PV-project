@@ -33,7 +33,7 @@ Changes of method are recorded in `docs/methodology_changes.md`. This register i
 | S-01 | 3.1 | Plant description and parameter table (wording corrected, C-30) | — | — | 11 | 📝 (data: stages 2, 5) |
 | S-02 | 3.2 | Data processing: hourly means, clear sky, daytime definition | — | — | 2–6 | ✅ (stages 2–6) |
 | S-03 | 3.3 | The two targets and MEAN_DAYTIME_K | — | — | 6 | ✅ (stage 6) |
-| S-04 | 3.4 | Feature table, inputs of the sequence models (TFT known reals, PatchTST target only) | — | all | 6, 9 | ✅ tabular (stage 6) / ⬜ sequence inputs (stage 9) |
+| S-04 | 3.4 | Feature table, inputs of the sequence models (TFT known reals, PatchTST target only) | — | all | 6, 9 | ✅ tabular (stage 6) / ✅ sequence inputs (stage 9, W3: D-25–D-28, OP-55; the TFT gets the known part of the stage-7 selection, 10 / 27 features, not 18) |
 | S-05 | 3.5 | End-to-end milestones table | — | — | 11 | 📝 |
 | S-06 | 3.6.1–3.6.3 | Candidate pool, stage-1 screening, SHAP backward elimination | 19, 20 | XGB-Opt | 7 | ✅ (stage 7) |
 | S-07 | 3.6.4 | Three-method consensus (05e), counts per method and loop | 21, 22 | XGB-Opt | 7 | ✅ (stage 7) |

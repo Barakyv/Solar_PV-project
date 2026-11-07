@@ -1,0 +1,1152 @@
+{
+  "mode": "dev",
+  "git_commit": "854b0f7",
+  "datasets": {
+    "train/indirect/bilstm": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 72,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 144,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/indirect/tft96": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 96,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 192,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/indirect/tft168": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 336,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/indirect/tftbase": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 336,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/indirect/patchtst": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 1,
+      "decoder_channels": 0,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/direct/bilstm": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 72,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 29223,
+        "decoder": 29097
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/direct/tft96": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 96,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 38962,
+        "decoder": 29097
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/direct/tft168": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 68173,
+        "decoder": 29097
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/direct/tftbase": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 68173,
+        "decoder": 29097
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "train/direct/patchtst": {
+      "scope": "train after the warm-up",
+      "encoder_hours": 168,
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 1,
+      "decoder_channels": 0,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/indirect/bilstm": {
+      "scope": "the whole val split",
+      "encoder_hours": 72,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/indirect/tft96": {
+      "scope": "the whole val split",
+      "encoder_hours": 96,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/indirect/tft168": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/indirect/tftbase": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/indirect/patchtst": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 1,
+      "decoder_channels": 0,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/direct/bilstm": {
+      "scope": "the whole val split",
+      "encoder_hours": 72,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 7518,
+        "decoder": 7449
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/direct/tft96": {
+      "scope": "the whole val split",
+      "encoder_hours": 96,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 10026,
+        "decoder": 7449
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/direct/tft168": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 17556,
+        "decoder": 7449
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/direct/tftbase": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 17556,
+        "decoder": 7449
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    },
+    "val/direct/patchtst": {
+      "scope": "the whole val split",
+      "encoder_hours": 168,
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 1,
+      "decoder_channels": 0,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      }
+    }
+  },
+  "scaler": {
+    "recomputed_from_train": true,
+    "unchanged_when_other_splits_change": true,
+    "fit_rows": 20859,
+    "rows": 20859,
+    "mean": {
+      "s01_inv1_AC_kW": 342.194905690537,
+      "s01_inv2_AC_kW": 346.0138349788116,
+      "site_total_AC_kW": 683.0544010448057,
+      "irradiance": 268.2050357712076,
+      "mod_temp1": 27.320635757881778,
+      "mod_temp2": 26.77967326528489,
+      "ambient_temp": 24.357498159187866,
+      "target_k": 0.376399915891277,
+      "ghi_clearsky": 231.8193985360915,
+      "dhi_clearsky": 49.404495426750984,
+      "dni_clearsky": 290.25072324364186,
+      "sun_elevation": -1.4409963089981788,
+      "poa_global_clearsky": 261.8658187097227,
+      "poa_direct_clearsky": 208.20636442249838,
+      "poa_diffuse_clearsky": 53.65945428722429,
+      "poa_sky_diffuse_clearsky": 52.11971972918004,
+      "poa_ground_diffuse_clearsky": 1.5397345580442412,
+      "hour_sin": -7.027785734164508e-05,
+      "hour_cos": 0.00012172481956272312,
+      "month_sin": -0.0533805936692085,
+      "month_cos": 0.11241152364728721,
+      "month": 6.848458698882976,
+      "season": 1.5294597056426482,
+      "is_weekend": 0.2852485737571312,
+      "hour_local": 11.498346037681577,
+      "aoi": 90.52525808464796,
+      "solar_azimuth": 181.87261850984595,
+      "solar_zenith": 91.44099630899818,
+      "airmass": 5.153445301769487,
+      "doy_sin": -0.0761423831246275,
+      "doy_cos": 0.09800036697729306,
+      "day_length": 11.959045184325168,
+      "time_to_solar_noon": 0.20385032013735738,
+      "daylight_fraction": 0.849562545481837,
+      "day_of_week": 2.9991850040749797,
+      "fcst_gfs_ghi": 240.1377929918302,
+      "fcst_gfs_kt": 0.4896702101131059,
+      "fcst_gfs_poa": 267.37717771595385,
+      "fcst_gfs_kt_poa": 0.4851012638176542,
+      "fcst_gfs_kt_poa_ma3": 0.4851012638176542,
+      "fcst_gfs_kt_poa_daymean": 1.0278306448098165,
+      "fcst_gfs_tcc": 20.86566268409774,
+      "fcst_gfs_lcc": 4.989444083059278,
+      "fcst_gfs_mcc": 6.548795850102931,
+      "fcst_gfs_hcc": 14.053989385020941,
+      "fcst_gfs_tcc_mean3x3": 20.352929457574934,
+      "fcst_gfs_tcc_std3x3": 12.975814208706952,
+      "fcst_gfs_tcc_daymean": 19.977476940182857,
+      "fcst_gfs_t2m": 21.627020717694,
+      "fcst_gfs_rh2m": 42.62362991641494,
+      "fcst_gfs_pwat": 15.894499930213522,
+      "fcst_gfs_wind10": 3.3933770346271737,
+      "fcst_gfs_sunsd": 0.4903062049157023,
+      "fcst_gfs_tcell": 27.29445856124372,
+      "fcst_gfs_pv_kw": 861.4886472089137,
+      "fcst_gfs_k_phys": 0.4692501279793071,
+      "irradiance_clear_index_prevday": 1.1050776476784945
+    },
+    "std": {
+      "s01_inv1_AC_kW": 457.63042861427584,
+      "s01_inv2_AC_kW": 463.1688899741378,
+      "site_total_AC_kW": 919.3457401224997,
+      "irradiance": 357.51846159080526,
+      "mod_temp1": 13.176090910595565,
+      "mod_temp2": 12.808569744634191,
+      "ambient_temp": 8.514843306293228,
+      "target_k": 0.41860169414925014,
+      "ghi_clearsky": 308.9069899051821,
+      "dhi_clearsky": 59.11787914969204,
+      "dni_clearsky": 339.1978059572839,
+      "sun_elevation": 40.83255777371315,
+      "poa_global_clearsky": 343.5939289029577,
+      "poa_direct_clearsky": 281.43618164416614,
+      "poa_diffuse_clearsky": 63.989213195368585,
+      "poa_sky_diffuse_clearsky": 62.00054457760619,
+      "poa_ground_diffuse_clearsky": 2.0517470521535404,
+      "hour_sin": 0.7070836236204818,
+      "hour_cos": 0.707129924025154,
+      "month_sin": 0.6915040755443284,
+      "month_cos": 0.7115730988987724,
+      "month": 3.643531767751342,
+      "season": 1.184269894262949,
+      "is_weekend": 0.45153275066893395,
+      "hour_local": 6.923048549904156,
+      "aoi": 46.78822761465189,
+      "solar_azimuth": 97.32756897015634,
+      "solar_zenith": 40.83255777371315,
+      "airmass": 6.945743830904442,
+      "doy_sin": 0.6991336287865529,
+      "doy_cos": 0.7041380792601438,
+      "day_length": 1.3343687328973601,
+      "time_to_solar_noon": 6.940667243308224,
+      "daylight_fraction": 0.0947926594355136,
+      "day_of_week": 1.9992925800173555,
+      "fcst_gfs_ghi": 321.74212492658614,
+      "fcst_gfs_kt": 0.5322319954609753,
+      "fcst_gfs_poa": 355.6093326537851,
+      "fcst_gfs_kt_poa": 0.5316200215667478,
+      "fcst_gfs_kt_poa_ma3": 0.48466490834912657,
+      "fcst_gfs_kt_poa_daymean": 0.14148607089436388,
+      "fcst_gfs_tcc": 33.87881474289796,
+      "fcst_gfs_lcc": 16.632818140972113,
+      "fcst_gfs_mcc": 19.901979098172678,
+      "fcst_gfs_hcc": 30.169639939043662,
+      "fcst_gfs_tcc_mean3x3": 28.93535011211109,
+      "fcst_gfs_tcc_std3x3": 14.610973981986014,
+      "fcst_gfs_tcc_daymean": 30.037435130957906,
+      "fcst_gfs_t2m": 7.511147595186946,
+      "fcst_gfs_rh2m": 16.92363173772922,
+      "fcst_gfs_pwat": 6.271409616612849,
+      "fcst_gfs_wind10": 1.7622057450442188,
+      "fcst_gfs_sunsd": 0.4585361896132216,
+      "fcst_gfs_tcell": 12.315719134612493,
+      "fcst_gfs_pv_kw": 1130.1846201421251,
+      "fcst_gfs_k_phys": 0.5092043121950229,
+      "irradiance_clear_index_prevday": 0.11987845353588032
+    }
+  },
+  "lag_consistency_mismatches": {
+    "s01_inv1_AC_kW": 0,
+    "s01_inv2_AC_kW": 0,
+    "site_total_AC_kW": 0,
+    "irradiance": 0,
+    "mod_temp1": 0,
+    "mod_temp2": 0,
+    "ambient_temp": 0
+  },
+  "known_inputs": {
+    "indirect": {
+      "deterministic": [
+        "ghi_clearsky",
+        "dni_clearsky",
+        "aoi",
+        "doy_sin",
+        "day_length",
+        "time_to_solar_noon",
+        "poa_direct_clearsky",
+        "hour_local",
+        "doy_cos",
+        "solar_azimuth"
+      ],
+      "gfs": [
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_tcell",
+        "fcst_gfs_k_phys",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "irradiance_clear_index_prevday",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_hcc"
+      ]
+    },
+    "direct": {
+      "deterministic": [
+        "ghi_clearsky",
+        "dhi_clearsky",
+        "dni_clearsky",
+        "sun_elevation",
+        "poa_global_clearsky",
+        "poa_direct_clearsky",
+        "poa_diffuse_clearsky",
+        "poa_sky_diffuse_clearsky",
+        "poa_ground_diffuse_clearsky",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "month",
+        "season",
+        "is_weekend",
+        "hour_local",
+        "aoi",
+        "solar_azimuth",
+        "solar_zenith",
+        "airmass",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "daylight_fraction",
+        "day_of_week"
+      ],
+      "gfs": [
+        "fcst_gfs_ghi",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_hcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_pv_kw",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday"
+      ]
+    }
+  },
+  "filled_hours": {
+    "train": {
+      "s01_inv1_AC_kW": 323,
+      "s01_inv2_AC_kW": 378,
+      "site_total_AC_kW": 492,
+      "irradiance": 154,
+      "mod_temp1": 169,
+      "mod_temp2": 169,
+      "ambient_temp": 174,
+      "target_k": 492
+    },
+    "val": {
+      "s01_inv1_AC_kW": 117,
+      "s01_inv2_AC_kW": 124,
+      "site_total_AC_kW": 147,
+      "irradiance": 1,
+      "mod_temp1": 8,
+      "mod_temp2": 9,
+      "ambient_temp": 8,
+      "target_k": 147
+    }
+  },
+  "masked_power_hours": {
+    "s01_inv1_AC_kW": 343,
+    "s01_inv2_AC_kW": 405,
+    "site_total_AC_kW": 542
+  },
+  "inputs_sha256": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b"
+  },
+  "all_checks_pass": true,
+  "run_log": "outputs/09_sequence_data/runs/20261107T175754Z.log"
+}

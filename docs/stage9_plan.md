@@ -236,6 +236,11 @@ the k-unit DM and skill of the indirect route worse; by the user's decision on Q
 evaluation also computes DM and skill in kW for both routes, and the kW DM is the table of the
 stage-10 acceptance (§16, OP-54, commit `f529913`, R9-10, R9-11).
 
+**Status (2026-11-07, later):** W3 done. Plan and self-review §17 (commit `748959f`), the user's
+decisions D-25–D-28 (§17.6), `solarpv.models.sequence_data` with T-66–T-71 and T-02 (commit
+`69ee067`, fix X24 at `854b0f7`), OP-55, run journal R9-12 and R9-13. Next: W4, the models and
+the GPU environment (needs the user's approval).
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -890,6 +895,11 @@ every validation hour has one step per horizon; the scaler statistics come from 
 (recomputed independently, and unchanged when validation values are perturbed); the GFS run of
 every step; the filled encoder values per series and split. Then the `forecasting-validity-review`
 skill. Run journal R9-12 on.
+
+*Result (2026-11-07, R9-13, commit `854b0f7`):* every check holds for the five models × two
+targets on train and validation, in dev and smoke. The loss rows equal the XGB-dev rows exactly.
+The first real run found X24 (the run log one folder too deep), fixed with a test. Two points go
+to W4: the night value of `airmass` (the train mean), and the library normalisers (§17.5).
 
 ### 17.9 Records
 

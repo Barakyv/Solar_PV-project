@@ -1317,3 +1317,61 @@ hashes, numbers) and the commit messages are the record:
   build was given the synthetic test rows, and the development guard refused them. The tests now
   cut the data before TEST_START, as the loader does, and a test asserts the refusal. The real-data
   test is run only after the commit.
+
+### 2026-11-07 · R9-13 · The sequence datasets on train and validation, checked against theory
+
+- **Commands and commits:** code committed at `69ee067` before any run on real data.
+  - `pytest tests/contracts/test_sequence_alignment.py` (T-02): 16 of 16 pass.
+  - `python -m solarpv.models.sequence_data --mode dev`: all checks pass, 0 warnings, 25.6 s.
+    Finding X24: the run log went to `outputs/09_sequence_data/runs/runs/` (`RunLog` adds `runs`
+    itself). Fixed at `854b0f7` with a test; the log was moved to `runs/`.
+  - Rerun at `854b0f7`: `--mode dev` (log `runs/20261107T175754Z.log`) and `--mode smoke` (log
+    `runs/20261107T175824Z.log`), all checks pass. `checks_dev.csv` is byte-identical to the
+    first run.
+- **Loaded:** 27,027 hours, the last at 2024-09-30 23:00Z; every file read with
+  `timestamp_utc < TEST_START` inside the reader.
+- **Against theory (dev, all 20 datasets: 5 models × 2 targets × train and validation):**
+  - origins: train 872 (first T0 2021-09-12 21:00Z = 2021-09-13 00:00 local, last 2024-01-31
+    22:00Z = 2024-02-01 00:00 local); validation 246 (2024-01-29 22:00Z to 2024-09-30 21:00Z);
+  - three-day decoders: train 857 of 72 steps, 6 of 71 (the spring days 2022-03-25 and
+    2023-03-24, three origins each) and 9 of 73 (the fall days 2021-10-31, 2022-10-30,
+    2023-10-29); validation 243 of 72 and 3 of 71 (2024-03-29);
+  - every D+h block that ends before the limit equals its local day: train 6 blocks of 23
+    hours, 2,595 of 24, 9 of 25; validation 3 of 23 and 729 of 24 (the six blocks of each scope
+    that cross its limit are not complete days);
+  - every hour of the scope exactly once per horizon: 20,859 train hours (train after the
+    14-day warm-up) and 5,832 validation hours;
+  - `issuance_utc(valid, h) == T0` on every step; every encoder ends at T0; no time at or after
+    TEST_START; training decoders end before VAL_START;
+  - loss rows per horizon equal the XGB-dev rows exactly: fit 9,575 (indirect) and 20,393
+    (direct), and on validation 2,825 and 5,685, the early-stopping rows of `xgb_config.json`
+    (`20261107T135938Z_dev`);
+  - channels: indirect encoder 46 (8 series, 8 fill flags, 10 + 20 known), decoder 30; direct
+    63 and 49; PatchTST 1 and 0;
+  - the encoder series equal the stage-6 `lag_1d` on every hour (0 mismatches in all seven
+    series); masked power hours before TEST_START 343 / 405 / 542 (inverter 1, inverter 2, site
+    total), and 131 / 143 / 191 in test, which add up to the stage-6 manifest;
+  - filled encoder hours: train 492 for the site total and k (op-limited or missing AC), 154–378
+    for the other series; validation 147 and 1–124;
+  - scaler: 20,859 train hours; recomputed independently, and unchanged when every value outside
+    train is replaced by noise;
+  - known inputs missing (set to the train mean): `airmass` at night (pvlib leaves it undefined
+    below the horizon; direct route only, 9,664 train hours), and
+    `irradiance_clear_index_prevday` on 24 train hours; none in validation for the indirect
+    route.
+- **Smoke:** 58 training origins (2023-12-06 to 2024-02-01, 1,322 hours) and 30 validation
+  origins (2024-03-13 to 2024-04-11, the 671 hours of the W1 window, 3 of them with 71 steps).
+- **Review (forecasting-validity-review):**
+  - issuance: every encoder hour ends by T0; decoder inputs are deterministic or GFS of a run with
+    init + 6 h ≤ T0, read from the table of the step's own horizon whose `t0_utc` is the origin's
+    T0 (asserted on every step); no lag, rolling statistic or decoder-hour measurement; the fill
+    uses older hours only; the inputs pass the allow-list and `assert_no_leakage`;
+  - split isolation: nothing at or after TEST_START is read; the scaler sees train hours only;
+    training windows hold train labels only; validation labels appear only in validation
+    windows, outside every training loss; nothing in W3 was decided on validation;
+  - comparability: every model gets every hour of the split at every horizon, the hours of XGB
+    and the references; the loss rows equal those of XGB; the truth comes from the stage-6 table;
+  - no model result yet, so no red flag can show; two points carried to W4: the night value of
+    `airmass` (the train mean) is an input convention, visible to the network through the
+    clear-sky and sun-elevation channels; and the library normalisers of W4 must act per window
+    or be fitted on the training windows only (§17.5).
