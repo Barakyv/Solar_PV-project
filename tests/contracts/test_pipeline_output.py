@@ -28,7 +28,7 @@ pytestmark = [pytest.mark.skipif(not FEATURES_FILE.exists(), reason="stage 6 out
 COMMITTED = OUTPUTS_DIR / "07_evaluation" / "val"
 TABLES = ("benchmark_summary", "benchmark_views", "dm_tests", "seasonal_metrics",
           "common_mask_summary", "common_mask_sensitivity", "route_comparison",
-          "seed_variability_summary")
+          "seed_variability_summary", "dm_tests_kw")
 
 
 def _snapshot():

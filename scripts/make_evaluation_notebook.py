@@ -21,7 +21,8 @@ VAL = OUTPUTS_DIR / "07_evaluation" / "val"
 FIX = OUTPUTS_DIR / "07_evaluation_fixture" / "benchmark_summary.csv"
 OLD = EVIDENCE_DIR / "01_benchmark" / "benchmark_summary.csv"
 SOURCES = [FIX, OLD, VAL / "manifest.json", VAL / "benchmark_summary.csv",
-           VAL / "benchmark_views.csv", VAL / "dm_tests.csv", VAL / "seasonal_metrics.csv"]
+           VAL / "benchmark_views.csv", VAL / "dm_tests.csv", VAL / "dm_tests_kw.csv",
+           VAL / "seasonal_metrics.csv"]
 
 old = pd.read_csv(OLD)
 fix = pd.read_csv(FIX)
@@ -34,6 +35,11 @@ VW = pd.read_csv(VAL / "benchmark_views.csv")
 vw = VW[(VW["model"] == "climatology") & (VW["target"] == "direct") & (VW["horizon"] == 1)] \
     .set_index("view")["nRMSE_kW_pct"]
 DM = pd.read_csv(VAL / "dm_tests.csv")
+DMK = pd.read_csv(VAL / "dm_tests_kw.csv")
+_key = ["target", "horizon", "model_a", "model_b"]
+_direct = DM[DM["target"] == "direct"].set_index(_key)["dm_stat_hln"]
+SAME_DIRECT = float((DMK[DMK["target"] == "direct"].set_index(_key)["dm_stat_hln"]
+                     - _direct).abs().max())
 MAN = json.loads((VAL / "manifest.json").read_text(encoding="utf-8"))
 
 cells = [
@@ -54,8 +60,8 @@ reference forecasts that every model must beat.
 - The two routes are compared on the same hours (C-34).
 - **The test split is locked** until the final evaluation after gate G-1.
 
-**Documented in** OP-30, OP-40 and OP-41, `docs/stage8b_plan.md`, run journal R8-01 to R8-03,
-tests T-03, T-04, T-12, T-15 and T-38 to T-41."""),
+**Documented in** OP-30, OP-40, OP-41 and OP-54 (the kW statistics), `docs/stage8b_plan.md`,
+run journal R8-01 to R8-03 and R9-11, tests T-03, T-04, T-12, T-15, T-38 to T-41 and T-65."""),
     md("## 1. Part A: the code reproduces the original numbers (T-15)"),
     code("""import pandas as pd
 
@@ -127,6 +133,20 @@ Newbold correction and Bonferroni, and the share of the minimum detectable effec
 **What it means.** {int(DM['significant'].sum())} of {len(DM)} comparisons are significant at the
 corrected level. The original report described HLN and Bonferroni but computed neither (C-15);
 here both are computed, and the uncorrected value is reported next to them."""),
+    code("""dm_kw = pd.read_csv(OUTPUTS_DIR / "07_evaluation" / "val" / "dm_tests_kw.csv")
+dm_kw[["target", "horizon", "model_a", "model_b", "dm_stat_hln", "p_value_hln",
+       "pct_of_mde", "significant"]].round(3)"""),
+    md(f"""**What it shows.** The same tests on the errors in kW against the actual AC power, for
+both routes (Q-19, added on 2026-11-07). The indirect forecast is converted with the same
+function as every other kW number.
+
+**What it means.** {int(DMK['significant'].sum())} of {len(DMK)} comparisons are significant. For
+the direct target the two tables agree (largest difference of the statistic
+{SAME_DIRECT:.1g}), because its unit is already kW. For the indirect route the k table gives every
+daytime hour the same weight, so the low-sun hours, where k is unstable and the power small, weigh
+as much as noon; the kW table weighs the hours by their power. Every decision of the project is
+taken in kW, so the kW table is the one stage 10 reads, and the k table stays as a secondary
+statistic."""),
     code("""seasons = pd.read_csv(OUTPUTS_DIR / "07_evaluation" / "val" / "seasonal_metrics.csv")
 d1 = seasons[(seasons["horizon"] == 1) & (seasons["target"] == "direct")]
 d1.pivot_table(index="model", columns="season", values="nRMSE_pct").round(2)"""),

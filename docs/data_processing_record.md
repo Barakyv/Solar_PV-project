@@ -954,6 +954,30 @@ rows are read; nothing here reads the test split.
   validation labels).
 - *Original:* no bias correction.
 
+**OP-54 — DM and skill in kW for both routes (`solarpv.evaluation.evaluate`; Q-19, the D-14
+amendment of 2026-11-07).**
+- *Why:* every decision of the rebuild is taken in kW (stage-9 plan §14.1), but OP-41 computed
+  the DM tests and the skill of the indirect route in k units. With the adopted L-09 correction
+  the two units disagree (OP-53, R9-09). The user decided (Q-19) to add the kW statistics for
+  both routes and keep the target-unit ones as secondary. Design and self-review before the
+  code: `docs/stage9_plan.md` §16 (X17–X18).
+- *Method:*
+  - `evaluate.in_kw` converts the scored rows once: the truth is actual AC for both targets, the
+    indirect forecast goes through `to_kw`, the direct forecast is unchanged.
+  - `dm_tests_kw.csv`: the same `dm_table` on those rows (the same pairs, reference, HLN,
+    Bonferroni families per target × horizon, CI of the mean loss difference and power analysis),
+    with a `unit` column. It is the table the stage-10 acceptance reads.
+  - `benchmark_summary.csv` gains `skill_score_kw` (against persistence of h days, on the common
+    hours) and `skill_cliper_kw` (against the CLIPER RMSE of the AC series).
+  - Only with a truth table; the fixture mode of stage 8A is unchanged (T-15). No existing column
+    or table changes.
+  - The validation command now reads the truth without the test split (X17).
+- *Result:* run journal R9-11 (the stage-8B tables regenerated, and a dev run).
+- *Verification:* T-65; T-55 (the dev run of `baselines,evaluate` equals the regenerated
+  stage-8B tables, `dm_tests_kw.csv` included).
+- *Original:* DM and skill in the target's unit only (the DM of the original did not apply HLN,
+  C-15).
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
@@ -1070,4 +1094,4 @@ pytest
 
 Stage 9 sequence models (W3–W4), with the inputs of
 `outputs/07_feature_selection/model_inputs.json` (OP-48), and the D-21 robustness check on val.
-XGB (W2) is OP-50–OP-53.
+XGB (W2) is OP-50–OP-53; the kW statistics of the evaluation are OP-54.

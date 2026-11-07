@@ -1227,3 +1227,22 @@ hashes, numbers) and the commit messages are the record:
   baselines (DM with HLN)" reads the DM table, which is in k for this route. **Nothing was
   changed:** which unit the DM and skill of the indirect route use is a decision for the user
   (Q-19). The kW-unit DM was not computed, so that the choice is not made on its result.
+
+### 2026-11-07 · R9-10 · Q-19 decided; the kW statistics: review and code
+
+- **Decision (user, 2026-11-07):** Q-19 option B. DM and skill are computed also in kW for both
+  routes; the target-unit tables stay as secondary ones; the kW DM table is the one the stage-10
+  acceptance reads. Recorded before the code as a dated amendment of D-14, §6.9 and the stage-10
+  acceptance in `PROJECT_MASTER.md`, and in `docs/stage9_plan.md` §16. No kW DM had been computed
+  when the decision was taken.
+- **Self-review before the code (X17–X18, errata rows):**
+  - X17: the stage-8B validation command still read the test rows of the truth (X3 was fixed
+    only in the runner). It now reads the truth without the test split.
+  - X18: one conversion of the scored rows (`evaluate.in_kw`, through `to_kw`) feeds the same DM
+    and skill code, so no fifth k → kW copy and no second DM loop.
+- **Code:** `dm_tests_kw.csv` (the columns of `dm_tests.csv` and `unit`), `skill_score_kw` and
+  `skill_cliper_kw` in `benchmark_summary.csv`; only with a truth table. No existing column or
+  table changes. Notebook `07_evaluation.ipynb` gets a cell on the kW DM.
+- **Tests:** T-65 (two new tests, and the `main` test checks the truth is read without the test
+  split). T-55 now also compares `dm_tests_kw.csv`; it needs the regenerated stage-8B tables, so
+  it passes only after the rerun of R9-11.

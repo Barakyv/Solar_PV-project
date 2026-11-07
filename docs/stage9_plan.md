@@ -278,6 +278,7 @@ steps):
 | T-62 | X13: `decide_k.XGB_PARAMS` is unchanged after the D-15 check, which writes a decision file the `xgb` step can read and no prediction file |
 | T-63 | The checks of §14: the margin and the registered rule (D-12 form), the D-15 decision on constructed scores, the output guard (no `predictions_*`, nothing into a run folder), R-14's bias and interval on a constructed bias, and L-09 and R-14 on a synthetic dev run (seed 42 with the dev rounds equals the dev forecast; the run folder is unchanged) |
 | T-64 | The adopted L-09 correction in the step (§15, X14–X16): the step's coefficients and corrected value equal the check's for the same base model, and the evaluation scores the corrected value; the check and the step share one implementation and the same chronological folds (smoke: its 56 days); `evaluate.to_kw(k')` equals the corrected kW, nights and the direct target unchanged, a daytime hour with theo ≤ 0 refused; the uncorrected file holds the booster output, and the written file is the booster plus the recorded coefficients; without the decision file a smoke run writes the raw forecast with a warning and a final run refuses; the decision file is checked |
+| T-65 | Q-19 (§16, X17–X18), in `tests/unit/test_evaluation_8b.py`: the kW DM and skill of the direct target equal the target-unit ones exactly; for the indirect target the kW DM and skill equal a hand computation with `to_kw` and actual AC, and differ from the k-unit ones; the fixture mode writes no kW table; `main` on validation reads the truth without the test split |
 
 ## 10. Self-review before the code of W1 (2026-11-05)
 
@@ -595,3 +596,45 @@ tuned and stopped exactly as before.
   effect: the k-unit `nRMSE_pct`, `skill_score` and DM tests of the indirect route get worse
   (the kW intercept divided by a small theo at low sun), and the DM against climatology at D+3
   is no longer significant. Open as Q-19 in `PROJECT_MASTER.md`; nothing was changed.
+
+## 16. Q-19: DM and skill in kW for both routes (2026-11-07)
+
+**Decision (user, 2026-11-07, Q-19, option B):** the evaluation computes the DM tests and the
+skill scores also in kW for both routes, against actual AC, the indirect forecast through
+`evaluate.to_kw`; the tables in the target's unit stay as secondary statistics. The kW table is
+the one the stage-10 acceptance reads ("XGB clearly better than the baselines, DM with HLN").
+Recorded as a dated amendment of D-14 and §6.9 in `PROJECT_MASTER.md`. It was decided after the
+k-unit side effect of L-09 was found (R9-09) and before any kW DM was computed. Written before
+the code.
+
+### 16.1 Self-review before the code (X17–X18)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X17 | The stage-8B command `python -m solarpv.evaluation.evaluate` (validation) still reads the test rows of the truth table: X3 was fixed only in the runner. The test rows are not scored, but they reach pandas | `evaluation/evaluate.main` | For the validation split the truth is read with `exclude_splits=("test",)`; the validation tables do not change (T-55 already shows that they do not need the test rows) | T-65 |
+| X18 | A kW version of the DM and skill code could become a fifth copy of the k → kW conversion (X12), or a second DM loop that drifts from the first | the design | One conversion of the scored rows to kW (`evaluate.in_kw`, through `to_kw`) and the same `dm_table` on the converted rows; for the direct target the kW DM and skill must equal the existing ones exactly | T-65 |
+
+### 16.2 Design
+
+- `dm_tests_kw.csv`: the columns of `dm_tests.csv` and a `unit` column (`kW`); the same pairs,
+  rows, reference (the runner: `xgb_sota`; stage 8B: persistence), Bonferroni families per
+  target × horizon, HLN, the CI of the mean loss difference and the power analysis, on the
+  squared kW errors against actual AC.
+- `benchmark_summary.csv` gains `skill_score_kw` (1 − RMSE in kW of the model / that of
+  persistence of h days, on the common hours) and `skill_cliper_kw` (1 − RMSE in kW / the CLIPER
+  RMSE of the AC series). For the direct target they equal `skill_score` and `skill_cliper`.
+- Only with a truth table (stage 8B and the runner). The fixture mode of stage 8A has no theo and
+  stays as it is (T-15).
+- No existing column or table changes. The committed stage-8B validation tables
+  (`outputs/07_evaluation/val/`) are regenerated so that T-55 keeps comparing like with like,
+  and notebook `07_evaluation.ipynb` is rebuilt with a note on the kW DM.
+- Not in scope: the seasonal and common-mask tables stay in the target's unit (the views table
+  already has the kW nRMSE).
+
+### 16.3 Verification
+
+- **T-65 (synthetic):** the kW DM and skill of the direct target equal the existing ones
+  exactly; for the indirect target they equal a hand computation with `to_kw` and actual AC; the
+  fixture mode writes no kW table; `main` on validation reads no test row.
+- **Real data:** the regenerated stage-8B tables equal the committed ones in every existing
+  column; a dev run gives `dm_tests_kw.csv`, read with the forecasting-validity review.

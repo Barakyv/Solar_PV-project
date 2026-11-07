@@ -7,6 +7,9 @@ T-39  evaluation rules: split guard, alignment, coverage, zero-output hours kept
 T-40  metrics: CLIPER, nRMSE by the mean, kW conversion, seed table, DM CI, views
 T-54  (part) fixes of the stage-9 self-review: duplicates across files, no stale manifest after a
       failure, no glob in main(), the truth without the test split
+T-65  Q-19: DM and skill in kW for both routes (equal to the target-unit ones for the direct
+      target, a hand computation for the indirect one); none in the fixture mode; main() reads
+      no test row for a validation evaluation (X17, X18 of docs/stage9_plan.md §16)
 """
 
 import json
@@ -19,7 +22,8 @@ from solarpv.config.constants import AC_CAPACITY_KW, HORIZONS, TIMEZONE_LOCAL
 from solarpv.config.site import EXAMPLE_FILE, load_site
 from solarpv.evaluation import evaluate as E
 from solarpv.evaluation.daytime import daytime_mask
-from solarpv.evaluation.metrics import bootstrap_mean_ci, cliper_rmse
+from solarpv.evaluation.metrics import bootstrap_mean_ci, cliper_rmse, rmse
+from solarpv.evaluation.stats_tests import diebold_mariano
 from solarpv.evaluation.truth import load_truth
 from solarpv.features.build import issuance_utc
 from solarpv.models.baselines import clearsky_k, climatology, persistence, reference_predictions
@@ -312,11 +316,13 @@ def test_main_never_globs_for_prediction_files(tmp_path, monkeypatch):
     monkeypatch.setattr(E, "OUTPUTS_DIR", tmp_path / "outputs")
     monkeypatch.setattr(E, "EVAL_DIR", tmp_path / "eval")
     monkeypatch.setattr(E, "FEATURES_FILE", stale)  # any file: only its hash is recorded
-    monkeypatch.setattr(E, "load_truth", lambda: truth)
+    calls = []
+    monkeypatch.setattr(E, "load_truth", lambda **kw: calls.append(kw) or truth)
     monkeypatch.setattr(E, "mean_daytime_k", lambda: MEAN_K)
     assert E.main(["--no-ci", "--out", str(tmp_path / "out")]) == 0
     manifest = json.loads((tmp_path / "out" / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["inputs"] == [] and manifest["references"] == "computed from the truth"
+    assert calls == [{"exclude_splits": ("test",)}]  # X17: validation reads no test row
 
 
 def test_load_truth_can_exclude_the_test_split(tmp_path):
@@ -333,3 +339,61 @@ def test_load_truth_can_exclude_the_test_split(tmp_path):
     part = load_truth(path, exclude_splits=("test",))
     assert set(part["split"]) == {"val"}
     pd.testing.assert_frame_equal(part, full[full["split"] != "test"])
+
+
+# ── T-65 Q-19: DM and skill in kW for both routes (docs/stage9_plan.md §16) ──
+
+def _one(frame, model, target, h=1):
+    g = frame[(frame["model"] == model) & (frame["target"] == target) & (frame["horizon"] == h)]
+    return g.set_index("timestamp")
+
+
+def test_dm_and_skill_in_kw_for_both_routes(tmp_path):
+    t = _truth()
+    model = _model_preds(t)
+    tables = E.run([_write(model, tmp_path / "predictions_xgb_sota.csv")], tmp_path / "out",
+                   MEAN_K, site=SITE, truth=t, ci=False)
+    assert (tmp_path / "out" / "dm_tests_kw.csv").exists()
+    dm, dm_kw = tables["dm_tests"], tables["dm_tests_kw"]
+    assert list(dm_kw.columns) == list(dm.columns) + ["unit"] and set(dm_kw["unit"]) == {"kW"}
+    key = ["target", "horizon", "model_a", "model_b"]
+    direct = dm[dm["target"] == "direct"].set_index(key).sort_index()
+    pd.testing.assert_frame_equal(  # X18: the direct target is already in kW
+        direct, dm_kw[dm_kw["target"] == "direct"].set_index(key).sort_index()[direct.columns])
+    # the indirect route by hand: actual AC as truth, both forecasts through to_kw
+    refs = reference_predictions(t, "val", MEAN_K)
+    clim, xgb = _one(refs, "climatology", "indirect"), _one(model, "xgb_sota", "indirect")
+    day = t.index[(t["split"] == "val") & t["daytime"]]
+    common = day.intersection(clim.index).intersection(xgb.index).sort_values()
+    theo, ac = t.loc[common, "theo_kw"], t.loc[common, "direct"].to_numpy()
+    res = diebold_mariano(ac, E.to_kw("indirect", clim.loc[common, "y_pred"], theo),
+                          E.to_kw("indirect", xgb.loc[common, "y_pred"], theo))
+    row = dm_kw[(dm_kw["target"] == "indirect") & (dm_kw["horizon"] == 1)
+                & (dm_kw["model_a"] == "climatology")].iloc[0]
+    assert row["model_b"] == "xgb_sota" and row["n_pairs"] == res.n
+    assert row["dm_stat_hln"] == pytest.approx(res.dm_stat, rel=1e-12)
+    k_row = dm[(dm["target"] == "indirect") & (dm["horizon"] == 1)
+               & (dm["model_a"] == "climatology")].iloc[0]
+    assert k_row["dm_stat_hln"] != pytest.approx(row["dm_stat_hln"])  # another unit
+    bench = tables["benchmark_summary"].set_index(["model", "target", "horizon"])
+    d = bench.xs("direct", level="target")
+    for k_col, kw_col in (("skill_score", "skill_score_kw"), ("skill_cliper", "skill_cliper_kw")):
+        np.testing.assert_allclose(d[kw_col], d[k_col], rtol=0, atol=1e-12, equal_nan=True)
+    pers = _one(refs, "persistence", "indirect")
+    both = day.intersection(pers.index).intersection(xgb.index)
+    theo_b, ac_b = t.loc[both, "theo_kw"], t.loc[both, "direct"]
+    expected = 1 - rmse(ac_b, E.to_kw("indirect", xgb.loc[both, "y_pred"], theo_b)) / rmse(
+        ac_b, E.to_kw("indirect", pers.loc[both, "y_pred"], theo_b))
+    assert bench.loc[("xgb_sota", "indirect", 1), "skill_score_kw"] == pytest.approx(expected)
+    rmse_kw = bench.loc[("xgb_sota", "indirect", 1), "nRMSE_kW_pct"] * AC_CAPACITY_KW / 100
+    cliper_ac = E.cliper_references(t, "val")[("direct", 1)]
+    assert bench.loc[("xgb_sota", "indirect", 1), "skill_cliper_kw"] == pytest.approx(
+        1 - rmse_kw / cliper_ac, rel=1e-9)
+
+
+def test_the_fixture_mode_has_no_kw_tables(tmp_path):
+    preds = _model_preds(_truth(), split="train")  # 40 days: enough pairs for the DM
+    tables = E.run([_write(preds, tmp_path / "predictions_xgb_sota.csv")],
+                   tmp_path / "out", MEAN_K, site=SITE, ci=False)  # no truth table: stage 8A
+    assert "dm_tests_kw" not in tables
+    assert "skill_score_kw" not in tables["benchmark_summary"].columns

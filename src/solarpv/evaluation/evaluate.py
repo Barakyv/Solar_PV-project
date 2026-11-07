@@ -23,7 +23,10 @@ Rules:
   * route comparison: actual AC is the truth for both routes, on the identical row set
     (C-16, E2). advantage_pp = direct - indirect nRMSE, so a positive value favours the
     indirect route;
-  * DM: raw (old formula) and HLN-corrected with Bonferroni per target x horizon (D-14).
+  * DM: raw (old formula) and HLN-corrected with Bonferroni per target x horizon (D-14);
+  * DM and skill also in kW for both routes, against actual AC (Q-19, the D-14 amendment of
+    2026-11-07): `dm_tests_kw.csv`, `skill_score_kw` and `skill_cliper_kw`. The kW table is the
+    primary one for the acceptance of stage 10; the target-unit tables stay as secondary ones.
 """
 
 import argparse
@@ -222,6 +225,21 @@ def to_kw(target: str, y_pred, theo_kw) -> np.ndarray:
     return np.clip(y_pred * np.asarray(theo_kw, dtype=float), 0.0, AC_CAPACITY_KW)
 
 
+def in_kw(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
+    """The scored rows with truth and forecast in kW (Q-19, X18): y_true is actual AC for both
+    targets, the indirect forecast goes through `to_kw`, the direct one is unchanged. Rows without
+    AC are dropped."""
+    out = preds.copy()
+    ts = pd.DatetimeIndex(out["timestamp"])
+    indirect = (out["target"] == "indirect").to_numpy()
+    y_pred = out["y_pred"].to_numpy(dtype=float).copy()
+    y_pred[indirect] = to_kw("indirect", y_pred[indirect],
+                             truth["theo_kw"].reindex(ts[indirect]).to_numpy())
+    out["y_pred"] = y_pred
+    out["y_true"] = truth["direct"].reindex(ts).to_numpy()
+    return out.dropna(subset=["y_true"])
+
+
 def cliper_references(truth: pd.DataFrame, split: str) -> dict[tuple[str, int], float]:
     """RMSE_cp per target and horizon from the observed daytime series of the evaluated split
     (L-13). Only observations enter; on its own sample the blend is optimal (metrics.py)."""
@@ -249,6 +267,11 @@ def benchmark_table(preds: pd.DataFrame, mean_k: float, ci: bool = True,
     pers = (day[day["model"] == PERSISTENCE].set_index(["target", "horizon", "timestamp"])
             .sort_index())
     pers_keys = set(pers.index.droplevel(2))
+    if truth is not None:  # the skill in kW of both routes (Q-19)
+        kw = in_kw(day, truth)
+        kw_groups = {key: g.set_index("timestamp") for key, g in kw.groupby(KEY, sort=True)}
+        pers_kw = (kw[kw["model"] == PERSISTENCE].set_index(["target", "horizon", "timestamp"])
+                   .sort_index())
     rows = []
     for (model, seed, target, h), g in day.groupby(KEY, sort=True):
         g = g.sort_values("timestamp")
@@ -272,6 +295,19 @@ def benchmark_table(preds: pd.DataFrame, mean_k: float, ci: bool = True,
                 row["n_skill"] = len(common)
         if cliper is not None:
             row["skill_cliper"] = 1.0 - row["RMSE"] / cliper[(target, h)]
+        gk = kw_groups.get((model, seed, target, h)) if truth is not None else None
+        if gk is not None:
+            row["skill_score_kw"] = np.nan
+            if model != PERSISTENCE and (target, h) in pers_keys:
+                p = pers_kw.loc[(target, h)]
+                common = gk.index.intersection(p.index)
+                if len(common) > 0:
+                    row["skill_score_kw"] = 1.0 - rmse(
+                        gk.loc[common, "y_true"], gk.loc[common, "y_pred"]) / rmse(
+                        p.loc[common, "y_true"], p.loc[common, "y_pred"])
+            if cliper is not None:  # the CLIPER of the AC series, for both routes
+                row["skill_cliper_kw"] = 1.0 - rmse(gk["y_true"], gk["y_pred"]) / cliper[
+                    ("direct", h)]
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -543,6 +579,8 @@ def run(
             "common_mask_sensitivity": mask_sensitivity,
             "route_comparison": route_comparison(preds, truth["theo_kw"]),
             "seed_variability_summary": seed_variability_table(bench),
+            # Q-19: the same DM on the kW errors of both routes; the primary table of stage 10
+            "dm_tests_kw": dm_table(in_kw(preds, truth), reference).assign(unit="kW"),
         })
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -607,8 +645,8 @@ def main(argv: list[str] | None = None) -> int:
             log.note(f"split {args.split}; MEAN_DAYTIME_K {mean_k}; {len(files)} prediction "
                      "file(s); references computed from the truth table")
             log.inputs([FEATURES_FILE, *files])
-            with log.step("load truth"):
-                truth = load_truth()
+            with log.step("load truth"):  # validation: no test row is read (X17)
+                truth = load_truth(exclude_splits=("test",) if args.split == "val" else ())
             with log.step("evaluate"):
                 tables = run(files, out, mean_k, truth=truth, split=args.split,
                              allow_test=args.allow_test, ci=not args.no_ci, log=log,
