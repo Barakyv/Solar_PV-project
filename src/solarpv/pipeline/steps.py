@@ -13,7 +13,11 @@ Rules (the self-reviews of §10 and §13):
 - `xgb` reads its tables with `pipeline.data.model_table` (X10), its inputs from
   `model_inputs.json` and its constraints from the D-15 decision; it refuses to run without that
   decision. It tunes on the validation window of the mode and predicts every hour of every
-  window of the run; the test window (final, allow_test) is only predicted.
+  window of the run; the test window (final, allow_test) is only predicted. Where the L-09
+  decision adopts it, the forecast of the final fit is corrected (§15): the coefficients are
+  refitted in the run, out of fold on its train rows, and the raw forecast is kept in
+  `uncorrected_*` files. Without the L-09 decision a smoke or dev run writes the raw forecast
+  with a warning; a final run refuses.
 """
 
 import json
@@ -27,6 +31,7 @@ import pandas as pd
 from solarpv.config.constants import (
     DERIVED_CONSTANTS_FILE,
     MONOTONE_DECISION_FILE,
+    MOS_DECISION_FILE,
     TEST_START,
     mean_daytime_k,
 )
@@ -154,10 +159,15 @@ def xgb_inputs(ctx: Context) -> list[Path]:
     if not MONOTONE_DECISION_FILE.exists():
         raise RunnerError(f"{MONOTONE_DECISION_FILE.name} is missing: D-15 is decided first, by "
                           "python -m solarpv.models.xgb_checks d15 (docs/stage9_plan.md §14.3)")
+    if ctx.mode == "final" and not MOS_DECISION_FILE.exists():
+        raise RunnerError(f"{MOS_DECISION_FILE.name} is missing: a final run needs the L-09 "
+                          "decision (python -m solarpv.models.xgb_checks l09 --run <dev run>, "
+                          "docs/stage9_plan.md §14.4)")
     files = []
     for h in ctx.config["horizons"]:
         files += [data.feature_file(h), data.gfs_file(h)]
-    return files + [X.MODEL_INPUTS_FILE, MONOTONE_DECISION_FILE, DERIVED_CONSTANTS_FILE]
+    mos = [MOS_DECISION_FILE] if MOS_DECISION_FILE.exists() else []
+    return files + [X.MODEL_INPUTS_FILE, MONOTONE_DECISION_FILE, *mos, DERIVED_CONSTANTS_FILE]
 
 
 def _tuning_window(ctx: Context) -> Window:
@@ -165,6 +175,10 @@ def _tuning_window(ctx: Context) -> Window:
     if len(tuning) != 1:
         raise RunnerError("the xgb step needs exactly one validation window to tune on")
     return tuning[0]
+
+
+MOS_COLUMNS = ["target", "horizon", "seed", "a_kw", "b", "n_oof", "value_kw_uncorrected",
+               "value_kw_corrected", "value_k_uncorrected", "value_k_corrected"]
 
 
 def _write_csv(frame: pd.DataFrame, path: Path) -> Path:
@@ -192,6 +206,16 @@ def run_xgb(ctx: Context) -> Result:
     mean_k = mean_daytime_k()
     inputs = X.load_model_inputs(X.MODEL_INPUTS_FILE)
     decision = X.load_monotone_decision(MONOTONE_DECISION_FILE)
+    mos_decision = X.load_mos_decision(MOS_DECISION_FILE)
+    if mos_decision is None:
+        if ctx.mode == "final":
+            raise RunnerError(f"{MOS_DECISION_FILE.name} is missing: a final run needs the L-09 "
+                              "decision")
+        ctx.log.warn(f"{MOS_DECISION_FILE.name} is missing: L-09 is not decided yet, so the "
+                     "forecast is uncorrected (docs/stage9_plan.md §15)")
+        adopted = {t: False for t in X.TARGETS}
+    else:
+        adopted = {t: bool(v) for t, v in mos_decision["adopted"].items()}
     models_dir = ctx.out / "models"
     models_dir.mkdir()
     db = ctx.out / "optuna.db"
@@ -200,9 +224,10 @@ def run_xgb(ctx: Context) -> Result:
                   else "all of train")
     ctx.log.note(f"budget {n_trials} trials, seeds {seeds}, tuning window {tuning.label}, "
                  f"training rows {train_text}; MEAN_DAYTIME_K {mean_k}; D-15 settings "
-                 f"{decision['settings']}")
+                 f"{decision['settings']}; L-09 adopted {adopted}")
     predictions = {s: [] for s in seeds}
-    trial_frames, curves, best, problems = [], [], {}, {}
+    uncorrected = {s: [] for s in seeds}  # raw booster output of the corrected targets (X16)
+    trial_frames, curves, best, problems, mos_rows = [], [], {}, {}, []
     try:
         for h in ctx.config["horizons"]:
             table = data.model_table(h, splits, allow_test=with_test)
@@ -254,6 +279,36 @@ def run_xgb(ctx: Context) -> Result:
                         fit.booster.save_model(booster_path)
                         curves.append(fit.curve.assign(target=target, horizon=h, seed=seed,
                                                        unit=X.UNIT[target]))
+                        mos, forecast = None, dict(values)
+                        if adopted[target]:
+                            with ctx.log.step(f"{name}: L-09 correction, out-of-fold fits"):
+                                mos = X.fit_mos(table, target, feats, bt.params, seed,
+                                                constraints, fit.n_rounds,
+                                                X.train_scope(table, ctx.mode == "smoke"))
+                            raw_score = X.predict(fit.booster, problem.X_score, fit.n_rounds)
+                            # every scoring row is a daytime hour (§14.1)
+                            forecast = X.score_values(problem, X.apply_mos(
+                                target, raw_score, problem.theo_score,
+                                np.ones(raw_score.size, dtype=bool), mos))
+                            ctx.log.note(f"{name}: L-09 a {mos.a:+.3f} kW, b {mos.b:.5f} on "
+                                         f"{mos.n_oof} out-of-fold hours; tuning window "
+                                         f"{values['value_kw']:.4f} -> "
+                                         f"{forecast['value_kw']:.4f} % of capacity")
+                            mos_rows.append({
+                                "target": target, "horizon": h, "seed": seed, "a_kw": mos.a,
+                                "b": mos.b, "n_oof": mos.n_oof,
+                                "value_kw_uncorrected": values["value_kw"],
+                                "value_kw_corrected": forecast["value_kw"],
+                                "value_k_uncorrected": values.get("value_k", np.nan),
+                                "value_k_corrected": forecast.get("value_k", np.nan)})
+                        mos_record = (
+                            {"applied": True, **mos.as_dict(),
+                             "value_kw_uncorrected": values["value_kw"],
+                             "value_kw_corrected": forecast["value_kw"]}
+                            if mos is not None else
+                            {"applied": False,
+                             "reason": "not adopted by L-09" if mos_decision is not None
+                             else "L-09 not decided yet"})
                         best[name] = {
                             "target": target, "horizon": h, "seed": seed,
                             "trial": bt.number, "searched": dict(bt.params),
@@ -269,6 +324,8 @@ def run_xgb(ctx: Context) -> Result:
                             "best_train_rmse": fit.best_train_rmse,
                             "unit": X.UNIT[target], **values,
                             "best_trial_value_kw": bt.value,
+                            "mos": mos_record,
+                            **{f"{k}_forecast": v for k, v in forecast.items()},
                             "booster": booster_path.relative_to(ctx.out).as_posix()}
                         _xgb_warnings(ctx, X, name, fit, bt.params)
                         for w in ctx.windows:
@@ -277,15 +334,25 @@ def run_xgb(ctx: Context) -> Result:
                             counts = X.nan_counts(Xw)
                             if counts:
                                 problems[key]["nan_counts_predicted"][w.split] = counts
-                            predictions[seed].append(pd.DataFrame({
+                            raw = X.predict(fit.booster, Xw, fit.n_rounds)
+                            frame = pd.DataFrame({
                                 "timestamp": table.index[rows],
                                 "y_true": table.loc[rows, X.TARGET_COLUMN[target]].to_numpy(),
-                                "y_pred": X.predict(fit.booster, Xw, fit.n_rounds),
+                                "y_pred": raw,
                                 "target": target, "horizon": h, "model": X.MODEL,
-                                "seed": seed, "split": w.split}))
+                                "seed": seed, "split": w.split})
+                            if mos is not None:
+                                uncorrected[seed].append(frame)
+                                frame = frame.assign(y_pred=X.apply_mos(
+                                    target, raw, table.loc[rows, "theo_kw"].to_numpy(float),
+                                    table.loc[rows, "daytime"].astype(bool).to_numpy(), mos))
+                            predictions[seed].append(frame)
                         ctx.log.note(f"{name}: best trial {bt.number}, validation "
-                                     f"{values['value_kw']:.4f} % of capacity, best iteration "
-                                     f"{fit.best_iteration} of {fit.n_estimators}")
+                                     f"{forecast['value_kw']:.4f} % of capacity"
+                                     + (f" (uncorrected {values['value_kw']:.4f} %)"
+                                        if mos is not None else "")
+                                     + f", best iteration {fit.best_iteration} of "
+                                     f"{fit.n_estimators}")
     finally:
         storage.remove_session()
         storage.engine.dispose()  # release the SQLite file before the folder is renamed
@@ -294,6 +361,13 @@ def run_xgb(ctx: Context) -> Result:
         frame = pd.concat(frames, ignore_index=True).sort_values(
             ["target", "horizon", "timestamp"])
         outputs.append(_write_csv(frame, ctx.out / f"predictions_{X.MODEL}_seed{seed}.csv"))
+    for seed, frames in uncorrected.items():
+        if frames:
+            frame = pd.concat(frames, ignore_index=True).sort_values(
+                ["target", "horizon", "timestamp"])
+            outputs.append(_write_csv(frame, ctx.out / X.uncorrected_name(seed)))
+    outputs.append(_write_csv(pd.DataFrame(mos_rows, columns=MOS_COLUMNS),
+                              ctx.out / "mos_coefficients.csv"))
     trials = pd.concat(trial_frames, ignore_index=True)
     curves = pd.concat(curves, ignore_index=True)
     outputs.append(_write_csv(trials, ctx.out / "trials.csv"))
@@ -316,6 +390,12 @@ def run_xgb(ctx: Context) -> Result:
         "fixed_params": X.FIXED_PARAMS, "search_space": X.SEARCH_SPACE,
         "mean_daytime_k": mean_k, "monotone_decision": decision,
         "monotone_decision_sha256": sha256(MONOTONE_DECISION_FILE),
+        "mos": "L-09 where adopted: clip(a + b * kW forecast, 0, 3449) on daytime hours, a and b "
+               "by OLS on out-of-fold train predictions of the final fit's model (five expanding "
+               "date folds, 3-day gap, fixed rounds), refitted in this run; for k divided by "
+               "theo again (docs/stage9_plan.md §14.4, §15)",
+        "mos_adopted": adopted, "mos_decision": mos_decision,
+        "mos_decision_sha256": sha256(MOS_DECISION_FILE) if mos_decision is not None else None,
         "seed_spread_pp": spread, "problems": problems,
         "optuna": optuna.__version__}, ctx.out / "xgb_config.json"))
     figures = ctx.out / "figures"
@@ -327,9 +407,13 @@ def run_xgb(ctx: Context) -> Result:
     summary = [f"xgb ({ctx.mode}, {n_trials} trial(s), seeds {seeds}): nRMSE in kW on the "
                f"tuning window, {tuning.label}"]
     for name, b in best.items():
-        summary.append(f"  {name:<22} {b['value_kw']:6.3f} %  best iteration "
-                       f"{b['best_iteration']} of {b['xgb_params']['n_estimators']}")
-    return Result(outputs, values={"best": {k: v["value_kw"] for k, v in best.items()},
+        summary.append(f"  {name:<22} {b['value_kw_forecast']:6.3f} %  best iteration "
+                       f"{b['best_iteration']} of {b['xgb_params']['n_estimators']}"
+                       + (f"  (L-09; uncorrected {b['value_kw']:.3f} %)"
+                          if b["mos"]["applied"] else ""))
+    return Result(outputs, values={"best": {k: v["value_kw_forecast"] for k, v in best.items()},
+                                   "best_uncorrected": {k: v["value_kw"]
+                                                        for k, v in best.items()},
                                    "trials": int(len(trials))},
                   summary=summary, notes={"seed_spread_pp": spread})
 
@@ -354,10 +438,11 @@ def _xgb_warnings(ctx: Context, X, name: str, fit, params: dict) -> None:
 
 
 def _seed_spread(ctx: Context, X, best: dict) -> dict:
-    """Std over seeds of the validation nRMSE in kW per target x horizon (stage-10 rule)."""
+    """Std over seeds of the validation nRMSE in kW of the written forecast per target x horizon
+    (stage-10 rule)."""
     by_key: dict[str, list[float]] = {}
     for b in best.values():
-        by_key.setdefault(f"{b['target']}_D{b['horizon']}", []).append(b["value_kw"])
+        by_key.setdefault(f"{b['target']}_D{b['horizon']}", []).append(b["value_kw_forecast"])
     spread = {}
     for key, values in by_key.items():
         if len(values) < 2:

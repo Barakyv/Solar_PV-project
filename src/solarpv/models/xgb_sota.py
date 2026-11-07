@@ -21,6 +21,10 @@ the checks of §14 (`python -m solarpv.models.xgb_checks`). Rules from the W2 se
 - Predictions (M9, M10): the raw model output (k is never clipped); the booster is saved and
   every prediction uses an explicit `iteration_range=(0, best_iteration + 1)`.
 - Seeds (M12c): the seed drives both the TPE sampler and XGBoost's `random_state`.
+- L-09 (§14.4, §15): where `configs/mos_decision.yaml` adopts it, the kW forecast of the final
+  fit is corrected on daytime hours with clip(a + b * y_hat, 0, capacity); a and b come from
+  out-of-fold train predictions of the same model, refitted in every run. One implementation for
+  the step and the check (X14); for k the corrected kW is divided by theo again (X15).
 """
 
 import json
@@ -39,6 +43,7 @@ import yaml  # noqa: E402
 from solarpv.config.constants import (  # noqa: E402
     AC_CAPACITY_KW,
     MONOTONE_DECISION_FILE,
+    MOS_DECISION_FILE,
     THEO_MIN_KW,
     TIMEZONE_LOCAL,
     XGB_THREADS,
@@ -46,6 +51,7 @@ from solarpv.config.constants import (  # noqa: E402
 from solarpv.config.paths import OUTPUTS_DIR  # noqa: E402
 from solarpv.evaluation.evaluate import to_kw  # noqa: E402
 from solarpv.features.leakage import assert_no_leakage  # noqa: E402
+from solarpv.selection.common import date_folds  # noqa: E402
 from solarpv.selection.common import pool as stage7_pool  # noqa: E402
 
 MODEL = "xgb_sota"
@@ -149,14 +155,20 @@ def local_day(index: pd.DatetimeIndex) -> pd.DatetimeIndex:
     return index.tz_convert(TIMEZONE_LOCAL).tz_localize(None).normalize()
 
 
-def training_rows(table: pd.DataFrame, target: str, smoke: bool = False) -> pd.Series:
-    """Fit rows of train; in smoke mode only the last SMOKE_TRAIN_DAYS local days of train."""
-    rows = (table["split"] == "train") & fit_mask(table, target)
+def train_scope(table: pd.DataFrame, smoke: bool = False) -> pd.Series:
+    """The train rows a run learns from, before the fit mask: all of train; in smoke mode only
+    the last SMOKE_TRAIN_DAYS local days of train."""
+    rows = table["split"] == "train"
     if smoke:
         days = pd.Series(local_day(table.index), index=table.index)
-        last = days[table["split"] == "train"].max()
-        rows &= days >= last - pd.Timedelta(days=SMOKE_TRAIN_DAYS - 1)
+        last = days[rows].max()
+        rows = rows & (days >= last - pd.Timedelta(days=SMOKE_TRAIN_DAYS - 1))
     return rows
+
+
+def training_rows(table: pd.DataFrame, target: str, smoke: bool = False) -> pd.Series:
+    """Fit rows of train; in smoke mode only the last SMOKE_TRAIN_DAYS local days of train."""
+    return train_scope(table, smoke) & fit_mask(table, target)
 
 
 def window_rows(table: pd.DataFrame, window) -> pd.Series:
@@ -323,12 +335,16 @@ def nrmse_k(y_pred, k_true, mean_k: float) -> float:
     return float(np.sqrt(np.mean(err ** 2)) / mean_k * 100.0)
 
 
-def score(problem: Problem, fit: Fit) -> dict:
-    pred = predict(fit.booster, problem.X_score, fit.n_rounds)
+def score_values(problem: Problem, pred) -> dict:
+    """§14.1 of a forecast on the problem's scoring rows (target unit), and the k-unit value."""
     out = {"value_kw": nrmse_kw(problem.target, pred, problem.theo_score, problem.truth_kw)}
     if problem.target == "indirect":
         out["value_k"] = nrmse_k(pred, problem.k_score, problem.mean_k)
     return out
+
+
+def score(problem: Problem, fit: Fit) -> dict:
+    return score_values(problem, predict(fit.booster, problem.X_score, fit.n_rounds))
 
 
 # ── the search ──────────────────────────────────────────────────────────────
@@ -395,6 +411,108 @@ def trials_frame(study, target: str, h: int, seed: int) -> pd.DataFrame:
                                                                            "value_k")},
                      **{f"param_{k}": v for k, v in t.params.items()}})
     return pd.DataFrame(rows)
+
+
+# ── L-09: bias correction (MOS) of the kW forecast (§14.4, §15) ─────────────
+
+
+def uncorrected_name(seed: int) -> str:
+    """The raw booster output of the corrected targets (X16). Not a `predictions_*` file: the
+    `evaluate` step scores only those."""
+    return f"uncorrected_{MODEL}_seed{int(seed)}.csv"
+
+
+def load_mos_decision(path: Path = MOS_DECISION_FILE) -> dict | None:
+    """The L-09 decision (§14.4): `adopted` true or false per target. None when the file does
+    not exist yet (L-09 is decided on a dev run; the step allows that outside final mode)."""
+    path = Path(path)
+    if not path.exists():
+        return None
+    decision = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if decision.get("decision") != "L-09":
+        raise ValueError(f"{path.name}: not an L-09 decision")
+    adopted = decision.get("adopted") or {}
+    for target in TARGETS:
+        if not isinstance(adopted.get(target), bool):
+            raise ValueError(f"{path.name}: adopted.{target} must be true or false")
+    return decision
+
+
+def mos_rows(table: pd.DataFrame) -> pd.Series:
+    """Rows the correction is fitted on: daytime, AC truth, not op-limited, not warm-up (D-22)."""
+    return (table["daytime"].astype(bool) & table[TRUTH_KW].notna()
+            & ~table["op_limited_flag"].astype(bool) & ~table["warmup"].astype(bool))
+
+
+def mos_folds(table: pd.DataFrame, scope: pd.Series) -> list[tuple[pd.Series, pd.Series]]:
+    """The five expanding date folds of stage 7 (3-day gap) over the local days of `scope`."""
+    days = pd.Series(local_day(table.index[scope]), index=table.index[scope])
+    return [(fit.reindex(table.index, fill_value=False),
+             held.reindex(table.index, fill_value=False)) for fit, held in date_folds(days)]
+
+
+def ols(pred_kw: np.ndarray, truth_kw: np.ndarray) -> tuple[float, float]:
+    """y = a + b * y_hat by ordinary least squares."""
+    A = np.column_stack([np.ones_like(pred_kw), pred_kw])
+    (a, b), *_ = np.linalg.lstsq(A, truth_kw, rcond=None)
+    return float(a), float(b)
+
+
+@dataclass
+class Mos:
+    a: float  # kW
+    b: float
+    n_oof: int  # out-of-fold hours the OLS was fitted on
+    folds: list[dict]  # fit and held-out rows of every fold
+
+    def as_dict(self) -> dict:
+        return {"a_kw": self.a, "b": self.b, "n_oof": self.n_oof, "folds": self.folds}
+
+
+def fit_mos(table: pd.DataFrame, target: str, feats: list[str], params: dict, seed: int,
+            constraints: dict[str, int], n_rounds: int, scope: pd.Series) -> Mos:
+    """Out-of-fold kW predictions of the base model (its parameters, seed, constraints and
+    rounds, fixed; no early stopping) on the date folds of `scope`, then OLS (§14.4). Only train
+    rows enter: neither the features nor the labels of validation are used (A-14)."""
+    y = table[TARGET_COLUMN[target]]
+    fit_all = scope & fit_mask(table, target)
+    usable = mos_rows(table)
+    preds, truth, folds = [], [], []
+    for i, (fold_fit, fold_held) in enumerate(mos_folds(table, scope)):
+        rows, held = fold_fit & fit_all, fold_held & usable
+        if not rows.any() or not held.any():
+            raise ValueError(f"{target}: fold {i} of the L-09 correction has no fit or held rows")
+        booster = fit_fixed(table.loc[rows, feats], y[rows], params, seed, constraints, n_rounds)
+        pred = predict(booster, table.loc[held, feats], n_rounds)
+        preds.append(to_kw(target, pred, table.loc[held, "theo_kw"].to_numpy()))
+        truth.append(table.loc[held, TRUTH_KW].to_numpy(float))
+        folds.append({"fold": i, "fit_rows": int(rows.sum()), "held_rows": int(held.sum())})
+    preds, truth = np.concatenate(preds), np.concatenate(truth)
+    a, b = ols(preds, truth)
+    return Mos(a, b, int(preds.size), folds)
+
+
+def corrected_kw(mos: Mos, kw) -> np.ndarray:
+    return np.clip(mos.a + mos.b * np.asarray(kw, dtype=float), 0.0, AC_CAPACITY_KW)
+
+
+def apply_mos(target: str, y_pred, theo, daytime, mos: Mos) -> np.ndarray:
+    """The corrected forecast in the target's unit (X15): on daytime hours
+    clip(a + b * to_kw(y_pred), 0, capacity), for k divided by theo again, so that
+    `evaluate.to_kw` returns the corrected kW; other hours unchanged."""
+    out = np.asarray(y_pred, dtype=float).copy()
+    theo = np.asarray(theo, dtype=float)
+    day = np.asarray(daytime, dtype=bool)
+    kw = corrected_kw(mos, to_kw(target, out[day], theo[day]))
+    if target == "indirect":
+        bad = ~(theo[day] > 0)
+        if bad.any():
+            raise ValueError(f"{int(bad.sum())} daytime hours with theo <= 0: the corrected kW "
+                             "cannot be written as k")
+        out[day] = kw / theo[day]
+    else:
+        out[day] = kw
+    return out
 
 
 # ── figures ─────────────────────────────────────────────────────────────────

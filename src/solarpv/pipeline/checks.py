@@ -25,7 +25,7 @@ import subprocess
 from importlib import metadata
 from pathlib import Path
 
-from solarpv.config.constants import MONOTONE_DECISION_FILE, XGB_THREADS
+from solarpv.config.constants import MONOTONE_DECISION_FILE, MOS_DECISION_FILE, XGB_THREADS
 from solarpv.config.paths import OUTPUTS_DIR, PROCESSED_DIR, REPO_ROOT
 from solarpv.config.provenance import find_git, git_commit, sha256
 from solarpv.config.site import load_site
@@ -40,14 +40,18 @@ STAGE_MANIFESTS = (PROCESSED_DIR / "06_features" / "features_manifest.json",
                    PROCESSED_DIR / "06b_gfs" / "gfs_manifest.json")
 SELECTION_MANIFEST = OUTPUTS_DIR / "07_feature_selection" / "selection_manifest.json"
 MONOTONE_DECISION = MONOTONE_DECISION_FILE
+MOS_DECISION = MOS_DECISION_FILE
 TRACKED_INPUTS = (OUTPUTS_DIR / "07_feature_selection" / "model_inputs.json",
                   SELECTION_MANIFEST,
                   REPO_ROOT / "configs" / "split_manifest.yaml",
-                  MONOTONE_DECISION)
+                  MONOTONE_DECISION, MOS_DECISION)
 # tracked inputs that may not exist yet: path -> what to run (the step that reads it refuses)
 PENDING_DECISIONS = {MONOTONE_DECISION: "D-15 not decided yet: run python -m "
                                         "solarpv.models.xgb_checks d15 (the xgb step refuses "
-                                        "without it)"}
+                                        "without it)",
+                     MOS_DECISION: "L-09 not decided yet: run python -m "
+                                   "solarpv.models.xgb_checks l09 --run <dev run> (the xgb "
+                                   "step refuses without it)"}
 INPUT_LINE = re.compile(r"\bINPUT\s+(\S+)\s+sha256=([0-9a-f]{8,64})\b")
 
 

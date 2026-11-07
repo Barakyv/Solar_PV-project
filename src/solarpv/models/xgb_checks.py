@@ -45,7 +45,6 @@ from solarpv.evaluation.truth import FEATURES_FILE, load_truth
 from solarpv.features.decide_k import XGB_PARAMS
 from solarpv.models import xgb_sota as X
 from solarpv.pipeline import data
-from solarpv.selection.common import date_folds
 
 OUT_DIR = OUTPUTS_DIR / "09_xgb_checks"
 RUNS_DIR = OUTPUTS_DIR / "runs"
@@ -271,28 +270,14 @@ def tuned_entry(best: dict, target: str, h: int, seed: int = DEV_SEED) -> dict:
 # ── L-09 (§14.4) ────────────────────────────────────────────────────────────
 
 
-def mos_rows(table: pd.DataFrame) -> pd.Series:
-    """Rows the correction is fitted on: daytime, AC truth, not op-limited, not warm-up (D-22)."""
-    return (table["daytime"].astype(bool) & table[X.TRUTH_KW].notna()
-            & ~table["op_limited_flag"].astype(bool) & ~table["warmup"].astype(bool))
+# the correction itself lives in the model module, shared with the xgb step (X14)
+mos_rows = X.mos_rows
+ols = X.ols
 
 
 def train_folds(table: pd.DataFrame) -> list[tuple[pd.Series, pd.Series]]:
     """The five expanding date folds of stage 7 (3-day gap) over the train rows."""
-    train = table["split"] == "train"
-    days = pd.Series(X.local_day(table.index[train]), index=table.index[train])
-    folds = []
-    for fit_days, held_days in date_folds(days):
-        folds.append((fit_days.reindex(table.index, fill_value=False),
-                      held_days.reindex(table.index, fill_value=False)))
-    return folds
-
-
-def ols(pred_kw: np.ndarray, truth_kw: np.ndarray) -> tuple[float, float]:
-    """y = a + b * y_hat by ordinary least squares."""
-    A = np.column_stack([np.ones_like(pred_kw), pred_kw])
-    (a, b), *_ = np.linalg.lstsq(A, truth_kw, rcond=None)
-    return float(a), float(b)
+    return X.mos_folds(table, X.train_scope(table))
 
 
 def mos_fit(table: pd.DataFrame, target: str, entry: dict, seed: int) -> dict:
@@ -301,30 +286,34 @@ def mos_fit(table: pd.DataFrame, target: str, entry: dict, seed: int) -> dict:
     feats, cons = entry["feature_order"], entry["monotone_constraints"]
     params, n_rounds = entry["searched"], int(entry["n_rounds"])
     y = table[X.TARGET_COLUMN[target]]
+    mos = X.fit_mos(table, target, feats, params, seed, cons, n_rounds, X.train_scope(table))
     fit_all = X.training_rows(table, target)
-    oof_pred, oof_true = [], []
-    for fold_fit, fold_held in train_folds(table):
-        rows = fold_fit & fit_all
-        booster = X.fit_fixed(table.loc[rows, feats], y[rows], params, seed, cons, n_rounds)
-        held = fold_held & mos_rows(table)
-        pred = X.predict(booster, table.loc[held, feats], n_rounds)
-        oof_pred.append(to_kw(target, pred, table.loc[held, "theo_kw"].to_numpy()))
-        oof_true.append(table.loc[held, X.TRUTH_KW].to_numpy(float))
-    oof_pred, oof_true = np.concatenate(oof_pred), np.concatenate(oof_true)
-    a, b = ols(oof_pred, oof_true)
     booster = X.fit_fixed(table.loc[fit_all, feats], y[fit_all], params, seed, cons, n_rounds)
     val = val_score_rows(table)
     pred_val = X.predict(booster, table.loc[val, feats], n_rounds)
     raw_kw = to_kw(target, pred_val, table.loc[val, "theo_kw"].to_numpy())
-    corrected = np.clip(a + b * raw_kw, 0.0, AC_CAPACITY_KW)
+    corrected = X.corrected_kw(mos, raw_kw)
     truth = table.loc[val, X.TRUTH_KW].to_numpy(float)
 
     def nrmse(p):
         return float(np.sqrt(np.mean((p - truth) ** 2)) / AC_CAPACITY_KW * 100.0)
 
-    return {"a": a, "b": b, "n_oof": int(oof_pred.size), "n_val": int(val.sum()),
+    return {"a": mos.a, "b": mos.b, "n_oof": mos.n_oof, "n_val": int(val.sum()),
             "uncorrected_pct": nrmse(raw_kw), "corrected_pct": nrmse(corrected),
             "val_pred": pd.Series(pred_val, index=table.index[val])}
+
+
+def base_forecast(folder: Path, seed: int) -> pd.DataFrame:
+    """The base model's forecast of a run's xgb step: its prediction file, with the rows of every
+    corrected target taken from the uncorrected file (§15, X16)."""
+    preds = pd.read_csv(folder / f"predictions_{X.MODEL}_seed{seed}.csv")
+    raw_path = folder / X.uncorrected_name(seed)
+    if raw_path.exists():
+        raw = pd.read_csv(raw_path)
+        preds = pd.concat([preds[~preds["target"].isin(set(raw["target"]))], raw],
+                          ignore_index=True)
+    preds["timestamp"] = pd.to_datetime(preds["timestamp"], utc=True)
+    return preds
 
 
 def l09_scores(tables: dict[int, pd.DataFrame], best: dict, targets=X.TARGETS,
@@ -379,8 +368,7 @@ def run_l09(run_id: str, runs_dir: Path = RUNS_DIR, out_dir: Path = OUT_DIR,
         with log.step("L-09: out-of-fold linear correction of the kW forecast, three seeds"):
             scores, val_preds = l09_scores(tables, best, targets, seeds, log=log)
         # consistency: seed 42 on all of train with the dev rounds is the dev final fit
-        dev = pd.read_csv(folder / f"predictions_{X.MODEL}_seed{DEV_SEED}.csv")
-        dev["timestamp"] = pd.to_datetime(dev["timestamp"], utc=True)
+        dev = base_forecast(folder, DEV_SEED)
         worst = 0.0
         for (target, h, seed), pred in val_preds.items():
             if seed != DEV_SEED:
@@ -424,8 +412,9 @@ def run_l09(run_id: str, runs_dir: Path = RUNS_DIR, out_dir: Path = OUT_DIR,
                    _write(_yaml("# L-09: bias correction (MOS) of the XGB kW forecast. Written "
                                 "by\n# python -m solarpv.models.xgb_checks l09 (stage 9, "
                                 "docs/stage9_plan.md §14.4).\n# Evidence: "
-                                "outputs/09_xgb_checks/l09_check.csv. Not read by the xgb step "
-                                "unless adopted\n# in a later commit.\n", decision),
+                                "outputs/09_xgb_checks/l09_check.csv. Read by the xgb step: a "
+                                "target with\n# adopted: true gets the corrected forecast "
+                                "(docs/stage9_plan.md §15).\n", decision),
                           Path(decision_file))]
         log.outputs(outputs)
     return decision
@@ -446,7 +435,9 @@ def bias_rows(err: pd.Series, label: dict) -> dict:
 
 def r14_bias(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
     """Mean bias error (forecast - actual, kW) on the validation daytime hours with AC truth,
-    overall and per local month, with the 95 % circular block bootstrap interval of §6.9."""
+    overall and per local month, with the 95 % circular block bootstrap interval of §6.9. The
+    forecast is the one the run wrote: with L-09 adopted, the indirect route is the corrected
+    one (§15)."""
     rows = []
     for (target, h), g in preds.groupby(["target", "horizon"], sort=True):
         g = g.set_index("timestamp").sort_index()

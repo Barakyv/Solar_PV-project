@@ -915,6 +915,42 @@ rows are read; nothing here reads the test split.
   rules, the outputs, L-09 and R-14 on a synthetic dev run, the run folder unchanged).
 - *Original:* no bias correction and no bias check.
 
+**OP-53 — The adopted L-09 correction inside the `xgb` step
+(`solarpv.pipeline.steps.run_xgb`, `solarpv.models.xgb_sota.fit_mos` and `apply_mos`).**
+- *Why:* §14.4 adopted the correction for the indirect route (OP-52) and requires it to become
+  part of the step before G-1. Design and self-review before the code: `docs/stage9_plan.md` §15
+  (X14–X16).
+- *Method:*
+  - **Decision:** `configs/mos_decision.yaml` is an input of the step (in its fingerprint) and a
+    tracked input of `check`; per target, `adopted` true gives the corrected forecast. Today:
+    indirect corrected, direct raw. A smoke or dev run without the file writes the raw forecast
+    with a warning (L-09 is decided on a dev run); a final run refuses.
+  - **Refitted in every run:** for each target × horizon × seed with the correction adopted, the
+    final fit's model (its searched parameters, seed, constraints and rounds = best iteration + 1,
+    fixed, no early stopping) is trained on the five expanding date folds of the run's train
+    range (3-day gap; dev and final all of train, smoke its 56 days); OLS y = a + b × ŷ on the
+    held-out daytime hours with AC truth, not op-limited, not warm-up. Only train rows enter
+    (A-14). The same functions serve the L-09 check (X14).
+  - **Applied** to the final fit's forecast of every window of the run, on daytime hours:
+    kW' = clip(a + b × ŷ_kW, 0, 3,449); for k the file holds k' = kW' / theo, so that
+    `evaluate.to_kw` returns kW' (X15; the smallest daytime theo with AC truth is about 62 kW in
+    train and validation). Night hours keep the raw output. The model name stays `xgb_sota`.
+  - **Records:** `uncorrected_xgb_sota_seed<S>.csv` (the raw booster output of the corrected
+    targets, not scored by `evaluate`; X16), `mos_coefficients.csv`, a `mos` entry per fit in
+    `best_params.json` (a, b, out-of-fold hours, fold rows, the uncorrected and corrected value of
+    the tuning window), `value_kw_forecast` (the value of the written forecast), the decision and
+    its hash in `xgb_config.json`.
+  - The search, the objective (the base model is tuned without the correction), early stopping
+    and the boosters are unchanged.
+- *Result:* run journal R9-09 (smoke and dev).
+- *Verification:* T-64 (the step and the check fit the same coefficients and the evaluation scores
+  the corrected value; exact k ↔ kW inversion; nights and the direct target unchanged; the
+  uncorrected file; without the decision a raw dev forecast and a refused final run), T-58 and
+  T-59 (the written forecast's value equals the evaluation; the booster and the recorded
+  coefficients reproduce the written file exactly), T-61 (the coefficients do not depend on the
+  validation labels).
+- *Original:* no bias correction.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
@@ -944,6 +980,7 @@ rows are read; nothing here reads the test split.
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 | Model runs | one script; failed steps ignored; whatever files were in `outputs/` scored; logs overwritten; test evaluated in every run | one runner with smoke, dev and final modes; inputs checked against the stage manifests; each run in its own folder with hashes; only the run's own files scored; no test row loaded outside final | OP-49, C-36–C-41 |
 | XGB training | `fillna(0)`; every train hour (nights, stops, invalid k); +1 constraints by substring on both targets; clips in the scoring scripts; saved parameters not the model | no imputation; fit masks per target (D-22, L-04); exact D-15 list, decided for k on validation; raw output, one conversion (`evaluate.to_kw`); full record, saved booster, explicit iteration range | OP-50, OP-51, C-20, C-33, C-42–C-46 |
+| Bias correction | none | L-09 tested on validation by a registered rule; adopted for the indirect route only, refitted in every run on out-of-fold train predictions | OP-52, OP-53 |
 
 ## 18. Limitations carried into the report
 
@@ -1021,6 +1058,7 @@ python -m solarpv.models.xgb_checks d15      # writes configs/monotone_decision.
 python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate
 python -m solarpv.models.xgb_checks l09 --run <dev run id>   # writes configs/mos_decision.yaml
 python -m solarpv.models.xgb_checks r14 --run <dev run id>
+python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate   # again, with L-09 (OP-53)
 python scripts/build_data_record.py
 pytest
 ```
@@ -1029,4 +1067,4 @@ pytest
 
 Stage 9 sequence models (W3–W4), with the inputs of
 `outputs/07_feature_selection/model_inputs.json` (OP-48), and the D-21 robustness check on val.
-XGB (W2) is OP-50–OP-52.
+XGB (W2) is OP-50–OP-53.

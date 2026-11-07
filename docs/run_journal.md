@@ -1139,3 +1139,28 @@ hashes, numbers) and the commit messages are the record:
 - **Review (forecasting-validity-review):** the rules and margins are the registered ones
   (§14.4, §14.5); three seeds for the decision; train folds chronological with a 3-day gap; the
   correction is fitted on train only and validated once; the test split is not read.
+
+### 2026-11-07 · R9-08 · The adopted L-09 correction in the `xgb` step: review and code
+
+- **Design note before the code:** `docs/stage9_plan.md` §15. No rule of §14 changes: the
+  correction is the registered one, and the base model is tuned and stopped as before.
+- **Self-review (X14–X16, errata rows):**
+  - X14: the correction existed only in the L-09 check; a second copy in the step could drift.
+    One implementation now lives in `models/xgb_sota.py` and serves both.
+  - X15: the indirect file holds k and the correction is in kW. Daytime hours are written as
+    k' = corrected kW / theo, nights keep the raw k. Checked on the data before the design: every
+    daytime hour with AC truth has theo of at least about 62 kW in train and in validation, so
+    the division is defined and `evaluate.to_kw` returns the corrected kW.
+  - X16: two readers took the prediction file for the raw booster output (the consistency check
+    of `run_l09` and T-59). The step now also writes `uncorrected_xgb_sota_seed<S>.csv`, which
+    `evaluate` does not score, and both readers use it.
+- **A choice the plan did not settle, made here:** L-09 is decided on a dev run, so the step
+  cannot require the decision in every mode (that would make the first dev run impossible). A
+  smoke or dev run without `configs/mos_decision.yaml` writes the raw forecast with a warning and
+  `check` reports the decision as pending; a final run refuses.
+- **Records:** `value_kw` keeps its meaning (the base model's objective, which the refit must
+  equal); `value_kw_forecast` is the value of the written forecast and equals the evaluation. The
+  seed spread of stage 10 uses the written forecast.
+- **Tests:** T-64 (four new tests), and T-58, T-59 and the L-09 test of T-63 adapted to the
+  corrected file. On a synthetic dev run, the step's seed-42 coefficients equal the check's, and
+  the evaluation's `nRMSE_kW_pct` of the indirect route equals the check's corrected value.

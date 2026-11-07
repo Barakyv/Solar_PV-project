@@ -14,6 +14,9 @@ T-61  A-14: validation labels do not change a fixed-round model or the MOS coeff
 T-62  X13: decide_k.XGB_PARAMS is unchanged after the D-15 check
 T-63  the checks of §14: the registered rules, the outputs, never a predictions_* file nor a
       write into a run folder; L-09 and R-14 on a synthetic dev run
+T-64  the adopted L-09 correction in the step (§15): one implementation with the check (X14),
+      the corrected kW written as k and inverted exactly (X15), the uncorrected file and the
+      base forecast of the check (X16), the decision file required in final mode only
 """
 
 import dataclasses
@@ -127,8 +130,13 @@ def wired(tmp_path, monkeypatch, tables):
                                         "settings": {"indirect": "A", "direct": "A"}}),
                         encoding="utf-8")
     monkeypatch.setattr(steps, "MONOTONE_DECISION_FILE", decision)
+    mos = tmp_path / "wired_mos_decision.yaml"  # the L-09 decision of R9-07
+    mos.write_text(yaml.safe_dump({"decision": "L-09",
+                                   "adopted": {"indirect": True, "direct": False}}),
+                   encoding="utf-8")
+    monkeypatch.setattr(steps, "MOS_DECISION_FILE", mos)
     monkeypatch.setattr(runner, "git_commit", lambda: "abc1234")
-    return SimpleNamespace(tmp=tmp_path, base=base, gfs=gfs, decision=decision,
+    return SimpleNamespace(tmp=tmp_path, base=base, gfs=gfs, decision=decision, mos=mos,
                            inputs={k: v["features"] for k, v in inputs.items()},
                            truth_file=truth_file)
 
@@ -300,19 +308,29 @@ def test_smoke_run_passes_and_the_objective_is_the_evaluation(smoke_run):
         row = bench[(bench["model"] == X.MODEL) & (bench["seed"] == b["seed"])
                     & (bench["target"] == b["target"]) & (bench["horizon"] == b["horizon"])]
         assert len(row) == 1, name
-        # equal at the written precision of the table (6 decimals)
-        assert abs(float(row["nRMSE_kW_pct"].iloc[0]) - b["value_kw"]) < 1e-6, name
+        # the evaluation scores the written forecast; equal at the table's precision (6 decimals)
+        assert abs(float(row["nRMSE_kW_pct"].iloc[0]) - b["value_kw_forecast"]) < 1e-6, name
         assert abs(b["value_kw"] - b["best_trial_value_kw"]) < 1e-9  # the refit is the trial
+        assert b["mos"]["applied"] is (b["target"] == "indirect")  # the wired L-09 decision
         if b["target"] == "indirect":
-            assert abs(float(row["nRMSE_pct"].iloc[0]) - b["value_k"]) < 1e-6
+            assert abs(float(row["nRMSE_pct"].iloc[0]) - b["value_k_forecast"]) < 1e-6
+            assert b["mos"]["value_kw_uncorrected"] == b["value_kw"]
+            assert b["mos"]["value_kw_corrected"] == b["value_kw_forecast"]
+        else:
+            assert b["value_kw_forecast"] == b["value_kw"]
     for name in ("trials.csv", "learning_curves.csv", "xgb_config.json", "optuna.db",
                  "figures/learning_curves.png", "figures/optimization_history.png",
-                 "predictions_xgb_sota_seed42.csv"):
+                 "predictions_xgb_sota_seed42.csv", "uncorrected_xgb_sota_seed42.csv",
+                 "mos_coefficients.csv"):
         assert (xgb_dir / name).exists(), name
     record = json.loads((xgb_dir / "step.json").read_text(encoding="utf-8"))
     assert "optuna.db" in record["outputs"] and any(k.startswith("models/")
                                                     for k in record["outputs"])
+    assert "uncorrected_xgb_sota_seed42.csv" in record["outputs"]
+    assert not any(k.startswith("predictions_") and "uncorrected" in k for k in record["outputs"])
     cfg = json.loads((xgb_dir / "xgb_config.json").read_text(encoding="utf-8"))
+    assert cfg["mos_adopted"] == {"indirect": True, "direct": False}
+    assert cfg["mos_decision_sha256"] == sha256(smoke_run.mos)
     assert cfg["problems"]["indirect_D1"]["monotone_constraints"] == {"ghi_clearsky": 1}
     assert cfg["problems"]["direct_D1"]["monotone_constraints"] == {
         "ghi_clearsky": 1, "poa_global_clearsky": 1, "sun_elevation": 1}
@@ -337,8 +355,9 @@ def test_development_runs_never_read_a_test_row(smoke_run):
 def test_the_record_holds_the_model_and_the_booster_reproduces_it(smoke_run):
     xgb_dir = smoke_run.dir / "xgb"
     best = json.loads((xgb_dir / "best_params.json").read_text(encoding="utf-8"))
-    preds = pd.read_csv(xgb_dir / "predictions_xgb_sota_seed42.csv")
-    preds["timestamp"] = pd.to_datetime(preds["timestamp"], utc=True)
+    written = pd.read_csv(xgb_dir / "predictions_xgb_sota_seed42.csv")
+    written["timestamp"] = pd.to_datetime(written["timestamp"], utc=True)
+    preds = C.base_forecast(xgb_dir, SEED)  # the booster output: uncorrected rows (X16)
     table = smoke_run.base.join(smoke_run.gfs.drop(columns="t0_utc"))
     for b in best.values():
         p = b["xgb_params"]
@@ -358,6 +377,17 @@ def test_the_record_holds_the_model_and_the_booster_reproduces_it(smoke_run):
         raw = booster.predict(xgb.DMatrix(table.loc[mine["timestamp"], b["feature_order"]]),
                               iteration_range=(0, b["n_rounds"]))
         np.testing.assert_array_equal(raw.astype(float), mine["y_pred"].to_numpy())  # no clip
+        out = written[(written["target"] == b["target"]) & (written["horizon"] == b["horizon"])]
+        assert (out["timestamp"].to_numpy() == mine["timestamp"].to_numpy()).all()
+        if b["mos"]["applied"]:  # the written forecast = booster + the recorded coefficients
+            mos = X.Mos(b["mos"]["a_kw"], b["mos"]["b"], b["mos"]["n_oof"], b["mos"]["folds"])
+            rows = table.loc[mine["timestamp"]]
+            np.testing.assert_array_equal(
+                X.apply_mos(b["target"], again, rows["theo_kw"].to_numpy(float),
+                            rows["daytime"].to_numpy(bool), mos), out["y_pred"].to_numpy())
+            assert not np.array_equal(again, out["y_pred"].to_numpy())
+        else:
+            np.testing.assert_array_equal(again, out["y_pred"].to_numpy())
 
 
 def test_the_seed_drives_the_sampler_and_the_model(tables):
@@ -442,8 +472,8 @@ def test_a_pending_decision_is_reported_but_does_not_block(tmp_path):
     by = {Path(r["path"]).name: r for r in rows}
     assert by["monotone_decision.yaml"]["blocking"] is False
     assert by["other.yaml"]["blocking"] is True
-    assert checks.MONOTONE_DECISION in checks.TRACKED_INPUTS
-    assert checks.MONOTONE_DECISION in checks.PENDING_DECISIONS
+    for decision in (checks.MONOTONE_DECISION, checks.MOS_DECISION):
+        assert decision in checks.TRACKED_INPUTS and decision in checks.PENDING_DECISIONS
 
 
 def test_the_xgb_step_refuses_without_the_d15_decision(wired):
@@ -568,11 +598,22 @@ def test_l09_and_r14_on_a_synthetic_dev_run(wired, monkeypatch):
     assert set(decision["adopted"]) == {"indirect", "direct"}
     scores = pd.read_csv(out / "l09_check.csv")
     bench = pd.read_csv(run_dir / "evaluate" / "val" / "benchmark_summary.csv")
+    step_mos = pd.read_csv(run_dir / "xgb" / "mos_coefficients.csv")
+    best = json.loads((run_dir / "xgb" / "best_params.json").read_text(encoding="utf-8"))
+    assert list(step_mos["target"]) == ["indirect"]  # the wired decision: indirect only
     for target in ("indirect", "direct"):
-        mine = scores[(scores["target"] == target) & (scores["seed"] == SEED)]
+        mine = scores[(scores["target"] == target) & (scores["seed"] == SEED)].iloc[0]
         dev = bench[(bench["model"] == X.MODEL) & (bench["target"] == target)]
-        assert abs(float(mine["uncorrected_pct"].iloc[0])
-                   - float(dev["nRMSE_kW_pct"].iloc[0])) < 1e-6
+        b = best[f"{target}_D1_seed{SEED}"]
+        assert abs(mine["uncorrected_pct"] - b["value_kw"]) < 1e-9
+        written = "corrected_pct" if target == "indirect" else "uncorrected_pct"
+        # the evaluation scores the forecast as written (6 decimals in the table)
+        assert abs(mine[written] - float(dev["nRMSE_kW_pct"].iloc[0])) < 1e-6
+        if target == "indirect":  # X14: the step and the check fit the same correction
+            row = step_mos.iloc[0]
+            assert abs(row["a_kw"] - mine["a"]) < 1e-9 and abs(row["b"] - mine["b"]) < 1e-12
+            assert row["n_oof"] == mine["n_oof"]
+            assert abs(b["value_kw_forecast"] - mine["corrected_pct"]) < 1e-9
     bias = C.run_r14(run_dir.name, wired.tmp / "runs", out,
                      truth=load_truth(wired.truth_file, exclude_splits=("test",)),
                      command="test")
@@ -585,3 +626,84 @@ def test_l09_and_r14_on_a_synthetic_dev_run(wired, monkeypatch):
         smoke.run("smoke", ["baselines"], horizons=[1])
         (smoke_dir,) = [d for d in (wired.tmp / "runs").iterdir() if d.name.endswith("smoke")]
         C.load_xgb_run(smoke_dir.name, wired.tmp / "runs")
+
+
+# ── T-64 the adopted L-09 correction in the step (§15) ──────────────────────
+
+
+def test_the_corrected_kw_is_written_as_k_and_inverts_exactly():
+    rng = np.random.default_rng(5)
+    n = 400
+    day = rng.random(n) < 0.6
+    theo = np.where(day, rng.uniform(62, 3500, n), rng.uniform(0, 200, n))
+    k = rng.normal(0.7, 0.4, n)  # negative and large values included, never clipped
+    mos = X.Mos(a=20.0, b=0.97, n_oof=1, folds=[])
+    out = X.apply_mos("indirect", k, theo, day, mos)
+    expected = X.corrected_kw(mos, E.to_kw("indirect", k[day], theo[day]))
+    np.testing.assert_allclose(E.to_kw("indirect", out[day], theo[day]), expected,
+                               rtol=0, atol=1e-9)  # X15: the evaluation reads the corrected kW
+    np.testing.assert_array_equal(out[~day], k[~day])  # nights unchanged
+    assert expected.min() >= 0 and expected.max() <= AC_CAPACITY_KW
+    kw = rng.uniform(-50, 3600, n)
+    direct = X.apply_mos("direct", kw, theo, day, mos)
+    np.testing.assert_array_equal(direct[day], X.corrected_kw(mos, kw[day]))
+    np.testing.assert_array_equal(direct[~day], kw[~day])
+    theo[np.flatnonzero(day)[0]] = 0.0
+    with pytest.raises(ValueError, match="theo <= 0"):
+        X.apply_mos("indirect", k, theo, day, mos)
+
+
+def test_the_mos_decision_file_is_checked(tmp_path):
+    assert X.load_mos_decision(tmp_path / "none.yaml") is None  # not decided yet
+    path = tmp_path / "mos.yaml"
+    path.write_text(yaml.safe_dump({"decision": "L-09",
+                                    "adopted": {"indirect": True, "direct": False}}))
+    assert X.load_mos_decision(path)["adopted"] == {"indirect": True, "direct": False}
+    for bad in ({"decision": "D-15", "adopted": {"indirect": True, "direct": False}},
+                {"decision": "L-09", "adopted": {"indirect": "yes", "direct": False}},
+                {"decision": "L-09", "adopted": {"indirect": True}}):
+        path.write_text(yaml.safe_dump(bad))
+        with pytest.raises(ValueError):
+            X.load_mos_decision(path)
+
+
+def test_the_check_and_the_step_share_one_correction(tables):
+    base, gfs = tables
+    table = base.join(gfs.drop(columns="t0_utc"))
+    table = table[table["split"].isin(["train", "val"])]
+    assert C.mos_rows is X.mos_rows and C.ols is X.ols  # X14: no second copy
+    folds = C.train_folds(table)
+    assert len(folds) == 5
+    for fit, held in folds:  # expanding, chronological, a gap, train only
+        assert table.index[fit].max() < table.index[held].min()
+        assert (table.loc[held, "split"] == "train").all()
+    params = {"n_estimators": 40, "max_depth": 3, "learning_rate": 0.1}
+    entry = {"feature_order": INDIRECT, "monotone_constraints": {"ghi_clearsky": 1},
+             "searched": params, "n_rounds": 40}
+    check = C.mos_fit(table, "indirect", entry, SEED)
+    step = X.fit_mos(table, "indirect", INDIRECT, params, SEED, {"ghi_clearsky": 1}, 40,
+                     X.train_scope(table))
+    assert (step.a, step.b, step.n_oof) == (check["a"], check["b"], check["n_oof"])
+    assert [f["fold"] for f in step.folds] == list(range(5))
+    smoke = X.train_scope(table, smoke=True)
+    assert len(np.unique(X.local_day(table.index[smoke]))) == X.SMOKE_TRAIN_DAYS
+    assert X.fit_mos(table, "indirect", INDIRECT, params, SEED, {}, 40, smoke).n_oof < step.n_oof
+
+
+def test_without_the_l09_decision_dev_runs_are_raw_and_final_refuses(wired):
+    wired.mos.unlink()
+    r = make_runner(wired.tmp)
+    assert r.run("smoke", ["baselines", "xgb"], horizons=[1]) == 0
+    (run_dir,) = (wired.tmp / "runs").iterdir()
+    xgb_dir = run_dir / "xgb"
+    record = json.loads((xgb_dir / "step.json").read_text(encoding="utf-8"))
+    assert any("L-09 is not decided yet" in w for w in record["warnings"])
+    assert not (xgb_dir / "uncorrected_xgb_sota_seed42.csv").exists()
+    assert pd.read_csv(xgb_dir / "mos_coefficients.csv").empty
+    best = json.loads((xgb_dir / "best_params.json").read_text(encoding="utf-8"))
+    for b in best.values():
+        assert b["mos"] == {"applied": False, "reason": "L-09 not decided yet"}
+        assert b["value_kw_forecast"] == b["value_kw"]
+    ctx = SimpleNamespace(mode="final", config={"horizons": [1]})
+    with pytest.raises(steps.RunnerError, match="L-09"):
+        steps.xgb_inputs(ctx)

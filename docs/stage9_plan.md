@@ -274,6 +274,7 @@ steps):
 | T-61 | A-14: permuted validation labels change only the stopping round, never the trees; a fixed-round fit equals the early-stopping fit truncated at the same round; the L-09 coefficients do not change when the validation labels are permuted |
 | T-62 | X13: `decide_k.XGB_PARAMS` is unchanged after the D-15 check, which writes a decision file the `xgb` step can read and no prediction file |
 | T-63 | The checks of §14: the margin and the registered rule (D-12 form), the D-15 decision on constructed scores, the output guard (no `predictions_*`, nothing into a run folder), R-14's bias and interval on a constructed bias, and L-09 and R-14 on a synthetic dev run (seed 42 with the dev rounds equals the dev forecast; the run folder is unchanged) |
+| T-64 | The adopted L-09 correction in the step (§15, X14–X16): the step's coefficients and corrected value equal the check's for the same base model, and the evaluation scores the corrected value; the check and the step share one implementation and the same chronological folds (smoke: its 56 days); `evaluate.to_kw(k')` equals the corrected kW, nights and the direct target unchanged, a daytime hour with theo ≤ 0 refused; the uncorrected file holds the booster output, and the written file is the booster plus the recorded coefficients; without the decision file a smoke run writes the raw forecast with a warning and a final run refuses; the decision file is checked |
 
 ## 10. Self-review before the code of W1 (2026-11-05)
 
@@ -521,3 +522,69 @@ labels, and the MOS coefficients do not depend on them either (T-61). Then A-14 
   T-09.
 - The automatic warnings of §3.5 are read; the `forecasting-validity-review` skill is applied
   before any number is accepted.
+
+## 15. W2 follow-up: the adopted L-09 correction in the `xgb` step (2026-11-07)
+
+Written before the code. L-09 was decided by §14.4 (adopted for the indirect route, not for the
+direct route; R9-07, `configs/mos_decision.yaml`). This section fixes how the step applies the
+adopted correction. It changes no rule of §14: the correction is the registered one (out-of-fold
+OLS on train, applied as clip(a + b × ŷ, 0, capacity) on daytime hours), and the base model is
+tuned and stopped exactly as before.
+
+### 15.1 Self-review before the code (X14–X16)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X14 | The correction would exist twice: the L-09 check fits it in `xgb_checks.mos_fit`, and the step would need its own copy of the folds, the rows, the OLS and the clip. Two copies can drift, as the four k → kW copies could (X12) | `models/xgb_checks.py` | One implementation in `models/xgb_sota.py` (the train scope, the rows, the folds, the fit and the application), used by the step and by the check; a test asserts that the step's coefficients and corrected score equal the check's for the same base model | T-64 |
+| X15 | The indirect prediction file holds k, and the correction is in kW. Writing kW into the k file, or clipping k, would break the contract of §6.10 and F-06; mapping the corrected kW back to k needs theo > 0 on every corrected hour | the design | On daytime hours k' = clip(a + b × to_kw(k̂), 0, 3,449) / theo; night hours keep k̂ (they are not scored, and §14.4 corrects daytime only). The step refuses a daytime hour with theo ≤ 0 (none in train or validation: the smallest daytime theo with AC truth is about 62 kW). A test asserts that `evaluate.to_kw(k')` equals the corrected kW to 1e-9 | T-64 |
+| X16 | Two readers assume that the written forecast is the raw booster output: the consistency check of `run_l09` (seed 42 with the dev rounds equals the dev forecast) and the reproduction test of a reloaded booster (T-59). After the change both would compare with the corrected file | `xgb_checks.run_l09`, `tests/unit/test_xgb.py` | The step also writes `uncorrected_xgb_sota_seed<S>.csv`, the raw booster output of every corrected target (not a `predictions_*` file, so `evaluate` does not score it); the check reads its base forecast from there; T-59 reproduces the uncorrected file from the booster, and the written file from the booster and the recorded coefficients | T-59, T-64 |
+
+### 15.2 Design
+
+- **Decision input:** `configs/mos_decision.yaml` becomes an input of the step (in its
+  fingerprint) and a tracked input of `check`. Per target, `adopted: true` gives the corrected
+  forecast, `false` the raw one. L-09 is decided on a dev run, so a smoke or dev run without the
+  file is allowed: it writes the uncorrected forecast and a warning, and `check` reports the
+  decision as pending. A final run refuses without it.
+- **Refitted in every run:** the coefficients are fitted in each run for every target × horizon
+  × seed whose target has the correction adopted, from that run's final fit: its searched
+  parameters, seed, constraints and rounds (best iteration + 1), as fixed-round fits on the five
+  expanding date folds of the run's training range (dev and final: all of train; smoke: its 56
+  days); OLS on the held-out daytime hours with AC truth, not op-limited, not warm-up (§14.4).
+  The base model of the final run (60 trials, three seeds) is another model than the dev one,
+  and a correction fitted on another model's errors is not the registered method. With the same
+  code as the check, a dev run that reproduces the dev study gives the coefficients of
+  `outputs/09_xgb_checks/l09_check.csv` for seed 42.
+- **Applied** to the final fit's forecast of every window of the run (validation; the test
+  window of a final run), on daytime hours, written in the target's unit (X15).
+- **Name:** the model stays `xgb_sota`: the adopted correction is part of XGB-Opt for the
+  indirect route, and the evaluation, the route comparison and the DM tests see the forecast as
+  adopted.
+- **Records:** in `best_params.json` every entry gets `mos` (applied or not; a, b, the number of
+  out-of-fold hours, the fit and held-out rows of every fold; the uncorrected and corrected value
+  on the tuning window, in kW and for k in k units). `value_kw` keeps its meaning (the base
+  model's objective, the value the refit must equal), and `value_kw_forecast` is the value of the
+  written forecast, equal to the evaluation's `nRMSE_kW_pct` (T-58). Also `mos_coefficients.csv`,
+  the decision and its hash in `xgb_config.json`, and both values in the run summary.
+- **Not changed:** the search, the objective (the base model is tuned without the correction, as
+  in §14.4), early stopping and the saved boosters.
+- **A-14:** the coefficients come from out-of-fold train predictions only; no validation label
+  enters (T-61 runs on the shared code). The hyper-parameters and the rounds came from
+  validation, as for the base model itself (D-10).
+- **Later steps:** `explain` (W5) explains the booster, the uncorrected forecast; the correction
+  is a monotone linear map in kW and is reported with the SHAP values. A rerun of `r14` on a run
+  with the correction reports the indirect route as written (corrected).
+- **Cost:** five fixed-round fits per corrected target × horizon × seed (dev 3, final 9 of them,
+  with the correction adopted for the indirect route only), measured in the dev run.
+
+### 15.3 Verification
+
+- **T-64 (synthetic):** the step's coefficients and corrected score equal the L-09 check's for
+  the same base model; `evaluate.to_kw(k')` equals the corrected kW; night hours, the direct
+  target and the uncorrected file are the raw booster output; without the decision file a dev
+  run writes the raw forecast with a warning and a final run refuses; a daytime hour with
+  theo ≤ 0 is refused; the decision file is checked (L-09, a boolean per target).
+- **Real data:** smoke passes; a dev run (20 trials, seed 42) reproduces the dev study of R9-06,
+  and its seed-42 coefficients and corrected validation values equal the seed-42 rows of
+  `l09_check.csv`; the evaluation's `nRMSE_kW_pct` of `xgb_sota` indirect equals the corrected
+  value.
