@@ -178,6 +178,8 @@ the paths of §6.10 is a separate, explicit step (W5/W6). Checkpoints in `models
 - **Which features** the sequence models see (L-12: per model family).
 - **D-15 (monotone constraints)** for XGB on k: decided on validation in the dev run.
 
+*Fixed in §17 (W3, 2026-11-07), with the open choices proposed as D-25–D-28.*
+
 ### 4.3 Development budgets of the neural models (proposal)
 
 Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budgets of D-08.
@@ -641,3 +643,224 @@ the code.
 - *Result (2026-11-07, R9-11):* both hold. In kW, XGB-dev is significantly better than every
   reference in both routes and at every horizon; against climatology the effect is about the
   minimum detectable effect.
+
+## 17. W3: the datasets of the sequence models (self-review and input contract, 2026-11-07)
+
+Written before any W3 code. W3 builds numpy/pandas datasets only (no torch, no model); W4 trains
+on them. Nothing in W3 is tuned or decided on validation: the datasets are checked against theory
+(§17.8), and the choices that v6 and the evidence leave open are proposed in §17.6 for the user.
+
+### 17.1 Blocking decisions and sources
+
+- **Decided, not changed here:** D-16 (T0 = 00:00 local; D+h is the h-th local day), D-12 (GFS
+  admitted), D-13 with R7-04 (`model_inputs.json`), D-22 (op-limited hours masked in past inputs
+  and out of the loss), D-08 (the six models of v6), §6.8 (the splits, cut at UTC midnights),
+  §6.11 (the time rules of the sequence models), L-19 (PatchTST univariate).
+- **Open (§17.6, proposed D-25–D-28):** the decoder length on DST weeks, the 18 known reals of
+  the TFT, the GFS inputs of the sequence decoders, the BiLSTM input. Where v6 is silent the
+  proposal follows the submitted evidence (user, 2026-11-07: rely on the submission folder and on
+  what was done there).
+- **Sources (read-only):** v6 §3.4, §3.6.8, §3.7, §4.1, §5.2–§5.6 and the discussion;
+  `submission_evidence/08_lstm_alignment/` (the surviving LSTM forecasts and the alignment log);
+  `12_scripts/align_and_evaluate.py`; `01_benchmark/benchmark_summary.csv` (n per model);
+  `11_audit/` (MISSING_PROJECT_WORK_AUDIT row 17, FEATURE_SELECTION_INTEGRATION_PLAN §5,
+  PROJECT_ARTIFACT_INVENTORY); `old files/07_LSTM_Attention v2.ipynb` (an intermediate version:
+  the final BiLSTM and TFT code did not survive, R-16) and `04_feature_engineering_v4.ipynb`
+  (feature names). Literature: L-12 and L-19 (§12; `docs/literature_review.md`, C1: sequence
+  models need temporal feature engineering less than tabular models do).
+
+### 17.2 What the original sequence models did (reconstructed)
+
+| ID | Fact | Evidence |
+|---|---|---|
+| E1 | BiLSTM: an origin every hour, an encoder of 72 h, a 72-step decoder, and one decoder step kept per horizon, steps 23, 47 and 71 (0-based): fixed leads of 24, 48 and 72 h. The encoder windows started at the test start | The surviving file has 5,689 rows per target × horizon (5,832 − 143), hourly, no duplicate; D+1, D+2, D+3 start at test start + 95, 119, 143 h and end at test end − 48, 24, 0 h. With a 72-step decoder only an encoder of 72 h and steps 23/47/71 fit these numbers. The script's comment ("target_step = h_end-1") and the audit's formula `valid_ts = window_end − (DECODER_LEN − 1 − target_step) h` say the same |
+| E2 | TFT (all three variants): one origin per day from the test start, whole 72-step decoders inside the test, steps 1–24 / 25–48 / 49–72 = D+1 / D+2 / D+3. The encoder could read validation hours (TFT-168 has the n of TFT-96) | n = 2,554 / 2,556 / 2,558 is exactly 2,580 minus the daytime hours of May 30–31 (13 + 13), of Oct 1 and May 31 (11 + 13), and of Oct 1–2 (11 + 11), counted on the original labels with the F-02 mask |
+| E3 | PatchTST: 243 daily origins from the test start; the decoder could run past the test end | n = 2,580 / 2,569 / 2,558 is 2,580 minus nothing, Oct 1, and Oct 1–2 |
+| E4 | The BiLSTM decoder had no known future input ("the decoder must predict 72 steps ahead from a single context vector", v6 on the BiLSTM bias). Its input was the 05e set minus EXCL, like XGB | v6 §3.4 ("a feature matrix … for the tree and recurrent models") and §3.6.8; `11_audit/FEATURE_SELECTION_INTEGRATION_PLAN.md` §5.2–§5.3, `PROJECT_ARTIFACT_INVENTORY.md` |
+| E5 | TFT known reals: "18 calendar and irradiance features". The v6 §3.4 table has the groups clear-sky irradiance (8) and time encodings (10). Notebook 04 v4 builds the 8 clear-sky components and 13 temporal features | v6 §3.4, §5.3; `04_feature_engineering_v4.ipynb` |
+| E6 | No sequence model saw a weather forecast: every `fcst_*` column was excluded as leaky reanalysis | v6 §3.6.8, §3.7 |
+| E7 | Every window ran on the local clock read as UTC (F-01): 24 hourly bins on every day, the fall-back hour merged into one bin of 120 minutes, the spring-forward bin empty | F-01: the LSTM `y_true` at 06:00Z is the local 06:00 hour |
+
+### 17.3 The original project (M13–M18)
+
+| ID | Mistake | Where | Fix in W3 | Test | Errata |
+|---|---|---|---|---|---|
+| M13 | The windows of every sequence model ran on the naive local clock (E7): the solar geometry was off by 2–3 h (F-01), and every day had 24 steps, so "steps 1–24 = D+1" looked right only because the clock was wrong | E7, F-01 | Windows on the true-UTC index of the stage-6 tables, where a local day has 23, 24 or 25 hours (8 such days in the data, 2021-10-31 to 2025-03-28) | T-66 | C-47 |
+| M14 | Horizons by step number, and not the issuance of D-16. (a) The BiLSTM forecast every hour with a fixed lead (E1): the D+1 forecast of each hour came from a different origin 24 h earlier, a "day" was a mosaic of 24 origins, and the tabular and sequence models answered different questions. (b) The TFT took steps 1–24 / 25–48 / 49–72 by number (E2, v6 §5.2): on the true UTC axis a 23- or 25-hour day moves D+2 and D+3 by one hour (T-02). (c) v6 §5.2 describes "D+1: steps 1–24"; the surviving file keeps one step per window | v6 §5.2; E1, E2 | One origin per local day, T0 = 00:00 local (D-16), for every sequence model. A decoder step's horizon is the local day of its valid hour, counted from T0's day. The decoder covers exactly the three local days (proposed D-25) | T-66, T-02 | C-48 |
+| M15 | Each sequence model was scored on its own hours: XGB 2,580 daytime hours, PatchTST 2,580 / 2,569 / 2,558, TFT 2,554–2,558, BiLSTM 2,510–2,514. The BiLSTM encoders started inside the test and no origin preceded the test start, so the first one to six days and the last two had no forecast, and the DM pairs had different n (`REPORT_CLAIM_EVIDENCE_MATRIX.csv` row 50). PatchTST's input size ("2 × INPUT_SIZE") is not reported | E1–E3; `benchmark_summary.csv` | The coverage rule of stage 8B, for every split: origins from the local day of the split's first hour minus two days to the local day of its last hour; encoders read the hours before T0 wherever they lie (they are known at T0, also in the previous split); decoders stop at the end of the split. Every hour of the split gets exactly one forecast per horizon. PatchTST's input size is recorded in W4 | T-67 | C-49 |
+| M16 | Silent fallbacks and leaky defaults in the intermediate LSTM (v2): without the feature JSON it takes "intelligent default features", that is every `fcst*` column (same-timestamp reanalysis), the POA forecasts and `theoretical_power` (D-03); a missing feature is dropped with a print; every row with a NaN in any input or target is dropped before windowing, so 168 rows are not 168 hours and a window can jump over a gap | `07_LSTM_Attention v2`, cells 5 and 10 | Inputs from explicit lists, checked against the tables and `assert_no_leakage`; a missing column is an error. No row is dropped: the time axis is the complete hourly index, and a gap in an encoder series is filled from older hours only (the stage-6 rule) and flagged | T-68, T-71 | C-50 |
+| M17 | Splits and scaling in v2: a chronological split by proportions (test 15 %, validation 15 % of the rest) instead of the dates of §6.8; the k target scaled by a MinMax fitted on train, which maps a later k above the train maximum outside [0, 1] (harmless for a linear head, a cap for a bounded one; k is no longer clipped, F-06). The feature scalers were fitted on train only, which was correct | v2, cells 3, 10 and 13 | The date splits of §6.8; input scalers fitted on train hours only, the same in every mode (A-14); no fitted transform of the targets (k as is, AC / 3,449) | T-69 | C-51 |
+| M18 | The valid time was attached after training. Before the fix every step carried the window-end label (D+1 nRMSE about 17 % instead of about 30 %, v6 discussion); the fix was a formula on step numbers in a separate script, followed by `drop_duplicates(keep="last")` (M6, C-41) | `align_and_evaluate.py`; v6 discussion | Every decoder step carries its valid timestamp and horizon from the dataset; the writer of the predictions refuses a duplicate and a missing hour; `y_true` comes from the feature table (§6.9) | T-70 | C-52 |
+
+E4 (no future input in the BiLSTM decoder) is not counted as a mistake: it was the architecture,
+and v6 itself names it as the cause of the BiLSTM bias. The rebuild gives every decoder the inputs
+known at T0 (§6.11, decided earlier).
+
+### 17.4 My own code that W3 builds on (X19–X23)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X19 | The docstring of `lstm_sota.py` prescribes the original step-number formula `valid_ts = window_end − (DECODER_LEN − 1 − target_step) h` (M14) and "final training on Colab" (outdated, §2); `patchtst_model.py` says "243 rolling origins", the test-only count of M15 (with the coverage rule there are 245 test origins) | `models/lstm_sota.py`, `models/patchtst_model.py` | Docstrings rewritten; the mapping and the origins live in the W3 module only | T-66 |
+| X20 | `features.build.issuance_utc(hours, h)` maps a target hour to its T0. W3 needs the inverse (an origin to its decoder hours and their horizons), and a second local-day computation could drift from the first, as the k → kW copies could (X12) | `features/build.py` | The W3 mapping is tested against `issuance_utc`: for every step of every origin, `issuance_utc(valid, h) == T0`, on synthetic series with both DST days and on the real index | T-66, T-02 |
+| X21 | `pipeline.data.model_table(h, splits)` filters by the split label, so a validation run reads no train row. The windows need the hours before the split (encoders, and the decoders of the two origins before the split start) and must stop at TEST_START in smoke and dev | `pipeline/data.py` | A time-range loader of the same kind (filters inside the parquet reader, X10): every row before TEST_START in smoke and dev, test rows only with `allow_test`; the split label decides which steps are kept | T-67 |
+| X22 | The D-22-masked hourly series (per-inverter masks from the minute flags) exist only inside `features.build.masked_sources`; the stage-6 tables keep them only as lags. Reading the unmasked hourly AC would feed stops and curtailment (human decisions, D-22) into the encoder, and rebuilding the masks in W3 would be a second copy | `features/build.py` | W3 calls `masked_sources` on the stage-5 hourly table and the minute flags, both read with `timestamp_utc < TEST_START` in smoke and dev; a test checks that the encoder series equals the stage-6 lag it feeds (`<source>_lag_1d` at s + 24 h) on every hour that was not imputed | T-68 |
+| X23 | The loss rows of XGB (`xgb_sota.fit_mask`: warm-up, op-limited, k valid, theo > 50 kW, AC present) would need a copy for the sequence models | `models/xgb_sota.py` | W3 calls `fit_mask` on the decoder hours | T-67 |
+
+### 17.5 The input contract (fixes §4.2)
+
+**Origins.** One per local day: T0 = 00:00 Asia/Jerusalem of that day, in UTC (21:00Z in summer
+time, 22:00Z in winter; local midnight is never ambiguous, the clock changes at 02:00). For a
+split, or the part of it inside the run's window, the origins run from the local day of its first
+hour minus two days to the local day of its last hour, and only the steps whose valid hour lies in
+it are kept. The splits are cut at UTC midnights (§6.8), so the local days at their edges are
+shared: 2024-02-01 local starts with two train hours, 2024-10-01 local with three validation
+hours.
+
+| Scope | Origins (local days) | Count |
+|---|---|---|
+| Training, dev and final | 2021-09-13 to 2024-02-01 (the first origin whose D+3 day is the first day after the warm-up; warm-up hours are out of the loss) | 872 |
+| Training, smoke | the last 56 local days of train (as XGB, §13.4) and the two days before | 58 |
+| Validation, dev | 2024-01-30 to 2024-10-01 | 246 |
+| Validation, smoke window (2024-03-15 to 04-11, W1) | 2024-03-13 to 2024-04-11 | 30 |
+| Test, final run only | 2024-09-29 to 2025-05-31 | 245 |
+
+**Encoder.** The L hours [T0 − L, T0) in UTC. Every encoder hour ends by T0 (s + 1 h ≤ T0, the
+guard of stage 6) by construction, and no value computed from a later hour enters (the fill of a
+gap uses older hours only). L is 72 h for the BiLSTM (E1, proposed in D-28), 96 h for TFT-96 and
+168 h for TFT-168 and the TFT baseline (§6.11); PatchTST uses the input size of W4, target only.
+
+**Decoder.** The hours of the three local days from T0: 72, or 71 / 73 for the three origins
+whose window holds a 23- / 25-hour day (12 + 12 origins in the data; in validation 2024-03-27 to
+03-29). The arrays are padded to 73 steps with a step mask (proposed D-25). A step's horizon is
+the index of its local day (steps 0–22, 0–23 or 0–24 are D+1, depending on the length of the
+first day, and so on), never its step number. A decoder stops at the end of its split (training
+windows at VAL_START, validation windows at TEST_START in every mode, test windows at the end of
+the data); the steps beyond are padding, and no row beyond the limit is read.
+
+**Encoder series** (§4.2; the same for the BiLSTM and the TFT). The seven measured series that
+the stage-6 lags are built from: `s01_inv1_AC_kW`, `s01_inv2_AC_kW` and `site_total_AC_kW` with
+the D-22 masks of `masked_sources`, `irradiance`, `mod_temp1`, `mod_temp2`, `ambient_temp`; for
+the indirect route also `target_k` (0 where theo ≤ 50 kW by §6.5, NaN in op-limited hours). Gaps
+are filled once on the whole loaded series with `impute_same_hour` (the same UTC hour over the
+previous 30 days, older rows only); a value still missing after it (no older value at that hour)
+takes the train mean, 0 after scaling. One 0/1 channel per series marks the filled hours. The
+model's known inputs (below) are given on the encoder hours too: calendar and clear sky of those
+hours, and the GFS value of the D+1 table, the day-ahead forecast issued at the T0 of the hour's
+own day, which is at or before the origin's T0.
+
+**Decoder inputs** (only what is known at T0, §6.11). Calendar, clear sky and geometry are
+deterministic in the valid time and identical in the three horizon tables (asserted). The GFS
+columns and `irradiance_clear_index_prevday` (L-11a, measured before T0) come from the D+h GFS
+table for a step of day D+h; its `t0_utc` is the origin's T0, so the three days of one origin
+come from the same 12Z run, and init + 6 h ≤ T0 holds on every step (the rule of T-17, asserted).
+No lag, no rolling statistic and no measurement of a decoder hour. A missing known input takes the
+train mean (counted). Per model: the TFT gets the 18 known reals of D-26 and the GFS of D-27, the
+TFT baseline the same inputs as TFT-96 (v6 §5.5), the BiLSTM the inputs of D-28, PatchTST none
+(L-19).
+
+**Targets and loss.** Per step: `target_k` (indirect, never clipped, F-06) or
+`site_total_AC_kW` (direct) at the valid hour, with `theo_kw`, `daytime` and `op_limited_flag`
+for the writer. The loss mask is `fit_mask` (X23) and the step mask; a training window holds only
+steps of the training split. Nights stay in the direct loss and out of the indirect loss, as for
+XGB (M11).
+
+**Scalers (A-14).** Inputs: a z-score per channel, with the mean and standard deviation over the
+train hours that are not warm-up, NaN ignored, computed once before any window and the same in
+every mode; the flags and the step mask are not scaled; the statistics are written to the dataset
+report. Targets: no fitted transform (k as is, AC / 3,449, the fixed capacity), so the inverse is
+exact. A normaliser inside the libraries of W4 (pytorch-forecasting's target normaliser,
+neuralforecast's `scaler_type`) must act on each window's encoder or be fitted on the training
+windows only; W4 records which.
+
+**Into the prediction contract (§6.10).** One function turns the window forecasts
+`y_pred[origin, step]` into the rows of §6.10: every kept step gives timestamp (its valid hour,
+UTC), `y_true` (feature table), `y_pred`, target, horizon (its local day), model, seed and split.
+A duplicate (horizon, timestamp), or an hour of the window without a forecast at some horizon, is
+an error. The evaluation layer then applies its own alignment and coverage checks unchanged; on
+validation every target has 5,832 rows per horizon.
+
+**Module.** `solarpv.models.sequence_data`: the origins, the step → horizon mapping, a time-range
+loader (X21), the encoder series (X22), the known inputs, the scaler, `build(...)` returning
+arrays and metadata per model × target × scope, and the writer. `python -m
+solarpv.models.sequence_data` builds the train and validation datasets of every model × target
+and writes the checks of §17.8 to `outputs/09_sequence_data/` (reports only; no arrays in git).
+W4 adapts the arrays to pytorch-forecasting (one group per origin) and neuralforecast, and
+builds the GPU environment once the user approves it.
+
+### 17.6 Proposed decisions (D-25–D-28), for the user
+
+**D-25, the decoder length on DST weeks.** v6 says decoder 72; §6.11 and T-02 say the horizon is
+the local day. On the true UTC axis three local days last 71, 72 or 73 hours.
+- **(A, recommended)** The decoder covers exactly the three local days, padded to 73 with a mask:
+  every D+h block is its local day (23/24/25 steps) and every hour of a split gets its three
+  forecasts. "Decoder 72" in §6.11 becomes "the three local days (72 h, except 71 or 73 h on six
+  origins a year)", as a dated amendment.
+- **(B)** 72 steps from T0. After a 25-hour day the last hour of D+3 (23:00 local, always night)
+  gets no forecast from that origin, so three night hours per fall-back day have no D+3
+  forecast; after a 23-hour day step 72 falls on D+4 and is dropped.
+
+**D-26, the 18 known reals of the TFT** (E5).
+- **(A, recommended)** The two groups of the v6 table, with the v4 names. Clear-sky irradiance
+  (8): `ghi_clearsky`, `dni_clearsky`, `dhi_clearsky`, `poa_global_clearsky`,
+  `poa_direct_clearsky`, `poa_diffuse_clearsky`, `poa_sky_diffuse_clearsky`,
+  `poa_ground_diffuse_clearsky`. Time encodings (10): the seven named in v6 (`hour_sin`,
+  `hour_cos`, `doy_sin`, `doy_cos`, `month_sin`, `month_cos`, `season`) and the three temporal
+  features of v4 that v6 places in no other group: `month`, `day_of_week`, `daylight_fraction`
+  (v6 lists `is_weekend` and `hour_local` as "derived", and v4 counts `time_to_solar_noon` among
+  its solar features). These three names are a reconstruction, not a certainty.
+- **(B)** The same 8 + 7, with three geometry features that stage 7 kept in all three indirect
+  sets instead of the uncertain three: `aoi`, `time_to_solar_noon`, `day_length`.
+- In both, the definitions are the corrected ones of the rebuild (UTC-hour cyclicals, the F-25
+  calendar, pvlib solar times).
+
+**D-27, the GFS inputs of the sequence decoders (TFT and BiLSTM).** D-12 admitted GFS, §6.11
+puts it in the decoder, and v6's sequence models had none (E6).
+- **(A, recommended)** Per target, the GFS columns that stage 7 selected for it, as the union
+  over the three horizons (one decoder spans all three): 20 of the 22 candidates for the indirect
+  route (without `fcst_gfs_ghi` and `fcst_gfs_pv_kw`), all 22 for the direct route (its input is
+  the full pool, F-29). One selection (D-13) stands behind every model, and the families are
+  compared on the same weather information.
+- **(B)** All 22 candidates of stage 6b for both targets, and the TFT's variable selection
+  network does the selection.
+
+**D-28, the BiLSTM input** (R-16: the final code is lost; E4: it used the 05e sets and no future
+input).
+- **(A, recommended)** As in the submission, the stage-7 input of its target, adapted to an
+  encoder–decoder: the part of `model_inputs.json` known at T0 (union over the horizons: indirect
+  10 deterministic + 20 GFS = 30, direct 27 + 22 = 49) on the encoder and decoder steps; the lag
+  and rolling features are replaced by the measured series they are built from, in the encoder
+  (the series of §17.5, as for the TFT). Encoder 72 h, as the surviving forecasts show (E1).
+  Bidirectional encoder; the decoder runs forward over the known inputs (W4), so a decoder cut at
+  the end of a split gives the same early steps.
+- **(B)** The inputs of the TFT (the 18 known reals and the GFS of D-27), so that the BiLSTM and
+  the TFT differ only in architecture. Encoder 72 h.
+
+### 17.7 Tests (T-66–T-71 on synthetic series, T-02 on the real tables)
+
+| ID | Test |
+|---|---|
+| T-66 | The mapping: T0 at local midnight (21:00Z / 22:00Z); decoders of 71 / 72 / 73 steps around 2024-03-29 and 2024-10-27; every D+h block is the set of hours of its local day (23 / 24 / 25); `issuance_utc(valid, h) == T0` on every step; a mapping by step number fails on these days |
+| T-67 | Origins and coverage per split and mode (the counts of §17.5 on the real calendar): every hour of the split exactly once per horizon; no step at or after TEST_START in smoke or dev; training decoders end before VAL_START; the loader reads no row at or after TEST_START (filters inside the reader) and refuses test rows without `allow_test`; the loss mask is `fit_mask` |
+| T-68 | The encoder: its last hour is T0 − 1 h; changing any measured value at or after T0 changes no input of the window (only targets); the fill uses older hours only; the masked hours (D-22) are NaN before the fill and flagged; the encoder series equals the stage-6 lag where nothing was imputed (X22) |
+| T-69 | The scalers: fitted on train hours only; changing or permuting validation values leaves the statistics and every training window unchanged; k is not transformed and kW / 3,449 inverts exactly |
+| T-70 | The writer: one row per (horizon, valid hour); a duplicate or a gap raises; `y_true` from the table; a round trip with `y_pred = y_true` passes the strict alignment and coverage checks of `evaluate`; horizons by local day on the DST days |
+| T-71 | The input lists: the 18 known reals (D-26) exist in all three tables, are equal across them and are not leaky; the GFS (D-27) and BiLSTM (D-28) lists come from `model_inputs.json`, hold no lag or rolling name and pass `assert_no_leakage`; per GFS step `t0_utc == T0` and init + 6 h ≤ T0; PatchTST windows hold the target only |
+| T-02 | Real data (`tests/contracts/`), train and validation, every model × target: unique valid timestamps per horizon, the encoder ends at T0, the decoder mapped by local day, no row at or after TEST_START |
+
+### 17.8 Checks on real data (train and validation only) and review
+
+The dev scope of `python -m solarpv.models.sequence_data` builds and checks: origins per split
+(872 / 246) with their first and last T0; no row at or after TEST_START read or carried; every
+encoder ends at T0; every D+h block covers exactly its local day (23 steps on 2024-03-29 in
+validation; the DST days of train: 2021-10-31, 2022-03-25, 2022-10-30, 2023-03-24, 2023-10-29);
+every validation hour has one step per horizon; the scaler statistics come from train hours only
+(recomputed independently, and unchanged when validation values are perturbed); the GFS run of
+every step; the filled encoder values per series and split. Then the `forecasting-validity-review`
+skill. Run journal R9-12 on.
+
+### 17.9 Records
+
+With the code, in one commit: OP-55 (the sequence datasets), errata C-47–C-52 and X19–X23, the
+§9 rows T-66–T-71 and T-02, the docstrings of X19. After the checks on real data: R9-12 on,
+`PROJECT_MASTER.md` §1, D-25–D-28 as decided, A-14 (the scalers of the sequence datasets), L-12
+(the inputs per model family) and §17.
