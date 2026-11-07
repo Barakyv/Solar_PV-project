@@ -228,8 +228,11 @@ run journal R9-03). D-15 decided by §14.3: the v6 constraint stays for k (R9-04
 (R9-05). The dev run (20 trials, seed 42) passes the acceptance of §14.7, with D+3 below D+1
 explained as the validation sample (R9-06). L-09 by §14.4: adopted for the indirect route, not
 for the direct route; R-14 confirmed for the direct target at D+1 and D+3; A-14 ✅ for XGB
-(R9-07). **Open:** the adopted L-09 correction is not yet part of the `xgb` step (§14.4: a later
-commit, before G-1).
+(R9-07). The adopted L-09 correction is part of the `xgb` step since commit `9c5d1b9` (§15,
+OP-53, R9-08); the dev run with it reproduces the check exactly (R9-09). **Open (Q-19):** the
+correction is in kW and makes the k-unit DM and skill of the indirect route worse (DM against
+climatology at D+3 no longer significant on validation); the unit of those statistics is for the
+user to decide before G-1.
 
 ## 8. Questions for the user
 
@@ -493,7 +496,7 @@ validation rows with the same mask, 50 rounds, the last evaluation set decides; 
   step in a later commit, before G-1.
 - *Result (2026-11-07, R9-07):* adopted for the indirect route (gain 0.11 / 0.22 / 0.09 pp
   against margins 0.05 / 0.18 / 0.09), not adopted for the direct route (worse at every
-  horizon). The step change is still to be made.
+  horizon). In the step since `9c5d1b9` (§15, R9-09).
 
 ### 14.5 R-14, mean bias of the direct target on validation
 
@@ -588,3 +591,7 @@ tuned and stopped exactly as before.
   and its seed-42 coefficients and corrected validation values equal the seed-42 rows of
   `l09_check.csv`; the evaluation's `nRMSE_kW_pct` of `xgb_sota` indirect equals the corrected
   value.
+- *Result (2026-11-07, R9-09):* all of the above holds exactly. The review found one side
+  effect: the k-unit `nRMSE_pct`, `skill_score` and DM tests of the indirect route get worse
+  (the kW intercept divided by a small theo at low sun), and the DM against climatology at D+3
+  is no longer significant. Open as Q-19 in `PROJECT_MASTER.md`; nothing was changed.

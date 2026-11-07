@@ -1,0 +1,12 @@
+[     0.0s] RUN     stage runs/20261107T132142Z_dev
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate
+[     0.2s] RUN     git commit: 9c5d1b9
+[     0.2s] RUN     started (UTC): 2026-11-07T13:21:44+00:00
+[     0.7s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.7s] NOTE    run 20261107T132142Z_dev, mode dev, steps ['baselines', 'xgb', 'evaluate']
+[     3.2s] NOTE    baselines: ok in 2.2 s, 3 outputs
+[   384.7s] NOTE    xgb: ok in 380.3 s, 16 outputs
+[   392.1s] NOTE    evaluate: ok in 7.1 s, 9 outputs
+[   392.1s] VALUE   status = ok
+[   392.1s] RUN     warnings: 0
+[   392.1s] RUN     status: ok; duration 392.1s

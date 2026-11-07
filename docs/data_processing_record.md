@@ -942,7 +942,10 @@ rows are read; nothing here reads the test split.
     its hash in `xgb_config.json`.
   - The search, the objective (the base model is tuned without the correction), early stopping
     and the boosters are unchanged.
-- *Result:* run journal R9-09 (smoke and dev).
+- *Result:* run journal R9-09. The dev run reproduces the study of R9-06, and its seed-42
+  coefficients and corrected values equal the L-09 check exactly. In kW the indirect route
+  improves as decided; its k-unit statistics (nRMSE in k, skill and DM in k) get worse, because
+  the kW intercept weighs heavily at low sun; the unit of those statistics is open (Q-19).
 - *Verification:* T-64 (the step and the check fit the same coefficients and the evaluation scores
   the corrected value; exact k ↔ kW inversion; nights and the direct target unchanged; the
   uncorrected file; without the decision a raw dev forecast and a refused final run), T-58 and

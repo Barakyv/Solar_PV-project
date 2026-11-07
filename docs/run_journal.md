@@ -1164,3 +1164,66 @@ hashes, numbers) and the commit messages are the record:
 - **Tests:** T-64 (four new tests), and T-58, T-59 and the L-09 test of T-63 adapted to the
   corrected file. On a synthetic dev run, the step's seed-42 coefficients equal the check's, and
   the evaluation's `nRMSE_kW_pct` of the indirect route equals the check's corrected value.
+
+### 2026-11-07 · R9-09 · Smoke and dev runs with the L-09 correction, and their review
+
+- **Commands and commit:** at `9c5d1b9`, clean tree; `check --mode dev` passes (20 of 20
+  inputs as recorded, the L-09 decision among them).
+  - `python -m solarpv.pipeline run --mode smoke --only baselines,xgb,evaluate`: run
+    `20261107T132101Z_smoke`, 25 s, ok. The base models are those of R9-05 (equal parameters,
+    rounds and uncorrected values); the indirect route is corrected at every horizon, the direct
+    route is not.
+  - `python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate`: run
+    `20261107T132142Z_dev`, 6.5 min (the `xgb` step 380 s against 363 s in R9-06: the 15
+    out-of-fold fits cost about 17 s).
+- **Verification against R9-06 and R9-07 (all exact):**
+  - the study reproduces R9-06: the same best parameters and rounds, uncorrected values equal
+    (difference 0) at every target × horizon;
+  - the step's seed-42 coefficients, out-of-fold hours (7,834) and corrected values equal the
+    seed-42 rows of `outputs/09_xgb_checks/l09_check.csv` (difference 0);
+  - the evaluation's `nRMSE_kW_pct` equals `value_kw_forecast` to the table's six decimals;
+  - `uncorrected_xgb_sota_seed42.csv` equals the R9-06 forecast of the indirect route, the direct
+    forecast is unchanged, night hours are unchanged, and `evaluate.to_kw` of the written k
+    returns the corrected kW to 2.3e-13 kW;
+  - the warnings are the five of R9-06 (the booster is the same).
+- **Result (validation, the tuning split, one seed; nRMSE in kW, % of 3,449 kW):**
+
+  | Target | Horizon | R9-06 | With L-09 | Climatology | Persistence |
+  |---|---|---|---|---|---|
+  | indirect | D+1 | 6.792 | 6.686 | 8.06 | 9.68 |
+  | indirect | D+2 | 7.122 | 6.911 | 8.06 | 10.84 |
+  | indirect | D+3 | 6.656 | 6.555 | 8.06 | 10.76 |
+  | direct | D+1 | 6.656 | 6.656 | 8.04 | 9.68 |
+  | direct | D+2 | 6.811 | 6.811 | 8.04 | 10.82 |
+  | direct | D+3 | 6.426 | 6.426 | 8.04 | 10.72 |
+
+  The acceptance of §14.7 still holds. In the paired route comparison the direct route stays
+  ahead, by 0.03, 0.10 and 0.13 pp (0.14, 0.31 and 0.23 in R9-06).
+- **Review (forecasting-validity-review):**
+  - issuance and split isolation: inputs unchanged; the coefficients come from out-of-fold train
+    predictions only; no test row was read;
+  - comparable evaluation: the same 2,901 daytime hours for every model and both routes;
+  - uncertainty: one seed of a dev run on the tuning split (optimistic by construction, D-10);
+    L-09 itself was decided with three seeds (R9-07);
+  - red flags: D+3 below D+1 remains for the corrected indirect route too (6.555 against
+    6.686), the validation-sample pattern of R9-06; no dominant-feature change (same boosters).
+- **Finding of the review: the k-unit statistics of the indirect route get worse.** The
+  correction is fitted and decided in kW. Its intercept (+14.6, +18.7, +28.1 kW for seed 42)
+  divided by the small theo of the low-sun hours becomes a large shift in k: the largest daytime
+  k rises from 1.338 to 1.645 (the largest true k in validation is 1.523). The evaluation layer
+  computes `nRMSE_pct`, `skill_score` and the DM tests of the indirect route in k units (§6.9 of
+  `PROJECT_MASTER.md`, D-14):
+
+  | Horizon | nRMSE in k, R9-06 → L-09 | skill in k, R9-06 → L-09 | DM vs climatology, HLN p, R9-06 → L-09 |
+  |---|---|---|---|
+  | D+1 | 13.44 → 13.86 | 0.331 → 0.310 | 0.000009 → 0.000087 |
+  | D+2 | 14.07 → 14.52 | 0.369 → 0.349 | 0.000039 → 0.000512 |
+  | D+3 | 13.51 → 15.28 | 0.400 → 0.321 | 0.000033 → 0.035 (not significant at the Bonferroni α of 0.0167) |
+
+  In kW the same forecast is better (the table above; the kW RMSE against persistence improves
+  at every horizon in `route_comparison.csv`). So the corrected indirect route is better in the
+  unit of every decision (§14.1) and worse in the k unit, where every daytime hour weighs the
+  same and low-sun hours dominate (L-04). The stage-10 acceptance "XGB clearly better than the
+  baselines (DM with HLN)" reads the DM table, which is in k for this route. **Nothing was
+  changed:** which unit the DM and skill of the indirect route use is a decision for the user
+  (Q-19). The kW-unit DM was not computed, so that the choice is not made on its result.
