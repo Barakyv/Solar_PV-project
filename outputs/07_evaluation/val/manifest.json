@@ -1,11 +1,12 @@
 {
   "inputs": [],
   "inputs_sha256": {},
-  "git_commit": "3df79b9",
+  "git_commit": "f529913",
   "mode": "feature table",
   "split": "val",
   "mean_daytime_k": 0.788157,
   "dm_reference": "persistence",
+  "references": "computed from the truth",
   "truth": "data/processed/06_features/features_1H_D1.parquet",
   "truth_sha256": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
   "cliper_rmse": {
@@ -30,7 +31,8 @@
     "benchmark_views": 72,
     "common_mask_sensitivity": 18,
     "route_comparison": 18,
-    "seed_variability_summary": 0
+    "seed_variability_summary": 0,
+    "dm_tests_kw": 12
   },
-  "run_log": "outputs/07_evaluation/runs/20261025T071608Z.log"
+  "run_log": "outputs/07_evaluation/runs/20261107T135905Z.log"
 }

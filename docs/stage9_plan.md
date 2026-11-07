@@ -229,10 +229,10 @@ run journal R9-03). D-15 decided by §14.3: the v6 constraint stays for k (R9-04
 explained as the validation sample (R9-06). L-09 by §14.4: adopted for the indirect route, not
 for the direct route; R-14 confirmed for the direct target at D+1 and D+3; A-14 ✅ for XGB
 (R9-07). The adopted L-09 correction is part of the `xgb` step since commit `9c5d1b9` (§15,
-OP-53, R9-08); the dev run with it reproduces the check exactly (R9-09). **Open (Q-19):** the
-correction is in kW and makes the k-unit DM and skill of the indirect route worse (DM against
-climatology at D+3 no longer significant on validation); the unit of those statistics is for the
-user to decide before G-1.
+OP-53, R9-08); the dev run with it reproduces the check exactly (R9-09). The correction made
+the k-unit DM and skill of the indirect route worse; by the user's decision on Q-19 the
+evaluation also computes DM and skill in kW for both routes, and the kW DM is the table of the
+stage-10 acceptance (§16, OP-54, commit `f529913`, R9-10, R9-11).
 
 ## 8. Questions for the user
 
@@ -638,3 +638,6 @@ the code.
   fixture mode writes no kW table; `main` on validation reads no test row.
 - **Real data:** the regenerated stage-8B tables equal the committed ones in every existing
   column; a dev run gives `dm_tests_kw.csv`, read with the forecasting-validity review.
+- *Result (2026-11-07, R9-11):* both hold. In kW, XGB-dev is significantly better than every
+  reference in both routes and at every horizon; against climatology the effect is about the
+  minimum detectable effect.

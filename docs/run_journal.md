@@ -1246,3 +1246,35 @@ hashes, numbers) and the commit messages are the record:
 - **Tests:** T-65 (two new tests, and the `main` test checks the truth is read without the test
   split). T-55 now also compares `dm_tests_kw.csv`; it needs the regenerated stage-8B tables, so
   it passes only after the rerun of R9-11.
+
+### 2026-11-07 · R9-11 · The stage-8B tables regenerated, and a dev run with the kW statistics
+
+- **Commands and commit:** at `f529913`, clean tree.
+  - `python -m solarpv.evaluation.evaluate` (validation, references only; now without reading a
+    test row): log `outputs/07_evaluation/runs/20261107T135905Z.log`. Only `benchmark_summary.csv`
+    changed, by the two new columns; every existing column, and every other table, is
+    byte-identical to the committed version, so excluding the test rows changes nothing (X17).
+    New: `dm_tests_kw.csv`. For the direct target the kW skill and DM equal the existing ones
+    exactly.
+  - `python scripts/make_evaluation_notebook.py`: notebook 07 with a cell on the kW DM.
+  - `python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate`: run
+    `20261107T135938Z_dev`, ok; every existing table equals that of `20261107T132142Z_dev`
+    (R9-09).
+- **The kW DM of the dev run (reference XGB, HLN, Bonferroni α 0.0167):** XGB is significantly
+  better than all three references in all 18 comparisons, both routes and every horizon. Against
+  climatology the HLN p-values are 0.0008, 0.0013 and 0.0002 (direct) and 0.0013, 0.0024 and
+  0.0007 (indirect). In the k-unit table the indirect D+3 comparison with climatology was not
+  significant (p 0.035, R9-09); in kW it is.
+- **Skill in kW (against persistence of h days):** indirect 0.310, 0.363, 0.391; direct 0.312,
+  0.371, 0.401 (in k the indirect route had 0.310, 0.349, 0.321).
+- **Review (forecasting-validity-review):**
+  - the kW statistics use the same rows (2,901 daytime hours) and the same pairs as the k ones;
+    the truth is actual AC from the stage-6 table;
+  - one seed of a dev run on the tuning split: these are tuning-split numbers, optimistic by
+    construction (D-10); the acceptance of stage 10 is read on the final run;
+  - against climatology the effect is about the minimum detectable effect (`pct_of_mde` 93–110 %
+    in both routes), so "clearly better than climatology" holds, but with a modest margin;
+  - the skill rises with the horizon because persistence of h days gets worse faster than XGB;
+    the errors themselves were reviewed in R9-06 and R9-09.
+- **Not in scope (stage-9 plan §16.2):** the seasonal and common-mask tables stay in the
+  target's unit.

@@ -398,7 +398,7 @@ Checks of the decided target (`target_checks` in the manifest):
 
 ## N12. Evaluation layer on the corrected tables (stage 8B)
 
-Validation run at commit 3df79b9 (log `outputs/07_evaluation/runs/20261025T071608Z.log`); references only, the test split was not opened.
+Validation run at commit f529913 (log `outputs/07_evaluation/runs/20261107T135905Z.log`); references only, the test split was not opened.
 
 | item | value |
 |---|---|

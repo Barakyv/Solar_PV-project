@@ -972,7 +972,10 @@ amendment of 2026-11-07).**
   - Only with a truth table; the fixture mode of stage 8A is unchanged (T-15). No existing column
     or table changes.
   - The validation command now reads the truth without the test split (X17).
-- *Result:* run journal R9-11 (the stage-8B tables regenerated, and a dev run).
+- *Result:* run journal R9-11. The regenerated stage-8B tables equal the committed ones in every
+  existing column and table; for the direct target the kW statistics equal the existing ones
+  exactly. In the dev run XGB is significantly better than every reference in kW, in both routes
+  and at every horizon.
 - *Verification:* T-65; T-55 (the dev run of `baselines,evaluate` equals the regenerated
   stage-8B tables, `dm_tests_kw.csv` included).
 - *Original:* DM and skill in the target's unit only (the DM of the original did not apply HLN,
