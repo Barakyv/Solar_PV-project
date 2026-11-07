@@ -1278,3 +1278,42 @@ hashes, numbers) and the commit messages are the record:
     the errors themselves were reviewed in R9-06 and R9-09.
 - **Not in scope (stage-9 plan §16.2):** the seasonal and common-mask tables stay in the
   target's unit.
+
+### 2026-11-07 · R9-12 · W3: self-review, the user's decisions, and the code of the sequence datasets
+
+- **Baseline at the start:** HEAD `0899b39`, clean tree; 438 tests passed, none skipped; ruff
+  clean.
+- **Plan before the code (`docs/stage9_plan.md` §17, commit `748959f`):** what the original
+  sequence models did, reconstructed from the submission (E1–E7). Three facts were computed
+  here, read-only:
+  - the surviving BiLSTM file has 5,689 rows per target × horizon, hourly, no duplicate, D+1 /
+    D+2 / D+3 starting 95 / 119 / 143 h after the test start: an origin every hour, a 72-hour
+    encoder inside the test, one decoder step kept per horizon (23 / 47 / 71);
+  - the TFT n (2,554 / 2,556 / 2,558) is exactly 2,580 minus the daytime hours of May 30–31,
+    Oct 1 and May 31, Oct 1–2 on the original labels: daily origins, whole decoders inside the
+    test;
+  - the PatchTST n (2,580 / 2,569 / 2,558) is 2,580 minus nothing, Oct 1, Oct 1–2.
+- **Self-review (errata rows):** in the original M13–M18 (C-47–C-52): the naive local clock,
+  horizons by step number and the hourly fixed-lead BiLSTM, a different set of scored hours per
+  model, silent fallbacks and dropped rows in the intermediate LSTM, the split by proportions
+  and the MinMax on k, the valid time attached after training. In my own code X19–X23: the
+  docstrings with the original formula and the test-only origin count, the inverse of
+  `issuance_utc`, a loader by split label, the D-22 masks that exist only inside
+  `masked_sources`, and the loss mask of XGB.
+- **Decisions (user, 2026-11-07), before the code:** D-25 (A), the decoder covers the three
+  local days (71–73 steps); D-27 (A), the GFS of the stage-7 selection; D-28 (A), the BiLSTM on
+  the known-at-T0 part of the stage-7 input, encoder 72 h. On D-26 the user rejected both options:
+  the known reals should come from the feature selection. Checked: the calendar, clear-sky and
+  geometry names of the six submitted 05e sets add up to 17 (one duplicate), close to v6's 18. The
+  new option, per target the known features of the stage-7 selection (10 indirect, 27 direct),
+  was chosen.
+- **Code:** `solarpv.models.sequence_data` (origins, the step → horizon mapping, a time-range
+  loader, the encoder series through `masked_sources`, the known inputs, the scaler, `build`, the
+  writer `predictions_frame`, the checks and the command); docstrings of `lstm_sota.py` and
+  `patchtst_model.py` (X19). OP-55.
+- **Tests:** T-66–T-71 in `tests/unit/test_sequence_data.py` (32 tests, synthetic, both DST
+  days); T-02 in `tests/contracts/test_sequence_alignment.py` (16 cases on the real tables).
+  On the first unit run one test failed for a reason in the test, not the code: an in-memory
+  build was given the synthetic test rows, and the development guard refused them. The tests now
+  cut the data before TEST_START, as the loader does, and a test asserts the refusal. The real-data
+  test is run only after the commit.

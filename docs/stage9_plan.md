@@ -282,6 +282,21 @@ steps):
 | T-64 | The adopted L-09 correction in the step (§15, X14–X16): the step's coefficients and corrected value equal the check's for the same base model, and the evaluation scores the corrected value; the check and the step share one implementation and the same chronological folds (smoke: its 56 days); `evaluate.to_kw(k')` equals the corrected kW, nights and the direct target unchanged, a daytime hour with theo ≤ 0 refused; the uncorrected file holds the booster output, and the written file is the booster plus the recorded coefficients; without the decision file a smoke run writes the raw forecast with a warning and a final run refuses; the decision file is checked |
 | T-65 | Q-19 (§16, X17–X18), in `tests/unit/test_evaluation_8b.py`: the kW DM and skill of the direct target equal the target-unit ones exactly; for the indirect target the kW DM and skill equal a hand computation with `to_kw` and actual AC, and differ from the k-unit ones; the fixture mode writes no kW table; `main` on validation reads the truth without the test split |
 
+**Numbered for W3 (2026-11-07),** in `tests/unit/test_sequence_data.py` on synthetic tables in
+the stage-5, stage-6 and stage-6b layout (2023-09-01 to 2024-10-07 local, with the fall-back day
+2023-10-29 in train, the spring-forward day 2024-03-29 in validation and one week of test rows),
+and `tests/contracts/test_sequence_alignment.py` on the real tables (§17):
+
+| ID | Test |
+|---|---|
+| T-66 | The mapping (M13, M14, X20): T0 at local midnight (22:00Z in winter, 21:00Z in summer); decoders of 71 / 72 / 73 steps for the origins whose three days hold 2024-03-29 or 2024-10-27; every D+h block equals the hours of its local day (23 / 24 / 25), checked against the time zone itself; `issuance_utc(valid, h) == T0` on every step from March to November 2024; a mapping by step number is wrong on both DST days and right on an ordinary one |
+| T-67 | Origins and coverage (M15, X21, X23): the counts of §17.5 on the real calendar (872 training, 246 validation, 30 smoke, 245 test origins); in train and validation, both targets, every hour of the scope exactly once per horizon, with a 25-hour block in train and a 23-hour block in validation; development reads every file with `timestamp_utc < TEST_START` inside the reader (eight reads) and carries no time at or after it; training decoders end before VAL_START and the loss holds train hours after the warm-up only; 58 smoke training origins; test windows only with `allow_test`; the loss mask equals `fit_mask` row for row and count for count |
+| T-68 | The encoder (M16, X22): its last hour is T0 − 1 h for every model; changing the measured series, the targets and the minute flags at or after an origin's T0 leaves every encoder and decoder input of that and every earlier origin unchanged; an hour stopped by the minute flags is NaN before the fill, filled from older days and flagged; the masked series equals the stage-6 `lag_1d` (0 mismatches), while the unmasked AC does not; the fill uses older hours only |
+| T-69 | A-14 (M17): the scaler recomputed from the train hours and unchanged when every value outside train is replaced; with validation values replaced the training windows are identical; k is not transformed and AC / 3,449 inverts exactly |
+| T-70 | The writer (M18): a round trip in the contract of §6.10 passes `load_predictions` and the strict alignment and coverage checks of `evaluate`; the 23-hour day keeps 23 rows at D+1; a wrong shape, a missing hour, a duplicated (horizon, timestamp) and a missing forecast are refused |
+| T-71 | The inputs (D-26–D-28): the union of the known part of `model_inputs.json` in its order, lags dropped, a leaky or unknown name refused; on the real file 10 + 20 (indirect) and 27 + 22 (direct); a deterministic input that differs between tables is refused; each decoder step's GFS value is that of its horizon's table and each encoder hour's that of D+1; a step of another issuance or a run not public by T0 is refused; PatchTST holds the target only and needs its input size; the command passes all its checks on the synthetic inputs and refuses `final` |
+| T-02 | Real tables (`tests/contracts/test_sequence_alignment.py`): train and validation, both targets, BiLSTM, TFT-96, TFT-168 and PatchTST: every check of `check_dataset`, 872 / 246 origins, 23- (and in train 25-) hour blocks, unique valid timestamps per horizon, training decoders before VAL_START, nothing at or after TEST_START |
+
 ## 10. Self-review before the code of W1 (2026-11-05)
 
 Written before the runner code, at the start of the work on the college machine. It covers the
@@ -754,9 +769,10 @@ columns and `irradiance_clear_index_prevday` (L-11a, measured before T0) come fr
 table for a step of day D+h; its `t0_utc` is the origin's T0, so the three days of one origin
 come from the same 12Z run, and init + 6 h ≤ T0 holds on every step (the rule of T-17, asserted).
 No lag, no rolling statistic and no measurement of a decoder hour. A missing known input takes the
-train mean (counted). Per model: the TFT gets the 18 known reals of D-26 and the GFS of D-27, the
+train mean (counted). Per model: the TFT gets the known reals of D-26 and the GFS of D-27, the
 TFT baseline the same inputs as TFT-96 (v6 §5.5), the BiLSTM the inputs of D-28, PatchTST none
-(L-19).
+(L-19). *By the decisions of §17.6 the BiLSTM and the three TFT models get the same known inputs
+per target (indirect 10 + 20, direct 27 + 22).*
 
 **Targets and loss.** Per step: `target_k` (indirect, never clipped, F-06) or
 `site_total_AC_kW` (direct) at the valid hour, with `theo_kw`, `daytime` and `op_limited_flag`
@@ -834,6 +850,23 @@ input).
   the end of a split gives the same early steps.
 - **(B)** The inputs of the TFT (the 18 known reals and the GFS of D-27), so that the BiLSTM and
   the TFT differ only in architecture. Encoder 72 h.
+
+**Decisions (user, 2026-11-07), before any W3 code:**
+- **D-25:** (A), the decoder covers exactly the three local days (71 / 72 / 73 steps, padded to
+  73). A dated amendment of "decoder 72" in `PROJECT_MASTER.md` §6.11.
+- **D-26:** neither (A) nor (B). The user pointed out that the project had a feature-selection
+  stage that found the most relevant features, and that the known reals should come from it.
+  Checked in the submission: the calendar, clear-sky and geometry features of the six submitted
+  05e sets add up to 17 names, one of them a duplicate (`sun_azimuth` = `solar_azimuth`), close to
+  v6's "18 calendar and irradiance features", which supports this reading. Offered as a new
+  option and chosen: **per target, the calendar, clear-sky and geometry features of the stage-7
+  selection, the union over the three horizons**: 10 for the indirect route, 27 for the direct
+  route (its input is the full pool, F-29). The count differs from v6's 18 because the selection
+  was redone on the corrected data (D-13).
+- **D-27:** (A), the GFS columns of the stage-7 selection per target (20 / 22).
+- **D-28:** (A), as in the submission: the part of `model_inputs.json` known at T0, the measured
+  series in the encoder, encoder 72 h. With D-26 the BiLSTM and the three TFT models have the same
+  known inputs per target; they differ in architecture and encoder length (72 / 96 / 168 h).
 
 ### 17.7 Tests (T-66–T-71 on synthetic series, T-02 on the real tables)
 

@@ -981,6 +981,51 @@ amendment of 2026-11-07).**
 - *Original:* DM and skill in the target's unit only (the DM of the original did not apply HLN,
   C-15).
 
+**OP-55 — The datasets of the sequence models (`solarpv.models.sequence_data`; W3, D-25–D-28).**
+- *Why:* BiLSTM-Opt, the three TFT models and PatchTST need windows: an encoder of past hours, a
+  decoder over the forecast days, and a mapping of decoder steps to D+1..D+3. The original built
+  them on the local clock read as UTC, by step number, inside each split, with different hours
+  per model (C-47–C-52). Design and self-review before the code: `docs/stage9_plan.md` §17
+  (E1–E7, M13–M18, X19–X23); the open choices were decided by the user (D-25–D-28) before any
+  code.
+- *Method:*
+  - **Inputs:** the three stage-6 feature tables, the three stage-6b GFS tables, the stage-5
+    hourly table and its minute flags, the cleaning policy (the 5 % share of D-22); in smoke and
+    dev every file is filtered inside the parquet reader to `timestamp_utc < TEST_START` (X21).
+  - **Origins:** one per local day, T0 = 00:00 local in UTC (D-16). For a scope (train after the
+    warm-up, or the run's validation window) the origins run from two local days before its first
+    hour to the local day of its last hour: 872 training and 246 validation origins in dev, 58 and
+    30 in smoke; 245 test origins in a final run with `allow_test` only.
+  - **Encoder:** the L hours before T0 (72 h BiLSTM, 96 h TFT-96, 168 h TFT-168 and the TFT
+    baseline; PatchTST's input size is set in W4). Series: the seven measured series of stage 6
+    with the D-22 masks of `masked_sources` (X22), and `target_k` for the indirect route (NaN in
+    op-limited hours); gaps filled once with the stage-6 rule (same UTC hour, previous 30 days,
+    older rows only) and flagged by one 0/1 channel per series; the known inputs of the encoder
+    hours (D+1 GFS).
+  - **Decoder:** the hours of the three local days from T0 (72, or 71 / 73 around a DST day),
+    padded to 73 (D-25); the horizon of a step is the local day of its valid hour; the decoder
+    stops at the end of its split (training at VAL_START, validation at TEST_START in every
+    mode). Inputs: the part of `model_inputs.json` known at T0, the union over the horizons (D-26,
+    D-27, D-28: indirect 10 calendar, clear-sky and geometry features + 20 GFS, direct 27 + 22),
+    the GFS value from the table of the step's horizon, whose `t0_utc` is the origin's T0 (the
+    same 12Z run for the three days; init + 6 h ≤ T0 asserted). No lag, no rolling statistic, no
+    measurement of a decoder hour. PatchTST: the target series only (L-19).
+  - **Scaling (A-14):** z-scores per channel from the train hours that are not warm-up; targets
+    not transformed (k as is, AC / 3,449); a missing input takes the train mean (counted).
+  - **Loss and writer:** the loss mask is `xgb_sota.fit_mask` on the kept steps (X23); the writer
+    turns window forecasts into the rows of §6.10, one per hour of the scope and horizon, and
+    refuses duplicates, gaps and missing forecasts.
+  - `python -m solarpv.models.sequence_data [--mode dev|smoke]` builds the train and validation
+    datasets of every model × target and checks them against theory; it writes
+    `outputs/09_sequence_data/dataset_report_<mode>.json`, `checks_<mode>.csv` and a run log, and
+    no array.
+- *Result:* run journal R9-12 on (after the commit of the code).
+- *Verification:* T-66–T-71 (synthetic, both DST days), T-02 (the real train and validation
+  tables).
+- *Original:* naive local clock, hourly origins with fixed leads (BiLSTM) or steps by number
+  (TFT), windows inside each split, a different set of scored hours per model, the 05e sets for
+  the BiLSTM and 18 calendar and irradiance known reals for the TFT, no weather forecast.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
@@ -1011,6 +1056,7 @@ amendment of 2026-11-07).**
 | Model runs | one script; failed steps ignored; whatever files were in `outputs/` scored; logs overwritten; test evaluated in every run | one runner with smoke, dev and final modes; inputs checked against the stage manifests; each run in its own folder with hashes; only the run's own files scored; no test row loaded outside final | OP-49, C-36–C-41 |
 | XGB training | `fillna(0)`; every train hour (nights, stops, invalid k); +1 constraints by substring on both targets; clips in the scoring scripts; saved parameters not the model | no imputation; fit masks per target (D-22, L-04); exact D-15 list, decided for k on validation; raw output, one conversion (`evaluate.to_kw`); full record, saved booster, explicit iteration range | OP-50, OP-51, C-20, C-33, C-42–C-46 |
 | Bias correction | none | L-09 tested on validation by a registered rule; adopted for the indirect route only, refitted in every run on out-of-fold train predictions | OP-52, OP-53 |
+| Sequence-model windows | naive local clock; BiLSTM: an origin every hour, one step kept per horizon (fixed leads of 24 / 48 / 72 h); TFT: steps 1–24 / 25–48 / 49–72 by number; windows inside each split, so each model scored on its own hours; no weather forecast | one origin per local day at T0; the decoder covers the three local days (71–73 h) and each step's horizon is its local day; origins from two days before the scope, so every hour is forecast at every horizon; D-22-masked encoder series; the known-at-T0 part of the stage-7 inputs, GFS from the run public at T0 | OP-55, C-47–C-52 |
 
 ## 18. Limitations carried into the report
 
@@ -1089,12 +1135,13 @@ python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate
 python -m solarpv.models.xgb_checks l09 --run <dev run id>   # writes configs/mos_decision.yaml
 python -m solarpv.models.xgb_checks r14 --run <dev run id>
 python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate   # again, with L-09 (OP-53)
+python -m solarpv.models.sequence_data       # the sequence datasets, train and validation (OP-55)
 python scripts/build_data_record.py
 pytest
 ```
 
 ## 20. Pending operations (documented here when performed)
 
-Stage 9 sequence models (W3–W4), with the inputs of
-`outputs/07_feature_selection/model_inputs.json` (OP-48), and the D-21 robustness check on val.
-XGB (W2) is OP-50–OP-53; the kW statistics of the evaluation are OP-54.
+Stage 9 sequence models (W4), on the datasets of OP-55, and the D-21 robustness check on val.
+XGB (W2) is OP-50–OP-53; the kW statistics of the evaluation are OP-54; the sequence datasets
+(W3) are OP-55.
