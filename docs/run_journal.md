@@ -938,4 +938,41 @@ hashes, numbers) and the commit messages are the record:
   inputs: 18 of 19 inputs as recorded, the six stage-7 provenance rows match, and the D-15
   decision is pending.
 - **Tests:** 24 new (T-56–T-63) and one changed (`bilstm (W4)` is now the first unimplemented
-  step); the synthetic smoke run of `baselines,xgb,evaluate` passes.
+  step); the synthetic smoke run of `baselines,xgb,evaluate` passes. Full suite: 432 passed,
+  none skipped (408 + 24); ruff clean.
+- **Commit:** `a3b8467` (code, tests, errata, OP-50–OP-52, this entry), before any run on real
+  data.
+
+### 2026-11-07 · R9-04 · D-15: monotone constraints for k, decided on validation
+
+- **Purpose:** the rule of §14.3, registered on 2026-11-05 before any XGB result: keep the v6
+  constraint (+1 on the D-15 features present in the indirect input) unless dropping it wins.
+- **Command and commit:** `python -m solarpv.models.xgb_checks d15` at `a3b8467` (clean code
+  tree), 1.5 min; log `outputs/09_xgb_checks/runs/20261107T104005Z.log`. Train and validation
+  rows only.
+- **Model and rows:** the fixed XGBoost of D-11, seeds 42, 123, 777; 9,575 indirect fit rows of
+  train; scored on the 2,901 daytime validation hours with AC truth (op-limited included). In
+  the indirect inputs only `ghi_clearsky` is a D-15 feature, at every horizon.
+- **Results** (nRMSE in kW, % of 3,449 kW, mean ± seed std):
+
+  | Horizon | A, `ghi_clearsky` +1 | B, none | gain A − B | margin | passes |
+  |---|---|---|---|---|---|
+  | D+1 | 6.806 ± 0.001 | 6.836 ± 0.012 | −0.029 | 0.050 | no |
+  | D+2 | 7.252 ± 0.031 | 7.257 ± 0.020 | −0.005 | 0.051 | yes |
+  | D+3 | 6.701 ± 0.040 | 6.708 ± 0.085 | −0.007 | 0.133 | yes |
+
+- **Decision (by the rule):** B needs gain_1 > margin_1; the gain is negative at every horizon
+  (the constraint helps slightly), so **A, the v6 setting, stays for k**. The direct target keeps
+  the D-15 list with +1 (not part of the question). `configs/monotone_decision.yaml`.
+- **Cross-check:** setting B is the stage-7 model on the 05e sets, and its means equal the
+  stage-7 validation look exactly (6.8356, 7.2567, 6.7078 in `validation_check.csv`, R7-05):
+  `model_table` gives the same tables as the stage-7 loader.
+- **C-33, the marginal sign** on the indirect fit rows of train (Spearman): k against
+  `ghi_clearsky` −0.38, `poa_global_clearsky` −0.41, `sun_elevation` −0.37; AC +0.90, +0.93,
+  +0.89 (the 21.10 values were −0.37/−0.40/−0.36 and +0.88 to +0.91 on slightly different
+  rows). The marginal sign of k is negative, yet the conditional constraint does not hurt: with
+  the cloud and calendar features fixed, k does not fall with clear-sky irradiance in the model.
+  Reported, as §14.3 asks; the rule decides.
+- **Review (forecasting-validity-review):** issuance: the inputs are those of stage 7 (T-17,
+  T-18 hold); split isolation: no test row read (X10); identical rows for A and B; the margin is
+  the registered D-12 form; validation is used as a decision split, as every earlier decision.

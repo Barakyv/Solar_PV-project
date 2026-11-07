@@ -1,0 +1,69 @@
+# D-15: monotone constraints of XGB. Written by
+# python -m solarpv.models.xgb_checks d15 (stage 9, docs/stage9_plan.md §14.3).
+# Evidence: outputs/09_xgb_checks/d15_check.csv; read by the xgb step.
+decision: D-15
+decided_on: '2026-11-07'
+features:
+- ghi_clearsky
+- poa_global_clearsky
+- sun_elevation
+sign: 1
+settings:
+  indirect: A
+  direct: A
+setting_meaning:
+  A: +1 on the D-15 features present (v6 §5.1)
+  B: no constraint
+rule: B for k only if gain_1 > margin_1 and gain_h > -margin_h at D+2 and D+3; gain
+  = mean_A - mean_B; margin = max(0.05 pp, 2 x pooled seed std); otherwise A, the
+  v6 setting (docs/stage9_plan.md §14.3). The direct target keeps the D-15 list with
+  +1, not part of the question
+model: the fixed XGBoost of D-11 (decide_k.XGB_PARAMS), indirect fit rows of train,
+  scored on the daytime validation hours with AC truth (§14.1)
+seeds:
+- 42
+- 123
+- 777
+results:
+  D1:
+    mean_A: 6.8062
+    std_A: 0.0011
+    mean_B: 6.8356
+    std_B: 0.0122
+    gain_pp: -0.0294
+    margin_pp: 0.05
+    passes: false
+  D2:
+    mean_A: 7.2515
+    std_A: 0.0305
+    mean_B: 7.2567
+    std_B: 0.0197
+    gain_pp: -0.0053
+    margin_pp: 0.0514
+    passes: true
+  D3:
+    mean_A: 6.7013
+    std_A: 0.0396
+    mean_B: 6.7078
+    std_B: 0.0852
+    gain_pp: -0.0065
+    margin_pp: 0.1329
+    passes: true
+constraints_A_indirect:
+  D1:
+    ghi_clearsky: 1
+  D2:
+    ghi_clearsky: 1
+  D3:
+    ghi_clearsky: 1
+marginal_sign_train:
+  ghi_clearsky:
+    spearman_k: -0.3815
+    spearman_ac_kw: 0.8992
+  poa_global_clearsky:
+    spearman_k: -0.4058
+    spearman_ac_kw: 0.9252
+  sun_elevation:
+    spearman_k: -0.3699
+    spearman_ac_kw: 0.8854
+git_commit: a3b8467
