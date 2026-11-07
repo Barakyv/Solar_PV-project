@@ -251,6 +251,21 @@ atomic outputs, the prediction contract of every model, T-02 for every sequence 
 | T-54 | Fixes to earlier code (X1–X6 of §10): duplicates across prediction files, no stale manifest after a failed evaluation, no glob in `evaluate.main`, run-log names, untracked code in `git_commit()` | `tests/unit/test_evaluation_8b.py`, `test_runlog.py`, `test_provenance.py` |
 | T-55 | Real data: a dev run of `baselines,evaluate` equals the committed stage-8B validation tables without loading a test row; the smoke window is fully covered and contains the spring DST day | `tests/contracts/test_pipeline_output.py` |
 
+**Numbered for W2 (2026-11-07),** all in `tests/unit/test_xgb.py` on synthetic tables in the
+stage-6 and stage-6b layout (and `test_pipeline_runner.py` for the refusal of unimplemented
+steps):
+
+| ID | Test |
+|---|---|
+| T-56 | Inputs from the allow-list (a lag not available at the horizon, a duplicate and a leaky name are refused; the order is kept); monotone constraints by exact name (`fcst_gfs_ghi`, `irradiance_lag_3d`, `irradiance_clear_index_prevday` never constrained); the map reaches XGBoost (`(1,0,0)`) and the prediction is monotone in the constrained feature; the D-15 decision file is required and checked (M7, M12a) |
+| T-57 | Fit, early-stopping and scoring rows (warm-up, op-limited, `k_valid`, theo > 50 kW, AC present, the window, op-limited hours kept in the objective, nights in the direct fit rows, the 56 smoke days); no imputation: NaN reaches XGBoost and is counted, and the prediction differs from a zero fill (M8, M11) |
+| T-58 | The k → kW copies agree (negative k, theo 0, above capacity); `nwp.check.fit_score` equals the same model scored with `evaluate.to_kw`; in a smoke run of `baselines,xgb,evaluate` the recorded objective equals the evaluation's `nRMSE_kW_pct` (and `nRMSE_pct` in k) of every target × horizon, and the refit equals its trial (M9, X12) |
+| T-59 | The record of every fit: full parameter set (seed, threads, `hist`, constraints), feature order, best iteration, rounds used = best + 1; a reloaded booster reproduces the written predictions exactly, with no clip; the same seed gives the same study, another seed another one; the warnings at the cap and on the edge of the search space (M10, M12c, M12d) |
+| T-60 | `model_table` filters inside the parquet reader (by split, and the GFS table by timestamp) and refuses the test split without `allow_test`; a smoke run reads no test row; the stage-7 provenance rows of `check` (match, changed table, missing log, no run log); a pending decision is reported without blocking; the `xgb` step refuses without the D-15 decision (X10, X11) |
+| T-61 | A-14: permuted validation labels change only the stopping round, never the trees; a fixed-round fit equals the early-stopping fit truncated at the same round; the L-09 coefficients do not change when the validation labels are permuted |
+| T-62 | X13: `decide_k.XGB_PARAMS` is unchanged after the D-15 check, which writes a decision file the `xgb` step can read and no prediction file |
+| T-63 | The checks of §14: the margin and the registered rule (D-12 form), the D-15 decision on constructed scores, the output guard (no `predictions_*`, nothing into a run folder), R-14's bias and interval on a constructed bias, and L-09 and R-14 on a synthetic dev run (seed 42 with the dev rounds equals the dev forecast; the run folder is unchanged) |
+
 ## 10. Self-review before the code of W1 (2026-11-05)
 
 Written before the runner code, at the start of the work on the college machine. It covers the

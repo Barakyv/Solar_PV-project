@@ -475,7 +475,7 @@ solar/                                   ← שורש הריפו (git, branch ma
 - **הגנת DST:** ערך מהשעה s מותר לשורה t רק אם s + 1h ≤ T0(t). ביום של 25 שעות הוא הופך ל-NaN (T-18).
 - **מסכות D-22 לפני lags ו-rolling:** ה-AC של כל ממיר הוא NaN בשעות שבהן הדגלים שלו (F1, F3) או F2 מכסים לפחות 5% מהדקות. סך האתר הוא NaN בשעות op-limited. מזג האוויר לא ממוסך.
 - **לוח שנה:** `is_weekend` הוא שישי–שבת (F-25), ו-`time_to_solar_noon` נלקח מה-transit של pvlib.
-- **בזמן האימון:** NaN שנשאר מקבל 0 ב-XGB, ומסומן ונספר.
+- **בזמן האימון:** אין השלמה של ערכים חסרים. ערך NaN עובר ל-XGBoost כמו שהוא, ומספר הערכים החסרים בכל פיצ'ר נרשם (M8, ‏C-42). עודכן ב-7.11. עד אז נכתב כאן שערך NaN מקבל 0, כמו ב-`fillna(0)` של המקור.
 
 ### 6.7 EXCL (blocklist, מגן בבדיקות)
 איחוד של: leakage_audit.md (20), LEAKY_EXCL מהסקריפט (17), השמות החלופיים מ-REPORT_EVIDENCE_MAP (`site_total_AC_power_kW`, `inv1/2_AC_power_kW`, `ghi_measured`, `irradiance_proxy`, `mod_temp_forecast`), כל `fcst_*` ו-`*_forecast` (**חוץ מ-`fcst_gfs_*`**, שנבדקים ב-T-17), `theoretical_power`, וכל מדידה בחותמת הזמן של היעד: irradiance, pyranometer, mod_temp1/2, ambient_temp, DC, kVar, PF, state, iec_*, soil*, wind*, precipitation, efficiency, site_loading, site_power_per_irr. T-01 דורש שאף פיצ'ר במטריצה לא יהיה ב-EXCL.

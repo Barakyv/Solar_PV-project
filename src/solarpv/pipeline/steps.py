@@ -1,30 +1,42 @@
-"""The work steps implemented so far (W1): `baselines` and `evaluate` (docs/stage9_plan.md §3.2,
-§10.3). Every step gets a `Context` and writes only into `ctx.out`, a temporary folder that the
-runner renames when the step succeeds.
+"""The work steps implemented so far: `baselines` and `evaluate` (W1), `xgb` (W2)
+(docs/stage9_plan.md §3.2, §10.3, §13.4). Every step gets a `Context` and writes only into
+`ctx.out`, a temporary folder that the runner renames when the step succeeds.
 
-Rules (the self-review of §10):
+Rules (the self-reviews of §10 and §13):
 - the truth of smoke and dev runs is read without the test split (X3); the test split is read
   only to evaluate it, in final mode with allow_test;
 - the evaluation window: rows of the split inside the window are scored; earlier rows of the split
   are context for the persistence reference; later rows are dropped (§10.3);
 - `evaluate` reads only the prediction files of the run's completed model steps, each checked
   against the hash in its step record (M1, X1), and in smoke and dev refuses any row in the test
-  split (X7).
+  split (X7);
+- `xgb` reads its tables with `pipeline.data.model_table` (X10), its inputs from
+  `model_inputs.json` and its constraints from the D-15 decision; it refuses to run without that
+  decision. It tunes on the validation window of the mode and predicts every hour of every
+  window of the run; the test window (final, allow_test) is only predicted.
 """
 
+import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
-from solarpv.config.constants import DERIVED_CONSTANTS_FILE, TEST_START, mean_daytime_k
+from solarpv.config.constants import (
+    DERIVED_CONSTANTS_FILE,
+    MONOTONE_DECISION_FILE,
+    TEST_START,
+    mean_daytime_k,
+)
 from solarpv.config.provenance import sha256
 from solarpv.config.runlog import RunLog
 from solarpv.config.site import load_site
 from solarpv.evaluation import evaluate as E
 from solarpv.evaluation.truth import FEATURES_FILE, load_truth
 from solarpv.models.baselines import reference_predictions
+from solarpv.pipeline import data
 from solarpv.pipeline.config import MODEL_STEPS, Window
 
 
@@ -128,6 +140,237 @@ def run_baselines(ctx: Context) -> Result:
                   summary=[f"{len(outputs)} reference files, {len(refs):,} rows"])
 
 
+# ── xgb ─────────────────────────────────────────────────────────────────────
+
+
+def _xgb():
+    from solarpv.models import xgb_sota  # imported when the step runs: `check` stays fast
+
+    return xgb_sota
+
+
+def xgb_inputs(ctx: Context) -> list[Path]:
+    X = _xgb()
+    if not MONOTONE_DECISION_FILE.exists():
+        raise RunnerError(f"{MONOTONE_DECISION_FILE.name} is missing: D-15 is decided first, by "
+                          "python -m solarpv.models.xgb_checks d15 (docs/stage9_plan.md §14.3)")
+    files = []
+    for h in ctx.config["horizons"]:
+        files += [data.feature_file(h), data.gfs_file(h)]
+    return files + [X.MODEL_INPUTS_FILE, MONOTONE_DECISION_FILE, DERIVED_CONSTANTS_FILE]
+
+
+def _tuning_window(ctx: Context) -> Window:
+    tuning = [w for w in ctx.windows if w.split == "val"]
+    if len(tuning) != 1:
+        raise RunnerError("the xgb step needs exactly one validation window to tune on")
+    return tuning[0]
+
+
+def _write_csv(frame: pd.DataFrame, path: Path) -> Path:
+    frame.to_csv(path, index=False, lineterminator="\n")
+    return path
+
+
+def _write_json(data_: dict, path: Path) -> Path:
+    path.write_text(json.dumps(data_, indent=2, default=str) + "\n", encoding="utf-8",
+                    newline="\n")
+    return path
+
+
+def run_xgb(ctx: Context) -> Result:
+    """XGB-Opt per target x horizon x seed (docs/stage9_plan.md §13.4, §14.1-§14.2)."""
+    import optuna
+
+    X = _xgb()
+    budget = ctx.config["budgets"]["xgb"]
+    seeds = [int(s) for s in (ctx.config["seeds"] or budget["seeds"])]
+    n_trials = int(budget["trials"])
+    tuning = _tuning_window(ctx)
+    with_test = any(w.split == "test" for w in ctx.windows)
+    splits = ("train", "val", "test") if with_test else ("train", "val")
+    mean_k = mean_daytime_k()
+    inputs = X.load_model_inputs(X.MODEL_INPUTS_FILE)
+    decision = X.load_monotone_decision(MONOTONE_DECISION_FILE)
+    models_dir = ctx.out / "models"
+    models_dir.mkdir()
+    db = ctx.out / "optuna.db"
+    storage = optuna.storages.RDBStorage(f"sqlite:///{db.resolve().as_posix()}")
+    train_text = (f"the last {X.SMOKE_TRAIN_DAYS} local days of train" if ctx.mode == "smoke"
+                  else "all of train")
+    ctx.log.note(f"budget {n_trials} trials, seeds {seeds}, tuning window {tuning.label}, "
+                 f"training rows {train_text}; MEAN_DAYTIME_K {mean_k}; D-15 settings "
+                 f"{decision['settings']}")
+    predictions = {s: [] for s in seeds}
+    trial_frames, curves, best, problems = [], [], {}, {}
+    try:
+        for h in ctx.config["horizons"]:
+            table = data.model_table(h, splits, allow_test=with_test)
+            if not with_test and (table.index >= pd.Timestamp(TEST_START, tz="UTC")).any():
+                raise RunnerError("test rows reached the xgb step in a development run")
+            for target in ctx.config["targets"]:
+                feats = X.input_features(table, target, h, inputs)
+                setting = decision["settings"][target]
+                constraints = X.constraint_map(feats, setting)
+                problem = X.build_problem(table, target, h, feats, constraints, tuning, mean_k,
+                                          smoke=ctx.mode == "smoke")
+                key = problem.key
+                ctx.log.note(f"{key}: {len(feats)} features; D-15 setting {setting}, "
+                             f"constraints {constraints or 'none'}; rows {problem.rows}")
+                for part, counts in problem.nan.items():
+                    if counts:
+                        ctx.log.note(f"{key}: NaN on the {part} rows (passed to XGBoost, M8): "
+                                     f"{counts}")
+                problems[key] = {"features": feats, "n_features": len(feats),
+                                 "monotone_setting": setting,
+                                 "monotone_constraints": constraints, "rows": problem.rows,
+                                 "nan_counts": dict(problem.nan), "nan_counts_predicted": {}}
+                for seed in seeds:
+                    name = f"{key}_seed{seed}"
+                    with ctx.log.step(f"{name}: {n_trials} trial(s)"):
+                        def note(study, trial, name=name):
+                            ctx.log.note(
+                                f"{name} trial {trial.number}: {trial.value:.4f} % kW"
+                                + (f", {trial.user_attrs['value_k']:.4f} % k"
+                                   if "value_k" in trial.user_attrs else "")
+                                + f", best iteration {trial.user_attrs['best_iteration']} of "
+                                f"{trial.params['n_estimators']}, "
+                                f"{trial.user_attrs['duration_s']} s")
+                        study = X.run_study(problem, seed, n_trials, storage,
+                                            f"{X.MODEL}_{name}", on_trial=note)
+                        trials = X.trials_frame(study, target, h, seed)
+                        trial_frames.append(trials)
+                        done = int((trials["state"] == "COMPLETE").sum())
+                        if done < n_trials:
+                            ctx.log.warn(f"{name}: {done} of {n_trials} trials completed")
+                        bt = study.best_trial
+                        fit = X.fit_early_stopping(problem, bt.params, seed)  # the final fit
+                        values = X.score(problem, fit)
+                        diff = abs(values["value_kw"] - bt.value)
+                        if diff > X.REFIT_TOL_PP:
+                            ctx.log.warn(f"{name}: the final fit differs from its best trial "
+                                         f"by {diff:.3g} pp (non-deterministic training?)")
+                        booster_path = models_dir / f"{X.MODEL}_{name}.ubj"
+                        fit.booster.save_model(booster_path)
+                        curves.append(fit.curve.assign(target=target, horizon=h, seed=seed,
+                                                       unit=X.UNIT[target]))
+                        best[name] = {
+                            "target": target, "horizon": h, "seed": seed,
+                            "trial": bt.number, "searched": dict(bt.params),
+                            "xgb_params": X.xgb_params(bt.params, seed, constraints),
+                            "early_stopping_rounds": X.EARLY_STOPPING_ROUNDS,
+                            "sampler": {"name": "TPESampler", "seed": seed},
+                            "feature_order": feats, "monotone_setting": setting,
+                            "monotone_constraints": constraints,
+                            "monotone_constraints_xgb": X.booster_constraints(fit.booster),
+                            "best_iteration": fit.best_iteration, "n_rounds": fit.n_rounds,
+                            "rounds_trained": fit.rounds_trained,
+                            "best_val_rmse": fit.best_val_rmse,
+                            "best_train_rmse": fit.best_train_rmse,
+                            "unit": X.UNIT[target], **values,
+                            "best_trial_value_kw": bt.value,
+                            "booster": booster_path.relative_to(ctx.out).as_posix()}
+                        _xgb_warnings(ctx, X, name, fit, bt.params)
+                        for w in ctx.windows:
+                            rows = X.window_rows(table, w)
+                            Xw = table.loc[rows, feats]
+                            counts = X.nan_counts(Xw)
+                            if counts:
+                                problems[key]["nan_counts_predicted"][w.split] = counts
+                            predictions[seed].append(pd.DataFrame({
+                                "timestamp": table.index[rows],
+                                "y_true": table.loc[rows, X.TARGET_COLUMN[target]].to_numpy(),
+                                "y_pred": X.predict(fit.booster, Xw, fit.n_rounds),
+                                "target": target, "horizon": h, "model": X.MODEL,
+                                "seed": seed, "split": w.split}))
+                        ctx.log.note(f"{name}: best trial {bt.number}, validation "
+                                     f"{values['value_kw']:.4f} % of capacity, best iteration "
+                                     f"{fit.best_iteration} of {fit.n_estimators}")
+    finally:
+        storage.remove_session()
+        storage.engine.dispose()  # release the SQLite file before the folder is renamed
+    outputs = []
+    for seed, frames in predictions.items():
+        frame = pd.concat(frames, ignore_index=True).sort_values(
+            ["target", "horizon", "timestamp"])
+        outputs.append(_write_csv(frame, ctx.out / f"predictions_{X.MODEL}_seed{seed}.csv"))
+    trials = pd.concat(trial_frames, ignore_index=True)
+    curves = pd.concat(curves, ignore_index=True)
+    outputs.append(_write_csv(trials, ctx.out / "trials.csv"))
+    outputs.append(_write_csv(curves, ctx.out / "learning_curves.csv"))
+    outputs.append(_write_json(best, ctx.out / "best_params.json"))
+    spread = _seed_spread(ctx, X, best)
+    outputs.append(_write_json({
+        "model": X.MODEL, "mode": ctx.mode, "budget": budget, "seeds": seeds,
+        "tuning_window": tuning.as_dict(), "windows": [w.as_dict() for w in ctx.windows],
+        "objective": "daytime nRMSE in kW (% of 3,449 kW) on the daytime hours of the tuning "
+                     "window with AC truth, op-limited hours included; indirect converted "
+                     "with evaluate.to_kw (docs/stage9_plan.md §14.1)",
+        "early_stopping": f"{X.EARLY_STOPPING_ROUNDS} rounds on the RMSE in the training unit "
+                          "over the tuning window's rows with the fit mask (§14.2)",
+        "fit_rows": "indirect: train, not warm-up, not op-limited, k valid, theo > 50 kW; "
+                    "direct: train, not warm-up, not op-limited, AC present (M11)"
+                    + ("; smoke: the last 56 local days of train" if ctx.mode == "smoke"
+                       else ""),
+        "imputation": "none: NaN is passed to XGBoost (M8)",
+        "fixed_params": X.FIXED_PARAMS, "search_space": X.SEARCH_SPACE,
+        "mean_daytime_k": mean_k, "monotone_decision": decision,
+        "monotone_decision_sha256": sha256(MONOTONE_DECISION_FILE),
+        "seed_spread_pp": spread, "problems": problems,
+        "optuna": optuna.__version__}, ctx.out / "xgb_config.json"))
+    figures = ctx.out / "figures"
+    figures.mkdir()
+    X.plot_learning_curves(curves, best, figures / "learning_curves.png")
+    X.plot_histories(trials, figures / "optimization_history.png")
+    outputs += [figures / "learning_curves.png", figures / "optimization_history.png", db]
+    outputs += sorted(models_dir.glob("*.ubj"))
+    summary = [f"xgb ({ctx.mode}, {n_trials} trial(s), seeds {seeds}): nRMSE in kW on the "
+               f"tuning window, {tuning.label}"]
+    for name, b in best.items():
+        summary.append(f"  {name:<22} {b['value_kw']:6.3f} %  best iteration "
+                       f"{b['best_iteration']} of {b['xgb_params']['n_estimators']}")
+    return Result(outputs, values={"best": {k: v["value_kw"] for k, v in best.items()},
+                                   "trials": int(len(trials))},
+                  summary=summary, notes={"seed_spread_pp": spread})
+
+
+def _xgb_warnings(ctx: Context, X, name: str, fit, params: dict) -> None:
+    """The automatic warnings of docs/stage9_plan.md §3.5 for one final fit."""
+    if fit.best_iteration == 0:
+        ctx.log.warn(f"{name}: best iteration at the first round")
+    if fit.cap_hit:
+        ctx.log.warn(f"{name}: best iteration {fit.best_iteration} at the cap of "
+                     f"{fit.n_estimators} rounds: it may not have converged (M12d)")
+    if not np.isfinite(fit.curve[["train_rmse", "val_rmse"]].to_numpy()).all():
+        ctx.log.warn(f"{name}: NaN or infinite loss in the learning curve")
+    ratio = fit.best_val_rmse / fit.best_train_rmse if fit.best_train_rmse > 0 else np.inf
+    if ratio > X.GAP_RATIO_WARN:
+        ctx.log.warn(f"{name}: validation RMSE {fit.best_val_rmse:.4g} is {ratio:.1f} x the "
+                     f"train RMSE {fit.best_train_rmse:.4g} at the best iteration")
+    edges = X.edge_params(params)
+    if edges:
+        ctx.log.warn(f"{name}: best trial on the edge of the search space for "
+                     + ", ".join(f"{p} = {params[p]:.4g}" for p in edges))
+
+
+def _seed_spread(ctx: Context, X, best: dict) -> dict:
+    """Std over seeds of the validation nRMSE in kW per target x horizon (stage-10 rule)."""
+    by_key: dict[str, list[float]] = {}
+    for b in best.values():
+        by_key.setdefault(f"{b['target']}_D{b['horizon']}", []).append(b["value_kw"])
+    spread = {}
+    for key, values in by_key.items():
+        if len(values) < 2:
+            continue
+        spread[key] = float(np.std(values, ddof=1))
+        if spread[key] > X.SEED_SPREAD_WARN_PP:
+            ctx.log.warn(f"{key}: seed spread {spread[key]:.3f} pp above "
+                         f"{X.SEED_SPREAD_WARN_PP} pp")
+    if not spread:
+        ctx.log.note("seed spread: one seed per target x horizon, not computed")
+    return spread
+
+
 # ── evaluate ────────────────────────────────────────────────────────────────
 
 
@@ -205,5 +448,6 @@ class Implementation:
 
 IMPLEMENTED = {
     "baselines": Implementation(baselines_inputs, run_baselines),
+    "xgb": Implementation(xgb_inputs, run_xgb),
     "evaluate": Implementation(evaluate_inputs, run_evaluate),
 }

@@ -97,7 +97,7 @@ def test_select_steps():
 
 def test_unimplemented_steps_are_refused_with_their_work_item(tmp_path):
     r = Runner(runs_dir=tmp_path / "runs", preflight=lambda m: fake_report(m), echo=False)
-    with pytest.raises(ValueError, match=r"xgb \(W2\)"):
+    with pytest.raises(ValueError, match=r"bilstm \(W4\)"):
         r.run("smoke", select_steps(None, "baselines", "evaluate"))
     assert not (tmp_path / "runs").exists()
 

@@ -824,6 +824,97 @@ current manifest with a note under every code cell, and the claims of the notes 
 - *Original:* one script trained, evaluated and reported in sequence, scoring whatever files were
   in `outputs/`, overwriting its logs, and evaluating the test split every time (C-36–C-41).
 
+**W2: the `xgb` step and the checks of the stage-9 plan §14.** Self-review before the code
+(`docs/stage9_plan.md` §13: M7–M12 against the original, X10–X13 against my code); the decision
+rules were committed before any XGB result (§14, commit `0cc8d17`). Only train and validation
+rows are read; nothing here reads the test split.
+
+**OP-50 — The `xgb` step: model tables, rows, no imputation, raw predictions
+(`solarpv.pipeline.steps.run_xgb`, `solarpv.models.xgb_sota`, `solarpv.pipeline.data`).**
+- *Why:* XGB-Opt of §6.11 in the runner, with its training logs (§3.5 of the plan), on the
+  inputs of stage 7 (OP-48) and with every rule of the W2 review.
+- *Method:*
+  - **Reading (X10):** `model_table(h, splits)` joins the stage-6 table of D+h with its GFS table
+    as the stage-6b loader does (left join on `timestamp_utc`, the GFS `t0_utc` dropped), but the
+    parquet reader filters the rows: the feature table by `split` ∈ {train, val}, the GFS table
+    (no split column) by `timestamp_utc` < 2024-10-01 00:00 UTC. It asserts that no row at or after
+    the test start was read. Test rows are read only in a final run with `allow_test`, and only
+    to be predicted.
+  - **Inputs (M12a):** the list of `model_inputs.json` per target × horizon (31/28/32 indirect,
+    96/89/82 direct), each feature checked against the stage-7 pool of the horizon and the leakage
+    rules, in its recorded order.
+  - **Rows (M11, §14.2):**
+    - fit: train, not warm-up, not op-limited; indirect also `k_valid` and theo > 50 kW
+      (9,575 rows), direct AC present (20,393 rows, nights included); smoke mode the last 56 local
+      days of train;
+    - early stopping: the rows of the tuning window with the same mask (dev: the whole validation
+      split; smoke: the 28-day window of OP-49), RMSE in the training unit (k or kW), 50 rounds;
+    - objective: the daytime hours of the tuning window with AC truth, op-limited hours included
+      (§14.1; dev: 2,901 hours, 146 op-limited).
+  - **No imputation (M8):** NaN is passed to XGBoost; the NaN count of every feature on the fit,
+    early-stopping, scoring and predicted rows is written to `xgb_config.json`. On the real
+    tables NaN occurs only in `irradiance_clear_index_prevday` (a few train hours) and in the GFS
+    ratios at night (direct fit rows).
+  - **Monotone constraints (M7):** read from `configs/monotone_decision.yaml` (OP-51); exact
+    names of the D-15 list; the map per target × horizon and the string XGBoost applied are
+    recorded.
+  - **Search and fit:** Optuna TPE, `TPESampler(seed=S)`, XGBoost `random_state=S`, the space of
+    §6.11, `hist`, 8 threads, one study per target × horizon × seed in `optuna.db`; the best
+    trial's parameters refitted with the same rows and early stopping (no refit on train + val,
+    D-10); the refit must equal its trial.
+  - **Outputs:** `predictions_xgb_sota_seed<S>.csv` with the raw model output (k never clipped)
+    for every hour of every window of the run, in the contract of §6.10; `trials.csv`,
+    `learning_curves.csv`, `best_params.json`, `xgb_config.json`, two figures, the boosters in
+    `models/` and the study in `optuna.db` (both not in git).
+- *Result:* run journal R9-05 (smoke) and R9-06 (dev).
+- *Verification:* T-56–T-59 (constraints by exact name, allow-list, rows, no imputation, the
+  objective equal to the evaluation's `nRMSE_kW_pct`, raw output, the full record, a reloaded
+  booster reproduces the predictions exactly, seeds, the warnings), T-60 (no test row read,
+  filters inside the reader), T-61 (validation labels do not change the trees).
+- *Original:* `fillna(0)`, substring constraints, training on every hour, clips in the scoring
+  scripts, saved parameters that were not the model (C-20, C-42–C-46).
+
+**OP-51 — D-15, monotone constraints for k (`python -m solarpv.models.xgb_checks d15`).**
+- *Why:* the original applied +1 on clear-sky irradiance to the k target too, against the sign
+  of k in train (C-33); D-15 asks whether to keep that constraint.
+- *Method (§14.3, registered before the result):* the fixed XGBoost of D-11 (400 trees, depth 6,
+  learning rate 0.05; a new dict per fit, X13), seeds 42, 123, 777, on the indirect fit rows of
+  train with the stage-7 inputs; setting A, +1 on the D-15 features present (`ghi_clearsky` at
+  every horizon), against setting B, none; scored by §14.1 on the whole validation split.
+  gain_h = mean_A − mean_B, margin_h = max(0.05 pp, 2 × pooled seed std); B only if gain_1 >
+  margin_1 and gain_h > −margin_h at D+2 and D+3, otherwise A, the v6 setting, stays. The
+  marginal Spearman sign of k and of AC against each D-15 feature on the indirect fit rows is
+  reported. The direct target keeps the D-15 list with +1 (not part of the question).
+- *Result:* `configs/monotone_decision.yaml`, `outputs/09_xgb_checks/d15_check.csv` and
+  `d15_marginal_sign.csv`; run journal R9-04.
+- *Verification:* T-62 (the decision file is readable by the step; `XGB_PARAMS` unchanged),
+  T-63 (the rule).
+- *Original:* +1 by substring on both targets, never compared (C-20, C-33).
+
+**OP-52 — L-09 (bias correction) and R-14 (mean bias) on the dev run
+(`python -m solarpv.models.xgb_checks l09|r14 --run <id>`).**
+- *Why:* L-09 is the literature idea of a final MOS layer (§16b), registered with its rule
+  before any model result; R-14 predicts a positive level bias of the direct target from the
+  1 %/year decline of output per unit irradiance (Q29).
+- *Method (§14.4, §14.5):*
+  - **L-09:** per target × horizon the best parameters of the dev study with a fixed number of
+    rounds (the dev best iteration + 1, no early stopping), seeds 42, 123, 777; out-of-fold kW
+    predictions on train from the five expanding date folds of stage 7 (3-day gap); OLS
+    y = a + b × ŷ on the out-of-fold daytime hours with AC truth, not op-limited, not warm-up;
+    applied as clip(a + b × ŷ, 0, 3,449) to the validation forecast of the same base model
+    trained on all of train; the rule of §14.3 per target. Seed 42 on all of train with the dev
+    rounds is the dev final fit; the check logs the largest difference from the dev predictions.
+  - **R-14:** mean bias error (forecast − actual, kW) of the dev forecast on the validation
+    daytime hours with AC truth, overall and per local month, with a 95 % circular block
+    bootstrap interval (block 24 h, 1,000 resamples, seed 42); reported, not decided.
+  - The checks only read the dev run (every file checked against its step record) and never
+    write a `predictions_*` file or into a run folder.
+- *Result:* `configs/mos_decision.yaml`, `outputs/09_xgb_checks/l09_check.csv`, `r14_bias.csv`;
+  run journal R9-07.
+- *Verification:* T-61 (the MOS coefficients do not depend on the validation labels), T-63 (the
+  rules, the outputs, L-09 and R-14 on a synthetic dev run, the run folder unchanged).
+- *Original:* no bias correction and no bias check.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
@@ -852,6 +943,7 @@ current manifest with a note under every code cell, and the claims of the notes 
 | Feature selection | whole table, validation and test included; per-inverter DC kept for the direct target; the selected sets never compared with the full pool | train only, from an allow-list; each set checked against the full pool inside train and once on validation, with the rule fixed in advance; the direct route keeps its full pool | OP-45–OP-48, F-26, F-27, F-29 |
 | Test access | not controlled | validation by default; test only with an explicit flag, logged | OP-41, E10 |
 | Model runs | one script; failed steps ignored; whatever files were in `outputs/` scored; logs overwritten; test evaluated in every run | one runner with smoke, dev and final modes; inputs checked against the stage manifests; each run in its own folder with hashes; only the run's own files scored; no test row loaded outside final | OP-49, C-36–C-41 |
+| XGB training | `fillna(0)`; every train hour (nights, stops, invalid k); +1 constraints by substring on both targets; clips in the scoring scripts; saved parameters not the model | no imputation; fit masks per target (D-22, L-04); exact D-15 list, decided for k on validation; raw output, one conversion (`evaluate.to_kw`); full record, saved booster, explicit iteration range | OP-50, OP-51, C-20, C-33, C-42–C-46 |
 
 ## 18. Limitations carried into the report
 
@@ -925,11 +1017,16 @@ python -m solarpv.selection.run --skip-validation   # about 95 min on 8 threads;
 python -m solarpv.selection.run --validation-only   # the one validation look; writes model_inputs.json
 python -m solarpv.pipeline check --mode dev
 python -m solarpv.pipeline run --mode dev --only baselines,evaluate   # equals the stage-8B tables
+python -m solarpv.models.xgb_checks d15      # writes configs/monotone_decision.yaml (committed)
+python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate
+python -m solarpv.models.xgb_checks l09 --run <dev run id>   # writes configs/mos_decision.yaml
+python -m solarpv.models.xgb_checks r14 --run <dev run id>
 python scripts/build_data_record.py
 pytest
 ```
 
 ## 20. Pending operations (documented here when performed)
 
-Stage 9 models (W2–W4), with the inputs of `outputs/07_feature_selection/model_inputs.json`
-(OP-48), and the D-21 robustness check on val.
+Stage 9 sequence models (W3–W4), with the inputs of
+`outputs/07_feature_selection/model_inputs.json` (OP-48), and the D-21 robustness check on val.
+XGB (W2) is OP-50–OP-52.

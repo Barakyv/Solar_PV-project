@@ -37,6 +37,9 @@ THEO_MIN_KW = 50.0  # below this clear-sky power the index k is undefined (k_val
 K_SUSPECT_MAX = 1.5  # k above this is flagged as a probable data error; k is never clipped
 MEAN_DAYTIME_K_LEGACY = 0.6279  # old (buggy) pipeline; only for the evaluate.py fixture (T-15)
 DERIVED_CONSTANTS_FILE = CONFIGS_DIR / "derived_constants.yaml"  # written by stage 6
+# decisions of stage 9, written by python -m solarpv.models.xgb_checks (docs/stage9_plan.md §14)
+MONOTONE_DECISION_FILE = CONFIGS_DIR / "monotone_decision.yaml"  # D-15, read by the xgb step
+MOS_DECISION_FILE = CONFIGS_DIR / "mos_decision.yaml"  # L-09
 
 # ── Horizons and leakage rules (§6.6) ──────────────────────────────────────
 HORIZONS = (1, 2, 3)

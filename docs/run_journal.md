@@ -893,3 +893,49 @@ hashes, numbers) and the commit messages are the record:
     log is written before the rename; `step.json` holds the final paths. Left as is.
 - **Decision / next:** W1 is done. Next: W2 (`xgb` with its training logs), after the user's
   answer on the proposals of §11 and a confirmation of D-17.
+
+### 2026-11-07 · R9-03 · Self-review of W2 and the code of the `xgb` step
+
+- **Purpose:** the review the project rules ask for before the code of a work item, and its
+  implementation. The review itself (M7–M12 against the original, X10–X13 against my code) and
+  the decision rules of §14 were written and committed on 2026-11-05 (`0cc8d17`), before any
+  code or XGB result; this entry records how each finding was implemented and what the code
+  added.
+- **Blocking decisions (§3):** none. D-17 approved (20 trials, seed 42); D-15 is decided by
+  the rule of §14.3 in this work item.
+- **Findings and their fixes** (errata C-20, C-33, C-42–C-46, X10–X13; tests T-56–T-63):
+  - M7: constraints by exact name, a name → sign map recorded per target × horizon and read back
+    from the booster (`(1,0,0)` in the test);
+  - M8: no imputation; NaN counts per feature in `xgb_config.json`. **§6.6 of
+    `PROJECT_MASTER.md` still said "remaining NaN gets 0 in XGB"**: corrected with this work item
+    (C-42);
+  - M9 and X12: the objective calls `evaluate.to_kw`; in the synthetic smoke run the recorded
+    objective equals the evaluation's `nRMSE_kW_pct` of every target × horizon (to the 6 written
+    decimals);
+  - M10: `best_params.json` holds the full parameter set, the best iteration and the rounds
+    used; the boosters are saved with all their rounds (best + 50) and every prediction passes
+    `iteration_range=(0, best + 1)`; a reloaded booster reproduces the written predictions
+    exactly;
+  - M11: fit masks per target; M12: allow-list, seed in both sampler and model, cap warning;
+  - X10: `pipeline.data.model_table`; X11: the stage-7 provenance rows; X13: a new dict per
+    fit, and the D-15 check refuses to finish if `XGB_PARAMS` changed.
+- **Choices made in the code (not in the plan's text):**
+  - `min_child_weight` is searched as an integer in [1, 20], like the other bracketed integer
+    ranges of §6.11 (v6 does not say).
+  - The automatic warnings of §3.5 have these thresholds: a best parameter within 2 % of a bound
+    (in its sampling scale; at the bound for small integer ranges); a validation RMSE more than
+    twice the train RMSE at the best iteration; the best iteration at round 0 or at the cap; a
+    NaN loss; fewer completed trials than the budget; a refit that differs from its trial; a
+    seed spread above 0.15 pp (final runs).
+  - The D-15 decision file is in `checks.TRACKED_INPUTS`, but while it does not exist `check`
+    reports it as **pending** (a warning, not an error), so the `baselines` and `evaluate` steps
+    still run before D-15 is decided; the `xgb` step refuses without it. Once it exists it must
+    be tracked and unmodified like any input.
+  - X11 checks the stage-7 selection run log (`20261103T113918Z.log`, six tables). The log of
+    the validation look (`20261103T131740Z.log`) names no input, so it adds no row.
+  - `optuna` and `SQLAlchemy` moved to the required packages of `check`.
+- **Check before any run:** `python -m solarpv.pipeline check --mode dev` passes on the real
+  inputs: 18 of 19 inputs as recorded, the six stage-7 provenance rows match, and the D-15
+  decision is pending.
+- **Tests:** 24 new (T-56–T-63) and one changed (`bilstm (W4)` is now the first unimplemented
+  step); the synthetic smoke run of `baselines,xgb,evaluate` passes.

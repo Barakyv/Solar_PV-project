@@ -6,6 +6,12 @@
 - Data (M4): every input the runner reads is compared with the SHA-256 recorded by the stage
   that produced it (the stage manifests), and git-tracked inputs must be unmodified. A missing
   or changed file is an error, never a default.
+- Stage-7 provenance (X11): the tables named in the stage-7 run log (the log of
+  `selection_manifest.json`) must still be the tables the feature sets were selected on: the
+  SHA-256 prefix written in that log must match the current file.
+- Pending decisions: a decision file that a later step reads (D-15, `configs/
+  monotone_decision.yaml`) is reported as pending while it does not exist; the step that needs it
+  refuses to run. Once it exists, it must be tracked and unmodified like any other input.
 - Gates: the commit and the state of the tree; `final` needs the tag `g1-frozen` on HEAD, a clean
   tree and the private site file (D-08).
 """
@@ -13,26 +19,36 @@
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 from importlib import metadata
 from pathlib import Path
 
-from solarpv.config.constants import XGB_THREADS
+from solarpv.config.constants import MONOTONE_DECISION_FILE, XGB_THREADS
 from solarpv.config.paths import OUTPUTS_DIR, PROCESSED_DIR, REPO_ROOT
 from solarpv.config.provenance import find_git, git_commit, sha256
 from solarpv.config.site import load_site
 from solarpv.pipeline.config import FROZEN_TAG
 
-# distribution names; the first group is needed by the steps of W1
+# distribution names; the first group is needed by the steps of W1 and W2
 REQUIRED = ("numpy", "pandas", "pyarrow", "scipy", "scikit-learn", "statsmodels", "pvlib",
-            "PyYAML", "xgboost")
-OPTIONAL = ("optuna", "shap", "matplotlib", "psutil", "torch", "lightning",
+            "PyYAML", "xgboost", "optuna", "SQLAlchemy")
+OPTIONAL = ("shap", "matplotlib", "psutil", "torch", "lightning",
             "pytorch-forecasting", "neuralforecast")
 STAGE_MANIFESTS = (PROCESSED_DIR / "06_features" / "features_manifest.json",
                    PROCESSED_DIR / "06b_gfs" / "gfs_manifest.json")
+SELECTION_MANIFEST = OUTPUTS_DIR / "07_feature_selection" / "selection_manifest.json"
+MONOTONE_DECISION = MONOTONE_DECISION_FILE
 TRACKED_INPUTS = (OUTPUTS_DIR / "07_feature_selection" / "model_inputs.json",
-                  REPO_ROOT / "configs" / "split_manifest.yaml")
+                  SELECTION_MANIFEST,
+                  REPO_ROOT / "configs" / "split_manifest.yaml",
+                  MONOTONE_DECISION)
+# tracked inputs that may not exist yet: path -> what to run (the step that reads it refuses)
+PENDING_DECISIONS = {MONOTONE_DECISION: "D-15 not decided yet: run python -m "
+                                        "solarpv.models.xgb_checks d15 (the xgb step refuses "
+                                        "without it)"}
+INPUT_LINE = re.compile(r"\bINPUT\s+(\S+)\s+sha256=([0-9a-f]{8,64})\b")
 
 
 def _rel(path: Path) -> str:
@@ -108,8 +124,54 @@ def _git(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run([find_git(), *args], cwd=REPO_ROOT, capture_output=True, text=True)
 
 
-def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS) -> list[dict]:
-    """One row per input: where its expected state comes from, and whether it holds."""
+def stage7_provenance(manifest=SELECTION_MANIFEST) -> list[dict]:
+    """X11: one row per table read by the stage-7 selection run. The SHA-256 prefix that run's
+    log wrote for the table must match the current file, or the feature sets of
+    `model_inputs.json` were chosen on other tables. The validation look's log is checked too
+    when it names inputs (the run of 2026-11-03 named none)."""
+    manifest = Path(manifest)
+    source = "stage-7 provenance"
+    if not manifest.exists():
+        return [{"path": _rel(manifest), "source": source, "ok": False,
+                 "detail": "selection manifest missing: run stage 7"}]
+    record = json.loads(manifest.read_text(encoding="utf-8"))
+    rows = []
+    for key, required in (("run_log", True), ("validation_run_log", False)):
+        rel_log = record.get(key)
+        if not rel_log:
+            if required:
+                rows.append({"path": _rel(manifest), "source": source, "ok": False,
+                             "detail": f"the manifest names no {key}"})
+            continue
+        log = REPO_ROOT / rel_log
+        if not log.exists():
+            rows.append({"path": rel_log, "source": source, "ok": False,
+                         "detail": "stage-7 run log missing"})
+            continue
+        found = INPUT_LINE.findall(log.read_text(encoding="utf-8"))
+        if not found and required:
+            rows.append({"path": rel_log, "source": source, "ok": False,
+                         "detail": "the stage-7 run log names no input"})
+        for rel, prefix in found:
+            path = REPO_ROOT / rel
+            if not path.exists():
+                rows.append({"path": rel, "source": f"{source} ({log.name})", "ok": False,
+                             "detail": "missing"})
+                continue
+            actual = sha256(path)
+            ok = actual.startswith(prefix)
+            rows.append({"path": rel, "source": f"{source} ({log.name})", "ok": ok,
+                         "detail": "selected on this table" if ok else
+                         f"sha256 {actual[:len(prefix)]} differs from {prefix} in the stage-7 "
+                         "log: the feature sets were selected on another table; rerun stage 7"})
+    return rows
+
+
+def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS,
+               selection=SELECTION_MANIFEST, pending=None) -> list[dict]:
+    """One row per input: where its expected state comes from, and whether it holds. A row with
+    `blocking: False` (a pending decision) is reported but does not stop a run."""
+    pending = PENDING_DECISIONS if pending is None else pending
     rows = []
     for manifest in manifests:
         manifest = Path(manifest)
@@ -133,7 +195,9 @@ def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS) -> list[dict]:
         path = Path(path)
         rel = _rel(path)
         if not path.exists():
-            rows.append({"path": rel, "source": "git", "ok": False, "detail": "missing"})
+            waiting = {Path(p).resolve(): text for p, text in pending.items()}.get(path.resolve())
+            rows.append({"path": rel, "source": "git", "ok": False,
+                         "detail": waiting or "missing", "blocking": waiting is None})
             continue
         known = _git("ls-files", "--error-unmatch", "--", rel)
         changed = _git("status", "--porcelain", "--", rel)
@@ -144,6 +208,8 @@ def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS) -> list[dict]:
         clean = changed.stdout.strip() == ""
         rows.append({"path": rel, "source": "git", "ok": clean,
                      "detail": "unmodified" if clean else "modified since the last commit"})
+    if selection is not None:
+        rows += stage7_provenance(selection)
     return rows
 
 
@@ -200,11 +266,14 @@ def preflight(mode: str) -> dict:
     site_private = load_site().is_private
     env_errors, env_warnings = environment_problems(env)
     gate_errors, gate_warnings = gate_problems(mode, state, site_private)
-    data_errors = [f"{r['path']}: {r['detail']}" for r in data if not r["ok"]]
+    data_errors = [f"{r['path']}: {r['detail']}" for r in data
+                   if not r["ok"] and r.get("blocking", True)]
+    data_warnings = [f"{r['path']}: {r['detail']}" for r in data
+                     if not r["ok"] and not r.get("blocking", True)]
     return {"mode": mode, "environment": env, "data": data, "git": state,
             "site_private": site_private,
             "errors": env_errors + data_errors + gate_errors,
-            "warnings": env_warnings + gate_warnings}
+            "warnings": env_warnings + data_warnings + gate_warnings}
 
 
 def format_preflight(report: dict) -> list[str]:
@@ -225,7 +294,8 @@ def format_preflight(report: dict) -> list[str]:
         f"data: {sum(r['ok'] for r in report['data'])} of {len(report['data'])} inputs as "
         "recorded",
     ]
-    lines += [f"  FAIL {r['path']}: {r['detail']}" for r in report["data"] if not r["ok"]]
+    lines += [f"  {'FAIL' if r.get('blocking', True) else 'PENDING'} {r['path']}: {r['detail']}"
+              for r in report["data"] if not r["ok"]]
     lines += [f"warning: {w}" for w in report["warnings"]]
     lines += [f"ERROR: {e}" for e in report["errors"]]
     lines.append("check passed" if not report["errors"] else "check FAILED")
