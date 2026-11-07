@@ -83,6 +83,7 @@ validation tables exactly (T-55, R9-02).
 | X21 | Same review: `pipeline.data.model_table(h, splits)` filters by split label, so a validation run reads no train row, while the windows need the hours before the split and must stop at TEST_START | A time-range loader filtered inside the parquet reader (`timestamp_utc < TEST_START` for all eight files in smoke and dev); the split label decides which steps are kept (T-67) | none |
 | X22 | Same review: the D-22-masked hourly series exist only inside `features.build.masked_sources`; the unmasked hourly AC would feed stops and curtailment into the encoder, and new masks would be a second copy | The datasets call `masked_sources` itself; a check compares the encoder series with the stage-6 `lag_1d` it feeds (0 mismatches; the unmasked AC fails it) (T-68) | none |
 | X23 | Same review: the loss rows of XGB (`xgb_sota.fit_mask`) would need a copy for the sequence models | The datasets call `fit_mask` on the kept decoder steps; the loss rows per horizon equal the XGB fit rows of the scope (T-67) | none |
+| X24 | Found by the first real run of `python -m solarpv.models.sequence_data` (R9-13): the command passed `out_dir / "runs"` to `RunLog`, which adds `runs` itself, so the log went to `outputs/09_sequence_data/runs/runs/` | `RunLog(..., out_dir=out_dir)`; the synthetic run test asserts one log directly under `runs/` (T-71) | none: the log was moved to `runs/`; the reports were regenerated |
 
 ## Old vs new results
 

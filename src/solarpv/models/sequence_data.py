@@ -666,10 +666,11 @@ def run(mode: str = "dev", out_dir: Path | None = None, paths: Paths | None = No
         raise ValueError("W3 builds development datasets only (smoke or dev); the test windows "
                          "are built in a final run with allow_test")
     out_dir = Path(out_dir) if out_dir else output_dir(REPORT_NAME)
-    (out_dir / "runs").mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     paths = paths or default_paths()
+    # RunLog writes <out_dir>/runs/<UTC second>.log itself (X24: not out_dir / "runs")
     with RunLog(REPORT_NAME, f"python -m solarpv.models.sequence_data --mode {mode}",
-                out_dir=out_dir / "runs") as log:
+                out_dir=out_dir) as log:
         inputs_sha = log.inputs(paths.files())
         with log.step("load the inputs before TEST_START"):
             sources = load_sources(paths=paths)

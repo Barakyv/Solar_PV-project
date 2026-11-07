@@ -575,5 +575,8 @@ def test_the_command_checks_pass_on_synthetic_inputs(paths, tmp_path):
     assert report["all_checks_pass"], json.dumps(report["datasets"], default=str)[:2000]
     assert (tmp_path / "dataset_report_dev.json").exists()
     assert (tmp_path / "checks_dev.csv").exists()
+    logs = sorted(p.relative_to(tmp_path).as_posix() for p in tmp_path.rglob("*.log"))
+    assert len(logs) == 1 and logs[0].startswith("runs/") and logs[0].count("/") == 1  # X24
+    assert report["run_log"].endswith(logs[0].split("/")[-1])
     with pytest.raises(ValueError):
         S.run("final", out_dir=tmp_path, paths=paths)
