@@ -97,8 +97,8 @@ def test_select_steps():
 
 def test_unimplemented_steps_are_refused_with_their_work_item(tmp_path):
     r = Runner(runs_dir=tmp_path / "runs", preflight=lambda m: fake_report(m), echo=False)
-    with pytest.raises(ValueError, match=r"bilstm \(W4\)"):
-        r.run("smoke", select_steps(None, "baselines", "evaluate"))
+    with pytest.raises(ValueError, match=r"explain \(W5\)"):
+        r.run("smoke", select_steps(None, "baselines", "explain"))
     assert not (tmp_path / "runs").exists()
 
 
@@ -107,7 +107,7 @@ def test_modes_budgets_and_windows():
     assert dev["budgets"]["xgb"] == {"trials": DEV_OPTUNA_TRIALS, "seeds": [42]}  # D-17
     assert final["budgets"]["xgb"] == {"trials": FINAL_OPTUNA_TRIALS,
                                        "seeds": list(RANDOM_SEEDS)}  # D-08
-    assert final["budgets"]["bilstm"]["trials"] == 60 and final["budgets"]["tft"]["trials"] == 20
+    assert final["budgets"]["bilstm"]["trials"] == 60 and final["budgets"]["tft96"]["trials"] == 20
     (smoke,) = evaluation_windows("smoke")
     hours = pd.date_range(smoke.start_ts, smoke.end_ts, freq="h", inclusive="left")
     local = hours.tz_convert(TIMEZONE_LOCAL)

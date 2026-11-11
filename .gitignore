@@ -28,6 +28,10 @@ outputs/**/lightning_logs/
 /outputs/runs/**/predictions_*.csv
 /outputs/runs/**/uncorrected_*.csv
 /outputs/runs/**/.*.tmp/
+# the neural steps (stage-9 plan §18): the job arrays and the worker's forecast arrays and
+# quantile files are bulky; the records, curves, trials, configs and figures are committed
+/outputs/runs/**/*.npz
+/outputs/runs/**/quantiles_*.csv
 
 # --- python ---
 __pycache__/

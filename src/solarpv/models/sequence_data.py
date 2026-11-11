@@ -69,10 +69,10 @@ from solarpv.pipeline.config import Window, evaluation_windows
 from solarpv.pipeline.data import INDEX, feature_file, gfs_file
 from solarpv.selection.common import PREVDAY
 
-# encoder hours per model (D-28: 72 h for the BiLSTM, E1; §6.11 for the TFT models). PatchTST's
-# input size is a W4 choice; the checks of this module use CHECK_PATCHTST_HOURS
-MODELS = {"bilstm": 72, "tft96": 96, "tft168": 168, "tftbase": 168, "patchtst": None}
-CHECK_PATCHTST_HOURS = 168
+# encoder hours per model (D-28: 72 h for the BiLSTM, E1; §6.11 for the TFT models; PatchTST's
+# input size registered in W4, docs/stage9_plan.md §18.4, X33: the neuralforecast input size)
+MODELS = {"bilstm": 72, "tft96": 96, "tft168": 168, "tftbase": 168, "patchtst": 168}
+CHECK_PATCHTST_HOURS = MODELS["patchtst"]
 TARGETS = ("indirect", "direct")
 N_DAYS = 3
 MAX_STEPS = 73  # three local days: 72 h, or 71 / 73 h around a DST day (D-25)

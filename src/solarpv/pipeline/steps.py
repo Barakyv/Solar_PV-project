@@ -1,5 +1,6 @@
-"""The work steps implemented so far: `baselines` and `evaluate` (W1), `xgb` (W2)
-(docs/stage9_plan.md §3.2, §10.3, §13.4). Every step gets a `Context` and writes only into
+"""The work steps implemented so far: `baselines` and `evaluate` (W1), `xgb` (W2), and the
+neural steps `bilstm`, `tft96`, `tft168`, `tftbase`, `patchtst` (W4, in `pipeline.neural`)
+(docs/stage9_plan.md §3.2, §10.3, §13.4, §18). Every step gets a `Context` and writes only into
 `ctx.out`, a temporary folder that the runner renames when the step succeeds.
 
 Rules (the self-reviews of §10 and §13):
@@ -531,8 +532,22 @@ class Implementation:
     run: Callable[[Context], Result]
 
 
+def _neural_step(step: str) -> Implementation:
+    """A neural step (W4, `solarpv.pipeline.neural`), imported when it runs."""
+    def inputs(ctx: Context) -> list[Path]:
+        from solarpv.pipeline import neural
+        return neural.neural_inputs(ctx, step)
+
+    def run(ctx: Context) -> Result:
+        from solarpv.pipeline import neural
+        return neural.run_neural(ctx, step)
+
+    return Implementation(inputs, run)
+
+
 IMPLEMENTED = {
     "baselines": Implementation(baselines_inputs, run_baselines),
     "xgb": Implementation(xgb_inputs, run_xgb),
+    **{s: _neural_step(s) for s in ("bilstm", "tft96", "tft168", "tftbase", "patchtst")},
     "evaluate": Implementation(evaluate_inputs, run_evaluate),
 }

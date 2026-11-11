@@ -33,8 +33,9 @@ from solarpv.pipeline.config import SPEC, STEP_ORDER, Window, resolve
 from solarpv.pipeline.steps import IMPLEMENTED, Context, RunnerError
 
 RUNS_DIR = OUTPUTS_DIR / "runs"
-BUDGET_FAMILY = {"xgb": "xgb", "bilstm": "bilstm", "tft96": "tft", "tft168": "tft",
-                 "tftbase": "tft", "patchtst": "patchtst"}
+# the budget of each model step (one budget per step, X27)
+BUDGET_FAMILY = {"xgb": "xgb", "bilstm": "bilstm", "tft96": "tft96", "tft168": "tft168",
+                 "tftbase": "tftbase", "patchtst": "patchtst"}
 
 
 def _now() -> datetime:

@@ -34,28 +34,38 @@ FROZEN_TAG = "g1-frozen"
 # 28 local days inside validation, with the spring-forward day 2024-03-29 (a 23-hour day)
 SMOKE_WINDOW_LOCAL = ("2024-03-15", "2024-04-11")
 
-# Budgets per mode. W1 runs no model; the values are recorded in every run's config.yaml and
-# used by the model steps of W2 and W4. dev = D-17 (and §4.3 of the plan), final = D-08.
+# Budgets per mode and model step, recorded in every run's config.yaml. dev: D-17 (XGB, user
+# 2026-11-05; the neural models, user 2026-11-11, docs/stage9_plan.md §18.6: one third of the v6
+# trials, the full v6 epochs, one seed). final: D-08 and v6 §5.2-§5.6. Every neural budget has
+# every field (X27). PatchTST counts neuralforecast training steps and validation checks.
+_PATIENCE = 10
+
+
+def _neural(bilstm: tuple, tft: tuple, tftbase_epochs: int, patchtst: tuple,
+            bilstm_seeds: list) -> dict:
+    trials, epochs_trial, epochs_final = bilstm
+    tft_trials, tft_epochs = tft
+    max_steps, val_check_steps = patchtst
+    one = [DEV_SEED]
+    tft_budget = {"trials": tft_trials, "epochs": tft_epochs, "patience": _PATIENCE,
+                  "seeds": one}
+    return {
+        "bilstm": {"trials": trials, "epochs_trial": epochs_trial, "epochs_final": epochs_final,
+                   "patience": _PATIENCE, "seeds": list(bilstm_seeds)},
+        "tft96": dict(tft_budget), "tft168": dict(tft_budget),
+        "tftbase": {"trials": 0, "epochs": tftbase_epochs, "patience": _PATIENCE, "seeds": one},
+        "patchtst": {"max_steps": max_steps, "val_check_steps": val_check_steps,
+                     "patience": _PATIENCE, "seeds": one},
+    }
+
+
 BUDGETS = {
-    "smoke": {
-        "xgb": {"trials": 1, "seeds": [DEV_SEED]},
-        "bilstm": {"trials": 1, "epochs_trial": 2, "epochs_final": 2, "seeds": [DEV_SEED]},
-        "tft": {"trials": 1, "epochs": 2, "seeds": [DEV_SEED]},
-        "patchtst": {"epochs": 2, "seeds": [DEV_SEED]},
-    },
-    "dev": {
-        "xgb": {"trials": DEV_OPTUNA_TRIALS, "seeds": [DEV_SEED]},
-        "bilstm": {"trials": 5, "epochs_trial": 10, "epochs_final": 10, "seeds": [DEV_SEED]},
-        "tft": {"trials": 5, "epochs": 10, "seeds": [DEV_SEED]},
-        "patchtst": {"epochs": 10, "seeds": [DEV_SEED]},
-    },
-    "final": {
-        "xgb": {"trials": FINAL_OPTUNA_TRIALS, "seeds": list(RANDOM_SEEDS)},
-        "bilstm": {"trials": 60, "epochs_trial": 25, "epochs_final": 60, "patience": 10,
-                   "seeds": list(RANDOM_SEEDS)},
-        "tft": {"trials": 20, "seeds": [DEV_SEED]},
-        "patchtst": {"seeds": [DEV_SEED]},
-    },
+    "smoke": {"xgb": {"trials": 1, "seeds": [DEV_SEED]},
+              **_neural((1, 2, 2), (1, 2), 2, (20, 10), [DEV_SEED])},
+    "dev": {"xgb": {"trials": DEV_OPTUNA_TRIALS, "seeds": [DEV_SEED]},
+            **_neural((20, 25, 60), (7, 100), 150, (5000, 100), [DEV_SEED])},
+    "final": {"xgb": {"trials": FINAL_OPTUNA_TRIALS, "seeds": list(RANDOM_SEEDS)},
+              **_neural((60, 25, 60), (20, 100), 150, (5000, 100), list(RANDOM_SEEDS))},
 }
 
 

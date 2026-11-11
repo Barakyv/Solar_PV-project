@@ -109,12 +109,26 @@ def environment() -> dict:
         "memory": _memory_gb(),
         "disk_free_gb": round(disk.free / 2**30, 1),
         "gpu": _gpu(),
+        "gpu_env": _gpu_env(),
     }
+
+
+def _gpu_env() -> dict:
+    """D-29: where `solar-gpu` is. Its full checks (versions, CUDA, sm_61) run in every neural
+    step before any training (`pipeline.neural.gpu_report`)."""
+    from solarpv.pipeline.neural import GPU_ENV_LOCK, gpu_python
+
+    exe = gpu_python()
+    return {"python": str(exe), "exists": exe.exists(), "lock": GPU_ENV_LOCK.exists()}
 
 
 def environment_problems(env: dict) -> tuple[list[str], list[str]]:
     errors = [f"package {d} is missing" for d in REQUIRED if env["packages"].get(d) is None]
     warnings = []
+    gpu_env = env.get("gpu_env") or {}
+    if gpu_env and not gpu_env.get("exists"):
+        warnings.append(f"no GPU environment solar-gpu at {gpu_env.get('python')}: the neural "
+                        "steps will refuse to run (D-29)")
     if env["cpu_count"] and env["cpu_count"] < XGB_THREADS:
         warnings.append(f"{env['cpu_count']} CPUs, fewer than XGB_THREADS = {XGB_THREADS}: "
                         "XGBoost results stay comparable but run slower (RH-03)")
@@ -292,6 +306,9 @@ def format_preflight(report: dict) -> list[str]:
         f"disk free {env['disk_free_gb']} GB",
         "GPU: " + ("; ".join(f"{g['name']}, {g['memory']}, driver {g['driver']}"
                              for g in env["gpu"]) if env["gpu"] else "none found"),
+        "GPU environment (D-29): " + ((env.get("gpu_env") or {}).get("python", "")
+                                      if (env.get("gpu_env") or {}).get("exists")
+                                      else "not found"),
         f"git: {state['commit']}; tags on HEAD {state['tags_on_head']}; "
         f"clean tree {state['tree_clean']}",
         f"site: {'private (true coordinates)' if report['site_private'] else 'placeholder'}",

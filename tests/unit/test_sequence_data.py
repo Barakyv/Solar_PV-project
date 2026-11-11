@@ -558,8 +558,11 @@ def test_a_step_of_another_issuance_or_a_late_run_is_refused(data, scaler, val_s
 
 
 def test_patchtst_sees_the_target_only(sources, scaler, val_scope):
-    with pytest.raises(ValueError):
-        S.build(sources, scaler, "patchtst", "indirect", val_scope, inputs=INPUTS)
+    # X33 (W4): the input size is set in one place, the neuralforecast input size of §18.4
+    from solarpv.models.neural_job import FIXED
+    assert S.MODELS["patchtst"] == FIXED["patchtst"]["input_size"] == 168
+    ds = S.build(sources, scaler, "patchtst", "indirect", val_scope, inputs=INPUTS)
+    assert ds.encoder_hours == 168 and ds.enc_x.shape[1] == 168
     for target, own in (("indirect", "target_k"), ("direct", "site_total_AC_kW")):
         ds = make(sources, scaler, val_scope, model="patchtst", target=target,
                   encoder_hours=96)

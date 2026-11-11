@@ -23,12 +23,50 @@ import torch
 
 from solarpv.models.neural_job import MAX_STEPS, QUANTILES
 
+_MAPS: dict = {}
+
+
+def linear_map(n_in: int, n_out: int, device, dtype) -> torch.Tensor:
+    """[n_in, n_out]: linear interpolation with align_corners=True as a matrix (X34)."""
+    key = (n_in, n_out, str(device), dtype)
+    if key not in _MAPS:
+        if n_out == 1 or n_in == 1:
+            pos = torch.zeros(n_out, dtype=torch.float64)
+        else:
+            pos = torch.arange(n_out, dtype=torch.float64) * (n_in - 1) / (n_out - 1)
+        i0 = pos.floor().long().clamp(max=n_in - 1)
+        i1 = (i0 + 1).clamp(max=n_in - 1)
+        lam = pos - i0.to(torch.float64)
+        w = torch.zeros(n_in, n_out, dtype=torch.float64)
+        cols = torch.arange(n_out)
+        w.index_put_((i0, cols), 1.0 - lam, accumulate=True)
+        w.index_put_((i1, cols), lam, accumulate=True)
+        _MAPS[key] = w.to(device=device, dtype=dtype)
+    return _MAPS[key]
+
+
+def _interpolate(self, x):
+    """pytorch-forecasting's `TimeDistributedInterpolation.interpolate` with the same linear map
+    as a matrix product: `F.interpolate(mode="linear")` has no deterministic CUDA backward (X34)."""
+    upsampled = x @ linear_map(x.shape[-1], self.output_size, x.device, x.dtype)
+    if self.trainable:
+        upsampled = upsampled * self.gate(self.mask.unsqueeze(0)) * 2.0
+    return upsampled
+
+
+def deterministic_interpolation() -> None:
+    """Replace the interpolation of the TFT's resampling layers (X34), once per process."""
+    from pytorch_forecasting.models.temporal_fusion_transformer import sub_modules
+
+    sub_modules.TimeDistributedInterpolation.interpolate = _interpolate
+
 
 def build_model(params: dict, meta: dict):
     from pytorch_forecasting import TemporalFusionTransformer
     from pytorch_forecasting.data.encoders import TorchNormalizer
     from pytorch_forecasting.metrics import QuantileLoss
 
+    deterministic_interpolation()
     enc, dec, n_unknown = list(meta["enc_channels"]), list(meta["dec_channels"]), meta["n_unknown"]
     if enc[n_unknown:] != dec:
         raise ValueError("the known reals of the encoder and the decoder differ")

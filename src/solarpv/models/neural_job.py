@@ -75,6 +75,23 @@ class JobError(RuntimeError):
     """A job file or a worker output breaks the protocol (hash, shape, missing array)."""
 
 
+# the worker's outputs, in `<step>/worker/` (the runner reads them by these names)
+def forecast_name(target: str, seed: int) -> str:
+    return f"forecast_{target}_seed{int(seed)}.npz"
+
+
+def fit_name(target: str, seed: int) -> str:
+    return f"fit_{target}_seed{int(seed)}.json"
+
+
+def trials_name(target: str, seed: int) -> str:
+    return f"trials_{target}_seed{int(seed)}.csv"
+
+
+def curves_name(target: str, seed: int) -> str:
+    return f"curves_{target}_seed{int(seed)}.csv"
+
+
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
