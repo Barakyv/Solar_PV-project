@@ -1034,6 +1034,31 @@ amendment of 2026-11-07).**
   (TFT), windows inside each split, a different set of scored hours per model, the 05e sets for
   the BiLSTM and 18 calendar and irradiance known reals for the TFT, no weather forecast.
 
+## 16b. Figure book (all stages, `solarpv.figures`)
+
+**OP-56 — Process and correction figures for every stage (read-only).**
+- *Why:* user request (2026-11-11): every stage gets figures that show its procedure, what was
+  found and what it led to; differences from the submitted project go to a separate set for the
+  defense notes. Plan, self-review (G1–G5, X1–X6) and rules: `docs/figures_plan.md`.
+- *Method:* each figure is registered with its question, a takeaway formatted from the facts its
+  builder computes, and the step it led to. Builders read stage outputs (tables, manifests,
+  configs) and, where needed, the stage-6 and stage-5 tables through the stage functions; no data
+  is written or changed. Target and model statistics use train or validation only; whole-period
+  data descriptions (clocks, flags, held values) mark the splits. Claims in a takeaway that do not
+  come straight from a number are asserted in the builder.
+- *Parameters:* Okabe-Ito colours with a second cue, 200 DPI PNG, one value axis per panel.
+- *Outputs:* `outputs/figures/<stage>/<ID>_<slug>.png`, `outputs/figures/figures_manifest.json`
+  (commit, sha256 of every input and file, facts, takeaway), `outputs/figures/gallery.html`,
+  `docs/figure_catalog.md` (generated; it also lists the figures the stage producers made before).
+- *Result:* 37 figures: 31 process figures for stages 0, 1, 2, 4, 5, 6, 6b, 7, 8 and 9, and 6
+  correction figures used by `docs/defense_notes.md`.
+- *Verification:* `tests/contracts/test_figures.py` (T-72): every registered figure is built,
+  unchanged since the build and drawn from unchanged inputs; every takeaway re-renders from its
+  facts; the catalog is current; every completed stage has process figures; process figures do
+  not read the submission's evidence except the evaluation-code check.
+- *Original:* no figure was linked to its inputs or code version; the v6 figures were drawn from
+  the shifted, clipped data and are regenerated in stage 11.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
@@ -1144,6 +1169,7 @@ python -m solarpv.models.xgb_checks l09 --run <dev run id>   # writes configs/mo
 python -m solarpv.models.xgb_checks r14 --run <dev run id>
 python -m solarpv.pipeline run --mode dev --only baselines,xgb,evaluate   # again, with L-09 (OP-53)
 python -m solarpv.models.sequence_data       # the sequence datasets, train and validation (OP-55)
+python -m solarpv.figures build              # the figure book, catalog and gallery (OP-56)
 python scripts/build_data_record.py
 pytest
 ```
