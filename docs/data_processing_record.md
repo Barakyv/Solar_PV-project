@@ -1059,6 +1059,43 @@ amendment of 2026-11-07).**
 - *Original:* no figure was linked to its inputs or code version; the v6 figures were drawn from
   the shifted, clipped data and are regenerated in stage 11.
 
+## 16c. The neural models (stage 9, W4, `solarpv.pipeline.neural`)
+
+**OP-57 — The neural steps `bilstm`, `tft96`, `tft168`, `tftbase`, `patchtst`: the windows of
+W3 to a training worker in `solar-gpu`, and back into prediction files.**
+- *Why:* D-08 keeps the five neural models of v6. They train on the datasets of OP-55 so that
+  every model sees the same hours, inputs and loss rows as XGB. Plan and self-review before the
+  code: `docs/stage9_plan.md` §18 (M19–M24, X25–X33; X34 and X35 found while testing); the GPU
+  environment (D-29) and the dev budgets (D-17) decided by the user.
+- *Method:*
+  - **Data side (env `solar`):** the stage-5, 6 and 6b inputs read before TEST_START (dev); the
+    W3 scaler (train hours); per target the training windows (872 origins in dev) and the
+    windows of every evaluation window (246 validation origins); `check_dataset` on each; the
+    missing known inputs checked on the hours the windows read (X30, X35). The arrays go to the
+    worker as compressed files with SHA-256, without any timestamp; the valid hours stay with the
+    runner (M13, M18).
+  - **Training side (env `solar-gpu`):** FP32 on the P40, deterministic kernels (X32; the TFT's
+    interpolation as a matrix product, X34). Losses as a mean over the W3 loss mask only (X31):
+    the quantile loss (BiLSTM 0.1/0.5/0.9; TFT the library's seven quantiles), PatchTST
+    neuralforecast's MAE with `available_mask`. Early stopping on that loss over the validation
+    windows, the best epoch restored. Optuna TPE with seed 42 on §14.1, pooled over the three
+    horizons (one model per target). No fitted normaliser in the libraries (X29).
+  - **Writing:** the point forecast (the 0.5 quantile; PatchTST's output) through
+    `sequence_data.predictions_frame`, one row per hour of the window and horizon; the quantiles
+    in `quantiles_*.csv` (not scored); the MBE of every model on its training and validation
+    windows (`mbe.csv`, M24); trials, learning curves, the configuration and the warnings.
+- *Parameters:* the budgets of D-17 (dev) and D-08 (final) in `pipeline/config.BUDGETS`; the
+  settings of §18.4 in `models/neural_job.py` (`SEARCH_SPACES`, `FIXED`, `QUANTILES`).
+- *Result:* (filled after the dev run, R9-17).
+- *Verification:* T-73–T-81 (`tests/unit/test_neural_runner.py` with a stub worker;
+  `tests/gpu/test_neural_gpu.py` in `solar-gpu`); smoke runs on real data (R9-16): the objective
+  equals the evaluation's `nRMSE_kW_pct` within 5e-7, and two runs with one seed write
+  byte-identical forecasts.
+- *Original:* hourly origins for the BiLSTM and step-number horizons for the TFT (OP-55), seeds
+  of the BiLSTM scored by training metrics (C-10), two objectives for the BiLSTM (C-53), the TFT
+  baseline from an earlier code version (C-54), the libraries' own normalisers (settings lost,
+  R-16), and unexplained neural biases (C-57).
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
