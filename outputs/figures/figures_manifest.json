@@ -653,7 +653,7 @@
     "dev_h": 3.211555555555555
    },
    "takeaway": "All five steps and the evaluation passed the smoke run; a second smoke run with the same seed gave identical losses for 4 models. In development an epoch takes 0.3 s (BiLSTM) to 7.5 s (TFT-168); the run took 3.2 h.",
-   "git_commit": "23804d4+dirty"
+   "git_commit": "d21a43b"
   },
   "S09-08": {
    "stage": "9",
@@ -707,7 +707,7 @@
     "n_cases": 30
    },
    "takeaway": "All 6 models and the 3 references are scored on the same 2,901 validation daytime hours per horizon. Best neural model at D+1: TFT-168 (6.77 %) in the indirect route and TFT-96 (6.75 %) in the direct route, against XGB-dev 6.69 / 6.66 %. 30 of 30 neural cases are below persistence. Tuning-split numbers with reduced budgets: they rank nothing.",
-   "git_commit": "23804d4+dirty"
+   "git_commit": "d21a43b"
   },
   "S09-10": {
    "stage": "9",
@@ -909,7 +909,7 @@
     "rel": 0.021553061462691314
    },
    "takeaway": "All three seed-table rows, seed 42 included, are the training script's own metrics (the seed-42 row equals the training output file): at D+1 they average 19.7 % (indirect) and 8.5 % (direct), while the scored seed-42 forecast has 30.2 % and 12.6 %. The reported relative spread of 2.2% is therefore not a spread of day-ahead errors; only one seed was scored.",
-   "git_commit": "23804d4+dirty"
+   "git_commit": "d21a43b"
   },
   "C-08": {
    "stage": "correction",
@@ -933,7 +933,7 @@
     "n_rb": 2901
    },
    "takeaway": "In the submission the six models were scored on 2,510 to 2,580 hours at D+1 (BiLSTM 2,510, the three TFTs 2,554, XGB and PatchTST 2,580): each model's input window decided which hours it forecast, so a difference between two models also mixes different hours. In the rebuild all 6 models and the 3 references are scored on the same 2,901 validation hours at every horizon.",
-   "git_commit": "23804d4+dirty"
+   "git_commit": "d21a43b"
   },
   "C-09": {
    "stage": "correction",
@@ -956,7 +956,7 @@
     "flat": 0.004006476351627942
    },
    "takeaway": "TFT-96 reads only the last 96 hours, so it has no position 168 hours before issuance. In all 4 model-route pairs of the rebuild the first position of the encoder lies 8% to 28% above the same hour of the later days, which agree to within 0.40%: a rise at the edge of the window, whatever its length. A 168-hour encoder puts that edge exactly at -168 h.",
-   "git_commit": "23804d4+dirty"
+   "git_commit": "d21a43b"
   }
  }
 }
