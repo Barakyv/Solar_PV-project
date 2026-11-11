@@ -61,6 +61,7 @@ from solarpv.evaluation.metrics import (
 )
 from solarpv.evaluation.stats_tests import bonferroni, diebold_mariano, power_analysis
 from solarpv.evaluation.truth import FEATURES_FILE, load_truth
+from solarpv.evaluation.units import to_kw  # noqa: F401  (one conversion, X12, X26)
 from solarpv.models.baselines import (
     REFERENCES,
     persistence,
@@ -215,14 +216,6 @@ def add_persistence(preds: pd.DataFrame) -> pd.DataFrame:
 
 def _denominator(target: str, mean_k: float) -> float:
     return AC_CAPACITY_KW if target == "direct" else mean_k
-
-
-def to_kw(target: str, y_pred, theo_kw) -> np.ndarray:
-    """kW forecast: the direct forecast as is; the indirect one as clip(k * theo, 0, cap)."""
-    y_pred = np.asarray(y_pred, dtype=float)
-    if target == "direct":
-        return y_pred
-    return np.clip(y_pred * np.asarray(theo_kw, dtype=float), 0.0, AC_CAPACITY_KW)
 
 
 def in_kw(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:

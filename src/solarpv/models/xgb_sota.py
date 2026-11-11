@@ -50,6 +50,7 @@ from solarpv.config.constants import (  # noqa: E402
 )
 from solarpv.config.paths import OUTPUTS_DIR  # noqa: E402
 from solarpv.evaluation.evaluate import to_kw  # noqa: E402
+from solarpv.evaluation.units import nrmse_k, nrmse_kw  # noqa: E402, F401  (X26)
 from solarpv.features.leakage import assert_no_leakage  # noqa: E402
 from solarpv.selection.common import date_folds  # noqa: E402
 from solarpv.selection.common import pool as stage7_pool  # noqa: E402
@@ -321,18 +322,6 @@ def booster_constraints(booster: xgb.Booster) -> str:
     cfg = json.loads(booster.save_config())
     return str(cfg["learner"]["gradient_booster"].get("tree_train_param", {})
                .get("monotone_constraints", "()"))
-
-
-def nrmse_kw(target: str, y_pred, theo, truth_kw) -> float:
-    """§14.1: the evaluation's nRMSE in kW (% of capacity), through evaluate.to_kw."""
-    err = to_kw(target, y_pred, theo) - np.asarray(truth_kw, dtype=float)
-    return float(np.sqrt(np.mean(err ** 2)) / AC_CAPACITY_KW * 100.0)
-
-
-def nrmse_k(y_pred, k_true, mean_k: float) -> float:
-    """RMSE of k / MEAN_DAYTIME_K x 100: the evaluation's nRMSE_pct of the indirect route."""
-    err = np.asarray(y_pred, dtype=float) - np.asarray(k_true, dtype=float)
-    return float(np.sqrt(np.mean(err ** 2)) / mean_k * 100.0)
 
 
 def score_values(problem: Problem, pred) -> dict:

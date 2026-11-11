@@ -1,9 +1,19 @@
-# Final neural training (stage 10, Colab GPU). Install the repo itself with: pip install -e .
-# Versions follow the original project (PROJECT_MASTER.md §6.11).
+# pip part of the GPU environment `solar-gpu` (D-29, docs/stage9_plan.md §18.5); the conda part
+# is environment-gpu.yml. Only the training worker runs here (X25).
+#
+# torch comes from the PyTorch index (the CUDA 12.1 build: sm_61 kernels for the Tesla P40 and a
+# runtime the 12.2 driver supports; the build of the original project); everything else from
+# PyPI. The versions installed by conda are repeated, so that pip refuses rather than replaces
+# them. The resolved set, every file with its SHA-256, is requirements-gpu.lock.txt.
+torch==2.5.1+cu121
+pytorch-forecasting==1.7.0
 neuralforecast==3.1.7
-lightning
-pvlib>=0.11
-pandas>=2.2
-pyarrow
-pyyaml
-optuna>=4.0
+lightning==2.6.6
+pytorch-lightning==2.6.6
+scikit-base==0.13.2
+numpy==2.4.6
+pandas==3.0.6
+scipy==1.17.1
+scikit-learn==1.9.1
+pyarrow==26.0.0
+optuna==5.0.0

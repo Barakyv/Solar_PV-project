@@ -1,0 +1,26 @@
+# GPU environment of the neural training worker (D-29, docs/stage9_plan.md §18.5).
+# Separate from `solar`: the runner, the datasets and the evaluation stay in `solar`; this
+# environment only runs the training worker on the hashed arrays of a job file (X25).
+#
+# Create:     conda env create -f environment-gpu.yml
+# Then pip:   the packages of requirements-gpu.txt, downloaded into a folder outside the
+#             repository and installed from it with hashes (requirements-gpu.lock.txt):
+#             pip install --no-index --find-links <folder> --require-hashes --no-deps
+#                 -r requirements-gpu.lock.txt
+#             pip install -e . --no-deps
+# Record:     conda env export --no-builds -n solar-gpu > environment-gpu.lock.yml
+name: solar-gpu
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.18
+  - pip
+  - libblas=*=*openblas  # as in environment.yml
+  - numpy=2.4.6
+  - pandas=3.0.6  # pytorch-forecasting 1.7.0 requires pandas < 3.1.0 (`solar` has 3.1.0)
+  - scipy=1.17.1
+  - scikit-learn=1.9.1
+  - pyarrow=26.0.0
+  - pyyaml
+  - optuna=5.0.0
+  - pytest

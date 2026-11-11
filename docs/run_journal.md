@@ -816,6 +816,32 @@ hashes, numbers) and the commit messages are the record:
   `make_eda_notebook.py`, `make_features_notebook.py` and `make_quality_notebook.py` call
   NotebookClient directly and would still abort here; they are not in the stage-notebook list.
 
+### 2026-11-11 · RH-06 · The GPU environment `solar-gpu` (D-29, approved by the user)
+
+- **Decision (user, 2026-11-11):** proposal A of `docs/stage9_plan.md` §18.5. `solar` was not
+  touched.
+- **Conda part** (`environment-gpu.yml`, conda-forge): a dry run first, then
+  `conda env create`; Python 3.11.18, numpy 2.4.6, pandas 3.0.6, scipy 1.17.1, scikit-learn
+  1.9.1, pyarrow 26.0.0, optuna 5.0.0, pytest 9.2.0. The full export is
+  `environment-gpu.lock.yml` (163 lines).
+- **Pip part** (`requirements-gpu.txt`, direct pins):
+  - `pip download` of `torch-2.5.1+cu121-cp311-cp311-win_amd64.whl` from
+    `download.pytorch.org/whl/cu121` into a new folder outside the repository,
+    `C:\Users\204323141\gpu_wheels\cu121\`: 2,449,385,544 bytes, SHA-256
+    `4bcee18f00c43c815efad8efaa3bca584ffdc8d2cd35ef4c44c814f2739d9191`, equal to the index.
+  - `pip install --dry-run --report` resolved 43 packages: torch from the local folder, 42 from
+    PyPI, none of the conda packages replaced. The 42 files (48,758,096 bytes) went to
+    `C:\Users\204323141\gpu_wheels\pypi\`; every file was checked against the report's
+    SHA-256, and `requirements-gpu.lock.txt` lists all 43 with their hashes.
+  - Installed with `--no-index --find-links <the two folders> --require-hashes --no-deps`, then
+    `pip install -e . --no-deps --no-build-isolation`. `pip check`: no broken requirement.
+- **Verification** (`python -m solarpv.models.neural_env`, exit 0): torch 2.5.1+cu121, CUDA
+  runtime 12.1, cuDNN 9.1.0, arch list sm_50–sm_90 with `sm_61`, GPU "GRID P40-24Q" capability
+  6.1 with 24 GB; an FP32 product of two 512 × 512 matrices on the GPU differs from the CPU by
+  8.9e-7 of the largest entry; lightning, pytorch_forecasting and neuralforecast import.
+- **Left on the machine:** the two wheel folders (about 2.5 GB), the hash-checked source of any
+  rebuild of the environment.
+
 ## Stage 9: models and the runner
 
 ### 2026-11-05 · R9-01 · Self-review before the runner code (W1)

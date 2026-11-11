@@ -1063,6 +1063,10 @@ it without relying on CUDA minor-version compatibility; the CUDA 12.6 builds wou
 in `solar-gpu` with pandas 3.0.6 and a copy of the whole `solar` stack, so the data steps would
 run on two pandas versions (X25).
 
+**Decision (user, 2026-11-11): A.** Built the same day as proposed (run journal RH-06): 43 pip
+files, every one checked against its SHA-256 (`requirements-gpu.lock.txt`), the conda export in
+`environment-gpu.lock.yml`, and `python -m solarpv.models.neural_env` passes every check.
+
 ### 18.6 Proposal for the user: the dev budgets of the neural models (D-17, neural part)
 
 The datasets are small (872 training windows per target, 246 validation windows), so an epoch is
@@ -1088,6 +1092,9 @@ so their dev fit is the final procedure with one seed.
 (about an hour): early stopping with patience 10 never acts, and most fits would end at their last
 epoch. (C) The final budgets with one seed: dev and final would differ only in the seeds of the
 BiLSTM and the frozen code; about three times the time of (A).
+
+**Decision (user, 2026-11-11): A**, and the settings of §18.4 accepted as registered. As for XGB
+(M12c), the seed drives both the sampler and the training: one study per seed.
 
 ### 18.7 Tests (to be numbered in §9 with the code)
 
