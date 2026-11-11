@@ -1375,3 +1375,36 @@ hashes, numbers) and the commit messages are the record:
     `airmass` (the train mean) is an input convention, visible to the network through the
     clear-sky and sun-elevation channels; and the library normalisers of W4 must act per window
     or be fitted on the training windows only (§17.5).
+
+### 2026-11-11 · R9-14 · W4: self-review, registered settings, and the two proposals for the user
+
+- **Baseline at the start:** HEAD `f5e182d`, clean tree. No W4 code, no GPU environment, no
+  neural result.
+- **Read first:** `PROJECT_MASTER.md` §1 and §16b, stage-9 plan §4.3, §5, §7 and §17, R9-12,
+  R9-13, the college-machine note (P40, `sm_61`, driver 538.46, CUDA ≤ 12.2). Read-only: v6 §4.1,
+  §5.2–§5.6, §11.2–§11.5 and §12.1 (text extracted to the session scratchpad), the GPU line of
+  `reproduce_paper_results.py` (`torch==2.5.1+cu121`), the Supplement in `old files/`, and
+  `07_LSTM_Attention_After_Training.ipynb` (a Keras intermediate).
+- **Package metadata (2026-11-11, JSON and index pages only, no package file; saved in the
+  session scratchpad and parsed with `python -I`):** pytorch-forecasting 1.7.0 needs pandas <
+  3.1.0, lightning < 2.7, scikit-base < 0.14; neuralforecast 3.1.7 needs torch ≥ 2.4 and
+  ray[train,tune]; the last Windows / Python 3.11 PyTorch builds are 2.5.1 for cu121, 2.7.1 for
+  cu118, and 2.9.1–2.14.1 for cu126; the cu121 2.5.1 wheel is 2,449,385,544 bytes (HEAD request).
+- **Self-review (stage-9 plan §18.2–§18.3), errata rows written with the plan:** in the original
+  M19–M24 (C-10, C-53–C-57): BiLSTM seeds scored by training metrics, two objectives for the
+  BiLSTM, the TFT baseline from an earlier code version, a −168 h attention peak in a 96-hour
+  encoder, the TFT hidden size at the edge of its space, and unexplained neural biases (NMBE up
+  to +6.5 % and −6.0 % on indirect D+1). How the libraries could bring back M13–M18 and C-41,
+  with a guard for each. In my own code X25–X33: a second environment with another pandas, the
+  pvlib import behind `evaluate.to_kw`, undecided neural budgets in `BUDGETS`, step and model
+  names that differ, the library normalisers, the night `airmass` fill, the loss mask in the
+  libraries, GPU determinism, and the unset PatchTST input size.
+- **Registered before any result (§18.4):** one objective for every model (§14.1, M20), the
+  losses, early stopping, the BiLSTM architecture of D-28, the TFT search space (v6 values where
+  given, otherwise the library's own tuning ranges and the BiLSTM ranges of v6), the TFT baseline,
+  the PatchTST input size (168 h), the seeds and the device. The acceptance of the dev run (§18.8).
+- **Proposed to the user, nothing installed (§18.5, §18.6):** D-29, a separate `solar-gpu`
+  environment for a training worker only, torch 2.5.1+cu121, pytorch-forecasting 1.7.0,
+  neuralforecast 3.1.7, lightning 2.6.6, pandas 3.0.6, about 2.7 GB of downloads into a new folder
+  outside the repository, installed from there with hashes; and the neural dev budgets (one third
+  of the v6 trials with the full epoch budgets, one seed).

@@ -186,7 +186,7 @@ Smoke: 1 trial, 2 epochs. Dev: 5 trials × 10 epochs, one seed. Final: the budge
 
 **D-17 approved on 2026-11-05 (user) for XGB only:** the dev budget is 20 Optuna trials with
 seed 42; 60 trials and the three seeds only in the final run (stage 10). The neural dev budgets
-above stay a proposal, to be decided in W4.
+above stay a proposal, to be decided in W4. *W4 (2026-11-11): the proposal to the user is §18.6.*
 
 ## 5. The environment on the college machine
 
@@ -195,6 +195,8 @@ above stay a proposal, to be decided in W4.
   corrected.
 - `check` prints every version and fails on a mismatch.
 - XGBoost stays on the CPU with `hist`, as in v6 (§6.11).
+- *W4 (2026-11-11):* the proposal to the user is §18.5 (D-29): a separate `solar-gpu` environment
+  for the training worker only, torch 2.5.1+cu121, pytorch-forecasting 1.7.0, neuralforecast 3.1.7.
 
 ## 6. Code, data and results
 
@@ -907,3 +909,221 @@ With the code, in one commit: OP-55 (the sequence datasets), errata C-47–C-52 
 §9 rows T-66–T-71 and T-02, the docstrings of X19. After the checks on real data: R9-12 on,
 `PROJECT_MASTER.md` §1, D-25–D-28 as decided, A-14 (the scalers of the sequence datasets), L-12
 (the inputs per model family) and §17.
+
+## 18. W4: the neural models (self-review, settings, environment and budgets, 2026-11-11)
+
+Written before any W4 code and before any neural result. W4 adds the runner steps `bilstm`,
+`tft96`, `tft168`, `tftbase` and `patchtst`, trained on the datasets of W3
+(`solarpv.models.sequence_data`, OP-55; D-25–D-28). Smoke first, then dev; no final run and no
+test row (D-08). Two choices are the user's and are only proposed here: the GPU environment
+(§18.5, D-29) and the dev budgets of the neural models (§18.6, the open part of D-17). Nothing is
+installed before the user approves §18.5.
+
+### 18.1 Blocking decisions and sources
+
+- **Decided, not changed here:** D-08 (the six models of v6; the v6 budgets in the final run
+  only), D-10 (no refit on train + validation: validation is the early-stopping set and the tuning
+  objective, for the neural models as for XGB), D-16, D-22 (op-limited hours out of every loss),
+  D-25–D-28 (the windows and the inputs), D-14 with Q-19 (the kW DM is the primary table), L-19
+  (PatchTST univariate), §6.11 (the v6 settings of each model).
+- **Open, for the user:** D-29, the GPU environment (§18.5); D-17 for the neural models, the dev
+  budgets (§18.6). §4.3 stays a proposal until then.
+- **Registered here, before any result (§18.4):** the settings that v6 leaves open or states in
+  two ways. They follow v6 where it speaks, then the default of the pinned library, then the rule
+  already used for XGB (§14). Changing one after a dev result needs a registered rule like §14.
+- **Sources (read-only):** v6 §3.4, §4.1, §5.2–§5.6, §11.2–§11.5 and §12.1;
+  `submission_evidence/12_scripts/reproduce_paper_results.py` (the GPU environment of the
+  original: `torch==2.5.1+cu121` in a Python 3.12 venv); `11_audit/` (the seed table, C-10); the
+  Supplement, `old files/COMPREHENSIVE_EVALUATION_REPORT_extracted_text.txt` (lowest in the source
+  hierarchy, `PROJECT_MASTER.md` §0); `old files/07_LSTM_Attention_After_Training.ipynb` (a
+  Keras/TensorFlow intermediate with nothing of the final models). The final BiLSTM and TFT code
+  did not survive (R-16). Package metadata of PyPI and of the PyTorch wheel index, read on
+  2026-11-11 (JSON and index pages only, no package file; §18.5).
+- **Literature (`PROJECT_MASTER.md` §16b, §12 above):** L-19 is decided; the smoke run records,
+  for the report only, whether neuralforecast's PatchTST accepts future exogenous inputs. L-14
+  (potential RMSE skill of the quantile-loss models) and L-15 (bias diagnostics) belong to stage
+  11; W4 writes what they need, the quantile forecasts and the MBE of every model on validation.
+  L-09 is adopted for XGB only; applying it to a neural model would be a new test under the rule
+  of §14.4, not part of W4. L-17 and L-18 stay out of scope. C1 ("fair tuning matters more than
+  the architecture") is followed by one objective and one protocol for every model (M20).
+
+### 18.2 The original project (M19–M24), and how W4 could bring back M13–M18
+
+| ID | Mistake | Where | Fix in W4 | Test | Errata |
+|---|---|---|---|---|---|
+| M19 | Only seed 42 of the BiLSTM was scored by `evaluate.py`. The rows of seeds 123 and 777 in the seed table are training-time metrics on all hours, not the daytime day-ahead nRMSE, and the BiLSTM seed spread of the report (2.2 % relative) rests on them | v6 §12.1; `11_audit/REPORT_AUDIT_SUMMARY.md`; `05_seed_variability/` | Every seed of every neural step writes its own prediction file, scored by the `evaluate` step of the same run. No number from a training loop enters a result table. The seed spread is the std of the evaluated nRMSE in kW, with the warning of §3.5 (the stage-10 rule) | T-73 | C-10 |
+| M20 | Two objectives for the BiLSTM: §4.1 says every model was tuned on "daytime nRMSE on the validation set", §5.2 that each BiLSTM trial minimised the "validation quantile loss" (q = 0.1, 0.5, 0.9). A quantile loss averages three quantiles over every decoder step, nights included for the direct target; it is not the score that ranks the models, and models tuned on different criteria are not compared fairly | v6 §4.1, §5.2 | One objective for every tuned model, the one of XGB (§14.1): the daytime nRMSE in kW of the point forecast (the 0.5 quantile) on the tuning window, computed by the function the evaluation uses (X26). The quantile loss is the training loss and the early-stopping criterion. Both are logged per epoch and per trial | T-74 | C-53 |
+| M21 | The TFT baseline was "an earlier TFT implementation": another version of the code with three settings reported (hidden 64, dropout 0.1, up to 150 epochs; encoder 168), scored on its own hours (n = 2,554 against 2,702 for TFT-96 in the Supplement, M15). Its difference from TFT-96 mixes the tuning with the code version | v6 §5.5; Supplement, Tables 1–2 | The baseline runs in the step code of TFT-96 and TFT-168, on the TFT-168 datasets (encoder 168, the inputs of D-26–D-28), with the same loss, early stopping and scoring. Its v6 values are fixed; every other setting is the default of the pinned pytorch-forecasting, recorded in the step | T-75 | C-54 |
+| M22 | The attention analysis reports a −168 h peak "visible particularly in TFT-96 indirect". A 96-hour encoder has no position before −96 h, so the peak cannot exist in TFT-96 | v6 §11.2 | The TFT steps store the attention over each model's own L encoder positions (−L … −1 h) for the validation origins; the shape is asserted, and the figure marks only lags inside the encoder | T-75 | C-55 |
+| M23 | The best TFT hidden size was always 16, the smallest value of {16, 32, 64}. v6 concludes that "model complexity is not beneficial", but a best value on the edge of a search space says only that the space may stop too early | v6 §5.3, §11.5 | The warning "best trial on the edge of the search space" (§3.5) covers every searched parameter of the neural models, as for XGB (M12d). The space stays the v6 one (D-08); an edge result goes to the list of G-1 | T-74 | C-56 |
+| M24 | Biases of the original neural forecasts that the report does not explain: NMBE on indirect D+1 of +6.49 % (TFT-96), +5.96 % (TFT-168), +3.76 % (BiLSTM) and −5.98 % (TFT baseline), against +0.34 % for XGB. Opposite signs within one family point to the pipeline (normalisers, inverse transforms, the fixed-lead alignment of M14 and M18) more than to the architecture; the code is lost (R-16), so the cause cannot be found | Supplement, Table 3 | No fitted transform of the targets (W3) and identity normalisers in the libraries (X29). The step logs the MBE (kW and % of capacity) of every model on the training and tuning windows, and the review compares it with XGB-dev (R-14, R9-07) | T-76 | C-57 |
+
+The W3 datasets fixed M13–M18 and C-41. The libraries of W4 could bring them back:
+
+| From W3 | How a library could bring it back | Guard in W4 | Test |
+|---|---|---|---|
+| M13, the clock | The libraries take a datetime column and may infer a frequency, a time zone or gaps | The worker receives no timestamp, only integer positions (`time_idx`; the `ds` of neuralforecast). The runner maps every forecast back through the dataset's own UTC arrays | T-77 |
+| M14, horizon by step | A library returns its forecasts flat or in its own order (pytorch-forecasting sorts by group and time) | Forecasts come back as [origin, step] with the library's own index (group id, time index) and are matched to the dataset's origins; `predictions_frame` maps the steps by `dec_horizon` | T-77 |
+| M15, scored hours | A library drops windows: pytorch-forecasting those shorter than its minimum lengths, neuralforecast series shorter than the input size | Windows in = windows out per scope; `predictions_frame` refuses a missing hour | T-77 |
+| M16, silent fallbacks | Defaults chosen from the data ("auto" normaliser, inferred scalers, `allow_missing_timesteps`) | Every library argument that changes the data is passed explicitly and recorded; an unknown or extra input column is an error | T-78 |
+| M17, scaling | A normaliser fitted on the frame it is given, which may hold validation rows | X29 | T-78 |
+| M18 and C-41, valid time and duplicates | The libraries attach no valid time | The valid time and the horizon come from the dataset only; duplicates are refused by `predictions_frame` and by `evaluate` | T-70, T-77 |
+
+Not counted as a mistake, but a risk for the dev review: the W3 contract trains every network on
+one window per local day (872 per target), while the original BiLSTM had an origin every hour
+(E1). A network can underfit or overfit such a sample; the learning curves of the dev run show
+which. More training windows (origins at other hours) would be a new registered idea, not taken
+in W4.
+
+### 18.3 My own code that W4 builds on (X25–X33)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X25 | A second environment means a second set of library versions: pytorch-forecasting 1.7.0 needs pandas < 3.1.0, and `solar` has pandas 3.1.0. Building the windows in the GPU environment would be a second build from other versions of pandas, pyarrow and pvlib, unchecked against W3; and `sequence_data` imports `xgb_sota` (xgboost), so the whole data stack would have to be copied | `models/sequence_data.py`; the design | The runner, the datasets and the scoring stay in `solar`. A neural step builds its datasets there (the W3 `build` and `check_dataset`), writes them with a job file (`.npz` arrays and their SHA-256) into its step folder, and starts the training worker of `solar-gpu` (D-29) as a subprocess. The worker reads only the job, checks the hashes, trains, and writes forecast arrays, logs and checkpoints with their hashes; the runner checks them and writes the prediction files. The worker never reads a stage table, so a test row cannot reach it in smoke or dev | T-79 |
+| X26 | The tuning objective (§14.1) goes through `evaluate.to_kw`, and `evaluate` imports pvlib (through `evaluation.daytime`), which the worker does not need. A copy of the conversion in the worker would be a fifth copy (X12) | `evaluation/evaluate.py`, `models/xgb_sota.py` | `to_kw`, `nrmse_kw` and `nrmse_k` move to a module without pvlib (`solarpv.evaluation.units`), re-exported by `evaluate` and `xgb_sota` and used by the worker; the agreement test of X12 covers it | T-58, T-74 |
+| X27 | `pipeline/config.BUDGETS` holds the §4.3 proposal for the neural models (5 trials × 10 epochs) as if it were decided, and every run since W1 recorded it in its `config.yaml` (no neural step ran, so no number depends on it). The final budgets have no epochs or patience for the TFT models and PatchTST, and no entry for the TFT baseline | `pipeline/config.py` | One budget per model step with every field (trials, epochs of a trial, epochs of the final fit, patience, seeds; steps for PatchTST): dev from the decision of §18.6, final from D-08 and v6 | T-80 |
+| X28 | The step names (`bilstm`, `tft96`, `tft168`, `tftbase`) differ from the model names of the evaluation (`lstm_sota`, `tft_96`, `tft_168`, `tft`; `evaluate.MODEL_LABELS`). A file named after its step would get no label in the report | `evaluation/evaluate.py`, `pipeline/config.py` | One map from step to model name in the step registry; a test asserts that every model step writes only model names that are keys of `MODEL_LABELS` | T-80 |
+| X29 | §17.5 leaves the library normalisers to W4. pytorch-forecasting's `TimeSeriesDataSet` fits a `StandardScaler` on every continuous input over the frame it is built from, and its "auto" target normaliser is an `EncoderNormalizer` with a transformation chosen from the data; neuralforecast's `local_scaler_type` is fitted on the frame passed to `fit`. Built on a frame that holds validation rows, they see validation data (A-14) | the libraries | The inputs reach the libraries already scaled (the W3 scaler, train hours only) and the targets in model units. The TFT gets identity scalers on every input and an identity target normaliser; PatchTST gets `scaler_type="identity"` and no `local_scaler_type`, with RevIN on (per window, the v6 architecture). The configuration is asserted after the objects are built, and a perturbation test shows that validation values change no training input | T-78 |
+| X30 | `sequence_data` sets every missing known input to 0 after scaling, the train mean (R9-13). For the direct route this is `airmass` at night (9,664 train hours), which pvlib leaves undefined, so a night hour gets the mean daytime air mass. The network can tell night from the clear-sky and sun-elevation channels, so the convention stays (carried from W3); but a daytime NaN would be filled just as silently | `models/sequence_data.py` | Kept and counted per split in the step's config. The step asserts that every missing `airmass` is an hour with the sun below the horizon, and that the only other missing known inputs are the 24 train hours of `irradiance_clear_index_prevday` known from W3 (none in validation); any other missing known input is an error | T-79 |
+| X31 | The loss mask of W3 (`fit_mask`) must reach the libraries unchanged. pytorch-forecasting refuses NaN targets and takes a per-step `weight`, and its multi-horizon losses average over every decoder step, so a batch with many masked steps (every night of the indirect route) would weigh less; neuralforecast takes `available_mask` | the libraries | Every loss is a mean over the steps of the loss mask only (a masked quantile loss for the BiLSTM and the TFT; `available_mask` for PatchTST); a masked target is set to 0 where its weight is 0. Tests: changing the target on masked steps leaves the trained network identical, and the loss of a hand-built batch equals the mean over its unmasked steps | T-78 |
+| X32 | XGB's final fit is checked against its best trial (`REFIT_TOL_PP`). On a GPU, cuDNN and cuBLAS kernels can be non-deterministic: the same seed and parameters can give another network, and a rerun of a study would not reproduce | the design | Seeds for Python, NumPy, torch (CPU and CUDA) and the data loader; `torch.use_deterministic_algorithms(True)` with `CUBLAS_WORKSPACE_CONFIG=:4096:8`, cuDNN deterministic, no benchmark; FP32 (`precision="32-true"`, §1.1); `num_workers=0`. The smoke run trains one model twice with the same seed and requires identical forecasts. If an operation has no deterministic kernel, the run records it and measures the spread | T-81 |
+| X33 | `sequence_data.MODELS["patchtst"]` is `None`, and the W3 checks used a 168-hour PatchTST encoder (`CHECK_PATCHTST_HOURS`). The input size of W4 must be set in one place and its windows checked | `models/sequence_data.py` | The registered input size (§18.4) is set in `MODELS`; every neural step runs `check_dataset` on each dataset it builds (training and tuning windows) and refuses one that fails | T-79 |
+
+### 18.4 Settings that v6 leaves open, registered before any result
+
+The order of authority: v6 where it states a value; the default of the pinned library where v6 is
+silent and the original used that library; otherwise the rule of XGB (§14). Every value is
+written to the step's config.
+
+| Setting | Registered value | Why |
+|---|---|---|
+| Objective of every Optuna search | §14.1: daytime nRMSE in kW (% of 3,449 kW) of the point forecast on the daytime hours of the tuning window with AC truth, op-limited hours included; indirect through `to_kw`; TPE with the seed of the run; no pruning | v6 §4.1; M20 |
+| Point forecast | The 0.5 quantile of the quantile models; the output of PatchTST | The median is the point of a quantile loss |
+| Training loss | BiLSTM: quantile loss, q = 0.1, 0.5, 0.9 (v6). TFT: pytorch-forecasting's default `QuantileLoss` (seven quantiles). PatchTST: neuralforecast's default loss (MAE). All as a mean over the steps of the loss mask (X31) | v6 §5.2; library defaults |
+| Early stopping | On the training loss over the loss-mask steps of the tuning window, evaluated every epoch; the weights of the best epoch are restored. The objective is computed on those weights | §14.2 |
+| BiLSTM trials and final fit | A trial trains a fixed number of epochs (v6: 25) and keeps its best-validation epoch; the final fit retrains the best parameters for up to 60 epochs with patience 10 (v6); every seed of the final fit is its own model | v6 §5.2 |
+| BiLSTM architecture | Bidirectional LSTM encoder over the encoder channels (D-28); its last forward and backward states, projected, start a forward LSTM decoder over the decoder's known inputs (D-28: "the decoder runs forward over the known inputs"); a linear head gives the three quantiles per step. Adam; gradient clipping at norm 1.0; search space of v6 (hidden {64, 128, 256}, layers 1–3, dropout 0–0.4, learning rate 1e-4–1e-2 log, batch {32, 64, 128}), the same layers and dropout in encoder and decoder | v6 §5.2; D-28 |
+| TFT search space | hidden_size {16, 32, 64} (v6); attention_head_size 1–4, hidden_continuous_size 8 to hidden_size, dropout 0.1–0.3 (the ranges of pytorch-forecasting's own tuning function); learning rate 1e-4–1e-2 log and lstm_layers 1–3 (the BiLSTM ranges of v6; v6 names both as tuned, with best values 0.0022 and 2). Batch 64 and gradient clipping 0.1 fixed (library examples) | v6 §5.3, §11.5 |
+| TFT epochs and final model | Up to 100 epochs per trial (v6, TFT-96), patience 10; the final model is the best trial, retrained once with its seed to check that it reproduces (X32) | v6 §5.5 table |
+| TFT baseline | Encoder 168 h, hidden 64, dropout 0.1, up to 150 epochs (v6); patience 10; every other setting the pytorch-forecasting default | M21 |
+| TFT inputs in pytorch-forecasting | One group per origin (§17.5), integer `time_idx`; the encoder series and their fill flags as unknown reals, the known inputs of D-26 and D-27 as known reals; no static input; `add_relative_time_idx` on, `add_target_scales` and `add_encoder_length` off; identity scalers and normaliser (X29). The sample index is checked to hold exactly one sample per origin | §17.5; X29 |
+| PatchTST | patch 16, stride 8 (v6); input size 168 h (v6 does not report it; one week, as the longest encoder of the study and the length the W3 checks used, X33); horizon 73 steps (D-25), the steps after the third local day dropped; the target series only (L-19); trained by neuralforecast on its own windows of the training series, with the validation split as its validation set for early stopping; predicted at the daily origins; every other setting the neuralforecast default | v6 §5.6; D-25; L-19 |
+| Seeds | Dev: 42 for every model. Final: BiLSTM 42, 123, 777 (D-08); TFT one seed, 42 (v6); PatchTST 42 | D-08, D-17 |
+| Device | The GPU of `solar-gpu`, FP32 (§1.1); the worker refuses to start without CUDA and an `sm_61` kernel | §1.1 |
+
+### 18.5 Proposal for the user: the GPU environment (D-29)
+
+**What the machine allows** (§1.1): a Tesla P40 (Pascal, compute capability 6.1) with driver
+538.46, which supports CUDA runtimes up to 12.2. PyTorch wheels built for CUDA 12.1 or 11.8 run on
+it without relying on CUDA minor-version compatibility; the CUDA 12.6 builds would rely on it.
+
+**What the libraries require** (PyPI metadata, read on 2026-11-11):
+- pytorch-forecasting 1.7.0 (2026-04-05, the version of v6): Python 3.10–3.14, torch ≥ 2.0
+  (not 2.0.1) and < 3, lightning ≥ 2.0 and < 2.7, **pandas ≥ 1.3 and < 3.1**, numpy ≤ 3.0, scipy <
+  2, scikit-learn < 2, scikit-base < 0.14.
+- neuralforecast 3.1.7 (2026-04-10, the version of v6): Python ≥ 3.10, **torch ≥ 2.4**,
+  pytorch-lightning ≥ 2.0, ray[train,tune] ≥ 2.2, optuna, coreforecast ≥ 0.0.6, utilsforecast ≥
+  0.2.3, tornado ≥ 6.5.5.
+- The last PyTorch builds for Windows and Python 3.11 per CUDA: cu121 up to 2.5.1, cu118 up to
+  2.7.1, cu126 from 2.9.1 to 2.14.1.
+
+**Proposal (A, recommended):**
+- A new conda environment `solar-gpu` (`C:\Users\204323141\miniforge3\envs\solar-gpu`), from a new
+  `environment-gpu.yml`. `solar` is not touched.
+- Python 3.11 (as `solar`); **torch 2.5.1+cu121**, the build of the original project
+  (`reproduce_paper_results.py`), the last one for CUDA 12.1, which ships `sm_61` kernels and
+  satisfies all three libraries; pytorch-forecasting **1.7.0** and neuralforecast **3.1.7** (as v6);
+  lightning **2.6.6** and pytorch-lightning **2.6.6** (the last patch of the 2.6 line that
+  pytorch-forecasting allows); pandas **3.0.6** (the last below 3.1); scikit-base **0.13.2**; numpy
+  2.4.6, scipy 1.17.1, scikit-learn 1.9.1, optuna 5.0.0 and pyyaml as in `solar`; pytest. The
+  rest (ray, torchmetrics, utilsforecast, coreforecast and the dependencies of torch and ray) is
+  resolved by pip under a constraints file that fixes torch, numpy and pandas, so pip can never
+  replace the CUDA build with another one.
+- **Kept apart (X25):** the runner, the datasets and the evaluation stay in `solar`; `solar-gpu`
+  only runs the training worker on the arrays of a job file. `pip install -e . --no-deps` makes the
+  `solarpv` code importable there without changing its dependencies. `check` reports both
+  environments and fails when `solar-gpu` lacks CUDA, `sm_61` in `torch.cuda.get_arch_list()`, or
+  a pinned version.
+- **Downloads, in this order, each only after the previous one succeeded:** (1) the conda-forge
+  packages of the base (most are in the conda cache of `solar`; new is mainly pandas 3.0.6); (2)
+  with `pip download` into a new, empty folder outside the repository
+  (`C:\Users\204323141\gpu_wheels\`): `torch-2.5.1+cu121-cp311-cp311-win_amd64.whl` from
+  `download.pytorch.org` (2,449,385,544 bytes, SHA-256 `4bcee18f00c4…9191` from the index), its
+  dependencies from the same index (about 10 MB), and from PyPI the three libraries, lightning,
+  ray (about 29 MB) and their dependencies (estimated 100–200 MB); about 2.7 GB in all. The
+  resolved list is shown before anything is installed. (3) Install from that folder only
+  (`--no-index`, with the hashes), then write `requirements-gpu.lock.txt` and
+  `environment-gpu.lock.yml`. About 6 GB on disk (238 GB free).
+- **Verification before any training:** `torch.cuda.is_available()`, `torch.version.cuda` 12.1,
+  `sm_61` in the arch list, an FP32 matrix product on the GPU equal to the CPU one, the import of
+  the three libraries, and `pip check`.
+
+**Alternatives:** (B) torch 2.7.1+cu118: newer, also certain to run on the 12.2 driver with
+`sm_61`, but not the original's build. (C) One environment for everything: the runner would run
+in `solar-gpu` with pandas 3.0.6 and a copy of the whole `solar` stack, so the data steps would
+run on two pandas versions (X25).
+
+### 18.6 Proposal for the user: the dev budgets of the neural models (D-17, neural part)
+
+The datasets are small (872 training windows per target, 246 validation windows), so an epoch is
+short on the P40; the smoke run measures it, and `--dry-run` then prints the estimate of the dev
+run. If that estimate exceeds 8 hours, the user is asked again before the dev run.
+
+**Proposal (A, recommended): one third of the v6 trials, the full v6 epoch budgets, one seed
+(42).**
+
+| Model | Smoke | Dev (A) | Final (D-08, v6) |
+|---|---|---|---|
+| BiLSTM-Opt | 1 trial × 2 epochs; final fit 2 epochs | 20 trials × 25 epochs; final fit up to 60 epochs, patience 10 | 60 trials × 25 epochs; final fit up to 60 epochs, patience 10; seeds 42, 123, 777 |
+| TFT-96, TFT-168 | 1 trial × 2 epochs | 7 trials per target, up to 100 epochs, patience 10 | 20 trials per target, up to 100 epochs, patience 10; seed 42 |
+| TFT baseline | 2 epochs | one fit, up to 150 epochs, patience 10 | the same (no search in v6) |
+| PatchTST | 2 validation checks | one fit with the neuralforecast step budget, early stopping on validation | the same (no search in v6) |
+
+Why: one third of the trials, as D-17 gives XGB (20 of 60); full epochs, so that the dev run
+exercises early stopping, the restore of the best epoch and the warnings on the learning curves,
+and its numbers say something about the final run. The TFT baseline and PatchTST have no search,
+so their dev fit is the final procedure with one seed.
+
+**Alternatives:** (B) the §4.3 proposal, 5 trials × 10 epochs for the BiLSTM and the TFT models
+(about an hour): early stopping with patience 10 never acts, and most fits would end at their last
+epoch. (C) The final budgets with one seed: dev and final would differ only in the seeds of the
+BiLSTM and the frozen code; about three times the time of (A).
+
+### 18.7 Tests (to be numbered in §9 with the code)
+
+| ID | Test |
+|---|---|
+| T-73 | M19: a smoke run with two seeds writes one prediction file per seed and model, and the seed spread comes from the evaluation's table, never from a training log |
+| T-74 | M20, M23, X26: the objective of a trial equals the evaluation's `nRMSE_kW_pct` of the same forecast; `units.to_kw` is the only conversion (X12); the edge warning fires on a constructed study |
+| T-75 | M21, M22: the TFT baseline and TFT-168 share the step code, the datasets and every setting except the v6 ones; the stored attention has L encoder positions per model |
+| T-76 | M24: the MBE of a constructed forecast with a known bias is reported in kW and in % of capacity |
+| T-77 | The guards of M13–M15 and M18: a stub model whose forecast encodes (origin, step) reaches the right valid hours and horizons through the library adapters, also on the 23-hour day; a dropped window is an error |
+| T-78 | X29, X31 and M16, M17: the library objects have identity scalers and normalisers; validation values changed leave every training input unchanged; changed targets on masked steps leave the trained network unchanged; the masked loss equals a hand computation |
+| T-79 | X25, X30, X33: the worker refuses a job whose array hash differs; it receives no timestamp and no test row; a daytime NaN in a known input is an error; every dataset of a step passes `check_dataset` |
+| T-80 | X27, X28: the budgets of every model step have every field and equal the decisions (dev) and v6 (final); every model step writes only names of `MODEL_LABELS` |
+| T-81 | X32: two fits with the same seed give identical forecasts (smoke, on the GPU) |
+
+### 18.8 Order of the work and records
+
+1. This section, committed before any code (with the errata rows C-53–C-57 and X25–X33).
+2. After the user's approval of §18.5: the environment, its verification, the lock files.
+3. The code: `solarpv.evaluation.units` (X26); the worker and the three model modules; the five
+   steps; the budgets (X27) and names (X28); the tests of §18.7; ruff; the full test suite.
+4. Commit, then smoke (`run --mode smoke --only baselines,bilstm,tft96,tft168,tftbase,patchtst,
+   evaluate`), the determinism check (X32), the timing, and `--dry-run` of dev.
+5. Commit, then the dev run with the budgets of §18.6, its review with the
+   `forecasting-validity-review` skill, and the acceptance below.
+6. Records: OP-57, R9-14 on, the figures of W4 in the figure book (learning curves, optimisation
+   histories, dev results against XGB-dev and the references) with stage 9's minimum raised in
+   `tests/contracts/test_figures.py` (T-72), `PROJECT_MASTER.md` (§1, D-17, D-29, A-14, R-15,
+   §16b, §17) and this plan.
+
+**Acceptance of the dev run** (registered now). Required: every model step completes; every
+prediction file passes the evaluation's alignment and coverage checks on the whole validation
+split; no NaN loss; the automatic warnings are read and explained; the MBE is reported against
+XGB-dev (M24). Expected, and investigated if not met: a lower `nRMSE_kW_pct` than persistence at
+every target × horizon, and an error that does not fall with the lead (or, if it does, the
+inside-train order of R6b-07 and R7-05 explains it, as for XGB). A model that misses an
+expectation is checked first against the datasets and the adapters (T-77, T-78), then reported;
+nothing is retuned on validation to fix it. The comparison with XGB-dev is reported, not
+required: v6 found the families within about 1 pp, and C1 expects the same.
