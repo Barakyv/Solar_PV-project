@@ -21,6 +21,17 @@ SUBMITTED_FORECASTS = "submission_evidence/08_lstm_alignment/predictions_lstm_so
 SHAP_DIRECT = "00_data_audit/original_backup_2026-11-01/selection_shap_direct_top.csv"
 LAG_SCAN = "00_data_audit/original_backup_2026-11-01/weather_lag_scan.csv"
 PROFILE_MONTHS = (("winter", "2021-12", 2), ("summer", "2022-07", 3))
+# W4, the neural models (docs/stage9_plan.md §18.2)
+SEED_TABLE = "submission_evidence/05_seed_variability/seed_variability.csv"
+LSTM_TRAIN_METRICS = "submission_evidence/08_lstm_alignment/metrics_lstm_sota.csv"
+SUBMITTED_BENCH = "submission_evidence/01_benchmark/benchmark_summary.csv"
+NDEV_BENCH = f"{D.NEURAL_DEV_RUN}/evaluate/val/benchmark_summary.csv"
+XDEV_BENCH = f"{D.DEV_RUN}/evaluate/val/benchmark_summary.csv"
+ATTENTION = {(s, t): f"{D.NEURAL_DEV_RUN}/{s}/attention_{t}_seed42.csv"
+             for s in ("tft96", "tft168") for t in ("indirect", "direct")}
+CLAIMED_LAG_H = 168  # v6 §11.2: a -168 h attention peak "visible particularly in TFT-96 indirect"
+SUBMITTED_MODELS = (("xgb_sota", "XGB"), ("lstm_sota", "BiLSTM"), ("tft_96", "TFT-96"),
+                    ("tft_168", "TFT-168"), ("tft", "TFT baseline"), ("patchtst", "PatchTST"))
 
 
 def _submitted(target: str) -> pd.DataFrame:
@@ -256,4 +267,143 @@ def c06_weather():
     r = s.set_index("shift_h")["hourly_r"]
     facts = {"best": float(r.max()), "r2": float(r[-2]), "r3": float(r[-3])}
     assert int(r.idxmax()) == -1
+    return fig, facts
+
+
+@register(
+    "C-07", "correction", "bilstm_seed_table", "Seed table of the submitted BiLSTM",
+    "Which numbers does the seed spread of the submitted BiLSTM rest on?",
+    "Submitted nRMSE of the BiLSTM per route and horizon: the three rows of the seed table "
+    "(seeds 42, 123 and 777; markers) and the one forecast that the evaluation script scored "
+    "(seed 42; bars), both as the submitted files report them.",
+    "All three seed-table rows, seed 42 included, are the training script's own metrics (the "
+    "seed-42 row equals the training output file): at D+1 they average {ind_tab:.1f} % "
+    "(indirect) and {dir_tab:.1f} % (direct), while the scored seed-42 forecast has "
+    "{ind_ev:.1f} % and {dir_ev:.1f} %. The reported relative spread of {rel:.1%} is therefore "
+    "not a spread of day-ahead errors; only one seed was scored.",
+    "Every seed of every neural step writes its own forecast file, scored by the run's evaluate "
+    "step; no number from a training loop enters a result table (C-10, M19, T-73).",
+    (SEED_TABLE, LSTM_TRAIN_METRICS, SUBMITTED_BENCH), kind="correction")
+def c07_seed_table():
+    tab = D.csv(SEED_TABLE)
+    tab = tab[tab["model"] == "lstm_sota"]
+    train42 = D.csv(LSTM_TRAIN_METRICS).set_index(["target", "horizon"])["nRMSE_pct"]
+    ev = D.csv(SUBMITTED_BENCH)
+    ev = ev[ev["model"] == "lstm_sota"].set_index(["target", "horizon"])["nRMSE_pct"]
+    row42 = tab[tab["seed"] == 42].set_index(["target", "horizon"])["nRMSE_pct"]
+    # X37: the seed-42 row of the seed table is the training output, not the scored forecast
+    assert np.allclose(row42.sort_index(), train42.reindex(row42.index).sort_index(), atol=1e-3)
+    assert (ev.reindex(row42.index) - row42).min() > 1, "a seed-table row equals the evaluation"
+    fig, axes = subplots(1, 2, height=2.7)
+    marks = {42: ("o", C["blue"], -0.12), 123: ("s", C["orange"], 0.0),
+             777: ("D", C["green"], 0.12)}
+    for ax, t in zip(axes, ("indirect", "direct"), strict=True):
+        hs = np.array([1, 2, 3])
+        ax.bar(hs, [ev[(t, h)] for h in hs], 0.5, color=C["grey"], hatch="///",
+               edgecolor="white", label="scored by the evaluation (seed 42)")
+        for seed, (mk, col, dx) in marks.items():
+            s = tab[(tab["target"] == t) & (tab["seed"] == seed)].sort_values("horizon")
+            ax.plot(s["horizon"] + dx, s["nRMSE_pct"], mk, color=col, ms=5,
+                    ls="none", label=f"seed table, seed {seed}")
+        ax.set_xticks(hs, ["D+1", "D+2", "D+3"])
+        ax.set_title(f"{t} route")
+        ax.set_ylabel("submitted nRMSE (%)")
+    axes[0].legend(loc="lower left", fontsize=6.5, frameon=True, framealpha=0.95)
+    d1 = tab[(tab["target"] == "indirect") & (tab["horizon"] == 1)]["nRMSE_pct"]
+    facts = {"ind_tab": float(d1.mean()),
+             "dir_tab": float(tab[(tab["target"] == "direct")
+                                  & (tab["horizon"] == 1)]["nRMSE_pct"].mean()),
+             "ind_ev": float(ev[("indirect", 1)]), "dir_ev": float(ev[("direct", 1)]),
+             "rel": float(d1.std(ddof=1) / d1.mean())}
+    return fig, facts
+
+
+@register(
+    "C-08", "correction", "scored_hours", "Scored hours per model, submitted and rebuilt",
+    "Were the models of the submitted study scored on the same hours?",
+    "Hours that each model was not scored on, counted against the model with the most scored "
+    "hours at the same horizon and route: in the submitted benchmark (left, as reported) and "
+    "in the rebuild's development runs (right, validation).",
+    "In the submission the six models were scored on {sub_min:,} to {sub_max:,} hours at D+1 "
+    "(BiLSTM {lstm:,}, the three TFTs {tft:,}, XGB and PatchTST {xgb:,}): each model's input "
+    "window decided which hours it forecast, so a difference between two models also mixes "
+    "different hours. In the rebuild all {n_models} models and the {n_refs} references are "
+    "scored on the same {n_rb:,} validation hours at every horizon.",
+    "One coverage rule for every model (C-35, T-39) and one forecast per hour and horizon from "
+    "the sequence datasets (D-25, T-67).",
+    (SUBMITTED_BENCH, NDEV_BENCH, XDEV_BENCH), kind="correction")
+def c08_hours():
+    sub = D.csv(SUBMITTED_BENCH)
+    rb = pd.concat([D.csv(NDEV_BENCH), D.csv(XDEV_BENCH).query("model == 'xgb_sota'")])
+    fig, (a1, a2) = subplots(1, 2, height=2.8, sharey=True)
+    xs = np.arange(len(SUBMITTED_MODELS))
+    styles = {1: (C["blue"], None), 2: (C["orange"], "///"), 3: (C["green"], "...")}
+    for h, (col, hatch) in styles.items():
+        for ax, tab in ((a1, sub), (a2, rb)):
+            g = tab[(tab["horizon"] == h) & (tab["target"] == "indirect")].set_index("model")["n"]
+            gap = [int(g.max() - g[m]) for m, _ in SUBMITTED_MODELS]
+            ax.bar(xs + (h - 2) * 0.27, gap, 0.25, color=col, hatch=hatch, edgecolor="white",
+                   label=f"D+{h}")
+    for ax, title in ((a1, "submitted benchmark"), (a2, "rebuild, development runs")):
+        ax.set_xticks(xs, [n for _, n in SUBMITTED_MODELS], rotation=30, ha="right", fontsize=7)
+        ax.set_title(title)
+    a1.set_ylabel("hours not scored")
+    a1.legend(loc="upper right", fontsize=7)
+    d1 = sub[(sub["horizon"] == 1) & (sub["target"] == "indirect")].set_index("model")["n"]
+    assert d1["tft"] == d1["tft_96"] == d1["tft_168"] and d1["xgb_sota"] == d1["patchtst"]
+    # the submission scored both routes on the same hours per model, the rebuild every model
+    assert (sub.pivot_table("n", ["model", "horizon"], "target").nunique(axis=1) == 1).all()
+    assert rb["n"].nunique() == 1, "the rebuild scored two models on different hours"
+    a2.text(0.5, 0.5, f"every model and reference:\n{int(rb['n'].iloc[0]):,} hours at each "
+            "horizon", transform=a2.transAxes, ha="center", fontsize=8)
+    models = {m for m, _ in SUBMITTED_MODELS}
+    assert models <= set(rb["model"]), "a model is missing from the rebuild's runs"
+    facts = {"sub_min": int(d1.min()), "sub_max": int(d1.max()), "lstm": int(d1["lstm_sota"]),
+             "tft": int(d1["tft"]), "xgb": int(d1["xgb_sota"]), "n_models": len(models),
+             "n_refs": len(set(rb["model"]) - models), "n_rb": int(rb["n"].iloc[0])}
+    return fig, facts
+
+
+@register(
+    "C-09", "correction", "attention_window", "Which lags a TFT encoder can hold",
+    "Can TFT-96 show an attention peak 168 hours before issuance, as the submitted report says?",
+    "The encoder of TFT-96 (top) and TFT-168 (bottom) on the axis of hours before issuance, "
+    "with the rebuild's mean validation attention in each (development run, relative to the "
+    "mean of its own profile; indirect route solid, direct dashed). The red line is the lag "
+    "that the submitted report names for TFT-96.",
+    "TFT-96 reads only the last {len96} hours, so it has no position {claim} hours before "
+    "issuance. In all {n_cases} model-route pairs of the rebuild the first position of the "
+    "encoder lies {rise_min:.0%} to {rise_max:.0%} above the same hour of the later days, which "
+    "agree to within {flat:.2%}: a rise at the edge of the window, whatever its length. A "
+    "168-hour encoder puts that edge exactly at -{claim} h.",
+    "The TFT steps store the attention over each model's own encoder, with its length "
+    "asserted, and a peak is claimed only at a lag inside the encoder (C-55, M22, T-75).",
+    tuple(ATTENTION.values()), kind="correction")
+def c09_attention():
+    fig, axes = subplots(2, 1, height=3.6, sharex=True)
+    rises, flats = [], []
+    for ax, (step, length) in zip(axes, (("tft96", 96), ("tft168", 168)), strict=True):
+        ax.axvspan(-length - 0.5, -0.5, color=C["sky"], alpha=0.15, lw=0)
+        for t, ls in (("indirect", "-"), ("direct", "--")):
+            a = D.csv(ATTENTION[(step, t)]).sort_values("lag_h")
+            assert a["lag_h"].min() == -length and a["lag_h"].max() == -1  # M22
+            v = a["attention"].to_numpy()
+            ax.plot(a["lag_h"], v / v.mean(), ls, color=C["blue"], lw=1.1, label=f"{t} route")
+            later = v[24::24]
+            rises.append(float(v[0] / later.mean() - 1))
+            flats.append(float((later.max() - later.min()) / later.mean()))
+        ax.set_title(f"{step.upper().replace('TFT', 'TFT-')}: encoder of {length} hours "
+                     "(shaded)", fontsize=8.5)
+        ax.set_ylabel("attention / mean")
+    axes[0].axvline(-CLAIMED_LAG_H, color=C["red"], lw=1.6)
+    axes[0].text(-CLAIMED_LAG_H + 2, 0.06, f"submitted report: peak at -{CLAIMED_LAG_H} h "
+                 "in TFT-96", color=C["red"], fontsize=7.5, va="bottom",
+                 transform=axes[0].get_xaxis_transform())
+    axes[1].axvline(-CLAIMED_LAG_H, color=C["red"], lw=0.8, ls=":")
+    axes[1].set_xlabel("hours before issuance")
+    axes[1].set_xlim(-180, 0)
+    axes[0].legend(loc="upper left", bbox_to_anchor=(0.08, 1.0), fontsize=7)
+    assert min(rises) > 0, "the first encoder position is not raised in every pair"
+    facts = {"len96": 96, "claim": CLAIMED_LAG_H, "n_cases": len(rises),
+             "rise_min": min(rises), "rise_max": max(rises), "flat": max(flats)}
     return fig, facts

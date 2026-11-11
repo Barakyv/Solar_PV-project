@@ -653,7 +653,7 @@
     "dev_h": 3.211555555555555
    },
    "takeaway": "All five steps and the evaluation passed the smoke run; a second smoke run with the same seed gave identical losses for 4 models. In development an epoch takes 0.3 s (BiLSTM) to 7.5 s (TFT-168); the run took 3.2 h.",
-   "git_commit": "a0ad8ec"
+   "git_commit": "23804d4+dirty"
   },
   "S09-08": {
    "stage": "9",
@@ -694,6 +694,9 @@
     "outputs/runs/20261107T135938Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431"
    },
    "facts": {
+    "n_models": 6,
+    "n_refs": 3,
+    "n_hours": 2901,
     "best_ind": "TFT-168",
     "best_ind_v": 6.768688,
     "best_dir": "TFT-96",
@@ -703,8 +706,8 @@
     "n_below": 30,
     "n_cases": 30
    },
-   "takeaway": "Best neural model at D+1: TFT-168 (6.77 %) in the indirect route and TFT-96 (6.75 %) in the direct route, against XGB-dev 6.69 / 6.66 %. 30 of 30 neural cases are below persistence. Tuning-split numbers with reduced budgets: they rank nothing.",
-   "git_commit": "a0ad8ec"
+   "takeaway": "All 6 models and the 3 references are scored on the same 2,901 validation daytime hours per horizon. Best neural model at D+1: TFT-168 (6.77 %) in the indirect route and TFT-96 (6.75 %) in the direct route, against XGB-dev 6.69 / 6.66 %. 30 of 30 neural cases are below persistence. Tuning-split numbers with reduced budgets: they rank nothing.",
+   "git_commit": "23804d4+dirty"
   },
   "S09-10": {
    "stage": "9",
@@ -886,6 +889,74 @@
    },
    "takeaway": "The series is the archive value of each target hour, not a forecast issued before midnight. It correlates 0.63 with the measured k after a 1-hour shift (end-of-hour labels), but only 0.30 and 0.27 at the 2- and 3-hour shifts that the time bug produced.",
    "git_commit": "123b2fb"
+  },
+  "C-07": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Seed table of the submitted BiLSTM",
+   "file": "outputs/figures/correction/C-07_bilstm_seed_table.png",
+   "file_sha256": "d15e09b02830596ec6ebd1589b7265a04e275a1aca7065e16fc7d404aa67e576",
+   "inputs": {
+    "submission_evidence/05_seed_variability/seed_variability.csv": "bcc81a595ee8f395c05a826bcf668ebecbda9508c26ea6b2f7cea2a28547bdab",
+    "submission_evidence/08_lstm_alignment/metrics_lstm_sota.csv": "44cfcf2e604ddb9411a8ae981636f12e83d7240516c5c2e42a5ae8f751677344",
+    "submission_evidence/01_benchmark/benchmark_summary.csv": "88688beb5fd1ba69dc0e6b2c7d147b541119611bd6d2631d1ca9f0f7751bcf77"
+   },
+   "facts": {
+    "ind_tab": 19.66933333333333,
+    "dir_tab": 8.476666666666667,
+    "ind_ev": 30.2374,
+    "dir_ev": 12.5774,
+    "rel": 0.021553061462691314
+   },
+   "takeaway": "All three seed-table rows, seed 42 included, are the training script's own metrics (the seed-42 row equals the training output file): at D+1 they average 19.7 % (indirect) and 8.5 % (direct), while the scored seed-42 forecast has 30.2 % and 12.6 %. The reported relative spread of 2.2% is therefore not a spread of day-ahead errors; only one seed was scored.",
+   "git_commit": "23804d4+dirty"
+  },
+  "C-08": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Scored hours per model, submitted and rebuilt",
+   "file": "outputs/figures/correction/C-08_scored_hours.png",
+   "file_sha256": "7a6668dd6e6e66739a445eee629fd6fece73726569d55ba0af2edce122710d5d",
+   "inputs": {
+    "submission_evidence/01_benchmark/benchmark_summary.csv": "88688beb5fd1ba69dc0e6b2c7d147b541119611bd6d2631d1ca9f0f7751bcf77",
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/benchmark_summary.csv": "d4fa8a405e639fe62300668f0b3ff1a7a971152ea00c4244d6c7ae4f315eda79",
+    "outputs/runs/20261107T135938Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431"
+   },
+   "facts": {
+    "sub_min": 2510,
+    "sub_max": 2580,
+    "lstm": 2510,
+    "tft": 2554,
+    "xgb": 2580,
+    "n_models": 6,
+    "n_refs": 3,
+    "n_rb": 2901
+   },
+   "takeaway": "In the submission the six models were scored on 2,510 to 2,580 hours at D+1 (BiLSTM 2,510, the three TFTs 2,554, XGB and PatchTST 2,580): each model's input window decided which hours it forecast, so a difference between two models also mixes different hours. In the rebuild all 6 models and the 3 references are scored on the same 2,901 validation hours at every horizon.",
+   "git_commit": "23804d4+dirty"
+  },
+  "C-09": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Which lags a TFT encoder can hold",
+   "file": "outputs/figures/correction/C-09_attention_window.png",
+   "file_sha256": "8f41c0aa82fd851bf0f0114c0027c56917e53659159232cfe7ae43a25fb6b09e",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/tft96/attention_indirect_seed42.csv": "49b8d09c6611e7f151d23e0d59e01c1713a23b2444f4d03f36ae29bbef419375",
+    "outputs/runs/20261111T160714Z_dev/tft96/attention_direct_seed42.csv": "16274d39ddca9247f9f24acc530741fc900755e857781df7a1828e1d3ca2eeb5",
+    "outputs/runs/20261111T160714Z_dev/tft168/attention_indirect_seed42.csv": "f33ccf944344013c934e741dc71f1b73526565a1ea155b8f69d6a1504e28fca1",
+    "outputs/runs/20261111T160714Z_dev/tft168/attention_direct_seed42.csv": "f17fcc380398807cd4f362ed80f64f838f11e23ed4a8f3e3b4a5a99f4b2aa605"
+   },
+   "facts": {
+    "len96": 96,
+    "claim": 168,
+    "n_cases": 4,
+    "rise_min": 0.08157216666554445,
+    "rise_max": 0.2800000587135749,
+    "flat": 0.004006476351627942
+   },
+   "takeaway": "TFT-96 reads only the last 96 hours, so it has no position 168 hours before issuance. In all 4 model-route pairs of the rebuild the first position of the encoder lies 8% to 28% above the same hour of the later days, which agree to within 0.40%: a rise at the edge of the window, whatever its length. A 168-hour encoder puts that edge exactly at -168 h.",
+   "git_commit": "23804d4+dirty"
   }
  }
 }

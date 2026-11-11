@@ -494,7 +494,8 @@ def _curves(run, step):
     "S09-07", "9", "neural_smoke", "Smoke runs of the five neural models",
     "Do the five neural steps run end to end on the GPU, and do they reproduce?",
     "Median seconds per training epoch of each final fit (PatchTST: per validation check) in "
-    "the smoke run (58 training windows) and in the development run (872), log scale.",
+    "the smoke run (a few weeks of training windows) and in the development run (the whole "
+    "training split), log scale.",
     "All five steps and the evaluation passed the smoke run; a second smoke run with the same "
     "seed gave identical losses for {n_repeat} models. In development an epoch takes "
     "{fast:.1f} s ({fast_name}) to {slow:.1f} s ({slow_name}); the run took {dev_h:.1f} h.",
@@ -594,7 +595,9 @@ def s09_neural_curves():
     "How do the five neural models score on validation, next to XGB and the references?",
     "Validation nRMSE in kW per horizon of the five neural models (development budgets, one "
     "seed), the development XGBoost and two references; indirect route converted to kW (left), "
-    "direct route (right). All on the same 5,832 validation hours per horizon.",
+    "direct route (right). Every model and reference is scored on the same validation hours.",
+    "All {n_models} models and the {n_refs} references are scored on the same {n_hours:,} "
+    "validation daytime hours per horizon. "
     "Best neural model at D+1: {best_ind} ({best_ind_v:.2f} %) in the indirect route and "
     "{best_dir} ({best_dir_v:.2f} %) in the direct route, against XGB-dev {xgb_ind:.2f} / "
     "{xgb_dir:.2f} %. {n_below} of {n_cases} neural cases are below persistence. Tuning-split "
@@ -634,12 +637,15 @@ def s09_neural_dev():
         ax.set_xticks([1, 2, 3], ["D+1", "D+2", "D+3"])
     axes[0].set_ylabel("validation nRMSE (% of 3,449 kW)")
     axes[1].legend(loc="upper right", fontsize=6.5, ncol=2)
-    n = nb[nb["model"].isin([m for _, m, _ in NEURAL])]["n"]
-    assert n.nunique() == 1, "the neural models were not scored on the same hours"
+    # X36: the scored hours come from the tables, never typed (all models, references and XGB)
+    refs = sorted(set(nb["model"]) - {m for _, m, _ in NEURAL})
+    n = pd.concat([nb["n"], xb[xb["model"] == "xgb_sota"]["n"]])
+    assert n.nunique() == 1, "the models were not scored on the same hours"
     xd1 = {t: float(xb[(xb["target"] == t) & (xb["model"] == "xgb_sota")
                        & (xb["horizon"] == 1)]["nRMSE_kW_pct"].iloc[0])
            for t in ("indirect", "direct")}
-    facts = {"best_ind": best["indirect"][0], "best_ind_v": best["indirect"][1],
+    facts = {"n_models": len(NEURAL) + 1, "n_refs": len(refs), "n_hours": int(n.iloc[0]),
+             "best_ind": best["indirect"][0], "best_ind_v": best["indirect"][1],
              "best_dir": best["direct"][0], "best_dir_v": best["direct"][1],
              "xgb_ind": xd1["indirect"], "xgb_dir": xd1["direct"], "n_below": int(below),
              "n_cases": int(cases)}

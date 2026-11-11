@@ -124,7 +124,53 @@ the errata with its effect on the numbers."
   S6b-01, S6b-02, S6b-03.
 - **IDs:** F-28, F-11, D-12.
 
-## 7. Items without a figure
+## 7. The neural models
+
+The neural models were rebuilt in stage 9, W4 (`docs/stage9_plan.md` §18.2, findings M19-M24).
+Their code did not survive, so the differences come from the submitted tables and report.
+
+- **Submitted:** the BiLSTM seed spread rested on the training script's own metrics; the six
+  models were scored on different hours; the TFT attention was read at a lag that TFT-96 does
+  not have; one TFT version came from earlier code; the neural forecasts carried unexplained
+  biases.
+- **Why it looked right:** each table had the right columns and plausible values; a seed table
+  with three rows looks like a seed study.
+- **What revealed it:** comparing each table with the file it should agree with: the seed-42 row
+  with the scored seed-42 forecast, the hour counts across models, an attention lag with the
+  encoder length.
+- **Rebuild:** one dataset per model with one forecast per hour and horizon; every seed scored by
+  the run's own evaluation; one tuning objective; attention stored over each model's own encoder.
+- **Figures:**
+  - C-07 (`../outputs/figures/correction/C-07_bilstm_seed_table.png`), the seed table (C-10,
+    X37): all three seed rows, seed 42 included, are the training script's metrics, about ten
+    points below the one scored forecast at indirect D+1;
+  - C-08 (`../outputs/figures/correction/C-08_scored_hours.png`), the scored hours (C-35,
+    C-54): different hours per model in the submission, the same hours for every model and
+    reference in the rebuild;
+  - C-09 (`../outputs/figures/correction/C-09_attention_window.png`), the attention window
+    (C-55): TFT-96 has no position at -168 h, and the rebuild's encoders rise at their first
+    position whatever their length.
+  - Process views: S09-06 (datasets), S09-09 (results on one set of hours), S09-10 (searches),
+    S09-11 (attention), S09-12 (bias).
+- **Items without their own figure:**
+  - *One objective (C-53):* the report says every model was tuned on daytime nRMSE (§4.1) and,
+    for the BiLSTM, on the validation quantile loss (§5.2). The rebuild tunes every model on the
+    same daytime nRMSE in kW, with the quantile loss as the training loss; process view S09-10.
+  - *The TFT baseline (C-54):* in the submission an earlier code version; in the rebuild the same
+    step code and datasets as TFT-168, with the three reported values fixed.
+  - *Hidden size 16 "always chosen" (C-56):* 16 is the smallest value of the space, so the result
+    says the space may stop too early, not that small models are better. The runner warns about a
+    best value on the edge of the space.
+  - *Unexplained neural biases (C-57):* the Supplement shows NMBE from −6.0 % to +6.5 % among the
+    neural models on the indirect route, normalised by a mean k of 0.6279 rather than the
+    capacity, so it is not drawn beside the rebuild's bias in % of capacity. The rebuild has no fitted target transform and identity normalisers, and reports the
+    bias of every model; process view S09-12.
+- **IDs:** C-10, C-35, C-53-C-57, M19-M24, X37.
+- **Likely question:** "Why are the neural results different from the report?" **Answer:** "The
+  neural models were rebuilt on the same windows, hours, objective and scoring as XGB, so that a
+  difference between families is a difference of the models."
+
+## 8. Items without a figure
 
 - **Significance tests (F-04, C-15):** the report describes HLN and Bonferroni corrections that
   the code did not apply; recomputing the test showed which formula matched. The rebuild applies
@@ -140,28 +186,9 @@ the errata with its effect on the numbers."
 - **The evaluation code itself did not change (T-15):** on the surviving BiLSTM forecasts the new
   code reproduces the submitted nRMSE within 0.0012 points (S08-02), so differences in the
   results come from the data and the models.
-- **The neural models (stage 9, W4; `docs/stage9_plan.md` §18.2):**
-  - *Seeds (C-10):* only seed 42 of the BiLSTM was scored by the evaluation; the other two seeds
-    in the seed table are training-time metrics on all hours. In the rebuild every seed writes a
-    forecast file scored by the same evaluation step.
-  - *One objective (C-53):* the report says every model was tuned on daytime nRMSE (§4.1) and,
-    for the BiLSTM, on the validation quantile loss (§5.2). The rebuild tunes every model on the
-    same daytime nRMSE in kW, with the quantile loss as the training loss; process view S09-10.
-  - *The TFT baseline (C-54):* in the submission an earlier code version; in the rebuild the same
-    step code and datasets as TFT-168, with the three reported values fixed.
-  - *Attention at −168 h in TFT-96 (C-55):* a 96-hour encoder has no such position. The rebuild
-    stores the attention over each model's own encoder and asserts its length; process view
-    S09-11.
-  - *Hidden size 16 "always chosen" (C-56):* 16 is the smallest value of the space, so the result
-    says the space may stop too early, not that small models are better. The runner warns about a
-    best value on the edge of the space.
-  - *Unexplained neural biases (C-57):* the Supplement shows NMBE from −6.0 % to +6.5 % among the
-    neural models. The rebuild has no fitted target transform and identity normalisers, and
-    reports the bias of every model; process view S09-12.
-  - *Short answer:* "The neural models were rebuilt on the same windows, hours, objective and
-    scoring as XGB, so that a difference between families is a difference of the models."
+- **The neural models** have their own section (§7).
 
-## 8. Found in the data, not handled in the submission
+## 9. Found in the data, not handled in the submission
 
 These are not mistakes of the submitted code but properties of the data that the rebuild found
 by checking against a reference that should agree:

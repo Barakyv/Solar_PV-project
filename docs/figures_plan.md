@@ -113,9 +113,23 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-04 | 9 | Linear correction of the indirect route | `l09_check.csv` |
 | S09-05 | 9 | Significance of the differences in kW | dev-run `dm_tests_kw.csv` |
 | S09-06 | 9 | Sequence datasets: one origin per local day | `checks_dev.csv` |
+| S09-07 | 9 | Smoke runs of the five neural models | smoke and dev `learning_curves.csv`, `run.json` |
+| S09-08 | 9 | Learning curves of the neural models | dev `learning_curves.csv`, `best_params.json` |
+| S09-09 | 9 | Neural models in the development run | dev-run tables (neural and XGB) |
+| S09-10 | 9 | Optuna searches of the neural models | dev `trials.csv`, `best_params.json` |
+| S09-11 | 9 | Where the TFT models look in their encoder | dev `attention_*.csv` |
+| S09-12 | 9 | Mean bias of the neural models | dev `mbe.csv`, `r14_bias.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
 | C-03 | correction | Clear-sky index of the submission and of the rebuild | submission, stage-6 table |
 | C-04 | correction | Rolling windows per horizon, original and fixed | drawn |
 | C-05 | correction | Periods read by the feature selection; DC dominance | backup evidence |
 | C-06 | correction | Original weather series: correlation by time shift | backup evidence |
+| C-07 | correction | Seed table of the submitted BiLSTM | submission seed table and benchmark |
+| C-08 | correction | Scored hours per model, submitted and rebuilt | submission benchmark, dev-run tables |
+| C-09 | correction | Which lags a TFT encoder can hold | dev `attention_*.csv`, v6 §11.2 claim |
+
+*Added 2026-11-12 (W4 figures review):* S09-07–S09-12 were built with W4 but were missing from
+this table; C-07–C-09 draw the W4 differences from the submission (C-10, C-35, C-54, C-55). The
+review also found X36 (a typed, wrong hour count in a description) and X37 (the seed-42 row of the
+submitted seed table); see `docs/errata.md`.

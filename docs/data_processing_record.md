@@ -1052,10 +1052,16 @@ amendment of 2026-11-07).**
   `docs/figure_catalog.md` (generated; it also lists the figures the stage producers made before).
 - *Result:* 37 figures: 31 process figures for stages 0, 1, 2, 4, 5, 6, 6b, 7, 8 and 9, and 6
   correction figures used by `docs/defense_notes.md`.
+- *Additions:* W4 (2026-11-11) added S09-07–S09-12 (OP-57). The review of the W4 figures
+  (2026-11-12, R9-18) added the correction figures C-07 (the submitted BiLSTM seed table), C-08
+  (scored hours per model) and C-09 (the attention window of TFT-96), read from the submitted
+  files and the dev runs (validation only), and fixed X36 (a typed hour count) and X37 (C-10).
+  The book now holds 46 figures: 37 process and 9 correction.
 - *Verification:* `tests/contracts/test_figures.py` (T-72): every registered figure is built,
   unchanged since the build and drawn from unchanged inputs; every takeaway re-renders from its
   facts; the catalog is current; every completed stage has process figures; process figures do
-  not read the submission's evidence except the evaluation-code check.
+  not read the submission's evidence except the evaluation-code check; no description carries a
+  typed count, and the scored hours and the seed-table facts match their source tables (X36, X37).
 - *Original:* no figure was linked to its inputs or code version; the v6 figures were drawn from
   the shifted, clipped data and are regenerated in stage 11.
 

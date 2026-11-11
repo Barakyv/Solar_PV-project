@@ -3,11 +3,14 @@
 Fails when: a registered figure was not built or was changed after its build; an input changed
 since the build; a takeaway does not re-render from its stored facts; the catalog is stale; a
 completed stage has no process figure; a process figure reads the submission's evidence (except
-the evaluation-code check); a correction figure is missing from the defense notes.
+the evaluation-code check); a correction figure is missing from the defense notes; a description
+carries a typed count, or a count or seed-table fact disagrees with its source table (X36, X37).
 """
 
 import json
+import re
 
+import pandas as pd
 import pytest
 
 from solarpv.config.paths import REPO_ROOT
@@ -18,6 +21,12 @@ from solarpv.figures.__main__ import (
     catalog_text,
     input_hash,
     render_takeaway,
+)
+from solarpv.figures.correction import (
+    LSTM_TRAIN_METRICS,
+    NDEV_BENCH,
+    SEED_TABLE,
+    SUBMITTED_BENCH,
 )
 from solarpv.figures.registry import load_all
 
@@ -80,6 +89,40 @@ def test_process_figures_do_not_read_the_submission(specs):
             bad = [r for r in s.inputs if r.startswith("submission_evidence")
                    or "original_backup" in r]
             assert not bad, f"{s.id} is a process figure but reads {bad}"
+
+
+def test_descriptions_carry_no_typed_counts(specs):
+    """X36: a count of hours or windows belongs in the facts, not in the typed description."""
+    allowed = {"3,449"}  # the capacity, a constant of the project
+    for s in specs:
+        typed = set(re.findall(r"\b\d{1,3}(?:,\d{3})+\b|\b\d{4,}\b", s.description)) - allowed
+        assert not typed, f"{s.id}: typed count in the description {sorted(typed)}"
+
+
+def test_scored_hours_come_from_the_tables(manifest):
+    """X36: S09-09 and C-08 state the scored hours of the dev runs' evaluation tables."""
+    path = REPO_ROOT / NDEV_BENCH
+    if not path.exists():
+        pytest.skip("the neural dev run is not present on this machine")
+    n = pd.read_csv(path)["n"]
+    assert n.nunique() == 1
+    assert manifest["figures"]["S09-09"]["facts"]["n_hours"] == int(n.iloc[0])
+    assert manifest["figures"]["C-08"]["facts"]["n_rb"] == int(n.iloc[0])
+    assert f"{int(n.iloc[0]):,} validation daytime hours" in manifest["figures"]["S09-09"][
+        "takeaway"]
+
+
+def test_seed_table_rows_are_training_metrics(manifest):
+    """X37: every BiLSTM seed-table row of the submission sits far below its scored forecast."""
+    tab = pd.read_csv(REPO_ROOT / SEED_TABLE).query("model == 'lstm_sota'")
+    ev = pd.read_csv(REPO_ROOT / SUBMITTED_BENCH).query("model == 'lstm_sota'")
+    m = tab.merge(ev, on=["target", "horizon"], suffixes=("_tab", "_ev"))
+    assert len(m) == 18 and (m["nRMSE_pct_ev"] - m["nRMSE_pct_tab"]).min() > 1
+    train42 = pd.read_csv(REPO_ROOT / LSTM_TRAIN_METRICS)
+    row42 = tab[tab["seed"] == 42].merge(train42, on=["target", "horizon"])
+    assert len(row42) == 6 and (row42["nRMSE_pct_x"] - row42["nRMSE_pct_y"]).abs().max() < 1e-3
+    f = manifest["figures"]["C-07"]["facts"]
+    assert f["ind_ev"] - f["ind_tab"] > 5 and f["dir_ev"] - f["dir_tab"] > 2
 
 
 def test_defense_notes_use_every_correction_figure(specs):

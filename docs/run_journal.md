@@ -1554,3 +1554,36 @@ hashes, numbers) and the commit messages are the record:
 - **Figures:** S09-07 to S09-12 built at `a0ad8ec`; the attention takeaway was rewritten after a
   look at the figure: TFT-168's indirect maximum is at the first encoder position, an edge of the
   window, not a lag (M22), and the daily rhythm is stated instead.
+
+### 2026-11-12 · R9-18 · Review of the W4 figures, and three correction figures
+
+- **Request (user):** finish every figure of the W4 session and keep them as sources for the
+  final report.
+- **Check:** the six process figures S09-07 to S09-12 were built, but they were missing from the
+  table of `docs/figures_plan.md` §5, and no correction figure drew a W4 difference from the
+  submission (C-10, C-35, C-54, C-55 were text only in `docs/defense_notes.md`).
+- **Findings:**
+  - X36: the description of S09-09 said "5,832 validation hours per horizon", a typed count of
+    all validation hours, day and night; the scored daytime hours are 2,901. S09-07's description
+    also typed window counts (correct, but typed). The count is now a fact of S09-09, asserted to
+    be shared by every neural model, XGB-dev and the references; a test forbids typed counts in
+    descriptions;
+  - X37: C-10 said the seed-123 and seed-777 rows of the submitted BiLSTM seed table were
+    training-script metrics, but the seed-42 row (19.554 % indirect D+1) is also the training
+    output (`metrics_lstm_sota.csv`), against 30.237 % scored by the evaluation. C-10, M19 and the
+    defense notes corrected; C-07 asserts both facts.
+- **New correction figures (built from the dev runs and the submitted files; no test row of the
+  rebuild read):**
+  - C-07, the seed table: at D+1 the three rows average 19.7 % (indirect) and 8.5 % (direct),
+    the scored seed-42 forecast 30.2 % and 12.6 %; the reported 2.2 % relative spread rests on
+    training-script numbers;
+  - C-08, scored hours: submitted models on 2,510 to 2,580 hours at D+1, the rebuild's six models
+    and three references on the same 2,901;
+  - C-09, attention window: TFT-96 has no position at -168 h; in all four model-route pairs the
+    first encoder position is 8 % to 28 % above the same hour of the later days, which agree to
+    within 0.40 %: an edge of the window, whatever its length.
+- **Not drawn:** C-57 (the Supplement's indirect NMBE is normalised by a mean k of 0.6279, not by
+  the capacity of the rebuild's bias figure), C-53 and C-56 (no data beyond the report's text).
+- **Records:** errata X36, X37 and C-10; `docs/defense_notes.md` §7 (the neural models, with the
+  three figures); `docs/figures_plan.md` §5; T-72 extended in `tests/contracts/test_figures.py`;
+  catalog and gallery regenerated (46 figures: 37 process, 9 correction).

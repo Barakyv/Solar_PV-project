@@ -251,6 +251,10 @@ reproduce byte for byte (R9-16). The dev run (`20261111T160714Z_dev`, 3.2 h) pas
 acceptance of §18.8 and the validity review (R9-17); figures S09-07–S09-12 (`a0ad8ec`); OP-57.
 Next: W5 (`select`, `explain`, `report`, the final gate, the runbook, notebook `06_models.ipynb`).
 
+**Status (2026-11-12):** the W4 figures were reviewed at the user's request (R9-18): correction
+figures C-07–C-09 added for the W4 differences (C-10, C-35, C-54, C-55), X36 (a typed hour count
+in S09-09) and X37 (the seed-42 row of the submitted seed table, M19 corrected) fixed with tests.
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -966,7 +970,7 @@ installed before the user approves §18.5.
 
 | ID | Mistake | Where | Fix in W4 | Test | Errata |
 |---|---|---|---|---|---|
-| M19 | Only seed 42 of the BiLSTM was scored by `evaluate.py`. The rows of seeds 123 and 777 in the seed table are training-time metrics on all hours, not the daytime day-ahead nRMSE, and the BiLSTM seed spread of the report (2.2 % relative) rests on them | v6 §12.1; `11_audit/REPORT_AUDIT_SUMMARY.md`; `05_seed_variability/` | Every seed of every neural step writes its own prediction file, scored by the `evaluate` step of the same run. No number from a training loop enters a result table. The seed spread is the std of the evaluated nRMSE in kW, with the warning of §3.5 (the stage-10 rule) | T-73 | C-10 |
+| M19 | Only seed 42 of the BiLSTM was scored by `evaluate.py`. All three rows of the seed table, seed 42 included (corrected 2026-11-12, X37), are metrics of the training script, not the daytime day-ahead nRMSE, and the BiLSTM seed spread of the report (2.2 % relative) rests on them | v6 §12.1; `11_audit/REPORT_AUDIT_SUMMARY.md`; `05_seed_variability/` | Every seed of every neural step writes its own prediction file, scored by the `evaluate` step of the same run. No number from a training loop enters a result table. The seed spread is the std of the evaluated nRMSE in kW, with the warning of §3.5 (the stage-10 rule) | T-73 | C-10 |
 | M20 | Two objectives for the BiLSTM: §4.1 says every model was tuned on "daytime nRMSE on the validation set", §5.2 that each BiLSTM trial minimised the "validation quantile loss" (q = 0.1, 0.5, 0.9). A quantile loss averages three quantiles over every decoder step, nights included for the direct target; it is not the score that ranks the models, and models tuned on different criteria are not compared fairly | v6 §4.1, §5.2 | One objective for every tuned model, the one of XGB (§14.1): the daytime nRMSE in kW of the point forecast (the 0.5 quantile) on the tuning window, computed by the function the evaluation uses (X26). The quantile loss is the training loss and the early-stopping criterion. Both are logged per epoch and per trial | T-74 | C-53 |
 | M21 | The TFT baseline was "an earlier TFT implementation": another version of the code with three settings reported (hidden 64, dropout 0.1, up to 150 epochs; encoder 168), scored on its own hours (n = 2,554 against 2,702 for TFT-96 in the Supplement, M15). Its difference from TFT-96 mixes the tuning with the code version | v6 §5.5; Supplement, Tables 1–2 | The baseline runs in the step code of TFT-96 and TFT-168, on the TFT-168 datasets (encoder 168, the inputs of D-26–D-28), with the same loss, early stopping and scoring. Its v6 values are fixed; every other setting is the default of the pinned pytorch-forecasting, recorded in the step | T-75 | C-54 |
 | M22 | The attention analysis reports a −168 h peak "visible particularly in TFT-96 indirect". A 96-hour encoder has no position before −96 h, so the peak cannot exist in TFT-96 | v6 §11.2 | The TFT steps store the attention over each model's own L encoder positions (−L … −1 h) for the validation origins; the shape is asserted, and the figure marks only lags inside the encoder | T-75 | C-55 |
