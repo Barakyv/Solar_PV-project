@@ -1,0 +1,731 @@
+{
+ "stage": "figures",
+ "figures": {
+  "S00-01": {
+   "stage": "0",
+   "kind": "process",
+   "title": "Raw export: minutes per monthly file against the calendar",
+   "file": "outputs/figures/stage_00/S00-01_raw_inventory.png",
+   "file_sha256": "038b7d489508b9139dfa4487d7b7540f4e4d14adc5f288acfa996d169a82f879",
+   "inputs": {
+    "00_data_audit/raw_data_inventory.csv": "c6a6c01032a9261dbaac3decd0b03f53c73d0d1b8575919f4ae4181c7df170a6"
+   },
+   "facts": {
+    "n_files": 45,
+    "rows": 1971360,
+    "n_dup_months": 4,
+    "dup_each": 60,
+    "n_missing_months": 4,
+    "missing_each": 60,
+    "n_exact_months": 37
+   },
+   "takeaway": "45 monthly files with 1,971,360 rows. Only the daylight-saving months deviate: 4 October files with +60 rows and 4 March files with -60 rows; no other file has a missing or duplicate minute.",
+   "git_commit": "123b2fb"
+  },
+  "S01-01": {
+   "stage": "1",
+   "kind": "process",
+   "title": "The pipeline, stage by stage",
+   "file": "outputs/figures/stage_01/S01-01_pipeline.png",
+   "file_sha256": "023cd26e6e4c961c872076c093071d7196f2108af4f6fabc406a01bfe26d9e1b",
+   "inputs": {
+    "00_data_audit/raw_data_inventory.csv": "c6a6c01032a9261dbaac3decd0b03f53c73d0d1b8575919f4ae4181c7df170a6",
+    "data/processed/01_ingest/ingest_manifest.json": "99a5267fec1c189157d2022d21031caa349d1d16c68d35f5ec208b94ce78e23b",
+    "data/processed/06_features/features_manifest.json": "7e6077caa2aded9a2c4d4c1e0e231f46904a32f35e61a7eb84a1544d63456c52",
+    "outputs/06b_gfs/gfs_manifest.json": "9b7b6e99cac39ab45341ae054379b398c96ac8c614f7f6d89df787b5ecc651c6",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca"
+   },
+   "facts": {
+    "n_files": 45,
+    "minutes": 1971360,
+    "hours": 32856,
+    "f1": 74,
+    "f2": 67,
+    "f3": 60,
+    "gfs_runs": 1371,
+    "sel_ind": 31,
+    "sel_dir": 96
+   },
+   "takeaway": "From 45 raw files to 1,971,360 UTC minutes, 32,856 hourly rows, 74 / 67 / 60 candidate features per horizon plus 1,371 weather-forecast runs, and 31 (indirect) and 96 (direct) model inputs at D+1. The final training of the six models comes only after the gate.",
+   "git_commit": "123b2fb"
+  },
+  "S01-02": {
+   "stage": "1",
+   "kind": "process",
+   "title": "Train, validation and test periods",
+   "file": "outputs/figures/stage_01/S01-02_splits.png",
+   "file_sha256": "c6f6f4a6cb2d7cd0ea2a2014af01b46eda442beb795eacabe031969a04746c60",
+   "inputs": {},
+   "facts": {
+    "train_h": 21195,
+    "train_d": 9698,
+    "validation_h": 5832,
+    "validation_d": 2902,
+    "test_h": 5832,
+    "test_d": 2580
+   },
+   "takeaway": "Chronological split without shuffling: train 21,195 hours (9,698 daytime), validation 5,832 (2,902 daytime), test 5,832 (2,580 daytime). Every selection and tuning step uses train and validation only.",
+   "git_commit": "123b2fb"
+  },
+  "S01-03": {
+   "stage": "1",
+   "kind": "process",
+   "title": "The feature contract and the leakage list",
+   "file": "outputs/figures/stage_01/S01-03_feature_contract.png",
+   "file_sha256": "6e6ae13d1f353ae204687060176210c2dd60037e89b6cc2eeb9739baf98f6b5d",
+   "inputs": {
+    "data/processed/06_features/features_manifest.json": "7e6077caa2aded9a2c4d4c1e0e231f46904a32f35e61a7eb84a1544d63456c52"
+   },
+   "facts": {
+    "total": 74,
+    "n_groups": 5,
+    "f1": 74,
+    "f2": 67,
+    "f3": 60,
+    "n_excl_exact": 47,
+    "n_excl_patterns": 13
+   },
+   "takeaway": "74 allowed features in 5 groups; 74 / 67 / 60 remain at D+1 / D+2 / D+3. The leakage list blocks 47 exact names and 13 name patterns (same-hour power, flags, quality columns, set-points).",
+   "git_commit": "123b2fb"
+  },
+  "S02-01": {
+   "stage": "2",
+   "kind": "process",
+   "title": "Daylight-saving days on a continuous UTC grid",
+   "file": "outputs/figures/stage_02/S02-01_dst_utc_grid.png",
+   "file_sha256": "d187398f9bb067e88e7d28e76014fa726b85e8a2629992eeef0c982c8f30e7db",
+   "inputs": {
+    "data/processed/01_ingest/ingest_manifest.json": "99a5267fec1c189157d2022d21031caa349d1d16c68d35f5ec208b94ce78e23b"
+   },
+   "facts": {
+    "minutes": 1971360,
+    "start": "2021-08-31 21:00",
+    "end": "2025-05-31 20:59",
+    "utc_hours_all_60": true,
+    "n_autumn": 4,
+    "n_spring": 4,
+    "autumn_hour": 1,
+    "spring_hour": 2
+   },
+   "takeaway": "1,971,360 UTC minutes from 2021-08-31 21:00 to 2025-05-31 20:59, every UTC hour with exactly 60 minutes. On the 4 autumn days the local hour 01:00 holds 120 minutes (two distinct UTC hours); on the 4 spring days 02:00 local does not exist.",
+   "git_commit": "123b2fb"
+  },
+  "S02-02": {
+   "stage": "2",
+   "kind": "process",
+   "title": "Value anomalies found at ingestion",
+   "file": "outputs/figures/stage_02/S02-02_raw_anomalies.png",
+   "file_sha256": "5878203023bcfc54e6f60076a889f8da4e016240dc030a41615b63f50a4e3a9a",
+   "inputs": {
+    "data/processed/01_ingest/ingest_qa.csv": "a4024207df3f96d80d8b8986bdbed381643a37fa3bf732317d4b55302461b8c4",
+    "data/processed/01_ingest/ingest_manifest.json": "99a5267fec1c189157d2022d21031caa349d1d16c68d35f5ec208b94ce78e23b"
+   },
+   "facts": {
+    "temp_min": -270.0,
+    "temp_fault_min": 2649,
+    "temp_fault_max": 2941,
+    "irr_neg": 56222,
+    "ac_spikes": 4,
+    "ac_max": 40825.08882483144,
+    "missing_cells": 0
+   },
+   "takeaway": "No missing or non-numeric cell. Temperature sensors carry a fault code (minimum -270) in 2,649-2,941 minutes each; irradiance is slightly negative at night in 56,222 minutes; 4 inverter minutes exceed 110 % of the inverter rating (up to 40,825 kW).",
+   "git_commit": "123b2fb"
+  },
+  "S02-03": {
+   "stage": "2",
+   "kind": "process",
+   "title": "Production centre against solar noon after the UTC conversion",
+   "file": "outputs/figures/stage_02/S02-03_centroid_after_utc.png",
+   "file_sha256": "055703f03fc4f81418a8c36d2f33b1cad9cf3c420feb0d99f351a14204cdcfe2",
+   "inputs": {
+    "data/processed/01_ingest/centroid_offsets.csv": "e973b7622758a6cf7cdf6419b220f7f6d3a9eee76d2bea562a23598a22e39144"
+   },
+   "facts": {
+    "n_days": 270,
+    "month_max": 13.218947074999999,
+    "irr_month_min": -13.218947074999999,
+    "irr_month_max": 4.3925811333333336,
+    "gap_max": 6.6950368749999996
+   },
+   "takeaway": "On 270 clear days the monthly medians stay within 13.2 min of solar noon (the stage-2 check allows 30), so the UTC conversion is right; but the medians drift from month to month (irradiance sensor -13.2 to 4.4 min) and the DC and irradiance medians differ by up to 6.7 min in the same month.",
+   "git_commit": "123b2fb"
+  },
+  "S04-01": {
+   "stage": "4",
+   "kind": "process",
+   "title": "Logger clock offsets applied per day",
+   "file": "outputs/figures/stage_04/S04-01_clock_offsets.png",
+   "file_sha256": "ea2acbb6e8b588b92bf11540c2a50e7d03604ab9ac57cc2cfd672ca6c0d8672f",
+   "inputs": {
+    "configs/clock_offsets.csv": "8f040f4f5c1bf68644e1da34a133789a42d1f8931381cdea4fed3c14b1dd1b87"
+   },
+   "facts": {
+    "n_days": 1369,
+    "meteo_min": -15.931,
+    "inv_min": -15.894,
+    "step1": "2023-05-09",
+    "step2": "2024-01-21",
+    "polled_start": "2025-02-26",
+    "polled_min": -3.678,
+    "polled_max": -1.913
+   },
+   "takeaway": "Over 1,369 days the weather-station clock drifts down to -15.9 min and the inverter clock to -15.9 min; the clocks were re-synchronised on 2023-05-09 (weather station only) and 2024-01-21. The second source, from 2025-02-26, keeps its own clock (-3.7 to -1.9 min).",
+   "git_commit": "123b2fb"
+  },
+  "S04-02": {
+   "stage": "4",
+   "kind": "process",
+   "title": "Clock check after the correction",
+   "file": "outputs/figures/stage_04/S04-02_clock_check.png",
+   "file_sha256": "cd07b6dac64440f6e927ff945a559bd7cffd77dc178f17899511b7b770963546",
+   "inputs": {
+    "00_data_audit/clock_drift_2026-10-14/monthly_minute_before_after.csv": "353d8e5f34303005ae119a6b8f3d139f434385c5d2e988f2b1645863cb7ea264"
+   },
+   "facts": {
+    "n_months": 43,
+    "tau_after": 1.74,
+    "tau_before": 15.91,
+    "delta_after": 0.7,
+    "delta_before": 12.0
+   },
+   "takeaway": "After the correction every one of the 43 months is inside the bands: the irradiance offset is at most 1.74 min (before: up to 15.9) and the inverter-to-station gap at most 0.70 min (before: up to 12.0).",
+   "git_commit": "123b2fb"
+  },
+  "S04-03": {
+   "stage": "4",
+   "kind": "process",
+   "title": "The second data source: values held for 15 minutes",
+   "file": "outputs/figures/stage_04/S04-03_second_source.png",
+   "file_sha256": "ad85b640688e55690d8572d85d2a72196620bb17669239ca11e07ad9350cf422",
+   "inputs": {
+    "data/processed/01_ingest/scada_1min_utc.parquet": "2ecacbe5ce510c0a539b63f44e1073b9323b30734541b91033bc059660863a61",
+    "configs/clock_offsets.csv": "8f040f4f5c1bf68644e1da34a133789a42d1f8931381cdea4fed3c14b1dd1b87"
+   },
+   "facts": {
+    "switch": "2025-02-26",
+    "before": 0.0,
+    "after": 0.8655126498002663,
+    "n_after": 95
+   },
+   "takeaway": "Before 2025-02-26, the first day of the second source, the daily median of repeated minutes is 0.0%; from that day on it is 86.6% (95 days, the two sources mixed hour by hour at first). The file still has a row per minute, but the value is a snapshot refreshed every 15 minutes.",
+   "git_commit": "123b2fb"
+  },
+  "S05-01": {
+   "stage": "5",
+   "kind": "process",
+   "title": "What each cleaning rule changed",
+   "file": "outputs/figures/stage_05/S05-01_cleaning_rules.png",
+   "file_sha256": "abaca011d8d9fe67080ccc8cac831bceaaf55e9e4ea84a005ca3785403bd03c5",
+   "inputs": {
+    "outputs/05_cleaning/cleaning_log.csv": "e6c428ad48d421fe7c990621cb8d4c3c3f37085a911b6076c54c9f620541461b"
+   },
+   "facts": {
+    "n_rules": 6,
+    "total": 557092,
+    "r7": 409160,
+    "kwh": 123154.5
+   },
+   "takeaway": "6 value rules touched 557,092 minutes; the largest is the pyranometer scale fault (409,160 minutes, a QA sensor that no model uses). On the power columns the rules changed 123,154 kWh, most of it in logger freezes that had repeated a value for hours.",
+   "git_commit": "123b2fb"
+  },
+  "S05-02": {
+   "stage": "5",
+   "kind": "process",
+   "title": "Operationally limited daytime hours per month",
+   "file": "outputs/figures/stage_05/S05-02_operational_flags.png",
+   "file_sha256": "96965448ce0df347525d98fc2b0db3e093917f7442fe5dd88ea5142e92cfa5fb",
+   "inputs": {
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873"
+   },
+   "facts": {
+    "train": 379,
+    "validation": 146,
+    "test": 186,
+    "curtail": 218,
+    "downtime": 157,
+    "derate": 336
+   },
+   "takeaway": "379 flagged daytime hours in train, 146 in validation and 186 in test: 218 curtailment, 157 stops and 336 partial outages in total.",
+   "git_commit": "123b2fb"
+  },
+  "S06-01": {
+   "stage": "6",
+   "kind": "process",
+   "title": "From power to the clear-sky index on two days",
+   "file": "outputs/figures/stage_06/S06-01_target_construction.png",
+   "file_sha256": "198279e49de644e2da747d7e522cb94adedf6fa383e120375f8d728f964efb12",
+   "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61"
+   },
+   "facts": {
+    "month": "2022-03",
+    "clear": "2022-03-13",
+    "cloudy": "2022-03-15",
+    "clear_k": 0.9376434014017008,
+    "clear_min": 0.8731113863580867,
+    "clear_max": 1.2523224752324935,
+    "cloudy_k": 0.5449480944767096,
+    "cloudy_min": 0.29798365150764045,
+    "cloudy_max": 0.9182760739953812
+   },
+   "takeaway": "On the clear day (2022-03-13) the measured power follows the clear-sky curve: the daily k is 0.94, with hourly values from 0.87 to 1.25 (the highest at low sun). On the cloudy day (2022-03-15) the daily k is 0.54 and the hourly k drops to 0.30. Dividing by the clear-sky power removes the daily and seasonal shape and leaves the weather.",
+   "git_commit": "123b2fb"
+  },
+  "S06-02": {
+   "stage": "6",
+   "kind": "process",
+   "title": "Choosing the clear-sky reference of the target",
+   "file": "outputs/figures/stage_06/S06-02_clear_sky_reference.png",
+   "file_sha256": "b490f2bd0f32e95d0edfb4ccfeae8eb983da53cd9defd9c2557f8eb7ec800b13",
+   "inputs": {
+    "outputs/06_features/d11_criteria.csv": "cf2798ae690f72cb11dd088d2820d25ace6676ff663af19125c85ad0a3540e30"
+   },
+   "facts": {
+    "poa_k1": 0.05437,
+    "ghi_k1": 0.32446,
+    "poa_spread": 0.1079,
+    "ghi_spread": 0.4127,
+    "poa_nrmse": 7.9406,
+    "ghi_nrmse": 8.0931
+   },
+   "takeaway": "The panel-plane reference wins all three: k above 1 in 5.4% of hours against 32.4%, a monthly clear-day spread of 0.108 against 0.413, and 7.94 % against 8.09 % of capacity on validation.",
+   "git_commit": "123b2fb"
+  },
+  "S06-03": {
+   "stage": "6",
+   "kind": "process",
+   "title": "The clear-sky index on train",
+   "file": "outputs/figures/stage_06/S06-03_k_distribution.png",
+   "file_sha256": "d28ee736e8efa6cfa2740066170a1ccd1b20ae26751318f0336c8452b06a0066",
+   "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+   },
+   "facts": {
+    "n": 9656,
+    "mode": 0.8375,
+    "mean_k": 0.788157,
+    "gt12": 0.006110190555095278,
+    "gt12_low_sun": 1.0,
+    "at_12": 0
+   },
+   "takeaway": "9,656 valid daytime train hours, one peak near 0.84, mean daytime k 0.788. Only 0.61% of hours exceed 1.2, 100% of them with the sun below 15 degrees, and no value sits at a cap, so k is kept as measured.",
+   "git_commit": "123b2fb"
+  },
+  "S06-04": {
+   "stage": "6",
+   "kind": "process",
+   "title": "Which past days each horizon may use",
+   "file": "outputs/figures/stage_06/S06-04_history_per_horizon.png",
+   "file_sha256": "f4bb87353d3b2a7960c515afe68794c1b43135a5427fc22ffdfb6d315ef66e48",
+   "inputs": {},
+   "facts": {
+    "lags1": "1, 2, 3, 7, 14",
+    "lags2": "2, 3, 7, 14",
+    "lags3": "3, 7, 14"
+   },
+   "takeaway": "Lags allowed, in days back from the target day: D+1: 1, 2, 3, 7, 14; D+2: 2, 3, 7, 14; D+3: 3, 7, 14. The same-hour windows always end on the last day before issuance (day 0), whatever the horizon.",
+   "git_commit": "123b2fb"
+  },
+  "S06-05": {
+   "stage": "6",
+   "kind": "process",
+   "title": "The candidate feature table per horizon",
+   "file": "outputs/figures/stage_06/S06-05_feature_table.png",
+   "file_sha256": "35e845b65069b676ea498a5b0615c23f73bfeab224ec574b230c891cb0e4f756",
+   "inputs": {
+    "outputs/06_features/feature_dictionary.csv": "2a14b8f1302859516e8f89aa650b72e139b7a271594a05436eb95bc8b30b5aa6"
+   },
+   "facts": {
+    "t1": 74,
+    "t2": 67,
+    "t3": 60,
+    "imp": 0.03564
+   },
+   "takeaway": "74 / 67 / 60 candidates at D+1 / D+2 / D+3; only the power and weather lags shrink with the horizon. At most 3.56% of any feature's values are filled from the same hour of the previous 30 days.",
+   "git_commit": "123b2fb"
+  },
+  "S6b-01": {
+   "stage": "6b",
+   "kind": "process",
+   "title": "Forecast runs public before the issuance time",
+   "file": "outputs/figures/stage_6b/S6b-01_forecast_availability.png",
+   "file_sha256": "3f2d9ef376af69f3508ee9b132ac600a3e00d5263160c63f728558fdfc5d0898",
+   "inputs": {
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0"
+   },
+   "facts": {
+    "n_days": 1369,
+    "min_h": 1.0877777777777777,
+    "max_h": 12.000833333333333,
+    "med_h": 5.1305555555555555,
+    "n_fallback": 2
+   },
+   "takeaway": "1,369 issuance days; the run used was uploaded 1.1 to 12.0 hours before issuance (median 5.1 h). 2 days use the earlier 06Z run, because their 12Z files had been uploaded again after issuance.",
+   "git_commit": "123b2fb"
+  },
+  "S6b-02": {
+   "stage": "6b",
+   "kind": "process",
+   "title": "Forecast agreement with the measured clear-sky index",
+   "file": "outputs/figures/stage_6b/S6b-02_gfs_agreement.png",
+   "file_sha256": "1008a093bb3146c3fb28b82b1804c6ee6d36bfe38820227aa1bdf3574380e425",
+   "inputs": {
+    "outputs/06b_gfs/horizon_skill.csv": "0c0d67a8795dde3b4ef77506ea1f7df3d1a5f7455a6cd00f655e752189e00186"
+   },
+   "facts": {
+    "d1": 0.8187250868774824,
+    "d2": 0.7914004229792966,
+    "d3": 0.7376020946620223,
+    "h1": 0.6418902304202095,
+    "h2": 0.6237298328535019,
+    "h3": 0.5777461825317933,
+    "days": 1124
+   },
+   "takeaway": "Daily correlation 0.82 / 0.79 / 0.74 and hourly 0.64 / 0.62 / 0.58 at D+1 / D+2 / D+3 over 1,124 days: a real, imperfect forecast that weakens with lead time.",
+   "git_commit": "123b2fb"
+  },
+  "S6b-03": {
+   "stage": "6b",
+   "kind": "process",
+   "title": "Value of the weather forecasts on validation",
+   "file": "outputs/figures/stage_6b/S6b-03_gfs_value.png",
+   "file_sha256": "2f8eaf7b710fcff23c5e361002a426335215488215b91d1fddcfd9be4074666e",
+   "inputs": {
+    "outputs/06b_gfs/value_check.csv": "fe33c9b1bdec24ab30ebc619949f9d22e2eea3cc9554b306bc5e5444f21abaf2"
+   },
+   "facts": {
+    "gain_min": 0.8792866620950308,
+    "gain_max": 1.67361010461022,
+    "sd_max": 0.08784030729461571
+   },
+   "takeaway": "Adding the forecasts lowers the error by 0.88 to 1.67 points of capacity at every horizon and in both routes, against a seed spread of at most 0.09.",
+   "git_commit": "123b2fb"
+  },
+  "S07-01": {
+   "stage": "7",
+   "kind": "process",
+   "title": "Selected sets against the full candidate pool, inside train",
+   "file": "outputs/figures/stage_07/S07-01_inner_train_check.png",
+   "file_sha256": "c39911fc6a61cf005085299e78ecfef5982fa083960538c8ea5db6343d79ed3b",
+   "inputs": {
+    "outputs/07_feature_selection/inner_train_check.csv": "c457837a60b2831ee030a35a0afae2271fafa0f0e4b8934e80d596ec2860a49a"
+   },
+   "facts": {
+    "ind_pass": 6,
+    "ind_n": 6,
+    "ind_min": -0.07415924688853082,
+    "ind_max": 0.053521195375160424,
+    "dir_fail": 6,
+    "dir_n": 6,
+    "dir_min": 0.10159763908364905,
+    "dir_max": 0.7140130848550132
+   },
+   "takeaway": "Indirect route: the selected set passes in 6 of 6 checks (difference -0.07 to +0.05 points). Direct route: it fails in 6 of 6 (the selected set is worse by 0.10 to 0.71 points), because its importance is concentrated in a few features and the stability floor kept too few.",
+   "git_commit": "123b2fb"
+  },
+  "S07-02": {
+   "stage": "7",
+   "kind": "process",
+   "title": "Model inputs per route and horizon",
+   "file": "outputs/figures/stage_07/S07-02_model_inputs.png",
+   "file_sha256": "82bb3f92cb153a4ce2ef8a197f4158d38047d86971b55e7715103ad56b0110d8",
+   "inputs": {
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "outputs/06_features/feature_dictionary.csv": "2a14b8f1302859516e8f89aa650b72e139b7a271594a05436eb95bc8b30b5aa6"
+   },
+   "facts": {
+    "i1": 31,
+    "i2": 28,
+    "i3": 32,
+    "d1": 96,
+    "d2": 89,
+    "d3": 82,
+    "i_gfs": 16,
+    "d_gfs": 21
+   },
+   "takeaway": "Indirect route: 31 / 28 / 32 inputs at D+1 / D+2 / D+3, of which 16 are weather-forecast variables at D+1. Direct route: 96 / 89 / 82 (the full pool, 21 forecast variables at D+1).",
+   "git_commit": "123b2fb"
+  },
+  "S08-01": {
+   "stage": "8",
+   "kind": "process",
+   "title": "Which hours are scored",
+   "file": "outputs/figures/stage_08/S08-01_evaluation_hours.png",
+   "file_sha256": "1e39e853d592203ba57937f799789861fed8bc305d186b3319a78246c4e088e8",
+   "inputs": {
+    "outputs/07_evaluation/val/benchmark_summary.csv": "c0a46b505c4cecc392ca6243545dbc33be9cd4687e0ced28089aa5766ca8317d"
+   },
+   "facts": {
+    "winter_n": 10,
+    "winter_day": "2024-02-15",
+    "summer_n": 13,
+    "summer_day": "2024-06-21",
+    "val_n": 2901
+   },
+   "takeaway": "An hour is scored when the sun is above 5 degrees at its middle: 10 hours on 2024-02-15 and 13 on 2024-06-21. Validation has 2,901 scored hours with a measured truth; every model and reference is scored on exactly these hours.",
+   "git_commit": "123b2fb"
+  },
+  "S08-02": {
+   "stage": "8",
+   "kind": "process",
+   "title": "Evaluation code checked on the surviving forecasts",
+   "file": "outputs/figures/stage_08/S08-02_evaluation_code_check.png",
+   "file_sha256": "a67145e2b8445cc670644fd48ed6f50a87484fdc9dd97e7007516225d404779d",
+   "inputs": {
+    "outputs/07_evaluation_fixture/benchmark_summary.csv": "341d5b444ccabcc11bb9fe6f5e63fc143d357b312579959f0c5ed5fd3e69b02a",
+    "submission_evidence/01_benchmark/benchmark_summary.csv": "88688beb5fd1ba69dc0e6b2c7d147b541119611bd6d2631d1ca9f0f7751bcf77"
+   },
+   "facts": {
+    "max_ind": 5.499999999969418e-05,
+    "max_dir": 0.001152000000001152,
+    "n_min": 2510,
+    "n_max": 2514
+   },
+   "takeaway": "On the same forecasts the new code reproduces the submitted nRMSE within 0.0001 points (indirect) and 0.0012 points (direct), on the same 2,510-2,514 hours: the metric definitions did not change, so later differences come from the data and the models.",
+   "git_commit": "123b2fb"
+  },
+  "S08-03": {
+   "stage": "8",
+   "kind": "process",
+   "title": "Reference forecasts on validation",
+   "file": "outputs/figures/stage_08/S08-03_references.png",
+   "file_sha256": "728499157fe18dd9eae52e879769bb973019bb19d7b381e2668d34abfde5c062",
+   "inputs": {
+    "outputs/07_evaluation/val/benchmark_summary.csv": "c0a46b505c4cecc392ca6243545dbc33be9cd4687e0ced28089aa5766ca8317d"
+   },
+   "facts": {
+    "clim": 8.041087,
+    "p1": 9.675535,
+    "p2": 10.82151,
+    "p3": 10.720478,
+    "cs": 8.95897,
+    "route_gap": 0.038430999999999216
+   },
+   "takeaway": "Climatology (8.04 %) beats persistence at every horizon (9.68 / 10.82 / 10.72 %), since a day says little about the next one; clear sky times the mean k gives 8.96 %. A model must beat climatology to be useful. The indirect-route references, converted to kW, differ from these by at most 0.04 points.",
+   "git_commit": "123b2fb"
+  },
+  "S09-01": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Run modes of the pipeline runner",
+   "file": "outputs/figures/stage_09/S09-01_run_modes.png",
+   "file_sha256": "af6ac712519c7e117280414c59f21ae0d0729bc4027795f86c7a190853f83d8f",
+   "inputs": {},
+   "facts": {
+    "dev_trials": 20,
+    "dev_seed": 42,
+    "final_trials": 60,
+    "final_seeds": "42, 123, 777"
+   },
+   "takeaway": "Smoke: a short slice to test the plumbing. Development: train and validation, 20 tuning trials, seed 42. Final: 60 trials, seeds 42, 123, 777, and the only mode that reads the test period, refused unless the code carries the frozen tag.",
+   "git_commit": "123b2fb"
+  },
+  "S09-02": {
+   "stage": "9",
+   "kind": "process",
+   "title": "XGB development run against the references",
+   "file": "outputs/figures/stage_09/S09-02_xgb_dev_vs_references.png",
+   "file_sha256": "3d6facda9fccc7c7f6ae9a8a563153bde113230ee6f527d33764d1f224baecfa",
+   "inputs": {
+    "outputs/runs/20261107T135938Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431"
+   },
+   "facts": {
+    "xi1": 6.685641,
+    "xi2": 6.910893,
+    "xi3": 6.554511,
+    "xd1": 6.656244,
+    "xd2": 6.811271,
+    "xd3": 6.426055,
+    "clim": 8.041087
+   },
+   "takeaway": "XGB-dev: 6.69 / 6.91 / 6.55 % (indirect) and 6.66 / 6.81 / 6.43 % (direct), below climatology (8.04 %) and persistence at every horizon. These are tuning-split numbers, optimistic by construction; the unbiased test comes once, in the final run.",
+   "git_commit": "123b2fb"
+  },
+  "S09-03": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Monotone constraint on clear-sky irradiance",
+   "file": "outputs/figures/stage_09/S09-03_monotone_check.png",
+   "file_sha256": "f63841c8e29905838aeb895c036bbede56ac852075762b648bada2ddc2c64ca1",
+   "inputs": {
+    "outputs/09_xgb_checks/d15_check.csv": "5323f35b3847ca2f28b648143156bca286bce7176c106c1802f78d57fa04781d",
+    "configs/monotone_decision.yaml": "141636b887c1d672de6210fe470ef1d71a8477b18222facf6745f3e7f43986c6"
+   },
+   "facts": {
+    "g1": -0.0294,
+    "g2": -0.0053,
+    "g3": -0.0065,
+    "m1": 0.05,
+    "decision": "A"
+   },
+   "takeaway": "Dropping the constraint does not help: the gain is -0.029 / -0.005 / -0.006 points at D+1 / D+2 / D+3, against a pre-registered margin of 0.05 at D+1.",
+   "git_commit": "123b2fb"
+  },
+  "S09-04": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Linear correction of the forecast in kW",
+   "file": "outputs/figures/stage_09/S09-04_linear_correction.png",
+   "file_sha256": "46d85df6ed6d551771ab245709f012655ac6873242f2d8381f48be55cbd7b403",
+   "inputs": {
+    "outputs/09_xgb_checks/l09_check.csv": "247bfd7f32c0476aa6f08eee7e6171d5fb67ccc5ed2232101dd8285ddecabef7",
+    "configs/mos_decision.yaml": "20d159081fdd8093fc6ff5d90a0c848c031a602453a93720d39397dbaa312c25"
+   },
+   "facts": {
+    "i1": 0.1104,
+    "i2": 0.2159,
+    "i3": 0.0925,
+    "d1": 0.0581,
+    "d2": 0.1312,
+    "d3": 0.1112
+   },
+   "takeaway": "Indirect route: the error drops by 0.11 / 0.22 / 0.09 points, above every margin, so the correction is adopted. Direct route: it rises by 0.06 / 0.13 / 0.11 points, so it is not used.",
+   "git_commit": "123b2fb"
+  },
+  "S09-05": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Are the differences significant? Diebold-Mariano in kW",
+   "file": "outputs/figures/stage_09/S09-05_significance_kw.png",
+   "file_sha256": "bb8359c50654520ee6db4b1fc398823ce087f5848e474c19f222f44b76220c5b",
+   "inputs": {
+    "outputs/runs/20261107T135938Z_dev/evaluate/val/dm_tests_kw.csv": "a4297f30ab1bfdf6c8b56093257ee816c9293e16c9e83be5b3aac5a6621918a6"
+   },
+   "facts": {
+    "n_sig": 18,
+    "n_all": 18,
+    "mde_min": 0.93268837,
+    "mde_max": 1.09699775
+   },
+   "takeaway": "XGB-dev is significantly better in 18 of 18 comparisons. Against climatology the effect is 93% to 110% of the minimum detectable effect: real, but modest.",
+   "git_commit": "123b2fb"
+  },
+  "S09-06": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Sequence datasets: one forecast origin per local day",
+   "file": "outputs/figures/stage_09/S09-06_sequence_datasets.png",
+   "file_sha256": "8984987111d320bdc87e0640519e4c15a01df221c91338f3cd0e0824e87f7d89",
+   "inputs": {
+    "outputs/09_sequence_data/checks_dev.csv": "f332e0c7238dc612ba53b77f63a98812968c2475584d6a4485e3cef58c5e9a50"
+   },
+   "facts": {
+    "n_train": 872,
+    "n_val": 246,
+    "n23": 9,
+    "n24": 3324,
+    "n25": 9
+   },
+   "takeaway": "872 train and 246 validation origins, one per local day. Blocks are 3,324 days of 24 hours, 9 of 23 and 9 of 25; every check passed (each hour forecast once per horizon, the encoder ends at issuance, no step reaches the test period).",
+   "git_commit": "123b2fb"
+  },
+  "C-01": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Daily profile read as UTC and as local time",
+   "file": "outputs/figures/correction/C-01_time_shift_profile.png",
+   "file_sha256": "a0872947b6551b779ec0a33c4317572c7d3c60212ad4e5dff3d2e1ac347cab34",
+   "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "outputs/03_eda/tables/table_time_bug.csv": "c0a791fa8c0bd35c631412e2acb8dfc2cd2c20221fd0794f09b6af57795e8dc8"
+   },
+   "facts": {
+    "w_off": 2,
+    "w_old": 120.4,
+    "w_new": 1.9,
+    "s_off": 3,
+    "s_old": 173.6,
+    "s_new": 2.6
+   },
+   "takeaway": "Read as UTC, production appears 2 hours (winter) and 3 hours (summer) after the sun: the clear-day production centre sits 120 and 174 minutes after solar noon, against 1.9 and 2.6 minutes after the conversion.",
+   "git_commit": "123b2fb"
+  },
+  "C-02": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Zero-output daytime hours by label hour",
+   "file": "outputs/figures/correction/C-02_false_downtime.png",
+   "file_sha256": "d75f81ff22d534450d7dc7a53fea1e943b9c863a4cdc4e685f57853c3cf774fc",
+   "inputs": {
+    "submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv": "86cb779d0b411630fc9e4ea11564997aee626b6ac6e7cd62b302fd733565849c"
+   },
+   "facts": {
+    "n_zero": 339,
+    "n_day": 2510,
+    "share": 0.1350597609561753,
+    "first": 3,
+    "last": 6
+   },
+   "takeaway": "339 of 2,510 evaluated daytime hours (13.5%) have zero output, and all of them carry the labels 03:00-06:00: local hours before sunrise that the shifted time base counted as daytime. None is a whole-day outage.",
+   "git_commit": "123b2fb"
+  },
+  "C-03": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Clear-sky index of the submission and of the rebuild",
+   "file": "outputs/figures/correction/C-03_k_clipping.png",
+   "file_sha256": "70cb68f434531211356a7db0311f4b60a507aeeccca6c6c28ba8d9dc2892e964",
+   "inputs": {
+    "submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv": "86cb779d0b411630fc9e4ea11564997aee626b6ac6e7cd62b302fd733565849c",
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61"
+   },
+   "facts": {
+    "old_cap": 0.16693227091633467,
+    "old_zero": 0.21274900398406374,
+    "new_gt": 0.006110190555095278
+   },
+   "takeaway": "In the submission 16.7% of daytime hours sit exactly at the 1.2 cap and 21.3% near zero; in the rebuild 0.61% exceed 1.2 and none is capped. The pile at the cap came mostly from the time shift: afternoon power divided by morning clear-sky power (F-06).",
+   "git_commit": "123b2fb"
+  },
+  "C-04": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Same-hour windows per horizon, submitted and fixed",
+   "file": "outputs/figures/correction/C-04_rolling_windows.png",
+   "file_sha256": "6b1729f270dbbf50203c103ba4acc2acf9027f7bd4a91139f54221ae3f9c7cdd",
+   "inputs": {},
+   "facts": {
+    "leak1": 0,
+    "leak2": 1,
+    "leak3": 2
+   },
+   "takeaway": "The submitted windows always started one day before the target day, so at D+2 they included 1 unknown day and at D+3 2 unknown days; the fixed windows end on the last day before issuance at every horizon.",
+   "git_commit": "123b2fb"
+  },
+  "C-05": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Feature selection of the submission: periods and dominance",
+   "file": "outputs/figures/correction/C-05_selection_leaks.png",
+   "file_sha256": "7e939a4df396c9859876db724305a1398fbe09b6dbec8637cc4c9253dae95ef7",
+   "inputs": {
+    "00_data_audit/original_backup_2026-11-01/selection_shap_direct_top.csv": "82011cac6cf123b74c0be000dbffce385da2481db21d024c74a932f1d7c06c0d"
+   },
+   "facts": {
+    "dc_share": 0.9529140029960097,
+    "ratio": 17.44085641062582
+   },
+   "takeaway": "The submitted selection ran on the whole period, test included. In its direct route the same-hour DC power of the two inverters took 95% of the listed importance, the first 17 times the third feature; they were removed only after the ranking.",
+   "git_commit": "123b2fb"
+  },
+  "C-06": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "Submitted weather series: correlation by time shift",
+   "file": "outputs/figures/correction/C-06_weather_alignment.png",
+   "file_sha256": "c80d447c965e119d57dc42c7da12908fb15d34e8ae8ebf94254a0fa12404ba0c",
+   "inputs": {
+    "00_data_audit/original_backup_2026-11-01/weather_lag_scan.csv": "0fa7b265dd1c2ad25811ff334f1dcab289c7394d0e02716a1c62a9db023e1e9b"
+   },
+   "facts": {
+    "best": 0.6311,
+    "r2": 0.3008,
+    "r3": 0.2676
+   },
+   "takeaway": "The series is the archive value of each target hour, not a forecast issued before midnight. It correlates 0.63 with the measured k after a 1-hour shift (end-of-hour labels), but only 0.30 and 0.27 at the 2- and 3-hour shifts that the time bug produced.",
+   "git_commit": "123b2fb"
+  }
+ }
+}
