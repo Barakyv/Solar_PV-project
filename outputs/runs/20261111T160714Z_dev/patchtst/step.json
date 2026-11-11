@@ -1,0 +1,95 @@
+{
+  "step": "patchtst",
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-11T19:06:41.318454+00:00",
+  "commit": "c9a75bc",
+  "fingerprint": "bfe5d79b1e58bbd71119abcd1f00c76d4b27748a222a15f00a4cd4389bcfc3d3",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "max_steps": 5000,
+      "val_check_steps": 100,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261111T160714Z_dev/logs/patchtst_20261111T190641Z.log",
+  "status": "ok",
+  "folder": "patchtst",
+  "finished_utc": "2026-11-11T19:19:47.326537+00:00",
+  "duration_s": 786.0,
+  "outputs": {
+    "best_params.json": "a9f41f10356860e070b339863a28283b970b0118681f54fb4d07a7be60c9584d",
+    "figures/learning_curves.png": "bbe422b70f918df99e9f04746f7a1f40a92f10b56f329561b89babf02c7b4cda",
+    "job/data_direct.npz": "aec196659bb91eefe06f0c6671650d0d80bab8131a06670a3799c9905a6b6497",
+    "job/data_indirect.npz": "ed01d9ad718b8402c670760dab2934294b6c5c5498327e7024a66da2bc66d3ef",
+    "job/job.json": "071c9b7d0975f8c1ddf586c49ce0526463769b1a8e747c5ce867576f03f631f3",
+    "learning_curves.csv": "4df97e180cf4b2eaab31aa15c5184cebdb22af620514f932bfe66b8c7c8331cc",
+    "mbe.csv": "101757ce92e704044e9e5ef0231e4f85f284fafd61a71ef701890b19cae059dd",
+    "patchtst_config.json": "ef573a55c1999de483c8a32cad36b016c4b7fbe8a5439f6b3d43db4019192335",
+    "predictions_patchtst_seed42.csv": "6238acf59f18da0f873ee816ed9cffd3dc0e642b9f5c6e1ea59b945e16fbb4db",
+    "worker/curves_direct_seed42.csv": "987e873eb959a27b7b53c1f4cee27f7949fae4e0916ebd75cf643f9c3c238284",
+    "worker/curves_indirect_seed42.csv": "7554f48db37018c6b3b348f003f25e3df57882ec210002b54b43ca6a6717890e",
+    "worker/fit_direct_seed42.json": "14059d0605d54d2ba8c6cac1dcdac43479cb12750a1ccc81af39c22ded7ef886",
+    "worker/fit_indirect_seed42.json": "847d7422b7749089f487aaa6befe34fef2b5b981cf78c44a159da57a73553639",
+    "worker/forecast_direct_seed42.npz": "a1d9ec180464628fbaec1ae5ca2c9f5921275a05732388e5c1279f72d70b8183",
+    "worker/forecast_indirect_seed42.npz": "8390d8a486a27f020896c2a66ae997732c4f3958c9a5c7a2208f8993751dfd47",
+    "worker/models/patchtst_direct_seed42.pt": "f54eb39c68cde2265dfc220de0938edb81ed1e3a3b0f1d1ef50aa89d44c65e3e",
+    "worker/models/patchtst_indirect_seed42.pt": "5b1de0309cd98108cc6d69a2d591b989e2f1a359cd5db3ac5402a3beb3711d62",
+    "worker/optuna.db": "767d478c5d69a433496c7631050cdb0740734969694fe557482f51561a7dd6be",
+    "worker/worker.json": "2708bac6eb6ecb1f6ac9777910d1f153b9ad113ca8ef85a4aa77c7313f2c9be4",
+    "worker_stdout.log": "f7a28c71f22a20b1880d293fb035e734f888faf9e2ce963a578c2543c70b36e7"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 8.843625336166024,
+      "direct_seed42": 8.216429081249418
+    }
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 0
+  },
+  "summary": [
+    "patchtst (dev, seeds [42]): nRMSE in kW on the tuning window, the whole val split",
+    "  indirect_seed42         8.844 %  (D+1 8.766, D+2 8.904, D+3 8.860)",
+    "  direct_seed42           8.216 %  (D+1 8.090, D+2 8.266, D+3 8.292)"
+  ],
+  "warnings": []
+}

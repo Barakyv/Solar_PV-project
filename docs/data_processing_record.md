@@ -1086,7 +1086,15 @@ W3 to a training worker in `solar-gpu`, and back into prediction files.**
     windows (`mbe.csv`, M24); trials, learning curves, the configuration and the warnings.
 - *Parameters:* the budgets of D-17 (dev) and D-08 (final) in `pipeline/config.BUDGETS`; the
   settings of §18.4 in `models/neural_job.py` (`SEARCH_SPACES`, `FIXED`, `QUANTILES`).
-- *Result:* (filled after the dev run, R9-17).
+- *Result (run journal R9-17, run `20261111T160714Z_dev`, 3.2 h on the P40):* every step passed;
+  every model was scored on the same 2,901 daytime validation hours per horizon as XGB-dev and the
+  references. Validation nRMSE in kW at D+1, indirect / direct: BiLSTM 6.97 / 6.75, TFT-96 6.78
+  / 6.75, TFT-168 6.77 / 6.79, TFT baseline 6.83 / 6.87, PatchTST 8.77 / 8.09 (XGB-dev 6.69 /
+  6.66; persistence 9.68; climatology 8.06 / 8.04). Every neural model is below persistence at
+  every target and horizon; PatchTST is above climatology. Mean bias on validation +0.37 to
+  +2.73 % of capacity. These are tuning-split numbers with reduced budgets and one seed.
+- *Smoke (R9-16):* the first run found X35 before any training; after the fix every step passed,
+  and a repeated run wrote byte-identical forecasts.
 - *Verification:* T-73–T-81 (`tests/unit/test_neural_runner.py` with a stub worker;
   `tests/gpu/test_neural_gpu.py` in `solar-gpu`); smoke runs on real data (R9-16): the objective
   equals the evaluation's `nRMSE_kW_pct` within 5e-7, and two runs with one seed write

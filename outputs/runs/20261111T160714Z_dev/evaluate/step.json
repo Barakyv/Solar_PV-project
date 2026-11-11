@@ -1,0 +1,127 @@
+{
+  "step": "evaluate",
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-11T19:19:47.809215+00:00",
+  "commit": "c9a75bc",
+  "fingerprint": "7339703879bf48ec40ac86a7ece6edccf7d0872f1242fe944d1820fba4d33569",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "outputs/runs/20261111T160714Z_dev/baselines/predictions_clearsky_k.csv": "00f6fc4c659d3898a399dbac406a96ac02a2cefc316a582dfc66e324a890dc8c",
+    "outputs/runs/20261111T160714Z_dev/baselines/predictions_climatology.csv": "a20a5ef563c761d119d588e16788e47455b1957f68a87400f5f99ebe23dcdaac",
+    "outputs/runs/20261111T160714Z_dev/baselines/predictions_persistence.csv": "7c47464c8495f6766e69022afb3816a4f6bf250e8eafea052c2e76b0d657a0f5",
+    "outputs/runs/20261111T160714Z_dev/bilstm/predictions_lstm_sota_seed42.csv": "c941c85c3b0da63da51eb1b2010067e47f75cbb2850d9bbcf9a664436f76c1f2",
+    "outputs/runs/20261111T160714Z_dev/tft96/predictions_tft_96_seed42.csv": "6574bb6d88952efadd518cb24e3ce6695a451de31e175e5ef92e04b82d3fcb0c",
+    "outputs/runs/20261111T160714Z_dev/tft168/predictions_tft_168_seed42.csv": "5e1988ed56bf2a9446bd0e389f384804181e4eff555b5ac51b752e7547fe4684",
+    "outputs/runs/20261111T160714Z_dev/tftbase/predictions_tft_seed42.csv": "f31124a7650540f6245126b02fb9fe5bb70847822b86cf14713b306014eef97a",
+    "outputs/runs/20261111T160714Z_dev/patchtst/predictions_patchtst_seed42.csv": "6238acf59f18da0f873ee816ed9cffd3dc0e642b9f5c6e1ea59b945e16fbb4db"
+  },
+  "log": "outputs/runs/20261111T160714Z_dev/logs/evaluate_20261111T191947Z.log",
+  "status": "ok",
+  "folder": "evaluate",
+  "finished_utc": "2026-11-11T19:20:07.173828+00:00",
+  "duration_s": 19.4,
+  "outputs": {
+    "val/benchmark_summary.csv": "d4fa8a405e639fe62300668f0b3ff1a7a971152ea00c4244d6c7ae4f315eda79",
+    "val/benchmark_views.csv": "7172caa3464df71182ed9bfcb640f287fbdacd7e3efc4d58f5ed237af891cc72",
+    "val/common_mask_sensitivity.csv": "fb7dbed36d9cb94bb8148f78db92e764e1b9ca5301957eb357a423b9e8a0051f",
+    "val/common_mask_summary.csv": "1df4705a1cc939fddb1e34141a373a1ebfabe2466305bdec7baa092b141d5a1b",
+    "val/dm_tests.csv": "a975487a305af203af16b9e80ef9a78c1aedaa1e991b5c6f2b6165b199a87162",
+    "val/dm_tests_kw.csv": "5975bf8b10858b4bc14e58f441aa3f88e0762ee8f9b6514a6fa4c545c9a5f8d7",
+    "val/route_comparison.csv": "ed59e0f4744a3280b0b743b0f650e242cd727672e88e05e7a60c23e4f8f8632e",
+    "val/seasonal_metrics.csv": "6d1c271f620e478768e5742e431ba768507b670cf6103e42c494e99e57de2afb",
+    "val/seed_variability_summary.csv": "9566ba388e75fef1b863fd4e3a67f41e2ad9986c29df7da0e78feb860f60c7b2",
+    "val/manifest.json": "41189816796375707f509856653c2d6056cf8a11afc16ea9a3ec0eac84713461"
+  },
+  "values": {
+    "files_scored": [
+      "predictions_clearsky_k.csv",
+      "predictions_climatology.csv",
+      "predictions_persistence.csv",
+      "predictions_lstm_sota_seed42.csv",
+      "predictions_tft_96_seed42.csv",
+      "predictions_tft_168_seed42.csv",
+      "predictions_tft_seed42.csv",
+      "predictions_patchtst_seed42.csv"
+    ]
+  },
+  "notes": {
+    "models_missing": []
+  },
+  "summary": [
+    "val, the whole val split: nRMSE in kW (% of capacity), n daytime hours",
+    "  direct   D+1 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  direct   D+1 climatology  seed  -1:   8.04 %  (n = 2901)",
+    "  direct   D+1 lstm_sota    seed  42:   6.75 %  (n = 2901)",
+    "  direct   D+1 patchtst     seed  42:   8.09 %  (n = 2901)",
+    "  direct   D+1 persistence  seed  -1:   9.68 %  (n = 2901)",
+    "  direct   D+1 tft          seed  42:   6.87 %  (n = 2901)",
+    "  direct   D+1 tft_168      seed  42:   6.79 %  (n = 2901)",
+    "  direct   D+1 tft_96       seed  42:   6.75 %  (n = 2901)",
+    "  direct   D+2 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  direct   D+2 climatology  seed  -1:   8.04 %  (n = 2901)",
+    "  direct   D+2 lstm_sota    seed  42:   6.95 %  (n = 2901)",
+    "  direct   D+2 patchtst     seed  42:   8.27 %  (n = 2901)",
+    "  direct   D+2 persistence  seed  -1:  10.82 %  (n = 2901)",
+    "  direct   D+2 tft          seed  42:   7.04 %  (n = 2901)",
+    "  direct   D+2 tft_168      seed  42:   7.01 %  (n = 2901)",
+    "  direct   D+2 tft_96       seed  42:   6.94 %  (n = 2901)",
+    "  direct   D+3 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  direct   D+3 climatology  seed  -1:   8.04 %  (n = 2901)",
+    "  direct   D+3 lstm_sota    seed  42:   6.51 %  (n = 2901)",
+    "  direct   D+3 patchtst     seed  42:   8.29 %  (n = 2901)",
+    "  direct   D+3 persistence  seed  -1:  10.72 %  (n = 2901)",
+    "  direct   D+3 tft          seed  42:   6.71 %  (n = 2901)",
+    "  direct   D+3 tft_168      seed  42:   6.65 %  (n = 2901)",
+    "  direct   D+3 tft_96       seed  42:   6.57 %  (n = 2901)",
+    "  indirect D+1 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  indirect D+1 climatology  seed  -1:   8.06 %  (n = 2901)",
+    "  indirect D+1 lstm_sota    seed  42:   6.97 %  (n = 2901)",
+    "  indirect D+1 patchtst     seed  42:   8.77 %  (n = 2901)",
+    "  indirect D+1 persistence  seed  -1:   9.68 %  (n = 2901)",
+    "  indirect D+1 tft          seed  42:   6.83 %  (n = 2901)",
+    "  indirect D+1 tft_168      seed  42:   6.77 %  (n = 2901)",
+    "  indirect D+1 tft_96       seed  42:   6.78 %  (n = 2901)",
+    "  indirect D+2 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  indirect D+2 climatology  seed  -1:   8.06 %  (n = 2901)",
+    "  indirect D+2 lstm_sota    seed  42:   7.17 %  (n = 2901)",
+    "  indirect D+2 patchtst     seed  42:   8.90 %  (n = 2901)",
+    "  indirect D+2 persistence  seed  -1:  10.84 %  (n = 2901)",
+    "  indirect D+2 tft          seed  42:   7.10 %  (n = 2901)",
+    "  indirect D+2 tft_168      seed  42:   7.05 %  (n = 2901)",
+    "  indirect D+2 tft_96       seed  42:   6.96 %  (n = 2901)",
+    "  indirect D+3 clearsky_k   seed  -1:   8.96 %  (n = 2901)",
+    "  indirect D+3 climatology  seed  -1:   8.06 %  (n = 2901)",
+    "  indirect D+3 lstm_sota    seed  42:   6.87 %  (n = 2901)",
+    "  indirect D+3 patchtst     seed  42:   8.86 %  (n = 2901)",
+    "  indirect D+3 persistence  seed  -1:  10.76 %  (n = 2901)",
+    "  indirect D+3 tft          seed  42:   6.81 %  (n = 2901)",
+    "  indirect D+3 tft_168      seed  42:   6.66 %  (n = 2901)",
+    "  indirect D+3 tft_96       seed  42:   6.68 %  (n = 2901)"
+  ],
+  "warnings": []
+}

@@ -1,0 +1,98 @@
+{
+  "step": "tftbase",
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-11T18:55:26.205718+00:00",
+  "commit": "c9a75bc",
+  "fingerprint": "224cf3f0088decbfb46f84aad0449bc5529dd91933ac3f677a0b5ad5b7aeca48",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 0,
+      "epochs": 150,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261111T160714Z_dev/logs/tftbase_20261111T185526Z.log",
+  "status": "ok",
+  "folder": "tftbase",
+  "finished_utc": "2026-11-11T19:06:40.071569+00:00",
+  "duration_s": 673.9,
+  "outputs": {
+    "attention_direct_seed42.csv": "ffa743b36abfd4c21a3fa0ca4bebc192e60972430c8b8f60721a258fc6d26937",
+    "attention_indirect_seed42.csv": "03a82911e07b17437f5676c17a9f48d256a16eaeabcd642b818ea9c8e9484396",
+    "best_params.json": "2487cd25faab68a2401a78af84aebeb249e2950160f572805228ce8caa8f001e",
+    "figures/learning_curves.png": "5632db5fa81144ff1aea7f17376e5d38daa2142af7863f26cd5587031fa3b2c5",
+    "job/data_direct.npz": "fb772792dc7d976a269d0bd76a49ec7935167d27988d787139560bcf0395b83b",
+    "job/data_indirect.npz": "aaf304167f540ade8407cca00ea73eaa6bc4627a8a8787e33c7f355142c5a867",
+    "job/job.json": "6a8f7065ee2ab0f7cb6a3f07e5a123248896921a608eeb0ad168f71f3fc1dc96",
+    "learning_curves.csv": "4a0b785221dc3e1f5284e5a3b6ec505a601450f506a2173408840d3112f22e69",
+    "mbe.csv": "27bd348675aeddc5d00a86f11e507908f477ca65b52a30881046194e982eb059",
+    "predictions_tft_seed42.csv": "f31124a7650540f6245126b02fb9fe5bb70847822b86cf14713b306014eef97a",
+    "quantiles_tft_seed42.csv": "7ed155c6387679bedf43e7bfd67f5fa0cdec99c343db737bf4ce8d64225428bc",
+    "tft_config.json": "43c9318b6efd01acf2e93cb2b95beeb9c0b5dc170b8b894ef632c6b22e044ffa",
+    "worker/curves_direct_seed42.csv": "acbb96a7758daf99ee78126e4a4a01288fb3a4aaa7f0d3c09c895206d4644e33",
+    "worker/curves_indirect_seed42.csv": "cd53ec1e0752b1350af427bf638d5332cc36680bda7050748823e01acc66aec8",
+    "worker/fit_direct_seed42.json": "62e4509c6a162ea1910acafb3e767b600f31db171e3bf5e08455918c8ceb438a",
+    "worker/fit_indirect_seed42.json": "7126bfeb25ec771f79f9ba977272471dd48828ca912c524d77e6ac2a7fef4cbb",
+    "worker/forecast_direct_seed42.npz": "990150c1c36681a5a5de4f69ebb004e902b74215b5379846a8e22ff47ff37147",
+    "worker/forecast_indirect_seed42.npz": "930be40269720a101db3d0cadcfab323c8956d5a59cdd2efb7351549a491f22e",
+    "worker/models/tft_direct_seed42.pt": "463b72eb9d2c9099144dbdc3893b708463006b1c5ae09363d43a771c03730afb",
+    "worker/models/tft_indirect_seed42.pt": "1aabf34665b1edd2531d12447d305986620f806d485524cb3b04b0a8afce5148",
+    "worker/optuna.db": "767d478c5d69a433496c7631050cdb0740734969694fe557482f51561a7dd6be",
+    "worker/worker.json": "09a6b49fb91d78a0182dd220ff288542e1fabbbe6f3f48130e771adcf1171d9f",
+    "worker_stdout.log": "04cd7eb2e5b1414b7b061e3289abdc9206fa4bdd2de085884015fc98f04070b6"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 6.914636051913206,
+      "direct_seed42": 6.877547101786498
+    }
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 0
+  },
+  "summary": [
+    "tftbase (dev, seeds [42]): nRMSE in kW on the tuning window, the whole val split",
+    "  indirect_seed42         6.915 %  (D+1 6.834, D+2 7.097, D+3 6.809)",
+    "  direct_seed42           6.878 %  (D+1 6.873, D+2 7.042, D+3 6.714)"
+  ],
+  "warnings": []
+}

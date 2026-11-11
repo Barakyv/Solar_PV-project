@@ -1494,3 +1494,63 @@ hashes, numbers) and the commit messages are the record:
   to 872 and 246 origins: about 4 h expected for the whole dev run, about 8 h if every TFT fit ran
   its full 100 epochs; below the 8-hour line of §18.6, so the dev run was started without asking
   again.
+
+### 2026-11-11 · R9-17 · The dev run of the neural models, and its review
+
+- **Command:** `python -m solarpv.pipeline run --mode dev --only baselines,bilstm,tft96,tft168,
+  tftbase,patchtst,evaluate --keep-going`, run `20261111T160714Z_dev`, budgets of D-17 (§18.6),
+  seed 42. All seven steps ok, 11,569 s (3.2 h): BiLSTM 572 s, TFT-96 4,327 s, TFT-168 5,181 s,
+  TFT baseline 674 s, PatchTST 786 s, evaluate 19 s. The steps recorded commits `6a1ffdb`,
+  `04764aa` and `c9a75bc` (documents were committed during the run); `git diff` of the code paths
+  between them is empty, and none is `+dirty`.
+- **Validation nRMSE in kW (% of 3,449 kW), D+1 / D+2 / D+3, from the run's
+  `evaluate/val/benchmark_summary.csv` (2,901 daytime hours per horizon for every model):**
+  - indirect: BiLSTM 6.97 / 7.17 / 6.87; TFT-96 6.78 / 6.96 / 6.68; TFT-168 6.77 / 7.05 / 6.66;
+    TFT baseline 6.83 / 7.10 / 6.81; PatchTST 8.77 / 8.90 / 8.86;
+  - direct: BiLSTM 6.75 / 6.95 / 6.51; TFT-96 6.75 / 6.94 / 6.57; TFT-168 6.79 / 7.01 / 6.65;
+    TFT baseline 6.87 / 7.04 / 6.71; PatchTST 8.09 / 8.27 / 8.29;
+  - references on the same hours: persistence 9.68 / 10.84 / 10.76 (indirect), climatology 8.06
+    (indirect) and 8.04 (direct); XGB-dev (`20261107T135938Z_dev`) 6.69 / 6.91 / 6.55 (indirect)
+    and 6.66 / 6.81 / 6.43 (direct).
+- **Review (forecasting-validity-review):**
+  - issuance: the W3 windows, `check_dataset` passed on every dataset of every step; the missing
+    known inputs are only the 24 train hours of `irradiance_clear_index_prevday` and the night
+    `airmass` (X30, X35); no timestamp and no test row reached the worker;
+  - split isolation: nothing at or after TEST_START was loaded (asserted in the step); validation
+    entered only as the early-stopping set and the objective; the scaler is the W3 one;
+  - comparability: every model, the references and XGB-dev on the same 2,901 daytime hours per
+    horizon; the references equal those of the XGB-dev run exactly (difference 0.0); per model and
+    target the step's objective equals the evaluation's `nRMSE_kW_pct` within 4.7e-7;
+  - uncertainty: one seed (D-17), so no comparison between families is decided here; in kW every
+    neural model is significantly better than persistence at every target and horizon (DM with HLN
+    and Bonferroni; the DM reference is persistence because XGB is not in this run);
+  - red flags: D+3 below D+1 for every neural model, the same order as XGB-dev on these hours
+    (D+2 the hardest): the validation sample, as in R9-06; the mapping is tested (T-77, T-02, X20).
+    No implausible margin: the neural models are within 0.0–0.3 points of XGB-dev, as C1 expects;
+  - provenance: run logs, `step.json` with hashes, worker records with hashes, one code version.
+- **Acceptance (§18.8):** required, all met (every step completed, every file passed the strict
+  alignment and coverage checks, no NaN loss, the warnings read, MBE reported). Expected, met:
+  every neural model below persistence at every target × horizon (30 of 30). The error falls from
+  D+2 to D+3, explained as above. PatchTST is worse than climatology in both routes, the expected
+  weakness of a univariate model (L-19, C1), not a defect. Nothing was retuned on validation.
+- **Points for the list of G-1 (no change made):**
+  - the BiLSTM indirect final fit (best epoch 51 of 60 by the validation quantile loss) scores
+    7.00 %, its best 25-epoch trial 6.84 %: the early-stopping loss and the kW objective disagree
+    by 0.16 points (the registered rule of §18.4);
+  - best values on the edge of the search space (M23) in 4 of 6 studies: BiLSTM indirect (hidden
+    256, 1 layer, batch 128), TFT-96 both targets (hidden size 64, 4 heads), TFT-168 direct (4
+    heads); v6 reported the bottom edge (hidden 16), the rebuild hits the top;
+  - with 7 trials the TFT studies stay inside Optuna's 10 random start-up trials, which depend on
+    the seed only: both targets and both encoder lengths tried the same 7 candidates (the final
+    run's 20 trials go past it);
+  - PatchTST indirect had its best validation check at step 4,900 of 5,000 (direct 4,100): near
+    the end of the default step budget;
+  - mean bias on validation +0.37 to +2.73 % of capacity, positive for every model (XGB-dev R-14:
+    +0.74 % direct, +1.31 % indirect before L-09); the point forecasts are medians (quantile loss,
+    MAE), above the mean for a left-skewed k; PatchTST indirect is biased already on its training
+    windows (+2.93 %).
+- **Determinism on real data:** each retrained best TFT trial reproduced its trial exactly
+  (difference 0.0 pp); the BiLSTM direct final fit equals its best trial.
+- **Figures:** S09-07 to S09-12 built at `a0ad8ec`; the attention takeaway was rewritten after a
+  look at the figure: TFT-168's indirect maximum is at the first encoder position, an edge of the
+  window, not a lag (M22), and the daily rhythm is stated instead.

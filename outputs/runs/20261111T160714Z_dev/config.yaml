@@ -1,0 +1,49 @@
+mode: dev
+windows:
+- split: val
+  start: '2024-02-01T00:00:00+00:00'
+  end: '2024-10-01T00:00:00+00:00'
+  label: the whole val split
+allow_test: false
+targets:
+- indirect
+- direct
+horizons:
+- 1
+- 2
+- 3
+seeds: null
+budgets:
+  xgb:
+    trials: 20
+    seeds:
+    - 42
+  bilstm:
+    trials: 20
+    epochs_trial: 25
+    epochs_final: 60
+    patience: 10
+    seeds:
+    - 42
+  tft96:
+    trials: 7
+    epochs: 100
+    patience: 10
+    seeds: &id001
+    - 42
+  tft168:
+    trials: 7
+    epochs: 100
+    patience: 10
+    seeds: *id001
+  tftbase:
+    trials: 0
+    epochs: 150
+    patience: 10
+    seeds: *id001
+  patchtst:
+    max_steps: 5000
+    val_check_steps: 100
+    patience: 10
+    seeds: *id001
+xgb_threads: 8

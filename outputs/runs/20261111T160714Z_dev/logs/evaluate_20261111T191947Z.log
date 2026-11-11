@@ -1,0 +1,31 @@
+[     0.0s] RUN     stage runs/20261111T160714Z_dev/evaluate
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only baselines,bilstm,tft96,tft168,tftbase,patchtst,evaluate --keep-going
+[     0.2s] RUN     git commit: c9a75bc
+[     0.2s] RUN     started (UTC): 2026-11-11T19:19:47+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.2s] INPUT   outputs/runs/20261111T160714Z_dev/baselines/predictions_clearsky_k.csv sha256=00f6fc4c659d3898
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/baselines/predictions_climatology.csv sha256=a20a5ef563c761d1
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/baselines/predictions_persistence.csv sha256=7c47464c8495f676
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/bilstm/predictions_lstm_sota_seed42.csv sha256=c941c85c3b0da63d
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/tft96/predictions_tft_96_seed42.csv sha256=6574bb6d88952efa
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/tft168/predictions_tft_168_seed42.csv sha256=5e1988ed56bf2a94
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/tftbase/predictions_tft_seed42.csv sha256=f31124a7650540f6
+[     0.3s] INPUT   outputs/runs/20261111T160714Z_dev/patchtst/predictions_patchtst_seed42.csv sha256=6238acf59f18da0f
+[     0.8s] STEP    evaluate val, the whole val split ...
+[     2.8s] NOTE    val: 8 models (clearsky_k, climatology, lstm_sota, patchtst, persistence, tft, tft_168, tft_96); daytime rows per model/target/horizon: 2901
+[    19.2s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/benchmark_summary.csv sha256=d4fa8a405e639fe6
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/dm_tests.csv sha256=a975487a305af203
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/seasonal_metrics.csv sha256=6d1c271f620e4787
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/common_mask_summary.csv sha256=1df4705a1cc939fd
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/benchmark_views.csv sha256=7172caa3464df711
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/common_mask_sensitivity.csv sha256=fb7dbed36d9cb94b
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/route_comparison.csv sha256=ed59e0f4744a3280
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/seed_variability_summary.csv sha256=9566ba388e75fef1
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/dm_tests_kw.csv sha256=5975bf8b10858b4b
+[    19.3s] OUTPUT  outputs/runs/20261111T160714Z_dev/.evaluate.tmp/val/manifest.json sha256=4118981679637570
+[    19.3s] STEP    evaluate val, the whole val split done in 18.6s
+[    19.3s] VALUE   rows_benchmark_val = 48
+[    19.4s] RUN     warnings: 0
+[    19.4s] RUN     status: ok; duration 19.4s

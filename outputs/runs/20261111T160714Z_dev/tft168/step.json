@@ -1,0 +1,104 @@
+{
+  "step": "tft168",
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-11T17:29:04.110553+00:00",
+  "commit": "c9a75bc",
+  "fingerprint": "75d70e753c910f7d68030bbbed3298bc3a1ad1d0090d2b45359a667d053b930d",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 7,
+      "epochs": 100,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261111T160714Z_dev/logs/tft168_20261111T172904Z.log",
+  "status": "ok",
+  "folder": "tft168",
+  "finished_utc": "2026-11-11T18:55:24.947771+00:00",
+  "duration_s": 5180.8,
+  "outputs": {
+    "attention_direct_seed42.csv": "f17fcc380398807cd4f362ed80f64f838f11e23ed4a8f3e3b4a5a99f4b2aa605",
+    "attention_indirect_seed42.csv": "f33ccf944344013c934e741dc71f1b73526565a1ea155b8f69d6a1504e28fca1",
+    "best_params.json": "f46775da896098f5492f95ebeda70f6179a17b0fa7f8102e8adf6036571faba0",
+    "figures/learning_curves.png": "bea07a028dc1a9c254d91165087b640c6b4678578dec788f6f578c7402de5813",
+    "figures/optimization_history.png": "c4559c3724c2515c8405203806d132128b244605a2245af9c46e57d8c3bbf653",
+    "job/data_direct.npz": "fb772792dc7d976a269d0bd76a49ec7935167d27988d787139560bcf0395b83b",
+    "job/data_indirect.npz": "aaf304167f540ade8407cca00ea73eaa6bc4627a8a8787e33c7f355142c5a867",
+    "job/job.json": "fde600aba968246fc4997c7c876c18eae3e8a273cb9b18ec25ae641f7a1ff541",
+    "learning_curves.csv": "4eb235060b47d742e546840b48b3f913770deb803aec071f92b26c14abe139f7",
+    "mbe.csv": "a2194bcfe7a3d339a660e93b3e6d7dbd2b79018f025785959eb7a9cef4cd9540",
+    "predictions_tft_168_seed42.csv": "5e1988ed56bf2a9446bd0e389f384804181e4eff555b5ac51b752e7547fe4684",
+    "quantiles_tft_168_seed42.csv": "3657865ecd1916d82ba4256ea3ac9e9a3af1c3537bc40c9c08a8ad026a1618f0",
+    "tft_168_config.json": "5dcf351afbf0e9e77fa3057f87f1f3f065023c92296e047639e07fd58354914e",
+    "trials.csv": "41dc0ca17c8fae5f13cef757ca7549448a93b113a0e6209ba1e5e291f97e8c35",
+    "worker/curves_direct_seed42.csv": "f191145d2d0db62c71d6bbf6b304ac1d13d1e2cdd105b1a88b23f9feafe896dd",
+    "worker/curves_indirect_seed42.csv": "45737e811c8d56c4a5f793775bb7718767fe5ddcb25001bfe54cb9dfc0a376a3",
+    "worker/fit_direct_seed42.json": "da46da598271e108e3e384fc5114673ee57be970d8576c1660e21334c64518ea",
+    "worker/fit_indirect_seed42.json": "db7c5c975bfa93fcf9ff58ff36f75c1b5de01e688d2a3f7aeede4ace758e8b80",
+    "worker/forecast_direct_seed42.npz": "2321c7d932669761f5b3960a7774fbee03de58253b18c9326c42e65547e29c32",
+    "worker/forecast_indirect_seed42.npz": "27e95b379a43d0f6c624b4dc401cc0ae7b1c9c8c0d8ea3c83feec9aff8e0b890",
+    "worker/models/tft_168_direct_seed42.pt": "d0ab95ae399be4e75502b8f1749a68285bdfc5f313de976b3668d52909347fdf",
+    "worker/models/tft_168_indirect_seed42.pt": "74a3be299f793ae758651b92413a634c2ff1787a1b0e7b794dccd430f26d2ce4",
+    "worker/optuna.db": "2e114cfaf1ec6080816e1c64b4443cb1c81477ff910440dbce86aa258b1df40d",
+    "worker/trials_direct_seed42.csv": "19d0a776672829b1299194ce95c07f1ef7fbba74b6984767be61926175075cdb",
+    "worker/trials_indirect_seed42.csv": "92fa42ab34fb1d0fe7ec5cd558e34966043a42b85ba654b60467d2202142ab0d",
+    "worker/worker.json": "caa59eb4fec52647d3f8586abffc6e6e9a76a91e457c691c1eaa40ba382469d6",
+    "worker_stdout.log": "d0f617cfb2ccdf3680995e4364f6b852ae3e5f8578466dcd19cc62d6fd79dc33"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 6.827490267131046,
+      "direct_seed42": 6.818854668430478
+    }
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 1
+  },
+  "summary": [
+    "tft168 (dev, seeds [42]): nRMSE in kW on the tuning window, the whole val split",
+    "  indirect_seed42         6.827 %  (D+1 6.769, D+2 7.048, D+3 6.660)",
+    "  direct_seed42           6.819 %  (D+1 6.789, D+2 7.013, D+3 6.650)"
+  ],
+  "warnings": [
+    "tft168: direct seed 42: best trial on the edge of the search space for attention_head_size = 4 (M23)"
+  ]
+}

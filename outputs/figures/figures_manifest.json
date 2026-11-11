@@ -520,7 +520,7 @@
     "final_seeds": "42, 123, 777"
    },
    "takeaway": "Smoke: a short slice to test the plumbing. Development: train and validation, 20 tuning trials, seed 42. Final: 60 trials, seeds 42, 123, 777, and the only mode that reads the test period, refused unless the code carries the frozen tag.",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
   },
   "S09-02": {
    "stage": "9",
@@ -541,7 +541,7 @@
     "clim": 8.041087
    },
    "takeaway": "XGB-dev: 6.69 / 6.91 / 6.55 % (indirect) and 6.66 / 6.81 / 6.43 % (direct), below climatology (8.04 %) and persistence at every horizon. These are tuning-split numbers, optimistic by construction; the unbiased test comes once, in the final run.",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
   },
   "S09-03": {
    "stage": "9",
@@ -561,7 +561,7 @@
     "decision": "A"
    },
    "takeaway": "Dropping the constraint does not help: the gain is -0.029 / -0.005 / -0.006 points at D+1 / D+2 / D+3, against a pre-registered margin of 0.05 at D+1.",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
   },
   "S09-04": {
    "stage": "9",
@@ -582,7 +582,7 @@
     "d3": 0.1112
    },
    "takeaway": "Indirect route: the error drops by 0.11 / 0.22 / 0.09 points, above every margin, so the correction is adopted. Direct route: it rises by 0.06 / 0.13 / 0.11 points, so it is not used.",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
   },
   "S09-05": {
    "stage": "9",
@@ -600,7 +600,7 @@
     "mde_max": 1.09699775
    },
    "takeaway": "XGB-dev is significantly better in 18 of 18 comparisons. Against climatology the effect is 93% to 110% of the minimum detectable effect: real, but modest.",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
   },
   "S09-06": {
    "stage": "9",
@@ -619,7 +619,167 @@
     "n25": 9
    },
    "takeaway": "872 train and 246 validation origins, one per local day. Blocks are 3,324 days of 24 hours, 9 of 23 and 9 of 25; every check passed (each hour forecast once per horizon, the encoder ends at issuance, no step reaches the test period).",
-   "git_commit": "123b2fb"
+   "git_commit": "a0ad8ec"
+  },
+  "S09-07": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Smoke runs of the five neural models",
+   "file": "outputs/figures/stage_09/S09-07_neural_smoke.png",
+   "file_sha256": "8cc341f8964835f273f1ffa619afe0018c617f52731deef3ec93943eafb58f08",
+   "inputs": {
+    "outputs/runs/20261111T155739Z_smoke/bilstm/learning_curves.csv": "067ec04fb64bacf47f8f6842ae581bac2b1181b1e4483cb4f8a9e864edc24cc8",
+    "outputs/runs/20261111T155739Z_smoke/tft96/learning_curves.csv": "f3ec1f59474910feccf4302a7d62a0dc5ab6d5b3f49166fced8dfb2d3276232e",
+    "outputs/runs/20261111T155739Z_smoke/tft168/learning_curves.csv": "683de3fcb84a06dc69c1e042098382eb82e2af3d3fe672f0832524b0d85bd8f6",
+    "outputs/runs/20261111T155739Z_smoke/tftbase/learning_curves.csv": "d7d3db347a7321a9475456b5b5e999d7146fd392ab65240daf4e5b48663ecafe",
+    "outputs/runs/20261111T155739Z_smoke/patchtst/learning_curves.csv": "c0bab1c71a268b92bfb6240bfef74fc35021c046154bed7aa8b3646ed7009e97",
+    "outputs/runs/20261111T160241Z_smoke/bilstm/learning_curves.csv": "2c2e8cda07ee553e741c8acd02861005cf5f7323b5fe5857ca1794fe7acfa600",
+    "outputs/runs/20261111T160241Z_smoke/tft96/learning_curves.csv": "30b86b98bba8958f06ebca171ecf92fe3fd3dfbfa5baee17dd198852edcf752c",
+    "outputs/runs/20261111T160241Z_smoke/tftbase/learning_curves.csv": "de94384824fb060956316abd6df6c851b9976efa026b2176c88f118a62ca07cf",
+    "outputs/runs/20261111T160241Z_smoke/patchtst/learning_curves.csv": "c0bab1c71a268b92bfb6240bfef74fc35021c046154bed7aa8b3646ed7009e97",
+    "outputs/runs/20261111T160714Z_dev/bilstm/learning_curves.csv": "1415c17fcabdba495b13563d51ed3f5c6194ef73923fd635a94fbf3fd02f8cfa",
+    "outputs/runs/20261111T160714Z_dev/tft96/learning_curves.csv": "7f22e48182aa409a52417d4244b7e1813e855a886a9428e1be40212dc9bb975c",
+    "outputs/runs/20261111T160714Z_dev/tft168/learning_curves.csv": "4eb235060b47d742e546840b48b3f913770deb803aec071f92b26c14abe139f7",
+    "outputs/runs/20261111T160714Z_dev/tftbase/learning_curves.csv": "4a0b785221dc3e1f5284e5a3b6ec505a601450f506a2173408840d3112f22e69",
+    "outputs/runs/20261111T160714Z_dev/patchtst/learning_curves.csv": "4df97e180cf4b2eaab31aa15c5184cebdb22af620514f932bfe66b8c7c8331cc",
+    "outputs/runs/20261111T160714Z_dev/run.json": "5f7e8abc008e7c982bfc039be305375fd959a56d509e0ea8edf8afbff08bf430"
+   },
+   "facts": {
+    "n_repeat": 4,
+    "fast": 0.35,
+    "fast_name": "BiLSTM",
+    "slow": 7.462,
+    "slow_name": "TFT-168",
+    "dev_h": 3.211555555555555
+   },
+   "takeaway": "All five steps and the evaluation passed the smoke run; a second smoke run with the same seed gave identical losses for 4 models. In development an epoch takes 0.3 s (BiLSTM) to 7.5 s (TFT-168); the run took 3.2 h.",
+   "git_commit": "a0ad8ec"
+  },
+  "S09-08": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Learning curves of the neural models",
+   "file": "outputs/figures/stage_09/S09-08_neural_learning_curves.png",
+   "file_sha256": "5131d951c18aecba32722d4288ba6e30adc1861fa3ff25f36473ad14a425253b",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/bilstm/best_params.json": "929123522c5e4a097031e600c9a275e9f642c7f1be25fb52978a9c0fe2f4a0b1",
+    "outputs/runs/20261111T160714Z_dev/tft96/best_params.json": "2f28aa07c02c99c913a258ab76c1244d1eb90dc8a84c1811e0439bfb8250baaa",
+    "outputs/runs/20261111T160714Z_dev/tft168/best_params.json": "f46775da896098f5492f95ebeda70f6179a17b0fa7f8102e8adf6036571faba0",
+    "outputs/runs/20261111T160714Z_dev/tftbase/best_params.json": "2487cd25faab68a2401a78af84aebeb249e2950160f572805228ce8caa8f001e",
+    "outputs/runs/20261111T160714Z_dev/patchtst/best_params.json": "a9f41f10356860e070b339863a28283b970b0118681f54fb4d07a7be60c9584d",
+    "outputs/runs/20261111T160714Z_dev/bilstm/learning_curves.csv": "1415c17fcabdba495b13563d51ed3f5c6194ef73923fd635a94fbf3fd02f8cfa",
+    "outputs/runs/20261111T160714Z_dev/tft96/learning_curves.csv": "7f22e48182aa409a52417d4244b7e1813e855a886a9428e1be40212dc9bb975c",
+    "outputs/runs/20261111T160714Z_dev/tft168/learning_curves.csv": "4eb235060b47d742e546840b48b3f913770deb803aec071f92b26c14abe139f7",
+    "outputs/runs/20261111T160714Z_dev/tftbase/learning_curves.csv": "4a0b785221dc3e1f5284e5a3b6ec505a601450f506a2173408840d3112f22e69",
+    "outputs/runs/20261111T160714Z_dev/patchtst/learning_curves.csv": "4df97e180cf4b2eaab31aa15c5184cebdb22af620514f932bfe66b8c7c8331cc"
+   },
+   "facts": {
+    "n_stopped": 7,
+    "n_fits": 8,
+    "best_min": 16,
+    "best_max": 58,
+    "n_last": 0
+   },
+   "takeaway": "Early stopping ended 7 of 8 epoch-based fits before their budget; the best epochs lie between 16 and 58. 0 fits had their best epoch at the last epoch.",
+   "git_commit": "a0ad8ec"
+  },
+  "S09-09": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Neural models in the development run",
+   "file": "outputs/figures/stage_09/S09-09_neural_dev_results.png",
+   "file_sha256": "d41a11ba63521aa61aaa86c17f7d73cdc1f043633b14ccbe88f4331f22cd4a02",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/benchmark_summary.csv": "d4fa8a405e639fe62300668f0b3ff1a7a971152ea00c4244d6c7ae4f315eda79",
+    "outputs/runs/20261107T135938Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431"
+   },
+   "facts": {
+    "best_ind": "TFT-168",
+    "best_ind_v": 6.768688,
+    "best_dir": "TFT-96",
+    "best_dir_v": 6.747917,
+    "xgb_ind": 6.685641,
+    "xgb_dir": 6.656244,
+    "n_below": 30,
+    "n_cases": 30
+   },
+   "takeaway": "Best neural model at D+1: TFT-168 (6.77 %) in the indirect route and TFT-96 (6.75 %) in the direct route, against XGB-dev 6.69 / 6.66 %. 30 of 30 neural cases are below persistence. Tuning-split numbers with reduced budgets: they rank nothing.",
+   "git_commit": "a0ad8ec"
+  },
+  "S09-10": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Optuna searches of the neural models",
+   "file": "outputs/figures/stage_09/S09-10_neural_optimization.png",
+   "file_sha256": "ddb06d236ec5d2856b1cba065ee41b95b2ca113cdea558596862bc8218a26951",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/bilstm/trials.csv": "0d520266d63c15279cc1fe73fc537236fb29b29bf655c992905c8e4502420116",
+    "outputs/runs/20261111T160714Z_dev/tft96/trials.csv": "df4feaee337413e7e39595b3a1f9fac3e55d54b85adef9c8275f5e05584e22fa",
+    "outputs/runs/20261111T160714Z_dev/tft168/trials.csv": "41dc0ca17c8fae5f13cef757ca7549448a93b113a0e6209ba1e5e291f97e8c35",
+    "outputs/runs/20261111T160714Z_dev/bilstm/best_params.json": "929123522c5e4a097031e600c9a275e9f642c7f1be25fb52978a9c0fe2f4a0b1",
+    "outputs/runs/20261111T160714Z_dev/tft96/best_params.json": "2f28aa07c02c99c913a258ab76c1244d1eb90dc8a84c1811e0439bfb8250baaa",
+    "outputs/runs/20261111T160714Z_dev/tft168/best_params.json": "f46775da896098f5492f95ebeda70f6179a17b0fa7f8102e8adf6036571faba0"
+   },
+   "facts": {
+    "n_trials": 68,
+    "gain_min": 0.07067336725028017,
+    "gain_max": 0.30184107856431286,
+    "n_edge": 4,
+    "n_studies": 6
+   },
+   "takeaway": "68 trials in all; the best trial improved on the first by 0.07 to 0.30 points. Best values on the edge of the search space: 4 of 6 studies (the warning of §3.5, M23).",
+   "git_commit": "a0ad8ec"
+  },
+  "S09-11": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Where the TFT models look in their encoder",
+   "file": "outputs/figures/stage_09/S09-11_tft_attention.png",
+   "file_sha256": "0fd95850b350ebdbeef7cef71e49d32330aa4e8771739a1b32122e8287debee0",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/tft96/attention_indirect_seed42.csv": "49b8d09c6611e7f151d23e0d59e01c1713a23b2444f4d03f36ae29bbef419375",
+    "outputs/runs/20261111T160714Z_dev/tft96/attention_direct_seed42.csv": "16274d39ddca9247f9f24acc530741fc900755e857781df7a1828e1d3ca2eeb5",
+    "outputs/runs/20261111T160714Z_dev/tft168/attention_indirect_seed42.csv": "f33ccf944344013c934e741dc71f1b73526565a1ea155b8f69d6a1504e28fca1",
+    "outputs/runs/20261111T160714Z_dev/tft168/attention_direct_seed42.csv": "f17fcc380398807cd4f362ed80f64f838f11e23ed4a8f3e3b4a5a99f4b2aa605"
+   },
+   "facts": {
+    "len96": 96,
+    "lag96_ind": 12,
+    "len168": 168,
+    "lag168_ind": 20,
+    "edge": 0.010520577921298306,
+    "mean": 0.005298753530789624,
+    "lag96_dir": 12,
+    "lag168_dir": 6,
+    "rhythm": 0.9960710339677846
+   },
+   "takeaway": "Each model attends only inside its own encoder (96 and 168 hours), with a daily rhythm (correlation of the profile with itself shifted by 24 h: at least 1.00). Within the last day the weights peak 12 h (TFT-96) and 20 h (TFT-168) before issuance in the indirect route, 12 h and 6 h in the direct route. TFT-168's indirect weights also rise at the first position of its encoder (0.0105 against a mean of 0.0053): an edge of the window, not a lag.",
+   "git_commit": "a0ad8ec"
+  },
+  "S09-12": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Mean bias of the neural models",
+   "file": "outputs/figures/stage_09/S09-12_neural_bias.png",
+   "file_sha256": "68237914aaba5432a74afb4ac62336e6b397be4e6b34f6dae320bca0aa3355d6",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/bilstm/mbe.csv": "322e3559fb5dcd02429c67e4db9755d84791f393dfce66402f25ccce1bd70079",
+    "outputs/runs/20261111T160714Z_dev/tft96/mbe.csv": "5f0513aac9d4af89605add57c1528388de83e8c72c9068af69285759993a20e7",
+    "outputs/runs/20261111T160714Z_dev/tft168/mbe.csv": "a2194bcfe7a3d339a660e93b3e6d7dbd2b79018f025785959eb7a9cef4cd9540",
+    "outputs/runs/20261111T160714Z_dev/tftbase/mbe.csv": "27bd348675aeddc5d00a86f11e507908f477ca65b52a30881046194e982eb059",
+    "outputs/runs/20261111T160714Z_dev/patchtst/mbe.csv": "101757ce92e704044e9e5ef0231e4f85f284fafd61a71ef701890b19cae059dd",
+    "outputs/09_xgb_checks/r14_bias.csv": "1899b1161f20ef85f59f9624a03c70d8d73256433cead1a71b6d47d2df9809f8"
+   },
+   "facts": {
+    "vmin": 0.37484329978055203,
+    "vmax": 2.7324927637893053,
+    "xgb_dir": 0.7402052791681041,
+    "xgb_ind": 1.3054162590683522,
+    "shift": 0.6270429992995146,
+    "shift_name": "PatchTST, direct"
+   },
+   "takeaway": "On validation the neural biases range from +0.37 to +2.73 % of capacity (XGB-dev: +0.74 % direct, +1.31 % indirect). The largest change from training to validation is 0.63 points (PatchTST, direct).",
+   "git_commit": "a0ad8ec"
   },
   "C-01": {
    "stage": "correction",

@@ -243,6 +243,14 @@ decisions D-25–D-28 (§17.6), `solarpv.models.sequence_data` with T-66–T-71 
 `69ee067`, fix X24 at `854b0f7`), OP-55, run journal R9-12 and R9-13. Next: W4, the models and
 the GPU environment (needs the user's approval).
 
+**Status (2026-11-11):** W4 done. Plan and self-review §18 (commit `918d647`); the user's
+decisions D-29 (environment A) and D-17 for the neural models (budgets A), and the settings of
+§18.4 accepted. Environment `solar-gpu` built and verified (RH-06). Code `d089a22`, `c083344`,
+fix X35 `6a1ffdb`; T-73–T-81; X34 and X35 found and fixed with tests. Smoke runs pass and
+reproduce byte for byte (R9-16). The dev run (`20261111T160714Z_dev`, 3.2 h) passes the
+acceptance of §18.8 and the validity review (R9-17); figures S09-07–S09-12 (`a0ad8ec`); OP-57.
+Next: W5 (`select`, `explain`, `report`, the final gate, the runbook, notebook `06_models.ipynb`).
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -1143,3 +1151,10 @@ inside-train order of R6b-07 and R7-05 explains it, as for XGB). A model that mi
 expectation is checked first against the datasets and the adapters (T-77, T-78), then reported;
 nothing is retuned on validation to fix it. The comparison with XGB-dev is reported, not
 required: v6 found the families within about 1 pp, and C1 expects the same.
+
+*Result (2026-11-11, R9-17):* every required point holds; every neural model is below
+persistence at every target × horizon (30 of 30); the error falls from D+2 to D+3 as for XGB-dev
+on the same hours (the validation sample); PatchTST is above climatology (univariate, L-19). Five
+points go to the list of G-1 (R9-17): the BiLSTM indirect final fit against its best trial, the
+edge results of 4 studies, the TFT studies inside the random start-up of TPE, PatchTST's best
+check near the end of its step budget, and the positive mean bias of the median forecasts.
