@@ -1,0 +1,40 @@
+[     0.0s] RUN     stage runs/20261111T155030Z_smoke/tft96
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke --only baselines,bilstm,tft96,tft168,tftbase,patchtst,evaluate --keep-going
+[     0.2s] RUN     git commit: c083344
+[     0.2s] RUN     started (UTC): 2026-11-11T15:50:53+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.0s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.0s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.0s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.0s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.0s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    15.2s] NOTE    tft96 (tft_96): budget {'trials': 1, 'epochs': 2, 'patience': 10, 'seeds': [42]}, seeds [42]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    15.2s] STEP    load the inputs before TEST_START ...
+[    15.8s] STEP    load the inputs before TEST_START done in 0.5s
+[    15.8s] STEP    indirect: build and check the windows ...
+[    16.1s] STEP    indirect: build and check the windows failed after 0.3s (RunnerError)
+[    16.1s] ERROR   Traceback (most recent call last):
+[    16.1s] ERROR     File "C:\Users\204323141\Desktop\solar\src\solarpv\pipeline\runner.py", line 328, in _step
+[    16.1s] ERROR       result = impl.run(ctx)
+[    16.1s] ERROR                ^^^^^^^^^^^^^
+[    16.1s] ERROR     File "C:\Users\204323141\Desktop\solar\src\solarpv\pipeline\steps.py", line 543, in run
+[    16.1s] ERROR       return neural.run_neural(ctx, step)
+[    16.1s] ERROR              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[    16.1s] ERROR     File "C:\Users\204323141\Desktop\solar\src\solarpv\pipeline\neural.py", line 425, in run_neural
+[    16.1s] ERROR       job, datasets, report = build_job(ctx, step, job_dir, seeds, budget, mean_k)
+[    16.1s] ERROR                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[    16.1s] ERROR     File "C:\Users\204323141\Desktop\solar\src\solarpv\pipeline\neural.py", line 225, in build_job
+[    16.1s] ERROR       report["missing_known"][target] = check_missing_known(sources, target, inputs)
+[    16.1s] ERROR                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[    16.1s] ERROR     File "C:\Users\204323141\Desktop\solar\src\solarpv\pipeline\neural.py", line 136, in check_missing_known
+[    16.1s] ERROR       raise RunnerError(f"{target}: missing known inputs outside the allowed hours (X30): "
+[    16.1s] ERROR   solarpv.pipeline.steps.RunnerError: indirect: missing known inputs outside the allowed hours (X30): ['fcst_gfs_kt_poa_ma3@D1: 1 hours', 'fcst_gfs_kt_poa_ma3@D2: 1 hours', 'fcst_gfs_kt_poa_ma3@D3: 1 hours']
+[    16.1s] RUN     warnings: 0
+[    16.1s] RUN     status: failed (RunnerError); duration 16.1s

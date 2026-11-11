@@ -167,6 +167,24 @@ def test_budgets_have_every_field_and_follow_the_decisions():
     assert final["tftbase"]["epochs"] == 150
 
 
+def test_the_tft_baseline_is_tft168_with_the_v6_values(wired):
+    """T-75, M21: the baseline shares the TFT step code, the TFT-168 encoder and every setting
+    except the v6 values; the rest are the library defaults of pytorch-forecasting 1.7.0."""
+    assert J.STEP_FAMILY["tftbase"] == J.STEP_FAMILY["tft168"] == "tft"
+    assert SD.MODELS["tftbase"] == SD.MODELS["tft168"] == 168
+    base = J.FIXED["tftbase"]
+    assert (base["hidden_size"], base["dropout"]) == (64, 0.1)  # v6 §5.5
+    assert (base["attention_head_size"], base["hidden_continuous_size"], base["lstm_layers"],
+            base["learning_rate"]) == (4, 8, 1, 1e-3)  # TemporalFusionTransformer defaults
+    assert set(base) == set(J.SEARCH_SPACES["tft"])  # one value for every searched setting
+    code, run_dir = run_step(wired, "tftbase")
+    assert code == 0
+    job = J.read_json(run_dir / "tftbase" / "job" / J.JOB_FILE)
+    assert job["family"] == "tft" and job["quantiles"] == list(J.QUANTILES["tft"])
+    assert all(m["encoder_hours"] == 168 for m in job["meta"].values())
+    assert not (run_dir / "tftbase" / "trials.csv").exists()
+
+
 def test_every_model_step_has_a_model_name_of_the_evaluation():
     assert set(J.STEP_MODEL) == {"bilstm", "tft96", "tft168", "tftbase", "patchtst"}
     assert set(J.STEP_MODEL.values()) <= set(E.MODEL_LABELS)

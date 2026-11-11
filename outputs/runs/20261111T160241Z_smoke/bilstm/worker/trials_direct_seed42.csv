@@ -1,0 +1,2 @@
+target,seed,trial,state,value_kw,best_epoch,best_val_loss,duration_s,epochs_run,gpu_peak_mb,n_parameters,n_scored,nan_loss,stopped_early,train_loss_at_best,value_kw_D1,value_kw_D2,value_kw_D3,param_hidden,param_n_layers,param_dropout,param_lr,param_batch_size
+direct,42,0,COMPLETE,41.69688614554782,2,0.11468467672872552,0.12,2,239.8,882819,963,False,False,0.09722239524126053,41.59200531097478,41.69772834226237,41.80066372692027,128,2,0.06240745617697461,0.00020511104188433984,64

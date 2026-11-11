@@ -1,0 +1,28 @@
+[     0.0s] RUN     stage runs/20261111T155030Z_smoke/evaluate
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke --only baselines,bilstm,tft96,tft168,tftbase,patchtst,evaluate --keep-going
+[     0.2s] RUN     git commit: c083344
+[     0.2s] RUN     started (UTC): 2026-11-11T15:52:25+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.2s] INPUT   outputs/runs/20261111T155030Z_smoke/baselines/predictions_clearsky_k.csv sha256=c3d4f5d603a06aea
+[     0.2s] INPUT   outputs/runs/20261111T155030Z_smoke/baselines/predictions_climatology.csv sha256=276ed1fefa47427b
+[     0.2s] INPUT   outputs/runs/20261111T155030Z_smoke/baselines/predictions_persistence.csv sha256=d8eedb200f086804
+[     0.2s] INPUT   outputs/runs/20261111T155030Z_smoke/patchtst/predictions_patchtst_seed42.csv sha256=6f0f27e9d3d5007f
+[     0.3s] WARN    model steps of this run that did not complete: ['bilstm', 'tft96', 'tft168', 'tftbase']
+[     0.3s] STEP    evaluate val, local days 2024-03-15 to 2024-04-11 ...
+[     0.5s] NOTE    val: 4 models (clearsky_k, climatology, patchtst, persistence); daytime rows per model/target/horizon: 321
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/benchmark_summary.csv sha256=c8c03218ce8ad6b9
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/dm_tests.csv sha256=4daf3128ea27ef46
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/seasonal_metrics.csv sha256=2d9b845f9ddcc9a9
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/common_mask_summary.csv sha256=4590c41246cb8c2c
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/benchmark_views.csv sha256=08f55db03c34e163
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/common_mask_sensitivity.csv sha256=0479dc5e519b3de9
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/route_comparison.csv sha256=c48a5507ef0f15cf
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/seed_variability_summary.csv sha256=97296b98df458bee
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/dm_tests_kw.csv sha256=0f3927cf4e27a49a
+[     2.4s] OUTPUT  outputs/runs/20261111T155030Z_smoke/.evaluate.tmp/val/manifest.json sha256=da6db89a92111a1b
+[     2.4s] STEP    evaluate val, local days 2024-03-15 to 2024-04-11 done in 2.1s
+[     2.4s] VALUE   rows_benchmark_val = 24
+[     2.5s] RUN     warnings: 1
+[     2.5s] RUN     status: ok; duration 2.5s

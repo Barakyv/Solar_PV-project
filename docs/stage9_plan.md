@@ -304,6 +304,13 @@ and `tests/contracts/test_sequence_alignment.py` on the real tables (§17):
 | T-71 | The inputs (D-26–D-28): the union of the known part of `model_inputs.json` in its order, lags dropped, a leaky or unknown name refused; on the real file 10 + 20 (indirect) and 27 + 22 (direct); a deterministic input that differs between tables is refused; each decoder step's GFS value is that of its horizon's table and each encoder hour's that of D+1; a step of another issuance or a run not public by T0 is refused; PatchTST holds the target only and needs its input size; the command passes all its checks on the synthetic inputs and refuses `final` |
 | T-02 | Real tables (`tests/contracts/test_sequence_alignment.py`): train and validation, both targets, BiLSTM, TFT-96, TFT-168 and PatchTST: every check of `check_dataset`, 872 / 246 origins, 23- (and in train 25-) hour blocks, unique valid timestamps per horizon, training decoders before VAL_START, nothing at or after TEST_START |
 
+**Numbered for W4 (2026-11-11),** as listed in §18.7. In `solar`, on the W3 synthetic tables with
+a stub of the worker: `tests/unit/test_neural_runner.py` (T-73, T-74, T-75, T-76, T-77, T-79,
+T-80; X35 included in T-79). In `solar-gpu`, on synthetic windows: `tests/gpu/test_neural_gpu.py`
+(T-75 attention, T-77, T-78, T-79 worker, T-81 and X34), run from the `solar` suite by
+`tests/unit/test_neural_gpu_suite.py`. On real data: the smoke runs of R9-16 (the objective equals
+the evaluation, byte-identical forecasts of two runs).
+
 ## 10. Self-review before the code of W1 (2026-11-05)
 
 Written before the runner code, at the start of the work on the college machine. It covers the

@@ -1434,3 +1434,63 @@ hashes, numbers) and the commit messages are the record:
   neuralforecast 3.1.7, lightning 2.6.6, pandas 3.0.6, about 2.7 GB of downloads into a new folder
   outside the repository, installed from there with hashes; and the neural dev budgets (one third
   of the v6 trials with the full epoch budgets, one seed).
+- **Decisions (user, 2026-11-11):** §18.5 (A), §18.6 (A), and the settings of §18.4 as
+  registered. The environment was built the same day (RH-06).
+
+### 2026-11-11 · R9-15 · W4: the code of the neural steps and its tests
+
+- **Commits:** `d089a22` (units module X26, environment report, job format, training loop,
+  BiLSTM and TFT modules), `c083344` (worker, PatchTST adapter, the five runner steps, budgets
+  X27, names X28, PatchTST input size X33, tests), `6a1ffdb` (fix X35, below).
+- **Design as built:** the runner side (`pipeline/neural.py`, env `solar`) builds the W3
+  datasets, checks each with `check_dataset`, guards the missing known inputs (X30), and writes
+  the job (compressed arrays with SHA-256, no timestamp). The worker (`models/neural_worker.py`,
+  env `solar-gpu`) checks the hashes, trains, and writes forecasts, fits, curves, trials, models
+  and `worker.json` with every output's hash. The TFT is pytorch-forecasting's network fed the
+  W3 windows directly (no `TimeSeriesDataSet`); PatchTST is neuralforecast's model with a
+  callback that restores the best validation check (neuralforecast keeps the last weights).
+- **Finding X34 (first GPU tests):** the TFT stopped under `torch.use_deterministic_algorithms`:
+  `upsample_linear1d_backward_out_cuda` has no deterministic kernel (pytorch-forecasting's
+  `TimeDistributedInterpolation`). Replaced inside the worker by the same linear map as a matrix
+  product; equal values and gradients to 1e-12. Errata X34.
+- **Second finding during the tests:** `NeuralForecast.fit` trains a copy of the model, so the
+  callback object passed in is not the one that ran; the adapter takes the callback from the
+  fitted model (a test asserts two validation checks recorded). Not an errata row: no result
+  depended on it.
+- **Tests:** `tests/gpu/test_neural_gpu.py` 22 passed in `solar-gpu` (the masked loss, masked
+  targets that leave the network unchanged, the same seed giving the same network for the BiLSTM
+  and the TFT, the restore of the best epoch, the TFT's inputs and identity output, no read of the
+  unknown reals on decoder steps, the forecast of an origin independent of its batch with 71- and
+  72-step decoders, the attention over the own encoder, a causal BiLSTM decoder, PatchTST's
+  origin mapping and weights independent of the validation values, the worker end to end and its
+  refusal of a changed array). `tests/unit/test_neural_runner.py` 16 passed in `solar` with a stub
+  worker; `tests/unit/test_neural_gpu_suite.py` runs the GPU tests from the `solar` suite.
+
+### 2026-11-11 · R9-16 · Smoke runs of the neural steps on real data
+
+- **First smoke run** (`20261111T155030Z_smoke`, commit `c083344`): baselines, PatchTST and
+  evaluate passed; BiLSTM and the three TFT steps stopped before training on the X30 guard:
+  `fcst_gfs_kt_poa_ma3` missing on 1 hour at every horizon. Diagnosis: a centred 3-hour GFS mean,
+  undefined at the first hour of the data (2021-08-31 21:00Z, a warm-up night hour; the first
+  encoder hour of any window is 2021-09-05 21:00Z) and at the last (2025-05-31 20:00Z, in test).
+  The guard had checked every loaded hour. Finding X35, fixed at `6a1ffdb` with a test: the guard
+  checks the hours that the windows read, and a centred GFS mean may be missing only at the two
+  edge hours of the data at night.
+- **Second smoke run** (`20261111T155739Z_smoke`, commit `6a1ffdb`): all seven steps passed. The
+  evaluation scored every model on the 321 daytime hours of each horizon in the smoke window, with
+  its strict alignment and coverage checks. Per model and target, the step's objective equals the
+  evaluation's `nRMSE_kW_pct` to at most 4.8e-7 (the table's precision). The only missing known
+  inputs are the 24 train hours of `irradiance_clear_index_prevday` and the night `airmass` (766
+  train and 377 validation hours read). PatchTST: `EXOGENOUS_FUTR = False` (L-19, for the report).
+  The warnings are those of 2 epochs: best epoch at the last epoch everywhere, and in the one-trial
+  TFT studies `lstm_layers = 3` on the edge. The BiLSTM indirect forecast is constant at k ≈
+  −0.06 after 2 epochs on 58 origins (0 kW after the conversion), so its three horizons score the
+  same: an untrained network, not a mapping error (the mapping is tested by T-77).
+- **Determinism (X32):** a third smoke run (`20261111T160241Z_smoke`) of BiLSTM, TFT-96, the TFT
+  baseline and PatchTST gave byte-identical prediction and quantile files; the learning curves
+  differ only in the `seconds` column.
+- **Timing and the dev estimate:** median seconds per epoch in smoke (58 training and 30
+  validation origins): BiLSTM 0.04, TFT 0.61; PatchTST about 21 s per target with imports. Scaled
+  to 872 and 246 origins: about 4 h expected for the whole dev run, about 8 h if every TFT fit ran
+  its full 100 epochs; below the 8-hour line of §18.6, so the dev run was started without asking
+  again.

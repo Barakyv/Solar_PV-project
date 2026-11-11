@@ -1,0 +1,8 @@
+[worker 18:03:58] tft96 (smoke): targets ['indirect', 'direct'], seeds [42], budget {'trials': 1, 'epochs': 2, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\lightning\pytorch\utilities\parsing.py:213: Attribute 'loss' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss'])`.
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\lightning\pytorch\utilities\parsing.py:213: Attribute 'logging_metrics' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['logging_metrics'])`.
+[worker 18:04:05] indirect seed 42 trial0: 18.6704 % kW, best epoch 2 of 2, 3.38 s
+[worker 18:04:07] indirect seed 42 final: 18.6704 % kW, best epoch 2 of 2, 1.77 s
+[worker 18:04:11] direct seed 42 trial0: 48.3783 % kW, best epoch 2 of 2, 2.41 s
+[worker 18:04:14] direct seed 42 final: 48.3783 % kW, best epoch 2 of 2, 2.63 s
+[worker 18:04:15] done in 29.8 s, 11 outputs
