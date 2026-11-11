@@ -255,6 +255,9 @@ Next: W5 (`select`, `explain`, `report`, the final gate, the runbook, notebook `
 figures C-07–C-09 added for the W4 differences (C-10, C-35, C-54, C-55), X36 (a typed hour count
 in S09-09) and X37 (the seed-42 row of the submitted seed table, M19 corrected) fixed with tests.
 
+**Status (2026-11-12, later):** W5 started. Plan and self-review §19, before any code: M25–M31
+(errata C-58–C-64), X38–X49; proposals Q-20–Q-23 for the user (R9-19).
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -1162,3 +1165,225 @@ on the same hours (the validation sample); PatchTST is above climatology (univar
 points go to the list of G-1 (R9-17): the BiLSTM indirect final fit against its best trial, the
 edge results of 4 studies, the TFT studies inside the random start-up of TPE, PatchTST's best
 check near the end of its step budget, and the positive mean bias of the median forecasts.
+
+## 19. W5: `select`, `explain`, `report`, the final gate, the runbook and notebook 06 (self-review and proposals, 2026-11-12)
+
+Written before any W5 code. W5 adds the last three runner steps, closes the final gate, writes the
+runbook of the final run (W6) and builds notebook `06_models.ipynb`. Smoke of the whole sequence
+first, then dev for the new steps only. No final run, no tag and no test row (D-08): G-1 and the
+tag belong to W6. Three choices are the user's and are only proposed here (§19.5–§19.8): what
+`select` does (Q-20), the scope of `explain` (Q-21), the test protocol of a final run (Q-22) and
+the runbook's run length and the question to the college IT (Q-23, the open part of Q-15).
+
+### 19.1 Blocking decisions and sources
+
+- **Decided, not changed here:** D-08 (the v6 budgets in the final run only), D-10 (validation is
+  the early-stopping set and the tuning objective), D-13 with F-29 (R7-04, R7-05: the indirect
+  route on the 05e sets, the direct route on the full pool), D-14 with Q-19 (the kW DM is the
+  table of the stage-10 acceptance), D-17 (dev budgets), §15.2 (`explain` explains the booster,
+  the uncorrected forecast), §3.4–§3.6 (modes and safety rules), X8 (copying a final run to the
+  §6.10 paths is a separate step).
+- **The list of G-1** (`PROJECT_MASTER.md` §1, R9-06, R9-11, R9-17) stays a list. W5 changes no
+  validation decision because of it; the report only shows where each point stands.
+- **Sources (read-only):** v6 §3.6, §11.1–§11.5, §12.1 and C6 (the docx, read as text);
+  `submission_evidence/07_shap/*`, `12_scripts/shap_rank_stability.py` and
+  `reproduce_paper_results.py`; `11_audit/REPORT_CLAIM_EVIDENCE_MATRIX.csv` (rows 70–77, 100,
+  101). The original `xgb_sota.py` and the TFT code are lost (R-16).
+- **Literature (`PROJECT_MASTER.md` §16b):** no idea is adopted or tested in W5, so nothing is
+  decided on validation here.
+  - L-14 (potential RMSE skill of the quantile-loss models) and L-15 (bias diagnostics) belong to
+    stage 11; the report lists the quantile files and the MBE tables that W4 writes, so stage 11
+    finds them.
+  - L-20 (errors on dust days and by season) belongs to stage 11; `explain` keeps the per-row
+    SHAP values with their timestamps, so stage 11 can condition on dust days without a rerun.
+  - L-09: the correction is reported next to the SHAP values of the uncorrected booster (§15.2,
+    X47). L-12: the SHAP ranking is a description of the fitted model, not a new selection.
+
+### 19.2 The original project (M25–M31)
+
+| ID | Mistake | Where | Fix in W5 | Test | Errata |
+|---|---|---|---|---|---|
+| M25 | Feature selection is outside the reproduction: `reproduce_paper_results.py` trains XGB, evaluates and runs the SHAP script, but never runs or checks the selection; the XGB model it trains used all 76 non-excluded columns, not the 05e sets (C-31), and the 05e files were edited after the ranking (`_leakage_fix_removed`, F-27). The documented input and the trained input were not linked | `reproduce_paper_results.py` (phases 1–9); 05e files | The `select` step checks the chain from the stage-6 and 6b tables to `model_inputs.json` and records the hash of the input it verified; every model step of the run refuses if the file it reads has another hash | T-82 | C-58 |
+| M26 | The v6 SHAP describes another model than the documented one: its files have 76 rows (F-05, C-31), and its groups are led by rolling features that leak at D+2 and D+3 (F-07): 57–64 % of the indirect and 71–80 % of the direct importance. §11.1 reads this as "the high autocorrelation in absolute power output" and concludes that "the model relies exclusively on historical lags" | v6 §11.1; `07_shap/shap_group_importance.csv` | `explain` reads only the run's own boosters; their feature order must equal the recorded `feature_order`, the allow-list of `model_inputs.json` and the leakage rules of stage 6 (asserted). The stage-7 dominance red flag (first feature above ten times the third) becomes a report warning | T-87 | C-59 |
+| M27 | Group shares are sums of per-feature mean \|SHAP\|, and a name joins the first group whose keyword it contains (`clearsky` is tested before `_lag`, `rolling_stats` includes `diff_`, `time_encodings` includes `hour`). A group's share then grows with the number of its members, and for members of opposite sign the sum of their mean \|SHAP\| exceeds the attribution of the group itself | `12_scripts/shap_rank_stability.py` (`GROUPS`, `assign_group`) | The group attribution is the mean over rows of \|Σ φ over the group\|, exact by additivity; the groups come from one function of the feature contract, each feature in exactly one group (asserted); every group is reported with its number of members | T-87 | C-60 |
+| M28 | No record of what was explained: no surviving file says on which rows, of which split, in which output unit, with which explainer and against which base value the v6 SHAP was computed; §6.10 says only "on test", and the horizon correlation fills a feature absent at a horizon with 0 before the Spearman test, so features that cannot exist at D+2 and D+3 count as agreement | §6.10; `shap_rank_stability.py` (`reindex(fill_value=0.0)`) | Every explanation records the explainer, the output (the booster's raw output in the training unit), the rows (the daytime scoring hours of the window with AC truth, and their number), the base value, the versions and the additivity error. Rank stability over the features common to both rankings only | T-87 | C-61 |
+| M29 | Attention offered as validation of SHAP: v6 §11.2 and C6 claim that SHAP and the TFT attention "independently identify" −24, −48 and −168 h, "strong evidence" of genuine structure. The −168 h peak cannot exist in TFT-96 (C-55); the attention was smoothed with a 7-hour rolling mean, which moves and widens peaks; peaks at whole days are expected for any hourly series with a daily cycle; attention says where a network reads, not what a feature contributes; and the SHAP side came from leaky rolling features (M26) | v6 §11.2, §13 C6, Figure 7 | Attention over each model's own encoder positions, unsmoothed, overall and per horizon block, with the diurnal reference: the share of attention on positions a whole number of days before T0, against 1/24 for attention without a daily pattern. The report describes; it claims no validation between SHAP and attention | T-88 | C-62 |
+| M30 | Hyper-parameter importance from one study and no spread: TFT-96 `hidden_size` 46.7 % (indirect) and 64.8 % (direct) from 20 trials, evaluator and seed not recorded (Optuna's default fANOVA fits a random forest and changes with its seed), read as "invest Optuna budget in searching hidden_size early" and "smaller models generalise better", from a best value on the edge of the space (M23). No output file holds these numbers (claim matrix rows 100–101: "not found in standard CSVs") | v6 §11.5 | Importance per study with a named and seeded evaluator, repeated over ten seeds (mean and std), with the number of complete trials, a flag when every trial is inside TPE's random start-up, and the effective value of `hidden_continuous_size` (X45) | T-89 | C-63 |
+| M31 | Report numbers without a file: besides M2, the attention peaks and the importance table of v6 have no output file (claim matrix rows 76, 100, 101: "NEEDS MANUAL REVIEW") | v6 §11.2, §11.5 | The `report` step reads every number from a file of the run and names the file and its SHA-256 next to each table; no number is typed | T-90 | C-64 |
+
+### 19.3 My own code that W5 builds on (X38–X49)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X38 | The final gate is checked only in the preflight of an invocation. In R9-17 three commits were made during the dev run; in a final run a commit would move `HEAD` off `g1-frozen`, and a code edit would run in the later steps of a run that passed its gate | `pipeline/runner.py`, `checks.gate_problems` | In final mode every step checks, before it starts, that `HEAD` is the commit of the tag and the tree is clean; the step refuses otherwise. The runbook forbids commits during a final run | T-84 |
+| X39 | Final mode accepts `--targets`, `--horizons` and `--seeds`: a final run with one seed or one horizon is a final run below the v6 scope, and it could be copied to the §6.10 paths | `pipeline/config.resolve`, `__main__` | Final refuses these slices; a final run is built step by step with `--only` and `--resume`. The copy step refuses a run whose configuration is not the v6 scope | T-84 |
+| X40 | Only `evaluate` writes the test-access log. A final run with `--allow-test` reads test rows in every model step (to predict them) without a line in the log | `evaluate._log_test_access`, `pipeline/data.model_table`, `pipeline/neural.build_job` | Every load of a test row appends one line to the log (step, purpose, run, commit, number of rows), and the step record lists it | T-85 |
+| X41 | With `--allow-test` the test split is scored in the same invocation as validation, so the test numbers are printed next to the stage-10 acceptance before anyone has read it | `pipeline/steps.run_evaluate`, `config.evaluation_windows` | By the decision on Q-22 (§19.7) | T-85 |
+| X42 | The seed spread is computed in two units: the steps in kW from their own objective, `evaluate.seed_variability_table` in the target's unit (k for the indirect route, about twice the kW value). The stage-10 rule (< 0.15 pp) needs one unit | `steps._seed_spread`, `neural._seed_spread`, `evaluate.seed_variability_table` | The report reads the spread from the evaluation's `benchmark_summary.csv` in kW (`nRMSE_kW_pct`, the evaluated forecast, M19), as the steps' warnings already do and as Q-19 implies; the target-unit spread is shown as secondary, and the steps' values are checked against it | T-86 |
+| X43 | `--dry-run` estimates a step from earlier runs of the same mode, so every step of the first final run is "unknown" | `runner.Runner.estimate` | For a final run without an earlier one, the dev duration scaled by the ratio of the fits of the two budgets, with an upper bound when every neural fit runs to its epoch cap | T-83 |
+| X44 | `config.STEPS` describes `select` as "feature selection (rerun of stage 7)" on the stage-6 and 6b tables. A rerun would end with a fourth look at validation (R7-05 was the third and registered one) | `pipeline/config.py` | By the decision on Q-20 (§19.4) | T-82 |
+| X45 | `hidden_continuous_size` is sampled in 8–64 and used as min(value, `hidden_size`). The edge warning and any importance read the sampled value: a value of 64 with `hidden_size` 16 is flagged although the network uses 16, and an effective value at the `hidden_size` cap is not | `models/neural_job.edge_params`, `pipeline/neural._warnings` | The edge check uses the effective value against its effective bounds [8, `hidden_size`]; the importance is reported for the sampled parameter with the note | T-89 |
+| X46 | The saved XGB booster holds `rounds_trained` trees (the best round plus the 50 of early stopping), while every forecast uses the first `n_rounds` (best + 1). An explainer built on the saved booster explains another model than the forecast | `steps.run_xgb` (`save_model`), `xgb_sota.predict` | `explain` slices the booster to `n_rounds` before any explainer, and checks additivity against the uncorrected forecast file; a test shows that the unsliced booster fails the check | T-87 |
+| X47 | With L-09 the written indirect forecast is clip(a + b × theo × k̂, 0, 3,449) / theo, so the SHAP values of the booster (in k) do not add up to it | §15.2; `xgb_sota.apply_mos` | SHAP in k for the booster, checked against the uncorrected file; a kW view, φ_kW = b × theo × φ_k with the base a + b × theo × E[k̂] (exact for the linear map, with theo fixed for the row); the clipped rows are counted and left out of the kW check. The direct route is in kW already | T-87 |
+| X48 | The TFT variable-selection weights that W4 stores are per channel, so a measured series and its fill flag are two channels; their importance is split | `models/tft_model.interpretation`, `neural_worker` | Reported per channel and per variable (a series and its flag added: the weights of one step sum to 1, so a sum is the weight of the pair) | T-88 |
+| X49 | The automatic warnings exist only as free text in each `step.json`; a report that parses text can miss or misclassify one | `RunLog.warn` in the steps | The report recomputes the five warnings of §3.5 from the structured records (best iterations and epochs, learning curves, trials, the search spaces, the benchmark) with the steps' own thresholds, and checks that every step warning is matched | T-86 |
+
+Not a finding, a consequence: `--resume` refuses the XGB dev run `20261107T135938Z_dev`, because it
+was created with the pre-W4 neural budgets (X27) and a run has one configuration. `explain` and
+`report` of XGB-dev therefore need a new dev run of `baselines,xgb,evaluate`, which must reproduce
+that run byte for byte (prediction files, benchmark).
+
+### 19.4 Proposal for the user: what `select` does (Q-20)
+
+Stage 7 is closed (R7-04, R7-05): selection on train only, the inside-train check, and the one
+registered validation look.
+
+- **A (recommended): verify and reuse.** The step reruns nothing and reads no table row. It
+  checks that (1) `model_inputs.json`, `selection_manifest.json`, the six 05e files,
+  `inner_train_check.csv` and `validation_check.csv` are tracked and unmodified; (2) the stage-7
+  run logs name the current tables (X11); (3) the manifest records selection on train only and
+  the single validation look; (4) `model_inputs.json` equals `selection.run.decide_input` applied
+  to the committed checks: the indirect sets are the recommended 05e sets, the direct ones the
+  full pool of the current tables; (5) the stage-7 code at the selection commit (`190e4df`)
+  against `HEAD` (the change since then is `decide_input` and the validation-only command, both
+  before the look). It writes copies of the sets and `select.json` with their hashes. Every model
+  step of the same run checks that it reads the verified file (M25). About a second.
+- **B: rerun stage 7** (about 95 minutes on 8 threads, R7-04), then the validation look again.
+  This would be a fourth look, and if the rerun gave other sets (threads, versions), every dev
+  result would be on other inputs. A change of D-13.
+
+### 19.5 Proposal for the user: the scope of `explain` (Q-21)
+
+**A (recommended):**
+- **XGB:** exact TreeSHAP of the run's boosters sliced to `n_rounds` (X46), `tree_path_dependent`
+  (no background; the base value is the mean booster output over the training cover), every
+  target × horizon × seed, on every daytime scoring hour of the validation window with AC truth
+  (2,901 per horizon in dev and final, 321 in smoke). Output in the booster's unit (k for the
+  indirect route, kW for the direct route), and the kW view of X47 for the indirect route.
+  Additivity |base + Σφ − uncorrected forecast| ≤ 1e-4 in the training unit, else the step
+  fails; SHAP 0.51 against XGBoost's own `pred_contribs` on the same rows, ≤ 1e-5. Tables: mean
+  \|φ\| and mean φ per feature (kW), the group attribution of M27 with member counts, the rank
+  stability over horizons and seeds (common features only, M28), the dominance flag; the per-row
+  values (float32, not in git) for stage 11.
+- **TFT-96, TFT-168 and the TFT baseline:** from the stored W4 outputs, no GPU and no model
+  reload: the attention by lag (overall and per horizon block), the diurnal share against 1/24,
+  the positions at the edge of the window (M29); the variable-selection weights per channel and
+  per variable (X48).
+- **Optuna:** fANOVA importance (Optuna's evaluator with seeds 0–9: mean and std) for every study
+  of the run (XGB, BiLSTM, TFT-96, TFT-168), with the trial counts and the start-up flag (M30).
+- **BiLSTM and PatchTST:** no attribution (none in v6; a new method would be outside the scope
+  rule of §16b).
+- **Device:** CPU, in `solar`; a few minutes per run.
+- **Rows of a final run:** validation always; in the test phase of a final run (§19.7) also the
+  test window, which §6.10 names for the SHAP files (features only, logged, X40).
+- **`archive` in:** `python -m solarpv.pipeline archive <run_id>` packs the whole run folder,
+  including the files that git ignores (predictions, arrays, studies, models; 192 MB for the
+  neural dev run), into one zip with the SHA-256 of every file, and `--verify` checks it. The
+  zip goes to `outputs/archives/` (ignored by git); copying it off the VDI is the user's step.
+
+**B:** as A, without `archive`. **C:** as A, with validation rows only also in a final run, and
+§6.10 corrected (dated) from test to validation.
+
+### 19.6 The `report` step (no decision needed)
+
+One Markdown summary and its tables per run (`report/report.md`, `report.json`, CSVs), every
+number read from a file of the run with its path and SHA-256 next to it (M31):
+- the steps: status, commit, fingerprint, duration, budget, seeds, the GPU and worker time;
+- the metrics of `evaluate` (nRMSE in kW and in the target unit, skill, the kW DM against every
+  reference), per window;
+- the training diagnostics: best iteration or epoch against the cap, epochs or rounds run, early
+  stop, the train / validation gap, NaN, the retrain against the best trial;
+- the studies: trials, best trial, best value, parameters on the edge (effective value, X45);
+- the MBE files (L-15) and the quantile files (L-14) that exist;
+- the automatic warnings of §3.5, recomputed from the records and matched with the steps' text
+  (X49), and the seed spread in kW from the benchmark (X42);
+- the points of the G-1 list that the run informs, as a list without a verdict.
+
+### 19.7 Proposal for the user: the test protocol of a final run (Q-22)
+
+The models must read the test features to forecast the test hours. The question is when the test
+split is scored.
+
+- **A (recommended): two phases of one final run.** In final mode the model steps always
+  forecast the test window too (test features read and logged, X40), but nothing scores it. The
+  first invocation trains, evaluates validation and writes the report: that is the stage-10
+  acceptance. Only after the acceptance is recorded, a second invocation of the same run,
+  `--only test,report --allow-test`, scores the test split (a new step `test`, final only, with
+  the access log) and rewrites the report with it. `allow_test` becomes a flag of the invocation,
+  not of the run's configuration, so the run can be resumed.
+- **B: one invocation**, as the code does now: `run --mode final --allow-test` trains and scores
+  both splits at once. Simplest; the test numbers appear in the same summary as the acceptance.
+- **C: test forecasts only in the second phase**, from the saved models (boosters and
+  checkpoints). The model steps never read a test row in the first phase, but every model needs
+  a second prediction path (the five neural models through the worker), about a day of code.
+
+Also in the gate (no decision needed): final refuses off the tag or with a dirty tree, before
+every step (X38), and refuses slices (X39); the budgets are `BUDGETS["final"]`, asserted equal to
+v6 (T-80); `promote <run_id>` is the separate copy of X8 (§6.10 paths: predictions, metrics,
+models, the XGB SHAP files), only for a complete final run, never over an existing file.
+
+### 19.8 Proposal for the user: the runbook of the final run (Q-23)
+
+No budget or seed changes: the final budgets are those of D-08 and v6. **Time**, scaled from the
+dev run (R9-06, R9-17) by the number of fits: XGB about 1 h (60 trials × 3 seeds, with L-09);
+BiLSTM about 0.5 h (60 trials, 3 final seeds); TFT-96 about 3.2 h and TFT-168 about 3.8 h (21
+fits per target instead of 8); TFT baseline and PatchTST about 0.2 h each; evaluation, explain
+and report a few minutes. **About 9 h expected, up to about 16 h** if every TFT fit runs its 100
+epochs. The longest single step (TFT-168) is about 4–7 h and cannot be split: a step is the unit
+of `--resume`, and a failed step is rerun from its start (with the same seeds it gives the same
+result, X32, only the time is lost).
+
+- **A (recommended):** before W6, the user asks the college IT two questions (Q-15): does a
+  disconnected Horizon session keep running, and for how long (the disconnect and logoff timers);
+  is `C:` of this VM kept after a logoff, and does the next login return to the same VM. The run
+  is then started as one sequence with `--keep-going`; if the session limit is shorter than the
+  run, it is run in segments (XGB; BiLSTM; TFT-96; TFT-168; the rest) with `--resume`, each
+  segment shorter than the limit; `archive` after each segment.
+- **B:** start without asking IT, in segments, relying on `--resume`; the risk is losing a TFT
+  step (up to 7 h) to an unknown logoff.
+
+The runbook (`docs/runbook_final.md`) has: the preconditions (G-1 passed, the tag, `check --mode
+final`); the commands in order with their expected time; the checks before (dry run, disk,
+GPU, both environments) and after each segment (`status`, the report, `archive`); what to do
+after a failure (read the step log, fix nothing in code without reopening G-1, rerun the step with
+`--resume`) and after a logoff (log in, `status`, `--resume`; an interrupted step's folder is
+moved aside, never read).
+
+### 19.9 Tests (T-82–T-91)
+
+| ID | Test |
+|---|---|
+| T-82 | `select` (M25, X44): passes on the committed stage-7 outputs; fails on a modified set, a changed table, a `model_inputs.json` that does not equal `decide_input` on the committed checks; reads no table row and no validation row; a model step refuses a `model_inputs.json` whose hash differs from the run's `select` record |
+| T-83 | X43: the final estimate equals the dev duration × the ratio of fits, with the upper bound; `--dry-run` writes nothing |
+| T-84 | X38, X39: a final step refuses after a commit or a code edit made after the preflight; final refuses `--targets`, `--horizons` and `--seeds`; the final budgets equal v6 |
+| T-85 | X40, X41 and Q-22: every load of a test row writes one access line; smoke and dev write none and load no test row; the test split is scored only by the protocol decided on Q-22 |
+| T-86 | X42, X49: the report's seed spread equals the std of `nRMSE_kW_pct` over seeds; every warning of §3.5 is recomputed from a constructed record (edge epoch, NaN, gap, edge of the space, spread) and matched with the step text |
+| T-87 | M26–M28, X46, X47: on a synthetic XGB run, additivity holds for the sliced booster and fails for the unsliced one; SHAP equals `pred_contribs`; the kW view adds up to the corrected forecast on unclipped rows; group attribution equals \|Σφ\| and every feature has one group; rank stability uses common features only; the explained features equal the recorded order |
+| T-88 | M29, X48: the attention summary of a constructed array (known peak, a 96-position encoder has no lag before −96 h, the diurnal share); variable importance per variable equals the sum of a series and its flag |
+| T-89 | M30, X45: the importance of a constructed study, ten evaluator seeds, the start-up flag; the edge check on the effective `hidden_continuous_size` |
+| T-90 | M31: every table of the report names a file of the run and its hash, and the numbers equal the file's; a modified source file fails the report |
+| T-91 | `promote` and `archive`: `promote` refuses a smoke, dev, incomplete or sliced run and an existing target file, and copies a complete synthetic final run with a manifest; `archive --verify` passes on a fresh archive and fails on a changed file; no file outside the run folder is packed |
+
+### 19.10 Order of the work and records
+
+1. This section, committed before any code, with the errata rows C-58–C-64 and X38–X49 and the
+   run-journal note R9-18.
+2. The user's answers to Q-20–Q-23, recorded as decisions before the code they govern.
+3. The code: `select`, `explain`, `report`, the gate (X38–X41), `promote`, `archive` (if in), the
+   estimate (X43), the fixes X42, X45, X49; the tests of §19.9; ruff; the full test suite,
+   including the GPU suite.
+4. Commit, then smoke of the whole sequence: `run --mode smoke` (select, baselines, the six
+   models, evaluate, explain, report).
+5. Commit, then dev for the new steps only: a new dev run of `select,baselines,xgb,evaluate,
+   explain,report` (it must reproduce `20261107T135938Z_dev`), and `--resume
+   20261111T160714Z_dev --only select,explain,report`. Review with `forecasting-validity-review`.
+6. The runbook, figures S09-13 on (the figure book, stage 9's minimum raised in
+   `tests/contracts/test_figures.py`), notebook `06_models.ipynb` from the two dev runs (in
+   `tests/contracts/test_stage_notebooks.py`), OP-58, the run journal, `PROJECT_MASTER.md`.
+
+**Acceptance of W5** (registered now). Smoke: every step of the sequence completes; the SHAP
+additivity holds; the report's warnings match the steps' warnings. Dev: `select` passes on both
+dev runs; the new XGB dev run reproduces `20261107T135938Z_dev` byte for byte; `explain` and
+`report` complete on both runs; no test row is read (the access log unchanged). A finding of
+`explain` (for example a dominant feature) is reported and investigated, never acted on by a
+change of a validation decision without the user (§19.1).

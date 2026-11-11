@@ -1587,3 +1587,33 @@ hashes, numbers) and the commit messages are the record:
 - **Records:** errata X36, X37 and C-10; `docs/defense_notes.md` §7 (the neural models, with the
   three figures); `docs/figures_plan.md` §5; T-72 extended in `tests/contracts/test_figures.py`;
   catalog and gallery regenerated (46 figures: 37 process, 9 correction).
+
+### 2026-11-12 · R9-19 · W5: self-review before the code, and four proposals for the user
+
+- **Read first:** `PROJECT_MASTER.md` §1 (status, the G-1 list) and §16b (L-14, L-15, L-20), the
+  stage-9 plan (§3.2–§3.6, §7, §9, X8, §15.2, §18.8), R7-04, R7-05, R9-06, R9-11, R9-17, and the
+  college-machine note (two environments).
+- **Sources of the original's explanation stage** (read-only): v6 §11.1–§11.5 and C6 (the docx
+  read as text), `07_shap/*`, `12_scripts/shap_rank_stability.py`, `reproduce_paper_results.py`
+  (phases 1–9: no selection step), the claim matrix rows 70–77, 100 and 101.
+- **The original (M25–M31, errata C-58–C-64):** selection outside the reproduction; SHAP of the
+  76-feature model led by leaky rolling groups; group shares by first-match substrings and sums
+  of mean |SHAP|; no record of the rows, unit or explainer, and zero-filled rank correlations;
+  attention offered as validation of SHAP (with a −168 h peak in TFT-96 and a 7-hour smoothing);
+  one unseeded fANOVA on 20 trials; report numbers without a file.
+- **My own code (X38–X49, errata):** the final gate only in the preflight (commits were made
+  during R9-17); final slices allowed; model steps' test reads unlogged; test scored next to the
+  stage-10 acceptance; the seed spread in two units; no final time estimate; `select` described
+  as a rerun; the sampled against the effective `hidden_continuous_size`; **the saved XGB booster
+  holds 50 more rounds than the forecast uses** (an explainer on it would explain another model);
+  the L-09 map not additive in k; the TFT weights split a series and its fill flag; warnings as
+  free text only.
+- **Facts checked for the proposals:** the selection code changed since `190e4df` only by
+  `decide_input` and the validation-only command (before the look); the neural dev run folder
+  is 192 MB (125 MB of arrays, 29 MB of checkpoints; studies and models are ignored by git); the
+  XGB dev run `20261107T135938Z_dev` cannot be resumed (created with the pre-W4 budgets, X27);
+  SHAP 0.51.0, XGBoost 3.4.2 and Optuna 5.0.0 in `solar`.
+- **Proposals for the user** (stage-9 plan §19.4–§19.8): Q-20 (`select`: verify and reuse, or a
+  rerun of stage 7), Q-21 (the scope of `explain` and `archive`), Q-22 (the test protocol of a
+  final run), Q-23 (the runbook: about 9 h expected, up to about 16 h; the questions to the
+  college IT). Nothing is coded before the answers.
