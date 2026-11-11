@@ -524,8 +524,7 @@ def s09_neural_smoke():
     ax.legend(loc="upper left")
     same = 0
     for step, _, _ in NEURAL:
-        pa, pb = REPO_ROOT / SMOKE_A / step, REPO_ROOT / SMOKE_B / step
-        if (pb / "learning_curves.csv").exists():
+        if (REPO_ROOT / SMOKE_B / step / "learning_curves.csv").exists():
             a, b = _curves(SMOKE_A, step), _curves(SMOKE_B, step)
             cols = [c for c in a.columns if c not in ("seconds", "gpu_peak_mb")]
             assert a[cols].equals(b[cols]), f"{step}: the repeated smoke run differs"
