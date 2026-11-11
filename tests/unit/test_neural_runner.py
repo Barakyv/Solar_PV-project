@@ -273,6 +273,40 @@ def test_missing_known_inputs_outside_their_hours_are_an_error(data, tmp_path):
         neural.check_missing_known(sources, "direct", INPUTS)
 
 
+def test_known_inputs_are_checked_on_the_hours_the_windows_read(data, tmp_path, monkeypatch):
+    """X35 (the first real smoke run): a centred GFS mean is undefined at the first hour of the
+    data, which no window reads; the check covers the hours the windows read, and allows the
+    two edge hours of the data at night for a centred mean only."""
+    name = "fcst_gfs_kt_poa_ma3"
+    inputs = {k: list(v) for k, v in INPUTS.items()}
+    inputs["indirect_D1"] = inputs["indirect_D1"] + [name]
+    gfs = {h: g.copy() for h, g in data["gfs"].items()}
+    first = gfs[1].index[0]
+    for g in gfs.values():
+        g[name] = 0.5
+        g.loc[first, name] = np.nan
+    paths = write_inputs({**data, "gfs": gfs}, tmp_path / "a")
+    sources = SD.load_sources(paths=paths)
+    scaler = SD.Scaler.fit(sources)
+    window = config.evaluation_windows("dev")[0]
+    dsets = {"train": SD.build(sources, scaler, "tft168", "indirect",
+                               SD.training_scope(sources, "dev"), inputs=inputs),
+             "val": SD.build(sources, scaler, "tft168", "indirect",
+                             SD.evaluation_scope(sources, window), inputs=inputs)}
+    hours = neural.read_hours(dsets)
+    assert SD._ns([first])[0] not in hours
+    neural.check_missing_known(sources, "indirect", inputs, hours=hours)  # not read: fine
+    with pytest.raises(steps.RunnerError, match=name):  # every loaded hour: not an edge hour
+        neural.check_missing_known(sources, "indirect", inputs)
+    monkeypatch.setattr(neural, "DATA_START_UTC", first.isoformat())
+    sources.frame.loc[first, "sun_elevation"] = -10.0
+    neural.check_missing_known(sources, "indirect", inputs)  # the data's edge hour at night
+    day = sources.frame.index[(sources.frame["split"] == "val").to_numpy()][300]
+    sources.frame.loc[day, f"{name}@D2"] = np.nan
+    with pytest.raises(steps.RunnerError, match=name):
+        neural.check_missing_known(sources, "indirect", inputs, hours=hours)
+
+
 def test_a_failing_gpu_environment_stops_the_step(wired, monkeypatch):
     monkeypatch.setattr(neural, "gpu_report", lambda: {"errors": ["no sm_61"]})
     code, run_dir = run_step(wired, "bilstm")

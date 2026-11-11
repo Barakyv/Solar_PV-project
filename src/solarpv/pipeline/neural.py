@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from solarpv.config.constants import AC_CAPACITY_KW, TEST_START
+from solarpv.config.constants import AC_CAPACITY_KW, DATA_END_UTC, DATA_START_UTC, TEST_START
 from solarpv.config.paths import REPO_ROOT
 from solarpv.evaluation.units import to_kw
 from solarpv.models import neural_job as J
@@ -39,6 +39,7 @@ SEED_SPREAD_WARN_PP = 0.15  # the acceptance rule of stage 10
 REPRODUCE_TOL_PP = 1e-6
 NIGHT_ONLY = "airmass"  # X30: pvlib leaves the air mass undefined below the horizon
 TRAIN_ONLY = PREVDAY  # X30: 24 train hours without the previous day's clear-sky index (W3)
+CENTRED_MEAN = "_ma"  # X35: centred GFS means are undefined at the two edge hours of the data
 
 
 # ── the GPU environment ─────────────────────────────────────────────────────
@@ -106,27 +107,47 @@ def neural_inputs(ctx: Context, step: str) -> list[Path]:
             GPU_ENV_LOCK]
 
 
-def check_missing_known(sources: SD.Sources, target: str, inputs: dict) -> dict:
-    """X30: a missing known input is the night air mass or a train hour of the previous day's
-    clear-sky index; anything else is an error. Counts per input and split."""
+def read_hours(datasets: dict) -> np.ndarray:
+    """The hours (int64 ns) that the windows of a target read: every encoder hour and every
+    existing decoder step (X35)."""
+    parts = []
+    for ds in datasets.values():
+        parts += [ds.enc_time.ravel(), ds.dec_time[ds.dec_exists]]
+    return np.unique(np.concatenate(parts))
+
+
+def check_missing_known(sources: SD.Sources, target: str, inputs: dict,
+                        hours: np.ndarray | None = None) -> dict:
+    """X30: a missing known input on an hour that a window reads is the night air mass, a train
+    hour of the previous day's clear-sky index, or (X35) a centred GFS mean at one of the two edge
+    hours of the data at night; anything else is an error. Counts per input and split, over the
+    hours read (all loaded hours when `hours` is None)."""
     f = sources.frame
     det, gfs = SD.known_inputs(target, inputs)
-    night = f["sun_elevation"].to_numpy(float) <= 0 if "sun_elevation" in f else None
+    night = (f["sun_elevation"].to_numpy(float) <= 0 if "sun_elevation" in f
+             else np.zeros(len(f), dtype=bool))
     train = (f["split"] == "train").to_numpy()
+    read = (np.ones(len(f), dtype=bool) if hours is None
+            else np.isin(SD._ns(f.index), hours))
+    edges = SD._ns(pd.DatetimeIndex([pd.Timestamp(DATA_START_UTC, tz="UTC"),
+                                     pd.Timestamp(DATA_END_UTC, tz="UTC").floor("h")]))
+    edge = np.isin(SD._ns(f.index), edges) & night
     counts, bad = {}, []
     columns = [(c, f[c]) for c in det] + [(f"{c}@D{h}", f[f"{c}@D{h}"]) for c in gfs
                                          for h in (1, 2, 3)]
     for name, col in columns:
-        missing = col.isna().to_numpy()
+        missing = col.isna().to_numpy() & read
         if not missing.any():
             continue
         base = name.split("@")[0]
         counts[name] = {s: int((missing & (f["split"] == s).to_numpy()).sum())
                         for s in sorted(f["split"].unique())}
-        if base == NIGHT_ONLY and night is not None:
+        if base == NIGHT_ONLY:
             allowed = night
         elif base == TRAIN_ONLY:
             allowed = train
+        elif base in gfs and CENTRED_MEAN in base:
+            allowed = edge
         else:
             allowed = np.zeros(len(f), dtype=bool)
         n_bad = int((missing & ~allowed).sum())
@@ -222,7 +243,8 @@ def build_job(ctx: Context, step: str, job_dir: Path, seeds: list[int], budget: 
                 report["datasets"][f"{target}/{k}"] = {**ds.info, "checks": checks,
                                                        "scope": ds.scope.label}
             if step != "patchtst":
-                report["missing_known"][target] = check_missing_known(sources, target, inputs)
+                report["missing_known"][target] = check_missing_known(
+                    sources, target, inputs, hours=read_hours(dsets))
             arrays = {}
             for k, ds in dsets.items():
                 arrays.update(pack(ds, k, sources))
