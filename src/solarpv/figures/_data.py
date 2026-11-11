@@ -13,6 +13,10 @@ INGEST_1MIN = "data/processed/01_ingest/scada_1min_utc.parquet"
 GFS_D1 = "data/processed/06b_gfs/gfs_features_D1.parquet"
 EVAL_VAL = "outputs/07_evaluation/val/benchmark_summary.csv"
 DEV_RUN = "outputs/runs/20261107T135938Z_dev"
+# W4 (the neural models): the passing smoke run, its repetition (X32), and the dev run (R9-16, R9-17)
+NEURAL_SMOKE_RUN = "outputs/runs/20261111T155739Z_smoke"
+NEURAL_SMOKE_REPEAT = "outputs/runs/20261111T160241Z_smoke"
+NEURAL_DEV_RUN = "outputs/runs/20261111T160714Z_dev"
 
 
 def table(rel: str, columns: list[str], split: str | None = None) -> pd.DataFrame:

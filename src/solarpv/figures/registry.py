@@ -69,6 +69,9 @@ EXISTING = [
     ("7", "outputs/07_feature_selection/figures", "python -m solarpv.selection", "fig*.png"),
     ("9", "outputs/runs/20261107T135938Z_dev/xgb/figures",
      "python -m solarpv.pipeline run --mode dev", "*.png"),
+    *(("9", f"outputs/runs/20261111T160714Z_dev/{step}/figures",
+       "python -m solarpv.pipeline run --mode dev", "*.png")
+      for step in ("bilstm", "tft96", "tft168", "tftbase", "patchtst")),
 ]
 
 

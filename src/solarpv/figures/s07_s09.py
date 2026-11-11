@@ -470,3 +470,312 @@ def s09_sequence():
              "n_val": int(origins.get("val", origins.get("validation", 0))),
              "n23": int(tot.get(23, 0)), "n24": int(tot.get(24, 0)), "n25": int(tot.get(25, 0))}
     return fig, facts
+
+
+# ── W4: the neural models (docs/stage9_plan.md §18) ─────────────────────────
+
+NEURAL = (("bilstm", "lstm_sota", "BiLSTM"), ("tft96", "tft_96", "TFT-96"),
+          ("tft168", "tft_168", "TFT-168"), ("tftbase", "tft", "TFT baseline"),
+          ("patchtst", "patchtst", "PatchTST"))
+NEURAL_STYLE = {"lstm_sota": (C["red"], "o-"), "tft_96": (C["blue"], "s-"),
+                "tft_168": (C["sky"], "D--"), "tft": (C["purple"], "^-."),
+                "patchtst": (C["yellow"], "v:")}
+SMOKE_A, SMOKE_B = D.NEURAL_SMOKE_RUN, D.NEURAL_SMOKE_REPEAT
+NDEV = D.NEURAL_DEV_RUN
+NDEV_BENCH = f"{NDEV}/evaluate/val/benchmark_summary.csv"
+R14 = "outputs/09_xgb_checks/r14_bias.csv"
+
+
+def _curves(run, step):
+    return D.csv(f"{run}/{step}/learning_curves.csv")
+
+
+@register(
+    "S09-07", "9", "neural_smoke", "Smoke runs of the five neural models",
+    "Do the five neural steps run end to end on the GPU, and do they reproduce?",
+    "Median seconds per training epoch of each final fit (PatchTST: per validation check) in "
+    "the smoke run (58 training windows) and in the development run (872), log scale.",
+    "All five steps and the evaluation passed the smoke run; a second smoke run with the same "
+    "seed gave identical losses for {n_repeat} models. In development an epoch takes "
+    "{fast:.1f} s ({fast_name}) to {slow:.1f} s ({slow_name}); the run took {dev_h:.1f} h.",
+    "The development run used the budgets approved by the user (§18.6); the final run can "
+    "rely on reproducible training.",
+    tuple(f"{r}/{s}/learning_curves.csv" for r in (SMOKE_A, SMOKE_B, NDEV)
+          for s, _, _ in NEURAL if (REPO_ROOT / r / s / "learning_curves.csv").exists())
+    + (f"{NDEV}/run.json",))
+def s09_neural_smoke():
+    fig, ax = subplots(height=2.8)
+    xs = np.arange(len(NEURAL))
+    med = {}
+    for k, (run, label, col, hatch) in enumerate(((SMOKE_A, "smoke", C["grey"], None),
+                                                    (NDEV, "development", C["blue"], "///"))):
+        vals = []
+        for step, _, _ in NEURAL:
+            c = _curves(run, step)
+            final = c[c["fit"] == "final"]
+            vals.append(float(final["seconds"].median()) if "seconds" in final
+                        and final["seconds"].notna().any() else np.nan)
+        med[label] = vals
+        ax.bar(xs + (k - 0.5) * 0.36, vals, 0.34, color=col, hatch=hatch, edgecolor="white",
+               label=label)
+    ax.set_yscale("log")
+    ax.set_xticks(xs, [n for _, _, n in NEURAL])
+    ax.set_ylabel("seconds per epoch (log)")
+    ax.legend(loc="upper left")
+    same = 0
+    for step, _, _ in NEURAL:
+        pa, pb = REPO_ROOT / SMOKE_A / step, REPO_ROOT / SMOKE_B / step
+        if (pb / "learning_curves.csv").exists():
+            a, b = _curves(SMOKE_A, step), _curves(SMOKE_B, step)
+            cols = [c for c in a.columns if c not in ("seconds", "gpu_peak_mb")]
+            assert a[cols].equals(b[cols]), f"{step}: the repeated smoke run differs"
+            same += 1
+    dev = [v for v in med["development"] if np.isfinite(v)]
+    names = [n for (_, _, n), v in zip(NEURAL, med["development"], strict=True)
+             if np.isfinite(v)]
+    run = D.jload(f"{NDEV}/run.json")
+    dur = sum(float(e.get("duration_s", 0)) for e in run["steps"].values())
+    facts = {"n_repeat": same, "fast": min(dev), "fast_name": names[int(np.argmin(dev))],
+             "slow": max(dev), "slow_name": names[int(np.argmax(dev))], "dev_h": dur / 3600}
+    return fig, facts
+
+
+@register(
+    "S09-08", "9", "neural_learning_curves", "Learning curves of the neural models",
+    "Did the final fits of the development run converge, and where did early stopping act?",
+    "Validation loss (solid) and training loss (dotted) of each final fit, per epoch (PatchTST: "
+    "per validation check), indirect route (top) and direct route (bottom); the dot marks the "
+    "restored best epoch.",
+    "Early stopping ended {n_stopped} of {n_fits} epoch-based fits before their budget; the best "
+    "epochs lie between {best_min} and {best_max}. {n_last} fits had their best epoch at the "
+    "last epoch.",
+    "The warnings of the run are read in the review (R9-17); the curves are the reference for "
+    "the final run's longer budgets.",
+    tuple(f"{NDEV}/{s}/best_params.json" for s, _, _ in NEURAL)
+    + tuple(f"{NDEV}/{s}/learning_curves.csv" for s, _, _ in NEURAL))
+def s09_neural_curves():
+    fig, axes = subplots(2, 5, height=4.2)
+    stopped = n_fits = n_last = 0
+    bests = []
+    for j, (step, _, name) in enumerate(NEURAL):
+        c = _curves(NDEV, step)
+        best = D.jload(f"{NDEV}/{step}/best_params.json")
+        for i, target in enumerate(("indirect", "direct")):
+            ax = axes[i][j]
+            f = c[(c["target"] == target) & (c["fit"] == "final")]
+            x = "step" if step == "patchtst" else "epoch"
+            for col, ls in (("val_loss", "-"), ("train_loss", ":")):
+                g = f[f[col].notna()] if col in f else f.iloc[:0]
+                ax.plot(g[x], g[col], ls, color=C["blue"] if col == "val_loss" else C["grey"],
+                        lw=1.1, label=col.replace("_", " "))
+            rec = best[f"{target}_seed{DEV_SEED}"]["final"]
+            if step == "patchtst":
+                bx = rec["best_step"]
+            else:
+                bx = rec["best_epoch"]
+                n_fits += 1
+                stopped += bool(rec["stopped_early"])
+                n_last += rec["best_epoch"] == rec["epochs_run"] and not rec["stopped_early"]
+                bests.append(bx)
+            g = f[f[x] == bx]
+            if "val_loss" in g and len(g):
+                ax.plot(g[x], g["val_loss"], "o", color=C["red"], ms=4)
+            ax.set_title(f"{name}, {target}", fontsize=8)
+            ax.set_xlabel(x, fontsize=7)
+    axes[0][0].set_ylabel("loss (model units)")
+    axes[1][0].set_ylabel("loss (model units)")
+    axes[0][0].legend(fontsize=6)
+    facts = {"n_stopped": stopped, "n_fits": n_fits, "best_min": int(min(bests)),
+             "best_max": int(max(bests)), "n_last": int(n_last)}
+    return fig, facts
+
+
+@register(
+    "S09-09", "9", "neural_dev_results", "Neural models in the development run",
+    "How do the five neural models score on validation, next to XGB and the references?",
+    "Validation nRMSE in kW per horizon of the five neural models (development budgets, one "
+    "seed), the development XGBoost and two references; indirect route converted to kW (left), "
+    "direct route (right). All on the same 5,832 validation hours per horizon.",
+    "Best neural model at D+1: {best_ind} ({best_ind_v:.2f} %) in the indirect route and "
+    "{best_dir} ({best_dir_v:.2f} %) in the direct route, against XGB-dev {xgb_ind:.2f} / "
+    "{xgb_dir:.2f} %. {n_below} of {n_cases} neural cases are below persistence. Tuning-split "
+    "numbers with reduced budgets: they rank nothing.",
+    "The final run (stage 10) trains every model with the v6 budgets on the frozen code; the "
+    "comparison of families is made there, on the test split.",
+    (NDEV_BENCH, DEV_BENCH))
+def s09_neural_dev():
+    nb, xb = D.csv(NDEV_BENCH), D.csv(DEV_BENCH)
+    fig, axes = subplots(1, 2, height=3.0, sharey=True)
+    best = {}
+    below = cases = 0
+    for ax, t in zip(axes, ("indirect", "direct"), strict=True):
+        for m in ("persistence", "climatology"):
+            r = nb[(nb["target"] == t) & (nb["model"] == m)].sort_values("horizon")
+            col, style = REF_STYLE[m]
+            ax.plot(r["horizon"], r["nRMSE_kW_pct"], style, color=col, ms=3, lw=1,
+                    label=REF_NAMES[m])
+        r = xb[(xb["target"] == t) & (xb["model"] == "xgb_sota")].sort_values("horizon")
+        col, style = REF_STYLE["xgb_sota"]
+        ax.plot(r["horizon"], r["nRMSE_kW_pct"], style, color="black", ms=4, lw=1.4,
+                label=REF_NAMES["xgb_sota"])
+        pers = nb[(nb["target"] == t) & (nb["model"] == "persistence")].set_index(
+            "horizon")["nRMSE_kW_pct"]
+        d1 = {}
+        for _, model, name in NEURAL:
+            r = nb[(nb["target"] == t) & (nb["model"] == model)].sort_values("horizon")
+            col, style = NEURAL_STYLE[model]
+            ax.plot(r["horizon"], r["nRMSE_kW_pct"], style, color=col, ms=3.5, lw=1.1,
+                    label=name)
+            for h, v in zip(r["horizon"], r["nRMSE_kW_pct"], strict=True):
+                cases += 1
+                below += v < pers[h]
+            d1[name] = float(r[r["horizon"] == 1]["nRMSE_kW_pct"].iloc[0])
+        best[t] = min(d1.items(), key=lambda kv: kv[1])
+        ax.set_title(f"{t} route")
+        ax.set_xticks([1, 2, 3], ["D+1", "D+2", "D+3"])
+    axes[0].set_ylabel("validation nRMSE (% of 3,449 kW)")
+    axes[1].legend(loc="upper right", fontsize=6.5, ncol=2)
+    n = nb[nb["model"].isin([m for _, m, _ in NEURAL])]["n"]
+    assert n.nunique() == 1, "the neural models were not scored on the same hours"
+    xd1 = {t: float(xb[(xb["target"] == t) & (xb["model"] == "xgb_sota")
+                       & (xb["horizon"] == 1)]["nRMSE_kW_pct"].iloc[0])
+           for t in ("indirect", "direct")}
+    facts = {"best_ind": best["indirect"][0], "best_ind_v": best["indirect"][1],
+             "best_dir": best["direct"][0], "best_dir_v": best["direct"][1],
+             "xgb_ind": xd1["indirect"], "xgb_dir": xd1["direct"], "n_below": int(below),
+             "n_cases": int(cases)}
+    return fig, facts
+
+
+@register(
+    "S09-10", "9", "neural_optimization", "Optuna searches of the neural models",
+    "How did the searches of BiLSTM, TFT-96 and TFT-168 progress within their development "
+    "budgets?",
+    "Validation nRMSE in kW of every trial (points) and the best so far (line), per model and "
+    "target; one study per target with seed 42.",
+    "{n_trials} trials in all; the best trial improved on the first by {gain_min:.2f} to "
+    "{gain_max:.2f} points. Best values on the edge of the search space: {n_edge} of "
+    "{n_studies} studies (the warning of §3.5, M23).",
+    "The final run searches 60 (BiLSTM) and 20 (TFT) trials in the same spaces; an edge result "
+    "goes to the list of G-1.",
+    tuple(f"{NDEV}/{s}/trials.csv" for s in ("bilstm", "tft96", "tft168"))
+    + tuple(f"{NDEV}/{s}/best_params.json" for s in ("bilstm", "tft96", "tft168")))
+def s09_neural_search():
+    from solarpv.models.neural_job import SEARCH_SPACES, STEP_FAMILY, edge_params
+
+    fig, axes = subplots(2, 3, height=4.0, sharey="row")
+    total, gains, edges, studies = 0, [], 0, 0
+    for j, (step, _, name) in enumerate(NEURAL[:3]):
+        tr = D.csv(f"{NDEV}/{step}/trials.csv")
+        best = D.jload(f"{NDEV}/{step}/best_params.json")
+        for i, target in enumerate(("indirect", "direct")):
+            g = tr[tr["target"] == target].sort_values("trial")
+            ax = axes[i][j]
+            ax.plot(g["trial"], g["value_kw"], "o", color=C["blue"], ms=3)
+            ax.plot(g["trial"], g["value_kw"].cummin(), "-", color=C["red"], lw=1.2)
+            ax.set_title(f"{name}, {target}", fontsize=8)
+            ax.set_xlabel("trial", fontsize=7)
+            total += len(g)
+            gains.append(float(g["value_kw"].iloc[0] - g["value_kw"].min()))
+            studies += 1
+            params = best[f"{target}_seed{DEV_SEED}"]["params"]
+            edges += bool(edge_params(params, SEARCH_SPACES[STEP_FAMILY[step]]))
+    axes[0][0].set_ylabel("nRMSE (% of capacity)")
+    axes[1][0].set_ylabel("nRMSE (% of capacity)")
+    facts = {"n_trials": total, "gain_min": min(gains), "gain_max": max(gains),
+             "n_edge": edges, "n_studies": studies}
+    return fig, facts
+
+
+@register(
+    "S09-11", "9", "tft_attention", "Where the TFT models look in their encoder",
+    "Over which past hours does the attention of TFT-96 and TFT-168 fall?",
+    "Mean encoder attention of the validation forecasts (all decoder steps, all heads) by lag "
+    "before issuance, for TFT-96 and TFT-168, indirect route (left) and direct route (right).",
+    "Each model attends only inside its own encoder ({len96} and {len168} hours), with a daily "
+    "rhythm (correlation of the profile with itself shifted by 24 h: at least {rhythm:.2f}). "
+    "Within the last day the weights peak {lag96_ind} h (TFT-96) and {lag168_ind} h (TFT-168) "
+    "before issuance in the indirect route, {lag96_dir} h and {lag168_dir} h in the direct "
+    "route. TFT-168's indirect weights also rise at the first position of its encoder "
+    "({edge:.4f} against a mean of {mean:.4f}): an edge of the window, not a lag.",
+    "Stage 11 reads the attention of the final models (S-33); a peak can only be claimed at a "
+    "lag that the encoder contains (M22).",
+    tuple(f"{NDEV}/{s}/attention_{t}_seed{DEV_SEED}.csv" for s in ("tft96", "tft168")
+          for t in ("indirect", "direct")))
+def s09_tft_attention():
+    fig, axes = subplots(1, 2, height=2.8, sharey=True)
+    facts, rhythm = {}, []
+    for ax, t in zip(axes, ("indirect", "direct"), strict=True):
+        for step, length, col, ls in (("tft96", 96, C["blue"], "-"),
+                                      ("tft168", 168, C["sky"], "--")):
+            a = D.csv(f"{NDEV}/{step}/attention_{t}_seed{DEV_SEED}.csv").sort_values("lag_h")
+            assert a["lag_h"].min() == -length and a["lag_h"].max() == -1  # M22
+            ax.plot(a["lag_h"], a["attention"], ls, color=col, lw=1.2,
+                    label=f"{step.upper().replace('TFT', 'TFT-')}")
+            short = "96" if length == 96 else "168"
+            facts[f"len{short}"] = length
+            last = a[a["lag_h"] >= -24]
+            facts[f"lag{short}_{t[:3]}"] = int(-last.loc[last["attention"].idxmax(), "lag_h"])
+            v = a["attention"].to_numpy()
+            rhythm.append(float(np.corrcoef(v[24:], v[:-24])[0, 1]))
+            if step == "tft168" and t == "indirect":
+                facts["edge"] = float(v[0])
+                facts["mean"] = float(v.mean())
+                assert v[0] == v.max(), "the TFT-168 indirect maximum moved off the first position"
+        for lag in (-24, -48, -72, -96, -168):
+            ax.axvline(lag, color="0.85", lw=0.8, zorder=0)
+        ax.set_title(f"{t} route")
+        ax.set_xlabel("hours before issuance")
+    facts["rhythm"] = min(rhythm)
+    assert facts["rhythm"] > 0.5, "no daily rhythm in the attention"
+    axes[0].set_ylabel("mean attention")
+    axes[1].legend(fontsize=7)
+    return fig, facts
+
+
+@register(
+    "S09-12", "9", "neural_bias", "Mean bias of the neural models",
+    "Do the neural forecasts carry a systematic bias on validation, and does it differ from "
+    "training?",
+    "Mean bias (forecast minus actual AC, % of capacity) on the scored daytime hours of the "
+    "training windows (light) and the validation windows (dark), per model and route; the "
+    "lines mark XGB-dev on validation (R-14; the indirect route before its linear correction).",
+    "On validation the neural biases range from {vmin:+.2f} to {vmax:+.2f} % of capacity "
+    "(XGB-dev: {xgb_dir:+.2f} % direct, {xgb_ind:+.2f} % indirect). The largest change from "
+    "training to validation is {shift:.2f} points ({shift_name}).",
+    "The bias diagnostics of stage 11 (L-15) read the final run; no correction is applied to "
+    "the neural models in W4 (§18.1).",
+    tuple(f"{NDEV}/{s}/mbe.csv" for s, _, _ in NEURAL) + (R14,))
+def s09_neural_bias():
+    fig, axes = subplots(1, 2, height=2.8, sharey=True)
+    r14 = D.csv(R14)
+    xgb = {t: float(r14[(r14["target"] == t) & (r14["period"] == "all")
+                        & (r14["horizon"] == 1)]["mbe_pct"].iloc[0])
+           for t in ("indirect", "direct")} if "target" in r14 else {}
+    vals, shifts = [], {}
+    xs = np.arange(len(NEURAL))
+    for ax, t in zip(axes, ("indirect", "direct"), strict=True):
+        tr, va = [], []
+        for step, _, name in NEURAL:
+            m = D.csv(f"{NDEV}/{step}/mbe.csv")
+            m = m[(m["target"] == t) & (m["horizon"].astype(str) == "all")]
+            a = float(m[m["scope"] == "train"]["mbe_pct"].iloc[0])
+            b = float(m[m["scope"] == "val"]["mbe_pct"].iloc[0])
+            tr.append(a)
+            va.append(b)
+            vals.append(b)
+            shifts[f"{name}, {t}"] = abs(b - a)
+        ax.bar(xs - 0.18, tr, 0.34, color=C["sky"], label="training windows")
+        ax.bar(xs + 0.18, va, 0.34, color=C["blue"], hatch="///", edgecolor="white",
+               label="validation windows")
+        if t in xgb:
+            ax.axhline(xgb[t], color="black", ls="--", lw=1, label="XGB-dev, validation")
+        ax.axhline(0, color="0.5", lw=0.6)
+        ax.set_xticks(xs, [n for _, _, n in NEURAL], rotation=30, ha="right", fontsize=7)
+        ax.set_title(f"{t} route")
+    axes[0].set_ylabel("mean bias (% of capacity)")
+    axes[1].legend(fontsize=6.5)
+    name, shift = max(shifts.items(), key=lambda kv: kv[1])
+    facts = {"vmin": min(vals), "vmax": max(vals), "xgb_dir": xgb.get("direct", np.nan),
+             "xgb_ind": xgb.get("indirect", np.nan), "shift": shift, "shift_name": name}
+    return fig, facts

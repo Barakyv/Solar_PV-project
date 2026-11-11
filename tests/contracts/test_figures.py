@@ -22,7 +22,7 @@ from solarpv.figures.__main__ import (
 from solarpv.figures.registry import load_all
 
 # stage -> minimum number of process figures; update when a stage is completed
-REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 3, "9": 6}
+REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 3, "9": 12}
 SUBMISSION_READERS = {"S08-02"}  # evaluation code checked on the surviving forecasts (T-15)
 DEFENSE = REPO_ROOT / "docs" / "defense_notes.md"
 
