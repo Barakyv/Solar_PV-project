@@ -300,8 +300,12 @@ def test_final_two_phases_score_test_only_in_the_step_test(tmp_path, monkeypatch
     assert not (run_dir / "evaluate" / "test").exists()  # D-32: validation only
     refs = pd.read_csv(run_dir / "baselines" / "predictions_persistence.csv")
     assert set(refs["split"]) == {"val", "test"}  # forecast, not scored
-    bad = make_runner(tmp_path)
-    assert bad.run("final", ["test"], resume=run_dir.name, allow_test=True) == 0
+    r2 = make_runner(tmp_path)
+    assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 1  # X51
+    assert "acceptance" in read(run_dir / "run.json")["steps"]["test"]["error"]
+    (run_dir / steps.ACCEPTANCE_FILE).write_text("stage 10 accepted on validation\n",
+                                                 encoding="utf-8")
+    assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 0
     bench = pd.read_csv(run_dir / "test" / "test" / "benchmark_summary.csv")
     assert set(bench["model"]) == {"persistence", "climatology", "clearsky_k"}
     log = pd.read_csv(access_log)

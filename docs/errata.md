@@ -122,6 +122,8 @@ validation tables exactly (T-55, R9-02).
 | X47 | Same review: with L-09 the written indirect forecast is clip(a + b × theo × k̂, 0, 3,449) / theo, so the booster's SHAP values (in k) do not add up to it | SHAP in k checked against the uncorrected file, and a kW view φ_kW = b × theo × φ_k exact on unclipped rows (T-87) | none |
 | X48 | Same review: the TFT variable-selection weights stored by W4 are per channel, so a measured series and its fill flag split one variable's weight | Reported per channel and per variable (series and flag added) (T-88) | none |
 | X49 | Same review: the automatic warnings existed only as free text in each `step.json`, so a report parsing text could miss one | The report recomputes the five warnings of §3.5 from the structured records with the steps' thresholds and matches every step warning (T-86) | none |
+| X50 | Found by the first synthetic test of `explain` (2026-11-12): an absolute SHAP additivity tolerance failed the kW boosters on float32 precision alone (about 0.003 kW on outputs up to 3,449 kW) | Tolerances relative to the output's scale (1 for k, 3,449 for kW), the relative error recorded (T-87) | none: no explanation had been accepted |
+| X51 | Found while writing the runbook (2026-11-12): recording the stage-10 acceptance in a commit between the two phases would move `HEAD` off the tag, and the per-step gate (X38) would refuse the step `test` | The acceptance goes to `stage10_acceptance.md` in the run folder (untracked), committed after phase 2; the step `test` requires it (T-85) | none: no final run |
 
 ## Old vs new results
 

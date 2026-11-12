@@ -17,6 +17,9 @@ DEV_RUN = "outputs/runs/20261107T135938Z_dev"
 NEURAL_SMOKE_RUN = "outputs/runs/20261111T155739Z_smoke"
 NEURAL_SMOKE_REPEAT = "outputs/runs/20261111T160241Z_smoke"
 NEURAL_DEV_RUN = "outputs/runs/20261111T160714Z_dev"
+# W5: the XGB dev run with select, explain and report (it reproduces 20261107T135938Z_dev); set
+# when the run exists, then the module s09_w5 is registered (R9-21)
+W5_XGB_DEV_RUN = "outputs/runs/pending-w5-xgb-dev"
 
 
 def table(rel: str, columns: list[str], split: str | None = None) -> pd.DataFrame:

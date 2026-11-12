@@ -326,6 +326,15 @@ T-80; X35 included in T-79). In `solar-gpu`, on synthetic windows: `tests/gpu/te
 `tests/unit/test_neural_gpu_suite.py`. On real data: the smoke runs of R9-16 (the objective equals
 the evaluation, byte-identical forecasts of two runs).
 
+**Numbered for W5 (2026-11-12),** as listed in §19.9, all in `tests/unit/test_w5_steps.py` on the
+synthetic tables of the W2 tests (a smoke run of `baselines,xgb,evaluate,explain,report`), a
+synthetic stage-7 folder, constructed records and arrays, and fake final runs with a stub gate:
+T-82 (`select`), T-83 (the final estimate), T-84 (the gate and the scope), T-85 (the test split,
+D-32, X51), T-86 (seed spread and warnings), T-87 (SHAP, X50), T-88 (attention and variable
+selection), T-89 (hyper-parameter importance and X45), T-90 (the report's sources), T-91
+(`archive`, `promote`). On real data: the smoke run of the whole sequence and the dev runs of the
+new steps (R9-20, R9-21).
+
 ## 10. Self-review before the code of W1 (2026-11-05)
 
 Written before the runner code, at the start of the work on the college machine. It covers the
@@ -1227,6 +1236,13 @@ the runbook's run length and the question to the college IT (Q-23, the open part
 | X47 | With L-09 the written indirect forecast is clip(a + b × theo × k̂, 0, 3,449) / theo, so the SHAP values of the booster (in k) do not add up to it | §15.2; `xgb_sota.apply_mos` | SHAP in k for the booster, checked against the uncorrected file; a kW view, φ_kW = b × theo × φ_k with the base a + b × theo × E[k̂] (exact for the linear map, with theo fixed for the row); the clipped rows are counted and left out of the kW check. The direct route is in kW already | T-87 |
 | X48 | The TFT variable-selection weights that W4 stores are per channel, so a measured series and its fill flag are two channels; their importance is split | `models/tft_model.interpretation`, `neural_worker` | Reported per channel and per variable (a series and its flag added: the weights of one step sum to 1, so a sum is the weight of the pair) | T-88 |
 | X49 | The automatic warnings exist only as free text in each `step.json`; a report that parses text can miss or misclassify one | `RunLog.warn` in the steps | The report recomputes the five warnings of §3.5 from the structured records (best iterations and epochs, learning curves, trials, the search spaces, the benchmark) with the steps' own thresholds, and checks that every step warning is matched | T-86 |
+
+Found after the code was written, before any real run:
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X50 | *Found by the first synthetic test run:* an absolute additivity tolerance (1e-4) failed the direct boosters on precision alone: TreeSHAP sums in float32, about 1e-6 of the output's magnitude, so a kW output (up to 3,449) is off by about 0.003 kW while a k output is off by about 1e-6 | `pipeline/explain.py` | The tolerances are relative to the output's scale (1 for k, 3,449 for kW), and the relative error is recorded; the agreement with XGBoost's own `pred_contribs` is unchanged | T-87 |
+| X51 | *Found while writing the runbook:* the stage-10 acceptance had to be "recorded" before the step `test`, but a commit between the phases moves `HEAD` off the tag, and the gate of X38 would then refuse the step `test` | D-32; `steps.run_testsplit` | The acceptance is written to `stage10_acceptance.md` in the run folder (untracked, so the tree stays clean, X9) and committed only after phase 2; the step `test` refuses without it and records its SHA-256 | T-85 |
 
 Not a finding, a consequence: `--resume` refuses the XGB dev run `20261107T135938Z_dev`, because it
 was created with the pre-W4 neural budgets (X27) and a run has one configuration. `explain` and

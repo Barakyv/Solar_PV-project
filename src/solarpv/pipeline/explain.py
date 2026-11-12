@@ -548,13 +548,15 @@ def run_explain(ctx: Context) -> Result:
             ctx.log.warn(w)
         c = xt["xgb_shap_checks"]
         values["xgb"] = {"explained": len(c), "rows": int(c["n_rows"].sum()),
+                         "additivity_relative_max": float(c["additivity_relative"].max()),
                          "additivity_max": float(c["additivity_max"].max()),
                          "contribs_max_diff": float(c["contribs_max_diff"].max()),
                          "unsliced_additivity_max": float(c["unsliced_additivity_max"].max()),
                          "kw_additivity_max": float(c["kw_additivity_max"].max())}
         summary.append(f"  XGB SHAP: {len(c)} boosters on {int(c['n_rows'].sum())} rows; "
-                       f"additivity <= {c['additivity_max'].max():.1e}, the unsliced booster "
-                       f"would be off by up to {c['unsliced_additivity_max'].max():.3g}")
+                       f"additivity <= {c['additivity_relative'].max():.1e} of the output scale; "
+                       f"the unsliced booster would be off by up to "
+                       f"{c['unsliced_additivity_max'].max():.3g} (training unit, X46)")
     with ctx.log.step("TFT attention and variable selection (stored W4 outputs)"):
         tt = tft_explain(ctx)
     for key, frame in tt.items():

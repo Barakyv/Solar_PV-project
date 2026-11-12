@@ -51,6 +51,9 @@ class RunnerError(RuntimeError):
     """A rule of the runner is broken (missing input, test access, modified file)."""
 
 
+ACCEPTANCE_FILE = "stage10_acceptance.md"  # D-32, X51: written after reading the report
+
+
 @dataclass
 class Context:
     run_id: str
@@ -609,6 +612,13 @@ def run_testsplit(ctx: Context) -> Result:
         if need not in ctx.completed:
             raise RunnerError(f"the step test needs {need} completed first: the validation "
                               "evaluation and the report are the stage-10 acceptance (D-32)")
+    # X51: the acceptance is written into the run folder (untracked), not committed: a commit
+    # would move HEAD off the tag and the gate would refuse this step
+    acceptance = ctx.run_dir / ACCEPTANCE_FILE
+    if not acceptance.exists() or not acceptance.read_text(encoding="utf-8").strip():
+        raise RunnerError(f"the step test needs the stage-10 acceptance first: write it to "
+                          f"{ACCEPTANCE_FILE} in the run folder after reading the report "
+                          "(docs/runbook_final.md)")
     (window,) = [w for w in ctx.windows if w.split == "test"]
     files, missing = prediction_files(ctx)
     mean_k = mean_daytime_k()
@@ -622,7 +632,8 @@ def run_testsplit(ctx: Context) -> Result:
     outputs = sorted(out.glob("*.csv")) + [out / "manifest.json"]
     summary = benchmark_lines(out / "benchmark_summary.csv", window)
     values = {"files_scored": [f.name for f in files], "models_missing": missing,
-              "rows_benchmark": len(tables["benchmark_summary"]), "test_access": []}
+              "rows_benchmark": len(tables["benchmark_summary"]), "test_access": [],
+              "acceptance_sha256": sha256(acceptance)}
     if "xgb" in ctx.completed:
         from solarpv.pipeline import explain
 
