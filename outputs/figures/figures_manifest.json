@@ -521,7 +521,7 @@
     "drop_max": 1.2956639999999995
    },
    "takeaway": "Leaving out the operationally limited hours (146 per horizon) lowers the references' error by 0.90 to 1.30 points. The data-source views equal all hours on validation, because no validation hour comes from the second source.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-01": {
    "stage": "9",
@@ -558,7 +558,7 @@
     "clim": 8.041087
    },
    "takeaway": "XGB-dev: 6.69 / 6.91 / 6.55 % (indirect) and 6.66 / 6.81 / 6.43 % (direct), below climatology (8.04 %) and persistence at every horizon. These are tuning-split numbers, optimistic by construction; the unbiased test comes once, in the final run.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-03": {
    "stage": "9",
@@ -640,7 +640,7 @@
     "enc_max": 168
    },
    "takeaway": "872 train and 246 validation origins, one per local day. Blocks are 3,324 days of 24 hours, 9 of 23 and 9 of 25; every check passed (each hour forecast once per horizon, the encoder ends at issuance, no step reaches the test period). The encoders of the 5 models hold 72 to 168 hours.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-07": {
    "stage": "9",
@@ -1079,7 +1079,7 @@
     "enc_max": 168
    },
    "takeaway": "Every model is tuned on one objective, the daytime nRMSE in kW of its point forecast, and scored on the same hours. They differ in what they see: XGB 28–32 features (indirect) and 82–96 (direct) per horizon, the sequence models 46 and 63 encoder channels over 72 to 168 hours, and PatchTST only its own past series. XGB fits one model per horizon; each sequence model forecasts the three days at once.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-26": {
    "stage": "9",
@@ -1100,7 +1100,7 @@
     "alpha_n": 0.007143
    },
    "takeaway": "5 of 6 models are significantly better than persistence in all six route and horizon cases; the fewest is PatchTST (5 of 6). No model is significantly worse. The two development runs used different references, because the evaluate step takes XGB when it is in the run and persistence otherwise: the references against XGB (Bonferroni level 0.0167) and every neural model against persistence (0.0071). This grid puts both on persistence.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-27": {
    "stage": "9",
@@ -1121,7 +1121,7 @@
     "gap_h": 1
    },
    "takeaway": "At D+1 the direct route is better for 4 of 6 models and the indirect route for 2; the largest gap is 0.68 points (PatchTST, D+1). Development budgets and one seed: the route of the final models is compared again in stage 10.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-28": {
    "stage": "9",
@@ -1153,7 +1153,7 @@
     "o_pers": 451.0843152483804
    },
    "takeaway": "On the clear day (2024-03-11, mean k 0.96) the daily RMSE of the models is 53 to 192 kW; on the median day (2024-06-09) 32 to 59 kW; on the overcast day (2024-02-16, mean k 0.37) 263 to 975 kW, where persistence misses by 451 kW. Three days illustrate; the scores are in S09-09.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-29": {
    "stage": "9",
@@ -1180,7 +1180,7 @@
     "cov_max": 87.70538894634035
    },
    "takeaway": "The quantiles are out of order on up to 66 % of the hours (TFT-96, direct); 5 of 8 model-route pairs cross on more than 1 % of the hours, and the BiLSTM never. The central interval covers 62 to 88 % of the hours. The point forecast is the median head and is not affected; intervals and the potential skill of L-14 need ordered quantiles (X53).",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-30": {
    "stage": "9",
@@ -1203,7 +1203,7 @@
     "drop_max": 1.8934930000000003
    },
    "takeaway": "Every model errs most in Winter and least in Summer (direct route, D+1; validation spans February to September, so winter is February only, 290 hours, and autumn September only, 334 hours). Leaving out the limited hours lowers the error by 1.3 to 1.9 points for every model and route.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-31": {
    "stage": "9",
@@ -1223,7 +1223,7 @@
     "n_fits": 6
    },
    "takeaway": "The best rounds lie between 29 and 340. Early stopping ended 5 of 6 fits after 50 rounds without a better validation error; in 1 the best round was the last one allowed. Where the fit went on, the training error kept falling after the best round.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-32": {
    "stage": "9",
@@ -1242,7 +1242,7 @@
     "n_studies": 6
    },
    "takeaway": "120 trials in all; the best trial improved on the first by 0.14 to 0.20 points, and 4 of 6 studies found their best value in the last quarter of their trials.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "S09-33": {
    "stage": "9",
@@ -1278,7 +1278,7 @@
     "failed_runs": "20261111T155030Z_smoke"
    },
    "takeaway": "14 runs: 8 smoke and 6 development, no final run. 3.9 h of steps in all, 88 % of them in the neural models; the longest run is 20261111T160714Z_dev (3.2 h). 4 steps failed, in 20261111T155030Z_smoke, and each passed in the next run that ran it. Each run keeps its configuration hash, and every completed step its commit and fingerprint.",
-   "git_commit": "9ad5af7+dirty"
+   "git_commit": "82b512a"
   },
   "C-01": {
    "stage": "correction",
