@@ -20,6 +20,10 @@ ATTENTION = f"{NDEV}/explain/tft/tft_attention_summary.csv"
 HP_XGB = f"{XDEV}/explain/hparam_importance.csv"
 HP_NEURAL = f"{NDEV}/explain/hparam_importance.csv"
 WARN = (f"{XDEV}/report/report_warnings.csv", f"{NDEV}/report/report_warnings.csv")
+SELECT = (f"{XDEV}/select/select.json", f"{NDEV}/select/select.json")
+RANKS = f"{XDEV}/explain/xgb/xgb_shap_rank_stability.csv"
+VSN = f"{NDEV}/explain/tft/tft_variable_importance.csv"
+G1 = (f"{XDEV}/report/report_g1_points.csv", f"{NDEV}/report/report_g1_points.csv")
 V6_GROUPS = "submission_evidence/07_shap/shap_group_importance.csv"
 GROUP_STYLE = {  # colour and hatch (style rule: never colour alone)
     "nwp_gfs": (C["blue"], ""), "clearsky": (C["orange"], "//"), "other": (C["grey"], ".."),
@@ -351,6 +355,267 @@ def s09_report_warnings():
     facts = {"n_total": int(len(w)), "n_matched": int((w["status"] == "matched").sum()),
              "n_step_only": int((w["status"] == "step log only").sum()),
              "n_recomputed_only": int(len(only)), "why": why}
+    return fig, facts
+
+
+@register(
+    "S09-20", "9", "select_checks", "What the select step verifies",
+    "Does the runner use the inputs that stage 7 selected, without selecting again?",
+    "Left: the number of model inputs per route and horizon that the select step recorded, "
+    "hatched where the route uses the full pool rather than a selected set. Right: the checks "
+    "of the step, as the number passed out of the number made, in the XGB development run.",
+    "The step read {rows_read} data rows and reran nothing. {tracked_ok} of {tracked} stage-7 "
+    "files are tracked and unmodified, {tables_ok} of {tables} tables are the ones the "
+    "selection ran on, and the selection read the {splits} split only. The indirect route "
+    "uses the 05e sets ({ind_lo} to {ind_hi} inputs), the direct route the full pool "
+    "({dir_lo} to {dir_hi}); both development runs recorded the same inputs. Selection source "
+    "files changed after the selection ran: {n_code}, listed in the record.",
+    "The model steps compare the inputs file with the hash in the select record before they "
+    "train; a final run refuses to train without that record (D-30).",
+    SELECT)
+def s09_select_checks():
+    a, b = D.jload(SELECT[0]), D.jload(SELECT[1])
+    assert a["inputs"] == b["inputs"] and a["model_inputs_sha256"] == b["model_inputs_sha256"]
+    assert a["rows_read"] == 0 and all(r["matches"] for r in a["inputs"])
+    splits = a["manifest"]["splits_read_for_selection"]
+    assert splits == ["train"]
+    inputs = a["inputs"]
+    ind = [r["n_features"] for r in inputs if r["key"].startswith("indirect")]
+    dirn = [r["n_features"] for r in inputs if r["key"].startswith("direct")]
+    assert {r["source"] for r in inputs if r["key"].startswith("indirect")} == {"05e"}
+    assert {r["source"] for r in inputs if r["key"].startswith("direct")} == {"full pool"}
+    fig, (ax, ax2) = subplots(1, 2, height=2.9, width=7.8)
+    for i, r in enumerate(inputs):
+        pool = r["source"] == "full pool"
+        ax.bar(i, r["n_features"], 0.6, color=C["orange"] if pool else C["blue"],
+               hatch="//" if pool else "", edgecolor="white")
+        ax.text(i, r["n_features"], "✓" if r["matches"] else "✗", ha="center", va="bottom",
+                fontsize=8)
+    ax.set_xticks(range(len(inputs)), [r["key"].replace("_", "\n") for r in inputs], fontsize=7)
+    ax.set_ylabel("model inputs")
+    ax.legend(handles=[Patch(color=C["blue"], label="05e set"),
+                       Patch(facecolor=C["orange"], hatch="//", edgecolor="white",
+                             label="full pool")], fontsize=7, loc="upper left")
+    checks = [("stage-7 files tracked, unmodified", sum(r["ok"] for r in a["tracked"]),
+               len(a["tracked"])),
+              ("tables of the selection", sum(r["ok"] for r in a["tables"]), len(a["tables"])),
+              ("inputs equal the recorded sets", sum(r["matches"] for r in inputs), len(inputs))]
+    for k, (_name, ok, n) in enumerate(checks):
+        ax2.barh(-k, n, color=C["light"], edgecolor=C["grey"])
+        ax2.barh(-k, ok, 0.5, color=C["green"])
+        ax2.text(n, -k, f"  {ok} of {n}", va="center", fontsize=7)
+    ax2.set_yticks([-k for k in range(len(checks))], [c[0] for c in checks], fontsize=7)
+    ax2.set_xlabel("checks passed")
+    ax2.set_xlim(0, max(c[2] for c in checks) * 1.35)
+    ax2.set_title(f"data rows read: {a['rows_read']}; selection read: {', '.join(splits)}",
+                  fontsize=8)
+    facts = {"rows_read": a["rows_read"], "tracked_ok": checks[0][1], "tracked": checks[0][2],
+             "tables_ok": checks[1][1], "tables": checks[1][2], "splits": ", ".join(splits),
+             "ind_lo": min(ind), "ind_hi": max(ind), "dir_lo": min(dirn), "dir_hi": max(dirn),
+             "n_code": len(a["code_changed_since_selection"]),
+             "code": a["code_changed_since_selection"]}
+    return fig, facts
+
+
+def _key(r) -> str:
+    return f"{r.target}\nD+{r.horizon}"
+
+
+@register(
+    "S09-21", "9", "shap_booster_rounds", "SHAP explains the booster of the forecast",
+    "Does SHAP add up to the forecast only when the explainer gets the model that made it?",
+    "Largest additivity error of TreeSHAP per target and horizon (seed 42, validation) as a "
+    "fraction of the output scale (1 for k, the capacity for kW), log axis: the saved booster "
+    "explained whole (hatched) and cut at the rounds the forecast uses (solid). The labels give "
+    "the rounds used and the rounds saved.",
+    "In {n_extra} of {n_models} models the saved booster holds {extra} rounds more than the "
+    "forecast uses (the rounds after the best one, kept by early stopping). Explained whole, it "
+    "misses the forecast by up to {unsliced_kw:.0f} kW in the direct route and {unsliced_k:.2f} "
+    "in k in the indirect route. Cut at the forecast's rounds, SHAP adds up within "
+    "{sliced:.1e} of the scale, XGBoost's own contributions agree exactly, and the booster "
+    "reproduces the written forecast.",
+    "explain cuts the booster before TreeSHAP and checks additivity against the uncorrected "
+    "forecast (X46, T-87).",
+    (SHAP_CHECKS,))
+def s09_shap_booster_rounds():
+    from solarpv.pipeline.explain import SCALE
+
+    c = D.csv(SHAP_CHECKS)
+    c = c[c["seed"] == DEV_SEED].reset_index(drop=True)
+    assert (c["contribs_max_diff"] == 0).all() and (c["written_forecast_max_diff"] == 0).all()
+    scale = c["unit"].map(SCALE)
+    unsliced = c["unsliced_additivity_max"] / scale
+    extra = c["rounds_in_booster"] - c["n_rounds"]
+    with_extra = extra > 0
+    assert (unsliced[with_extra] > 100 * c["additivity_relative"][with_extra]).all()
+    assert np.allclose(unsliced[~with_extra], c["additivity_relative"][~with_extra])
+    assert extra[with_extra].nunique() == 1
+    fig, ax = subplots(height=3.0)
+    x = np.arange(len(c))
+    ax.bar(x - 0.2, unsliced, 0.38, color=C["red"], hatch="//", edgecolor="white",
+           label="saved booster, whole")
+    ax.bar(x + 0.2, c["additivity_relative"], 0.38, color=C["blue"],
+           label="cut at the forecast's rounds")
+    for i, r in enumerate(c.itertuples()):
+        ax.text(i, unsliced[i] * 1.6, f"{r.n_rounds} / {r.rounds_in_booster}", ha="center",
+                fontsize=6.5)
+    ax.set_yscale("log")
+    ax.set_ylim(c["additivity_relative"].min() / 5, unsliced.max() * 8)
+    ax.set_xticks(x, [_key(r) for r in c.itertuples()], fontsize=7)
+    ax.set_ylabel("largest |SHAP sum − forecast| / scale")
+    fig.legend(loc="outside upper center", ncol=2, fontsize=7)
+    direct, indirect = c["target"] == "direct", c["target"] == "indirect"
+    facts = {"n_extra": int(with_extra.sum()), "n_models": int(len(c)),
+             "extra": int(extra[with_extra].iloc[0]),
+             "unsliced_kw": float(c.loc[direct, "unsliced_additivity_max"].max()),
+             "unsliced_k": float(c.loc[indirect, "unsliced_additivity_max"].max()),
+             "sliced": float(c["additivity_relative"].max())}
+    return fig, facts
+
+
+@register(
+    "S09-22", "9", "shap_robustness", "Checks of the XGB explanation",
+    "Does one feature dominate the development XGBoost, and do the horizons rank their common "
+    "inputs alike?",
+    "Left: the first feature's mean |SHAP| over the third's, per target and horizon (seed 42), "
+    "against the stage-7 red flag (dashed). Right: Spearman correlation of the mean |SHAP| "
+    "ranking over the features that two horizons share, per target.",
+    "No feature dominates: the first is at most {dom_max:.1f} times the third ({dom_key}), "
+    "below the red flag of {flag:.0f}. The horizons rank their common inputs alike (Spearman "
+    "{rho_min:.2f} to {rho_max:.2f}). The development run has one seed; the final run adds the "
+    "comparison across its three seeds.",
+    "The report flags a dominant feature in the final run (the stage-7 rule, M28).",
+    (SHAP_CHECKS, RANKS))
+def s09_shap_robustness():
+    from solarpv.pipeline.explain import DOMINANCE_FACTOR
+
+    c = D.csv(SHAP_CHECKS)
+    c = c[c["seed"] == DEV_SEED].reset_index(drop=True)
+    r = D.csv(RANKS)
+    r = r[r["compare"].str.startswith("D+")]
+    assert c["dominance_first_over_third"].max() < DOMINANCE_FACTOR
+    fig, (ax, ax2) = subplots(1, 2, height=2.9, width=7.8)
+    x = np.arange(len(c))
+    ax.bar(x, c["dominance_first_over_third"], 0.6, color=C["sky"], edgecolor=C["blue"])
+    ax.axhline(DOMINANCE_FACTOR, color=C["red"], ls="--", lw=1, label="stage-7 red flag")
+    ax.set_xticks(x, [_key(q) for q in c.itertuples()], fontsize=7)
+    ax.set_ylabel("first / third feature")
+    ax.set_ylim(0, DOMINANCE_FACTOR * 1.15)
+    ax.legend(fontsize=7, loc="upper left")
+    styles = {"indirect": (C["blue"], "o", "-"), "direct": (C["orange"], "s", "--")}
+    pairs = sorted(r["compare"].unique())
+    for t, (col, m, ls) in styles.items():
+        g = r[r["target"] == t].set_index("compare").reindex(pairs)
+        ax2.plot(range(len(pairs)), g["spearman"], ls, marker=m, color=col, label=t)
+    ax2.set_xticks(range(len(pairs)), pairs, fontsize=7)
+    ax2.set_ylim(0, 1)
+    ax2.set_ylabel("Spearman of the rankings")
+    ax2.legend(fontsize=7, loc="lower left")
+    i = int(c["dominance_first_over_third"].idxmax())
+    facts = {"dom_max": float(c["dominance_first_over_third"].max()),
+             "dom_key": f"{c.loc[i, 'target']} D+{c.loc[i, 'horizon']}",
+             "flag": float(DOMINANCE_FACTOR), "rho_min": float(r["spearman"].min()),
+             "rho_max": float(r["spearman"].max())}
+    return fig, facts
+
+
+def _vsn_group(variable: str) -> str:
+    from solarpv.models.sequence_data import K_SERIES, SERIES
+    from solarpv.pipeline.explain import feature_group
+
+    if variable in SERIES or variable == K_SERIES:
+        return "measured"  # the measured series of the encoder (W3), not a stage-6 feature
+    return feature_group(variable)
+
+
+@register(
+    "S09-23", "9", "tft_variable_selection", "What the TFT models select",
+    "Which input groups do the variable-selection networks of the three TFTs weight, and do the "
+    "models agree?",
+    "Share of the variable-selection weight per input group (a measured series and its fill "
+    "flag counted as one variable), per model and target, in the encoder (past days) and the "
+    "decoder (forecast days), averaged over the validation windows of the development run.",
+    "In the decoder the GFS forecasts take {dec_gfs_min:.0f} to {dec_gfs_max:.0f} % of the "
+    "weight; in the encoder the measured series take {enc_meas_min:.0f} to {enc_meas_max:.0f} %. "
+    "The three models do not agree on their top input: in the direct decoder they pick "
+    "{top_direct}. The largest single weight, {wmax:.2f}, goes to {wvar} ({wmodel}). A selection "
+    "weight gates an input inside the network; it is not the input's effect on the forecast, "
+    "and the development fits have one seed.",
+    "Stage 11 reads the final models' weights with their seed spread; no input decision is "
+    "taken from them (M29).",
+    (VSN,))
+def s09_tft_variable_selection():
+    v = D.csv(VSN).drop_duplicates(["step", "target", "part", "variable"])
+    v["group"] = v["variable"].map(_vsn_group)
+    totals = v.groupby(["step", "target", "part"])["variable_weight"].sum()
+    assert np.allclose(totals, 1.0, atol=1e-6), "weights per part do not add up to one"
+    share = (v.groupby(["step", "target", "part", "group"])["variable_weight"].sum() * 100)
+    styles = {**GROUP_STYLE, "measured": (C["black"], "||")}
+    names = {**GROUP_NAMES, "measured": "measured series"}
+    groups = [g for g in styles if g in set(v["group"])]
+    keys = [(s, n, t) for s, n in TFT for t in ("indirect", "direct")]
+    fig, axes = subplots(1, 2, height=3.3, width=8.0, sharey=True)
+    for ax, part in zip(axes, ("encoder", "decoder"), strict=True):
+        bottom = np.zeros(len(keys))
+        for grp in groups:
+            vals = np.array([share.get((s, t, part, grp), 0.0) for s, _, t in keys])
+            col, hatch = styles[grp]
+            ax.bar(range(len(keys)), vals, 0.65, bottom=bottom, color=col, hatch=hatch,
+                   edgecolor="white", label=names[grp] if part == "encoder" else None)
+            bottom += vals
+        ax.set_xticks(range(len(keys)), [f"{n}\n{t}" for _, n, t in keys], fontsize=6)
+        ax.set_title(part, fontsize=8)
+    axes[0].set_ylabel("share of the selection weight (%)")
+    fig.legend(loc="outside lower center", ncol=5, fontsize=6.5)
+    dec = share.xs("decoder", level="part")
+    enc = share.xs("encoder", level="part")
+    dec_gfs = [dec.get((s, t, "nwp_gfs"), 0.0) for s, _, t in keys]
+    enc_meas = [enc.get((s, t, "measured"), 0.0) for s, _, t in keys]
+    tops = {}
+    for s, n in TFT:
+        g = v[(v["step"] == s) & (v["target"] == "direct") & (v["part"] == "decoder")]
+        tops[n] = g.loc[g["variable_weight"].idxmax(), "variable"]
+    assert len(set(tops.values())) > 1, "the three TFTs agree on their top input"
+    big = v.loc[v["variable_weight"].idxmax()]
+    model = dict(TFT)[big["step"]]
+    facts = {"dec_gfs_min": float(min(dec_gfs)), "dec_gfs_max": float(max(dec_gfs)),
+             "enc_meas_min": float(min(enc_meas)), "enc_meas_max": float(max(enc_meas)),
+             "top_direct": ", ".join(f"{var} ({n})" for n, var in tops.items()),
+             "wmax": float(big["variable_weight"]), "wvar": big["variable"],
+             "wmodel": f"{model}, {big['target']} {big['part']}"}
+    return fig, facts
+
+
+@register(
+    "S09-24", "9", "g1_points", "Points the run reports raise for G-1",
+    "What do the automatic run reports put on the list for the G-1 audit?",
+    "Number of points per kind in the report of each development run (XGB and neural), as the "
+    "report step lists them; a point is a fact to audit, not a decision.",
+    "The two reports list {n_total} points of {n_kinds} kinds ({n_xgb} XGB, {n_neural} "
+    "neural); the most frequent kind is {top_kind} ({top_n}). The list stays a list until the "
+    "G-1 audit; no validation decision changes because of it without the user.",
+    "W6 audits every point at G-1 before the tag (PROJECT_MASTER.md §1).",
+    G1)
+def s09_g1_points():
+    import pandas as pd
+
+    x, n = D.csv(G1[0]), D.csv(G1[1])
+    both = pd.concat([x.assign(run="XGB dev"), n.assign(run="neural dev")], ignore_index=True)
+    counts = both.groupby(["point", "run"]).size().unstack(fill_value=0)
+    counts = counts.reindex(counts.sum(axis=1).sort_values().index)
+    fig, ax = subplots(height=3.0)
+    left = np.zeros(len(counts))
+    for run, col, hatch in (("XGB dev", C["blue"], ""), ("neural dev", C["orange"], "//")):
+        vals = counts[run].to_numpy() if run in counts else np.zeros(len(counts))
+        ax.barh(counts.index, vals, left=left, color=col, hatch=hatch, edgecolor="white",
+                label=run)
+        left += vals
+    ax.set_xlabel("points")
+    ax.tick_params(axis="y", labelsize=7)
+    ax.legend(fontsize=7, loc="lower right")
+    tot = counts.sum(axis=1)
+    facts = {"n_total": int(len(both)), "n_kinds": int(len(counts)), "n_xgb": int(len(x)),
+             "n_neural": int(len(n)), "top_kind": str(tot.idxmax()), "top_n": int(tot.max())}
     return fig, facts
 
 

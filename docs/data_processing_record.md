@@ -1058,12 +1058,18 @@ amendment of 2026-11-07).**
   files and the dev runs (validation only), and fixed X36 (a typed hour count) and X37 (C-10).
   The book now holds 46 figures: 37 process and 9 correction. W5 (2026-11-12, OP-58) added the
   process figures S09-13–S09-19 and the correction figure C-10: 54 figures, 44 process and 10
-  correction.
+  correction. After W5 (2026-11-12, user request, X52, R9-22) every task gets a generated figure
+  sheet in `docs/figure_sheets/`, the gallery is grouped by task, and the process figures
+  S09-20–S09-24 cover the W5 outputs that had none (the select checks, the booster rounds of
+  SHAP, the dominance and rank checks, the TFT selection weights, the G-1 points): 59 figures,
+  49 process and 10 correction.
 - *Verification:* `tests/contracts/test_figures.py` (T-72): every registered figure is built,
   unchanged since the build and drawn from unchanged inputs; every takeaway re-renders from its
   facts; the catalog is current; every completed stage has process figures; process figures do
   not read the submission's evidence except the evaluation-code check; no description carries a
-  typed count, and the scored hours and the seed-table facts match their source tables (X36, X37).
+  typed count, and the scored hours and the seed-table facts match their source tables (X36, X37);
+  every figure belongs to one task, every completed task has its figures, and every sheet is
+  current (X52).
 - *Original:* no figure was linked to its inputs or code version; the v6 figures were drawn from
   the shifted, clipped data and are regenerated in stage 11.
 

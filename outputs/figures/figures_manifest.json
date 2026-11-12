@@ -797,7 +797,7 @@
     "acceptance": "stage10_acceptance.md"
    },
    "takeaway": "Phase 1 runs 11 steps; each model forecasts validation and test, but only validation is scored. The gate (tag g1-frozen, clean tree, the preflight's commit) is checked before every step. Phase 2 is the step `test`, refused without --allow-test and without the acceptance file `stage10_acceptance.md`; every read of a test row is logged.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-14": {
    "stage": "9",
@@ -816,7 +816,7 @@
     "n_rows": 2901
    },
    "takeaway": "The largest attribution comes from a GFS forecast at every target and horizon: fcst_gfs_k_phys (indirect) and fcst_gfs_poa (direct) at D+1. SHAP adds up to the booster forecast within 1.4e-06 of the output scale on 2,901 hours per horizon, and XGBoost's own contributions agree. A description of the fitted model, not a causal effect.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-15": {
    "stage": "9",
@@ -835,7 +835,7 @@
     "diff_key": "indirect D+3"
    },
    "takeaway": "The GFS forecasts hold 56 to 79 % of the group attribution. The two measures differ by up to 14.1 points (GFS forecasts, indirect D+3): members of one group often push in opposite directions, so summing their separate magnitudes overstates the group.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-16": {
    "stage": "9",
@@ -857,7 +857,7 @@
     "peakbase": 16
    },
    "takeaway": "No model prefers the hour it forecasts: the same-hour ratio is 0.82 to 1.07 (5 of 6 model-target pairs below 1). The daily rhythm of the attention (S09-11) is a preference for fixed clock hours of earlier days: in the direct route the profile peaks at 12:00 (TFT-96), 18:00 (TFT-168) and 16:00 (TFT baseline) local time, whatever hour is forecast.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-17": {
    "stage": "9",
@@ -876,7 +876,7 @@
     "n_neural": 6
    },
    "takeaway": "For XGB the most important parameter is learning_rate (0.31 on average). 4 of 6 neural studies lie entirely inside the random start-up, so their importances describe a handful of random trials only (M30).",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-18": {
    "stage": "9",
@@ -900,7 +900,7 @@
     "longest_up": 7.212728719172633
    },
    "takeaway": "About 8.6 h expected and up to about 19.0 h; the longest step is tft168 (about 3.8 h, up to 7.2 h), which cannot be split.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   },
   "S09-19": {
    "stage": "9",
@@ -920,7 +920,119 @@
     "why": "the effective hidden_continuous_size, X45"
    },
    "takeaway": "10 warnings in all, 9 reproduced exactly from the records; step log only (kinds the report does not recompute): 0; in the recomputation only: 1 (the effective hidden_continuous_size, X45).",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
+  },
+  "S09-20": {
+   "stage": "9",
+   "kind": "process",
+   "title": "What the select step verifies",
+   "file": "outputs/figures/stage_09/S09-20_select_checks.png",
+   "file_sha256": "3d11be8c24ebee54f09f11fb909c43695f647bd1175b88c4a27ab8616f92c2ca",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/select/select.json": "da7f712fdb6560a9d88c3f074317190dd485ae363166579ec1aca0e37ff9a26b",
+    "outputs/runs/20261111T160714Z_dev/select/select.json": "da7f712fdb6560a9d88c3f074317190dd485ae363166579ec1aca0e37ff9a26b"
+   },
+   "facts": {
+    "rows_read": 0,
+    "tracked_ok": 10,
+    "tracked": 10,
+    "tables_ok": 6,
+    "tables": 6,
+    "splits": "train",
+    "ind_lo": 28,
+    "ind_hi": 32,
+    "dir_lo": 82,
+    "dir_hi": 96,
+    "n_code": 1,
+    "code": [
+     "src/solarpv/selection/run.py"
+    ]
+   },
+   "takeaway": "The step read 0 data rows and reran nothing. 10 of 10 stage-7 files are tracked and unmodified, 6 of 6 tables are the ones the selection ran on, and the selection read the train split only. The indirect route uses the 05e sets (28 to 32 inputs), the direct route the full pool (82 to 96); both development runs recorded the same inputs. Selection source files changed after the selection ran: 1, listed in the record.",
+   "git_commit": "928cd45+dirty"
+  },
+  "S09-21": {
+   "stage": "9",
+   "kind": "process",
+   "title": "SHAP explains the booster of the forecast",
+   "file": "outputs/figures/stage_09/S09-21_shap_booster_rounds.png",
+   "file_sha256": "4bfba8b526390705768c21626732cec71847f84f179e1b0ed429ad8987087858",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_checks.csv": "25f84355033650fc65d965777c1b16b0cf3bbabc50b4c8b8bab85756baf150d3"
+   },
+   "facts": {
+    "n_extra": 5,
+    "n_models": 6,
+    "extra": 50,
+    "unsliced_kw": 199.44314006716013,
+    "unsliced_k": 0.11385396716650575,
+    "sliced": 1.361448084935546e-06
+   },
+   "takeaway": "In 5 of 6 models the saved booster holds 50 rounds more than the forecast uses (the rounds after the best one, kept by early stopping). Explained whole, it misses the forecast by up to 199 kW in the direct route and 0.11 in k in the indirect route. Cut at the forecast's rounds, SHAP adds up within 1.4e-06 of the scale, XGBoost's own contributions agree exactly, and the booster reproduces the written forecast.",
+   "git_commit": "928cd45+dirty"
+  },
+  "S09-22": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Checks of the XGB explanation",
+   "file": "outputs/figures/stage_09/S09-22_shap_robustness.png",
+   "file_sha256": "606d0499d271b02b743c4416ba27eb9f779f4cf282916540212ef9cdbcd4ecb6",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_checks.csv": "25f84355033650fc65d965777c1b16b0cf3bbabc50b4c8b8bab85756baf150d3",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_rank_stability.csv": "f0cda28a8807141973f724f91454fbab6f46e3c09e7f8b89f6256ce9ab6a7228"
+   },
+   "facts": {
+    "dom_max": 6.716368539431013,
+    "dom_key": "direct D+1",
+    "flag": 10.0,
+    "rho_min": 0.8411641144523896,
+    "rho_max": 0.8976923076923078
+   },
+   "takeaway": "No feature dominates: the first is at most 6.7 times the third (direct D+1), below the red flag of 10. The horizons rank their common inputs alike (Spearman 0.84 to 0.90). The development run has one seed; the final run adds the comparison across its three seeds.",
+   "git_commit": "928cd45+dirty"
+  },
+  "S09-23": {
+   "stage": "9",
+   "kind": "process",
+   "title": "What the TFT models select",
+   "file": "outputs/figures/stage_09/S09-23_tft_variable_selection.png",
+   "file_sha256": "114d4121de66e41dbb4ac694bd1f508eb945c125b910fc6ae525567425a2c831",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/explain/tft/tft_variable_importance.csv": "40a5161d158c83bd4abb2c208b343a9f947cb7baf45db1b4cfbbcfe39760b976"
+   },
+   "facts": {
+    "dec_gfs_min": 21.51735951192677,
+    "dec_gfs_max": 71.89057976938784,
+    "enc_meas_min": 8.152017113752663,
+    "enc_meas_max": 47.093825438059866,
+    "top_direct": "is_weekend (TFT-96), fcst_gfs_ghi (TFT-168), fcst_gfs_rh2m (TFT baseline)",
+    "wmax": 0.5474352240562439,
+    "wvar": "fcst_gfs_ghi",
+    "wmodel": "TFT-168, direct decoder"
+   },
+   "takeaway": "In the decoder the GFS forecasts take 22 to 72 % of the weight; in the encoder the measured series take 8 to 47 %. The three models do not agree on their top input: in the direct decoder they pick is_weekend (TFT-96), fcst_gfs_ghi (TFT-168), fcst_gfs_rh2m (TFT baseline). The largest single weight, 0.55, goes to fcst_gfs_ghi (TFT-168, direct decoder). A selection weight gates an input inside the network; it is not the input's effect on the forecast, and the development fits have one seed.",
+   "git_commit": "928cd45+dirty"
+  },
+  "S09-24": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Points the run reports raise for G-1",
+   "file": "outputs/figures/stage_09/S09-24_g1_points.png",
+   "file_sha256": "f54b995d8146474e71e67c49a2c1636598c8c379ab6eec31bb093761b29eced2",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/report/report_g1_points.csv": "8deb0ca18cd5d3fb7de2253f2ea6256b955efd1461324bd7d3404dcc129306fa",
+    "outputs/runs/20261111T160714Z_dev/report/report_g1_points.csv": "f8461dd7b0a7878dc02d232bcfcb4300265fca374d95f11e775759a99c00ab9c"
+   },
+   "facts": {
+    "n_total": 38,
+    "n_kinds": 7,
+    "n_xgb": 10,
+    "n_neural": 28,
+    "top_kind": "margin against climatology (kW DM)",
+    "top_n": 12
+   },
+   "takeaway": "The two reports list 38 points of 7 kinds (10 XGB, 28 neural); the most frequent kind is margin against climatology (kW DM) (12). The list stays a list until the G-1 audit; no validation decision changes because of it without the user.",
+   "git_commit": "928cd45+dirty"
   },
   "C-01": {
    "stage": "correction",
@@ -1114,7 +1226,7 @@
     "rb_roll_max": 7.567417828746114
    },
    "takeaway": "In the submission rolling statistics led with 57 % (indirect) and 71 % (direct); those features leak at D+2 and D+3 (F-07) and the model had 76 inputs (C-31). In the rebuild the GFS forecasts lead with 56 % and 79 %, and rolling statistics hold 8 %.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "928cd45+dirty"
   }
  }
 }

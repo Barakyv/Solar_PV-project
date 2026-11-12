@@ -63,20 +63,35 @@ figures, says what each one shows or what it led to, or checks that a figure is 
    PNG, white background, constrained layout, one value axis per panel.
 6. **Every stage adds its figures** (standing rule in `CLAUDE.md`): a stage is not complete until
    its figures are registered, built and listed in the catalog.
+7. **Every task ends with its figures, a sheet, and the figures shown** (user request,
+   2026-11-12). A task is a work item of a stage (W1–W6 of stage 9) or a stage without work
+   items. Its figures cover everything the task did and found: every new step, check, decision
+   and finding. At the end of the task its figures are listed under the task in `WORK_ITEMS`
+   (`registry.py`), built with `python -m solarpv.figures task <key>`, which also writes the
+   task's sheet `docs/figure_sheets/<key>.md` (question, what the figure shows, takeaway, what
+   it led to, file, inputs, commit; generated, never edited), and every PNG is looked at. The
+   figures and the sheet are then shown to the user in the app, and the closing message lists
+   each figure's ID with its takeaway. A task is not complete until its figures are shown.
 
 ## 4. Design
 
 - `src/solarpv/figures/`: `style.py`, `registry.py` (the figure spec), one module per stage
   (`s00_s02.py`, `s04_s05.py`, `s06.py`, `s07_s09.py`), `correction.py` and `__main__.py`.
-- Command: `python -m solarpv.figures build [--stage 6] [--only S06-02]`, `list`, `catalog`.
+- Command: `python -m solarpv.figures build [--stage 6] [--only S06-02]`, `task <key>` (the
+  end of a task, rule 7), `list` (with each figure's task), `catalog`.
 - Outputs: `outputs/figures/<stage>/<ID>_<slug>.png`, `outputs/figures/figures_manifest.json`
-  and a local gallery `outputs/figures/gallery.html` for choosing figures at the end.
+  and a local gallery `outputs/figures/gallery.html`, grouped by task, for choosing figures at
+  the end.
+- Sheets (rule 7): `docs/figure_sheets/<key>.md`, one per task (`S06`, `S09-W5`, ...;
+  `corrections` for the correction figures of the figure book), and an index
+  `docs/figure_sheets/README.md`; generated with the catalog.
 - Catalog: `docs/figure_catalog.md`, generated: per stage, the ID, title, question, description,
   takeaway, the step it led to, the file, and the existing figures of that stage.
 - Test (T-72): `tests/contracts/test_figures.py`: unique IDs; every completed stage has process figures;
   every registered figure is in the manifest and on disk with its recorded hash; inputs
   unchanged since the build; the catalog equals its regeneration; correction figures are not in
-  the process section.
+  the process section; every figure belongs to exactly one task, every completed task has its
+  minimum of process figures (`REQUIRED_TASKS`), and every sheet equals its regeneration (X52).
 
 ## 5. The figures
 
@@ -126,6 +141,11 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-17 | 9 | Hyper-parameter importance of the development studies | both dev runs `hparam_importance.csv` |
 | S09-18 | 9 | Expected duration of the final run | the dev `step.json`, curves and trials |
 | S09-19 | 9 | Automatic warnings of the development runs | both dev runs `report_warnings.csv` |
+| S09-20 | 9 | What the select step verifies | both dev runs `select/select.json` |
+| S09-21 | 9 | SHAP explains the booster of the forecast | W5 XGB dev `xgb_shap_checks.csv` |
+| S09-22 | 9 | Checks of the XGB explanation | W5 XGB dev `xgb_shap_checks.csv`, `xgb_shap_rank_stability.csv` |
+| S09-23 | 9 | What the TFT models select | neural dev `tft_variable_importance.csv` |
+| S09-24 | 9 | Points the run reports raise for G-1 | both dev runs `report_g1_points.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
 | C-03 | correction | Clear-sky index of the submission and of the rebuild | submission, stage-6 table |
@@ -148,3 +168,13 @@ the SHAP groups from the submission (C-59, C-60). One pre-written claim was refu
 before the build: S09-16 was drafted to assert that every TFT prefers the same hour of earlier
 days; the dev run shows a ratio of 0.82 to 1.07, so the figure now states what the data show (a
 preference for fixed clock hours) and asserts only the absence of a clear same-hour preference.
+
+*Added 2026-11-12 (user request after W5, rule 7):* the W4 and W5 sessions built their figures
+but never showed them to the user, and nothing grouped the figures by task (X52). The registry
+now lists the figures of each work item (`WORK_ITEMS`), `python -m solarpv.figures task <key>`
+builds a task's figures and writes its sheet in `docs/figure_sheets/`, the gallery is grouped by
+task, and T-72 checks the tasks and the sheets. A review of what W5 did against its figures
+found five outputs without one, now S09-20 (the select step's checks), S09-21 (SHAP of the
+saved booster against the booster cut at the forecast's rounds, X46), S09-22 (dominance and
+rank stability of the XGB explanation), S09-23 (the TFT variable-selection weights by group,
+X48) and S09-24 (the points the run reports list for G-1).

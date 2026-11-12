@@ -4,7 +4,9 @@ Fails when: a registered figure was not built or was changed after its build; an
 since the build; a takeaway does not re-render from its stored facts; the catalog is stale; a
 completed stage has no process figure; a process figure reads the submission's evidence (except
 the evaluation-code check); a correction figure is missing from the defense notes; a description
-carries a typed count, or a count or seed-table fact disagrees with its source table (X36, X37).
+carries a typed count, or a count or seed-table fact disagrees with its source table (X36, X37);
+a completed task has no figure, a figure belongs to no task or to two, or a task's figure sheet
+in docs/figure_sheets/ is stale (X52, rule 7 of docs/figures_plan.md).
 """
 
 import json
@@ -18,9 +20,14 @@ from solarpv.config.provenance import sha256
 from solarpv.figures.__main__ import (
     CATALOG,
     MANIFEST,
+    SHEET_INDEX,
+    SHEETS,
     catalog_text,
     input_hash,
     render_takeaway,
+    sheet_index_text,
+    sheet_path,
+    sheet_text,
 )
 from solarpv.figures.correction import (
     LSTM_TRAIN_METRICS,
@@ -28,10 +35,12 @@ from solarpv.figures.correction import (
     SEED_TABLE,
     SUBMITTED_BENCH,
 )
-from solarpv.figures.registry import load_all
+from solarpv.figures.registry import WORK_ITEMS, load_all, task_of, tasks
 
 # stage -> minimum number of process figures; update when a stage is completed
-REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 3, "9": 19}
+REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 3, "9": 24}
+# completed work item -> minimum number of process figures; add a row when a task is completed
+REQUIRED_TASKS = {"S09-W1": 1, "S09-W2": 4, "S09-W3": 1, "S09-W4": 6, "S09-W5": 12}
 SUBMISSION_READERS = {"S08-02"}  # evaluation code checked on the surviving forecasts (T-15)
 DEFENSE = REPO_ROOT / "docs" / "defense_notes.md"
 
@@ -123,6 +132,36 @@ def test_seed_table_rows_are_training_metrics(manifest):
     assert len(row42) == 6 and (row42["nRMSE_pct_x"] - row42["nRMSE_pct_y"]).abs().max() < 1e-3
     f = manifest["figures"]["C-07"]["facts"]
     assert f["ind_ev"] - f["ind_tab"] > 5 and f["dir_ev"] - f["dir_tab"] > 2
+
+
+def test_every_figure_belongs_to_one_task(specs):
+    """X52: a figure of a stage with work items is listed under exactly one of them."""
+    ids = {s.id for s in specs}
+    listed = [i for items in WORK_ITEMS.values() for _, fig_ids in items.values() for i in fig_ids]
+    assert len(listed) == len(set(listed)), "a figure is listed under two work items"
+    assert not set(listed) - ids, f"unknown figures listed: {sorted(set(listed) - ids)}"
+    for s in specs:
+        task_of(s)  # raises for a stage-9 figure that no work item lists
+
+
+def test_every_completed_task_has_process_figures(specs):
+    by_task = tasks(specs)
+    for key, n in REQUIRED_TASKS.items():
+        got = sum(s.kind == "process" for s in by_task.get(key, []))
+        assert got >= n, f"task {key}: {got} process figures, expected at least {n}"
+
+
+def test_figure_sheets_are_current(specs, manifest):
+    """Rule 7: every task has a generated sheet, equal to its regeneration; no stale sheet."""
+    keys = set(tasks(specs))
+    for key in keys:
+        path = sheet_path(key)
+        assert path.exists(), f"run: python -m solarpv.figures task {key}"
+        assert path.read_text(encoding="utf-8") == sheet_text(key, manifest), \
+            f"{path.name} is stale: python -m solarpv.figures catalog"
+    assert SHEET_INDEX.read_text(encoding="utf-8") == sheet_index_text(manifest)
+    extra = {p.stem for p in SHEETS.glob("*.md")} - keys - {SHEET_INDEX.stem}
+    assert not extra, f"sheets of no task: {sorted(extra)}"
 
 
 def test_defense_notes_use_every_correction_figure(specs):

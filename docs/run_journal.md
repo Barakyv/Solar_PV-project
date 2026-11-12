@@ -1701,3 +1701,30 @@ hashes, numbers) and the commit messages are the record:
   Jupyter kernel; every note formatted from the two runs and every interpretive claim asserted.
 - **Decision / next:** W5 is complete. Next: W6 (G-1, the tag, and the final run by
   `docs/runbook_final.md`), after the college IT answers the two questions of Q-15.
+
+### 2026-11-12 · R9-22 · Figures for every task, shown to the user (X52)
+
+- **Request (user):** two sessions in a row ended a task without showing any figure; every task
+  must end with figures that help write the process reports, everything documented, and all the
+  W5 figures shown.
+- **Finding X52:** the W4 and W5 figures had been built (S09-07–S09-19, C-07–C-10) but never
+  shown, and nothing grouped them by task. A review of W5 against its figures found five outputs
+  without a figure.
+- **Change:** rule 7 of `docs/figures_plan.md` and the `CLAUDE.md` rule: a task's figures are
+  listed in `WORK_ITEMS`, built by `python -m solarpv.figures task <key>`, which writes the
+  sheet `docs/figure_sheets/<key>.md`, then looked at and shown in the app. The gallery is
+  grouped by task; T-72 checks the tasks and the sheets.
+- **New W5 figures** (from the two dev runs, validation only, nothing decided):
+  - S09-20: the select step read no data row; 10 of 10 stage-7 files tracked and unmodified, 6
+    of 6 tables those of the selection, inputs equal in both runs;
+  - S09-21: in 5 of 6 boosters the saved model holds 50 rounds more than the forecast uses;
+    explained whole, up to 199 kW (direct) and 0.11 in k (indirect) off the forecast; cut, within
+    1.4e-6 of the scale (X46 on real data);
+  - S09-22: first over third feature at most 6.7 (flag 10); Spearman across horizons 0.84–0.90;
+  - S09-23: in the decoder the GFS forecasts hold 22–72 % of the TFT selection weight; the
+    three TFTs disagree on their top direct-decoder input (`is_weekend` for TFT-96 with 0.42,
+    `fcst_gfs_ghi` for TFT-168, `fcst_gfs_rh2m` for the baseline). A selection weight is not an
+    effect; with one seed and the development budgets this is noted for stage 11, not acted on;
+  - S09-24: the two run reports list 38 points of 7 kinds for G-1.
+- **Checks:** every new PNG looked at (one legend moved off the labels of S09-21); T-72 passes.
+- **Next:** unchanged: W6 after the answers of the college IT (Q-15).

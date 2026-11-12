@@ -1,16 +1,19 @@
 """The figure book (docs/figures_plan.md).
 
     python -m solarpv.figures build [--stage 6] [--only S06-02,S06-03]
+    python -m solarpv.figures task S09-W5  # end of a task: build its figures, write its sheet
     python -m solarpv.figures list
-    python -m solarpv.figures catalog      # rewrite the catalog and the gallery from the manifest
+    python -m solarpv.figures catalog      # rewrite the catalog, gallery and sheets
 
 Outputs: outputs/figures/<stage>/<ID>_<slug>.png, outputs/figures/figures_manifest.json,
-outputs/figures/gallery.html and docs/figure_catalog.md.
+outputs/figures/gallery.html, docs/figure_catalog.md and one sheet per task in
+docs/figure_sheets/.
 """
 
 import argparse
 import html
 import json
+import os
 import string
 import time
 from pathlib import Path
@@ -19,13 +22,24 @@ import matplotlib.pyplot as plt
 
 from solarpv.config.paths import DOCS_DIR, OUTPUTS_DIR, REPO_ROOT
 from solarpv.config.provenance import git_commit, sha256, text_sha256
-from solarpv.figures.registry import EXISTING, STAGE_NAMES, STAGES, load_all
+from solarpv.figures.registry import (
+    EXISTING,
+    STAGE_NAMES,
+    STAGES,
+    TASK_PLANS,
+    load_all,
+    task_of,
+    task_title,
+    tasks,
+)
 from solarpv.figures.style import DPI, RC
 
 FIG_DIR = OUTPUTS_DIR / "figures"
 MANIFEST = FIG_DIR / "figures_manifest.json"
 CATALOG = DOCS_DIR / "figure_catalog.md"
 GALLERY = FIG_DIR / "gallery.html"
+SHEETS = DOCS_DIR / "figure_sheets"
+SHEET_INDEX = SHEETS / "README.md"
 TEXT_SUFFIXES = {".csv", ".json", ".yaml", ".yml", ".md", ".txt", ".py"}
 
 
@@ -126,18 +140,24 @@ def catalog_text(manifest: dict) -> str:
 
 
 def gallery_text(manifest: dict) -> str:
-    cards = []
-    for s in load_all():
-        e = manifest["figures"].get(s.id)
-        if not e:
-            continue
-        rel = Path(e["file"]).relative_to("outputs/figures").as_posix()
-        cards.append(
-            f'<figure class="{s.kind}"><label><input type="checkbox" value="{s.id}"> '
-            f'<b>{s.id}</b> {html.escape(s.title)}</label><a href="{rel}"><img src="{rel}" '
-            f'alt="{html.escape(s.description)}" loading="lazy"></a><figcaption>'
-            f'{html.escape(e["takeaway"])}<br><i>Led to:</i> {html.escape(s.led_to)}'
-            f'</figcaption></figure>')
+    sections, nav = [], []
+    for key, specs in tasks(load_all()).items():
+        cards = []
+        for s in specs:
+            e = manifest["figures"].get(s.id)
+            if not e:
+                continue
+            rel = Path(e["file"]).relative_to("outputs/figures").as_posix()
+            cards.append(
+                f'<figure class="{s.kind}"><label><input type="checkbox" value="{s.id}"> '
+                f'<b>{s.id}</b> {html.escape(s.title)}</label><a href="{rel}"><img src="{rel}" '
+                f'alt="{html.escape(s.description)}" loading="lazy"></a><figcaption>'
+                f'{html.escape(e["takeaway"])}<br><i>Led to:</i> {html.escape(s.led_to)}'
+                f'</figcaption></figure>')
+        if cards:
+            nav.append(f'<a href="#{key}">{key}</a>')
+            sections.append(f'<h2 id="{key}">{html.escape(task_title(key))}</h2><main>'
+                            + "".join(cards) + "</main>")
     return ("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Figure book"
             "</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             "<style>body{font:14px system-ui,sans-serif;margin:16px;background:#fff;color:#111}"
@@ -145,19 +165,94 @@ def gallery_text(manifest: dict) -> str:
             "figure{margin:0;border:1px solid #ddd;border-radius:8px;padding:10px}"
             "figure.correction{border-color:#D55E00}img{width:100%;height:auto}"
             "figcaption{font-size:12px;color:#444;margin-top:6px}#sel{position:sticky;top:0;"
-            "background:#fff;padding:8px 0}</style></head><body><h1>Figure book</h1>"
+            "background:#fff;padding:8px 0}nav a{margin-right:8px}h2{margin-top:28px}</style>"
+            "</head><body><h1>Figure book</h1><nav>Tasks: " + " ".join(nav) + "</nav>"
             "<div id=\"sel\">Selected: <span id=\"ids\"></span> <button onclick=\"navigator."
             "clipboard.writeText(document.getElementById('ids').textContent)\">Copy IDs</button>"
-            "</div><main>" + "".join(cards) + "</main><script>const b=[...document.querySelectorAll"
+            "</div>" + "".join(sections) + "<script>const b=[...document.querySelectorAll"
             "('input')];function u(){document.getElementById('ids').textContent=b.filter(x=>"
             "x.checked).map(x=>x.value).join(', ')}b.forEach(x=>x.onchange=u)</script>"
             "</body></html>\n")
+
+
+def sheet_path(key: str) -> Path:
+    return SHEETS / f"{key}.md"
+
+
+def sheet_text(key: str, manifest: dict) -> str:
+    """The figure sheet of one task: every figure it made, with its question, what it shows,
+    the takeaway formatted from its facts, what it led to and its provenance."""
+    specs = tasks(load_all())[key]
+    plan = TASK_PLANS.get(key)
+    lines = [f"# Figure sheet: {task_title(key)}", "",
+             "Generated by `python -m solarpv.figures` from "
+             "`outputs/figures/figures_manifest.json`; do not edit by hand. One sheet per task "
+             "(`docs/figures_plan.md`, rule 7): what the task did, what it found and what "
+             "that led to, for writing the report. Every takeaway is formatted from the "
+             "facts its builder computed.", ""]
+    if plan:
+        lines += [f"Plan and self-review of the task: `{plan}`.", ""]
+    n_proc = sum(s.kind == "process" for s in specs)
+    lines += [f"Figures: {len(specs)} ({n_proc} process, {len(specs) - n_proc} correction).", ""]
+    for title, kind in (("Process figures", "process"),
+                        ("Correction figures (for docs/defense_notes.md only)", "correction")):
+        group = [s for s in specs if s.kind == kind]
+        if not group:
+            continue
+        lines += [f"## {title}", ""]
+        for s in group:
+            e = manifest["figures"].get(s.id)
+            file = e["file"] if e else f"outputs/figures/{s.stage_dir}/{s.filename}"
+            img = Path(os.path.relpath(REPO_ROOT / file, SHEETS)).as_posix()
+            inputs = ", ".join(f"`{rel}`" for rel in s.inputs) or "drawn from the code"
+            lines += [f"### {s.id}. {s.title}", "", f"![{s.id}]({img})", "",
+                      f"- **Question:** {s.question}",
+                      f"- **Shows:** {s.description}",
+                      f"- **Takeaway:** {e['takeaway'] if e else '(not built yet)'}",
+                      f"- **Led to:** {s.led_to}",
+                      f"- **File:** `{file}`",
+                      f"- **Inputs:** {inputs}",
+                      f"- **Built at commit:** `{e['git_commit'] if e else '-'}`", ""]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def sheet_index_text(manifest: dict) -> str:
+    lines = ["# Figure sheets", "",
+             "Generated by `python -m solarpv.figures`; do not edit by hand. One sheet per "
+             "completed task (`docs/figures_plan.md`, rule 7). The whole book with check boxes "
+             "for choosing the report figures: `outputs/figures/gallery.html`.", ""]
+    for key, specs in tasks(load_all()).items():
+        built = sum(s.id in manifest["figures"] for s in specs)
+        lines.append(f"- [{key}]({key}.md): {task_title(key)} "
+                     f"({built} figure{'' if built == 1 else 's'})")
+    return "\n".join(lines) + "\n"
+
+
+def write_sheets(manifest: dict) -> None:
+    SHEETS.mkdir(parents=True, exist_ok=True)
+    keep = {sheet_path(k) for k in tasks(load_all())} | {SHEET_INDEX}
+    for old in SHEETS.glob("*.md"):
+        if old not in keep:
+            old.unlink()
+    for key in tasks(load_all()):
+        sheet_path(key).write_text(sheet_text(key, manifest), encoding="utf-8", newline="\n")
+    SHEET_INDEX.write_text(sheet_index_text(manifest), encoding="utf-8", newline="\n")
 
 
 def write_catalog(manifest: dict | None = None) -> None:
     manifest = manifest or load_manifest()
     CATALOG.write_text(catalog_text(manifest), encoding="utf-8", newline="\n")
     GALLERY.write_text(gallery_text(manifest), encoding="utf-8", newline="\n")
+    write_sheets(manifest)
+
+
+def build_task(key: str) -> list[Path]:
+    """End of a task: build the task's figures, rewrite the catalog, gallery and sheets, and
+    return the files to show the user (the PNGs, then the sheet)."""
+    specs = tasks(load_all()).get(key)
+    assert specs, f"no figures listed for task {key} (registry.WORK_ITEMS)"
+    manifest = build(only={s.id for s in specs})
+    return [REPO_ROOT / manifest["figures"][s.id]["file"] for s in specs] + [sheet_path(key)]
 
 
 def main(argv=None):
@@ -166,14 +261,21 @@ def main(argv=None):
     b = sub.add_parser("build")
     b.add_argument("--stage")
     b.add_argument("--only", help="comma-separated figure ids")
+    t = sub.add_parser("task", help="build one task's figures and write its sheet")
+    t.add_argument("key", help="task key, e.g. S09-W5 or S06 (see: list)")
     sub.add_parser("list")
     sub.add_parser("catalog")
     a = ap.parse_args(argv)
     if a.cmd == "build":
         build(only=set(a.only.split(",")) if a.only else None, stage=a.stage)
+    elif a.cmd == "task":
+        files = build_task(a.key)
+        print(f"\n{a.key}: {len(files) - 1} figures; show the user these files:")
+        for p in files:
+            print(f"  {p.relative_to(REPO_ROOT).as_posix()}")
     elif a.cmd == "list":
         for s in load_all():
-            print(f"{s.id:7s} {s.stage:10s} {s.kind:10s} {s.title}")
+            print(f"{s.id:7s} {s.stage:10s} {s.kind:10s} {task_of(s):12s} {s.title}")
     else:
         write_catalog()
 

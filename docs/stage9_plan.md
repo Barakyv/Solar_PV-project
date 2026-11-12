@@ -1430,3 +1430,10 @@ first smoke run. Dev: `select` passes on both runs; `20261112T063719Z_dev` repro
 unchanged. Findings of `explain`, reported and not acted on: a GFS forecast leads every target and
 horizon (no dominance flag); no TFT prefers the hour it forecasts, the attention follows fixed
 clock hours of earlier days; one warning of the W4 records changes under X45.
+
+*Figures of W5 (2026-11-12, user request after the task, X52, R9-22):* the W5 figures had been
+built but not shown. The task's figures are now S09-13–S09-24 and C-10, listed under W5 in the
+figure registry; S09-20–S09-24 cover the outputs that had no figure (the select checks, the
+booster rounds of SHAP, the dominance and rank checks, the TFT selection weights, the G-1
+points). Sheet: `docs/figure_sheets/S09-W5.md`. From now on every task, W6 included, ends with
+its figures, its sheet, and the figures shown to the user (rule 7 of `docs/figures_plan.md`).
