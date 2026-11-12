@@ -1786,6 +1786,15 @@ hashes, numbers) and the commit messages are the record:
 - **Code:** `solarpv.evaluation.quantiles` (`ordered`, `crossed`, `pinball`, `coverage`); T-92
   (`tests/unit/test_quantiles.py`); S09-29 reads the sorted quantiles and asserts that the BiLSTM
   never crosses and that sorting never raises the loss; its legend moved below the panels.
+- **Guard added (same day, user request: complete the gap):** nothing but S09-29 reads the
+  quantiles as a distribution yet, so D-33 had no enforcement. `tests/contracts/test_quantile_use.py`
+  fails when code that reads `quantiles_*.csv` or a `q<level>` column does not import
+  `solarpv.evaluation.quantiles`; the writer (`pipeline/neural.py`) must stay raw and the report
+  may only filter names. Mutation check: with the import removed from the figure module the
+  guard names that file; a planted reader is caught. On the development run the point equals the
+  0.5 head for all four quantile models, sorting keeps it, and the sorted loss is not higher.
+  The first version of the report check failed on a filter spread over two lines; the check now
+  reads the file with whitespace collapsed.
 - **To do before the report:** state the cost (on crossed hours the point is not the median of
   the sorted distribution); verify the reference to Chernozhukov, Fernández-Val and Galichon
   (2010), written from memory; record prevention in training as future work.

@@ -1210,6 +1210,13 @@ stored file changed).**
   sorted, point and other columns untouched, the loss never rises row by row for random truth
   values, ordering by level, coverage count, a frame without quantiles refused); figure S09-29
   asserts that the BiLSTM never crosses and that the sorted loss is not above the raw loss.
+  `tests/contracts/test_quantile_use.py` keeps the rule in force for later code: every file that
+  reads `quantiles_*.csv` or a `q<level>` column must import the sorting module (exceptions: the
+  writer in `pipeline/neural.py`, which must keep the raw output, and `pipeline/report.py`, which
+  only filters file names); a planted reader is caught, and removing the import from the figure
+  module makes the guard fail. On the development run, for the four quantile models, the
+  written point equals the 0.5 head, sorting leaves it unchanged and leaves no row out of order,
+  and the sorted loss is not above the raw one.
 - *Original:* not compared; the surviving submission files were not examined for the order of
   the quantiles.
 
