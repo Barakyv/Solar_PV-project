@@ -6,6 +6,8 @@ T-95  X55: the runner refuses a working directory inside another checkout of the
 T-96  X56: a modified tracked document, not only code, makes the per-step gate of a final run
       refuse; untracked outputs (the run folders, the test-access log) do not; the runbook says
       that no tracked file may change during a final run
+T-99  X64: a manifest names a raw file `Raw data/<file>` also when SOLAR_RAW_DIR is outside the
+      checkout
 """
 
 import subprocess
@@ -80,6 +82,23 @@ def test_the_runbook_says_no_tracked_file_may_change():
     text = " ".join((DOCS_DIR / "runbook_final.md").read_text(encoding="utf-8").split())
     assert "no tracked file may change" in text
     assert "documents included" in text
+
+
+def test_a_raw_file_outside_the_checkout_is_named_as_in_the_checkout(tmp_path, monkeypatch):
+    """T-99, X64: with SOLAR_RAW_DIR outside the checkout (a reproduction in a fresh clone) a
+    manifest still names a raw file `Raw data/<file>`; files of the checkout keep their relative
+    path."""
+    from solarpv.config import paths
+
+    raw = tmp_path / "elsewhere" / "Raw data"
+    raw.mkdir(parents=True)
+    (raw / "2112.CSV").write_text("x", encoding="utf-8")
+    monkeypatch.setattr(paths, "RAW_DIR", raw)
+    assert paths.recorded_path(raw / "2112.CSV") == "Raw data/2112.CSV"
+    assert paths.recorded_path(REPO_ROOT / "configs" / "clock_offsets.csv") \
+        == "configs/clock_offsets.csv"
+    monkeypatch.setattr(paths, "RAW_DIR", REPO_ROOT / "Raw data")
+    assert paths.recorded_path(REPO_ROOT / "Raw data" / "2112.CSV") == "Raw data/2112.CSV"
 
 
 def test_the_real_tree_check_covers_documents():

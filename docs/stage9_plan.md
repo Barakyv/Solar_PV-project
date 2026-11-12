@@ -1510,6 +1510,8 @@ Found during the work, after this section was committed:
 | ID | Problem | Where | Fix | Test |
 |---|---|---|---|---|
 | X62 | *Found by an accident (R9-26, OP-60):* the stage modules had no argument parsing; `python -m solarpv.data.clean --help`, run to read the options for §20.5, ran the stage, and preprocess and clean rewrote their files on this machine. `selection.run --help` would have rerun the selection and made a fourth validation look, and argparse's abbreviations would read `--valid` as `--validation-only` and `--allow` as `--allow-test` | 10 stage modules and scripts, 11 notebook builders, `selection/run.py`, the runner and `evaluate` | Every entry point parses its arguments first (`solarpv.config.cli`); `--help` runs nothing; unknown and abbreviated options are errors. The original files were restored from the hand-off package after their hashes were checked; the regenerated content was identical | T-98 |
+| X63 | *Found by the reproduction (R9-27):* the stage-2 file of the laptop (pandas 3.0.6) holds 12.5 % of values that are not the correctly rounded parse of the raw text (up to 460 ulp, relative 9.7e-14); pandas 3.1.0 here parses them correctly. The first attempt of the reproduction failed on it, and on clock estimates that differ by up to 3e-12 on identical inputs | `data/processed/01_ingest/`, `scripts/estimate_clock_drift.py` | The canonical file is kept. The reproduction measures every difference and reports floating-point noise (every differing cell numeric, nothing missing on one side, relative ≤ 1e-9; registered after the first attempt showed that differences exist and before their size was known), and fails on anything else | T-93 |
+| X64 | *Found by the reproduction (R9-27):* the EDA named its inputs relative to the checkout and failed when `SOLAR_RAW_DIR` points outside it | `eda/figures.py` | `config.paths.recorded_path` names a raw file `Raw data/<file>` wherever it is read from | T-99 |
 
 ### 20.4 The checklist of gate G-1, with the evidence for each item
 
@@ -1575,6 +1577,7 @@ environment of §20.5, and the review of §20.6.
 | T-96 | X56: the runbook states that no tracked file may change during a final run; a modified document makes the per-step gate refuse |
 | T-97 | X59, X60: every S-xx row names a producer that exists (a module, a step or a file) or an errata row |
 | T-98 | X62: every entry point of `src/solarpv` and `scripts/` parses its arguments before any work (static check), then `--help` exits 0 and writes nothing and an unknown option exits 2 (run only after the static check passed); no parser accepts abbreviations |
+| T-99 | X64: a manifest names a raw file `Raw data/<file>` also when `SOLAR_RAW_DIR` points outside the checkout |
 
 ### 20.9 Order of the work and acceptance
 

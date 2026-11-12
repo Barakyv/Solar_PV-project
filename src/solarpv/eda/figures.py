@@ -26,7 +26,14 @@ from solarpv.config.constants import (  # noqa: E402
     TRAIN_END,
     VAL_START,
 )
-from solarpv.config.paths import AUDIT_DIR, CONFIGS_DIR, OUTPUTS_DIR, PROCESSED_DIR, RAW_DIR  # noqa: E402
+from solarpv.config.paths import (  # noqa: E402
+    AUDIT_DIR,
+    CONFIGS_DIR,
+    OUTPUTS_DIR,
+    PROCESSED_DIR,
+    RAW_DIR,
+    recorded_path,
+)
 from solarpv.config.provenance import git_commit, sha256, text_sha256  # noqa: E402
 from solarpv.config.site import Site, load_site  # noqa: E402
 from solarpv.data.clean import split_of  # noqa: E402
@@ -521,10 +528,11 @@ def run() -> dict:
     tables = [_table(splits, "table_splits"), _table(bug_table, "table_time_bug"),
               _table(physics, "table_physics"), _table(var_table, "table_variability"),
               _table(sensor_table, "table_sensors")]
-    inputs = {p.relative_to(OUTPUTS_DIR.parent).as_posix(): sha256(p) for p in (
+    # X64: raw files are named `Raw data/<file>` wherever SOLAR_RAW_DIR points
+    inputs = {recorded_path(p): sha256(p) for p in (
         STAGE5 / "scada_1H_clean.parquet", STAGE4 / "scada_1H_utc.parquet",
         *(RAW_DIR / f for f in TIME_BUG_MONTHS.values()))}
-    inputs.update({p.relative_to(OUTPUTS_DIR.parent).as_posix(): text_sha256(p)
+    inputs.update({recorded_path(p): text_sha256(p)
                    for p in (CONFIGS_DIR / "clock_offsets.csv", POLLED_SIM, CLEANING_LOG)})
     manifest = {
         "stage": "03_eda",

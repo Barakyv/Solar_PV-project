@@ -1852,3 +1852,29 @@ hashes, numbers) and the commit messages are the record:
   statically before it calls any of them.
 - **Lesson for the reproduction and the external review:** never call a stage module to read its
   help in a checkout that holds data; read the source.
+
+### 2026-11-12 · R9-27 · W6: guards, the smoke run, and the first reproduction attempts (X63, X64)
+
+- **Smoke at `5214bbc`** (`20261112T200502Z_smoke`, after X55 and X62): all 11 steps ok in 260 s,
+  26 of 26 warnings matched; the 40 prediction, quantile and array files are byte-identical to
+  `20261112T062618Z_smoke` (`46881ae`), so the guards changed no result. Four later steps recorded
+  `5214bbc+dirty`, because the reproduction script was being written during the run; the smoke
+  run that counts for G-1 is repeated at the commit to be tagged, with nothing edited meanwhile.
+- **Dry run of the final run** (`outputs/g1_audit/dry_run_final_09533a3.log`): writes nothing;
+  about 31,100 s (8.6 h) expected, up to about 68,600 s (19.1 h), as the runbook says. It prints
+  the plan only and does not check the gate; `check --mode final` does.
+- **Test access** (`scripts/g1_audit.py --only test_access`): no access log, never in git; 86 step
+  records of 15 runs without a test access; 81 prediction files without a test hour.
+- **Reproduction, attempt 1** (`e2b6fae`, stopped after three steps): the ingest and the clock
+  estimates differed from the reference although the clock step ran on the reference ingest; the
+  comparison could not say by how much, and the restore deleted the regenerated files. Stopped,
+  improved (the size of every difference, a copy of every differing file, the noise rule of
+  §20.5 registered before any size was known), the private site file removed from the clone by
+  hand (the stopped process could not).
+- **Reproduction, attempt 2** (`09533a3`): the ingest differs by up to 9.7e-14 relative in 12.5 %
+  of the values; Python's correctly rounded `float()` agrees with this machine's pandas 3.1.0 on
+  132 of 132 sampled values, so the laptop's pandas 3.0.6 parser was not correctly rounded (X63);
+  the clock daily estimates differ by up to 3.2e-12 relative on identical inputs (numerical
+  libraries), and the offsets file is identical. Preprocess and clean reproduced exactly. The EDA
+  failed: it named the raw files relative to the checkout (X64). Fixed; attempt 3 from a new
+  clone.
