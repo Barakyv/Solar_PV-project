@@ -506,6 +506,23 @@
    "takeaway": "Climatology (8.04 %) beats persistence at every horizon (9.68 / 10.82 / 10.72 %), since a day says little about the next one; clear sky times the mean k gives 8.96 %. A model must beat climatology to be useful. The indirect-route references, converted to kW, differ from these by at most 0.04 points.",
    "git_commit": "123b2fb"
   },
+  "S08-04": {
+   "stage": "8",
+   "kind": "process",
+   "title": "The secondary views of the evaluation",
+   "file": "outputs/figures/stage_08/S08-04_evaluation_views.png",
+   "file_sha256": "09c459fa51ca237901a5f075b8c3eeaa3a119677949f59fd81ee691dea77d02b",
+   "inputs": {
+    "outputs/07_evaluation/val/benchmark_views.csv": "7fe97d0a502f4a8874c498713b5e4608da7b866dfd3d1488361f94ee08ea049d"
+   },
+   "facts": {
+    "n_limited": 146,
+    "drop_min": 0.8976119999999987,
+    "drop_max": 1.2956639999999995
+   },
+   "takeaway": "Leaving out the operationally limited hours (146 per horizon) lowers the references' error by 0.90 to 1.30 points. The data-source views equal all hours on validation, because no validation hour comes from the second source.",
+   "git_commit": "9ad5af7+dirty"
+  },
   "S09-01": {
    "stage": "9",
    "kind": "process",
@@ -527,7 +544,7 @@
    "kind": "process",
    "title": "XGB development run against the references",
    "file": "outputs/figures/stage_09/S09-02_xgb_dev_vs_references.png",
-   "file_sha256": "3d6facda9fccc7c7f6ae9a8a563153bde113230ee6f527d33764d1f224baecfa",
+   "file_sha256": "2b2e82e3f725554d49cbe3c24b526e17a318a2f011be8b77551746ada6f62de9",
    "inputs": {
     "outputs/runs/20261107T135938Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431"
    },
@@ -541,7 +558,7 @@
     "clim": 8.041087
    },
    "takeaway": "XGB-dev: 6.69 / 6.91 / 6.55 % (indirect) and 6.66 / 6.81 / 6.43 % (direct), below climatology (8.04 %) and persistence at every horizon. These are tuning-split numbers, optimistic by construction; the unbiased test comes once, in the final run.",
-   "git_commit": "a0ad8ec"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-03": {
    "stage": "9",
@@ -607,19 +624,23 @@
    "kind": "process",
    "title": "Sequence datasets: one forecast origin per local day",
    "file": "outputs/figures/stage_09/S09-06_sequence_datasets.png",
-   "file_sha256": "8984987111d320bdc87e0640519e4c15a01df221c91338f3cd0e0824e87f7d89",
+   "file_sha256": "d13781d18b4403139caf2f5a2601581bf7f218ea9facc5cfd4248c86c4e729a1",
    "inputs": {
-    "outputs/09_sequence_data/checks_dev.csv": "f332e0c7238dc612ba53b77f63a98812968c2475584d6a4485e3cef58c5e9a50"
+    "outputs/09_sequence_data/checks_dev.csv": "f332e0c7238dc612ba53b77f63a98812968c2475584d6a4485e3cef58c5e9a50",
+    "outputs/09_sequence_data/dataset_report_dev.json": "58b09aa5c631f9791527e2b002a6e86b49e123e02bb55d9c18a0f81384aa23b8"
    },
    "facts": {
     "n_train": 872,
     "n_val": 246,
     "n23": 9,
     "n24": 3324,
-    "n25": 9
+    "n25": 9,
+    "n_models": 5,
+    "enc_min": 72,
+    "enc_max": 168
    },
-   "takeaway": "872 train and 246 validation origins, one per local day. Blocks are 3,324 days of 24 hours, 9 of 23 and 9 of 25; every check passed (each hour forecast once per horizon, the encoder ends at issuance, no step reaches the test period).",
-   "git_commit": "a0ad8ec"
+   "takeaway": "872 train and 246 validation origins, one per local day. Blocks are 3,324 days of 24 hours, 9 of 23 and 9 of 25; every check passed (each hour forecast once per horizon, the encoder ends at issuance, no step reaches the test period). The encoders of the 5 models hold 72 to 168 hours.",
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-07": {
    "stage": "9",
@@ -653,7 +674,7 @@
     "dev_h": 3.2176944444444437
    },
    "takeaway": "All five steps and the evaluation passed the smoke run; a second smoke run with the same seed gave identical losses for 4 models. In development an epoch takes 0.3 s (BiLSTM) to 7.5 s (TFT-168); the run took 3.2 h.",
-   "git_commit": "46881ae+dirty"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-08": {
    "stage": "9",
@@ -681,7 +702,7 @@
     "n_last": 0
    },
    "takeaway": "Early stopping ended 7 of 8 epoch-based fits before their budget; the best epochs lie between 16 and 58. 0 fits had their best epoch at the last epoch.",
-   "git_commit": "a0ad8ec"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-09": {
    "stage": "9",
@@ -707,7 +728,7 @@
     "n_cases": 30
    },
    "takeaway": "All 6 models and the 3 references are scored on the same 2,901 validation daytime hours per horizon. Best neural model at D+1: TFT-168 (6.77 %) in the indirect route and TFT-96 (6.75 %) in the direct route, against XGB-dev 6.69 / 6.66 %. 30 of 30 neural cases are below persistence. Tuning-split numbers with reduced budgets: they rank nothing.",
-   "git_commit": "d21a43b"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-10": {
    "stage": "9",
@@ -731,7 +752,7 @@
     "n_studies": 6
    },
    "takeaway": "68 trials in all; the best trial improved on the first by 0.07 to 0.30 points. Best values on the edge of the search space: 4 of 6 studies (the warning of §3.5, M23).",
-   "git_commit": "a0ad8ec"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-11": {
    "stage": "9",
@@ -757,7 +778,7 @@
     "rhythm": 0.9960710339677846
    },
    "takeaway": "Each model attends only inside its own encoder (96 and 168 hours), with a daily rhythm (correlation of the profile with itself shifted by 24 h: at least 1.00). Within the last day the weights peak 12 h (TFT-96) and 20 h (TFT-168) before issuance in the indirect route, 12 h and 6 h in the direct route. TFT-168's indirect weights also rise at the first position of its encoder (0.0105 against a mean of 0.0053): an edge of the window, not a lag.",
-   "git_commit": "a0ad8ec"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-12": {
    "stage": "9",
@@ -782,7 +803,7 @@
     "shift_name": "PatchTST, direct"
    },
    "takeaway": "On validation the neural biases range from +0.37 to +2.73 % of capacity (XGB-dev: +0.74 % direct, +1.31 % indirect). The largest change from training to validation is 0.63 points (PatchTST, direct).",
-   "git_commit": "a0ad8ec"
+   "git_commit": "9ad5af7+dirty"
   },
   "S09-13": {
    "stage": "9",
@@ -1034,6 +1055,231 @@
    "takeaway": "The two reports list 38 points of 7 kinds (10 XGB, 28 neural); the most frequent kind is margin against climatology (kW DM) (12). The list stays a list until the G-1 audit; no validation decision changes because of it without the user.",
    "git_commit": "ff2d06a"
   },
+  "S09-25": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The six models side by side",
+   "file": "outputs/figures/stage_09/S09-25_model_cards.png",
+   "file_sha256": "55415d08dcd9247408ac8b4f82a6d1c5b934d2606c1eec0627a28cab48b5cd13",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/select/select.json": "da7f712fdb6560a9d88c3f074317190dd485ae363166579ec1aca0e37ff9a26b",
+    "outputs/runs/20261112T063719Z_dev/xgb/xgb_config.json": "dd1b18dcc1eb50798f9f09a489146711ac3a9d760738d964db60fc34f4fa5bce",
+    "outputs/runs/20261111T160714Z_dev/bilstm/lstm_sota_config.json": "4466f2f4ae2e5671796ebbf7afb8b13947e420b714fcc31c26a1a50c342640ec",
+    "outputs/runs/20261111T160714Z_dev/tft96/tft_96_config.json": "a8daec8365e5df2b2ab9745221ccda9b753767bbc99d2497a03ca6a81539d4ab",
+    "outputs/runs/20261111T160714Z_dev/tft168/tft_168_config.json": "5dcf351afbf0e9e77fa3057f87f1f3f065023c92296e047639e07fd58354914e",
+    "outputs/runs/20261111T160714Z_dev/tftbase/tft_config.json": "43c9318b6efd01acf2e93cb2b95beeb9c0b5dc170b8b894ef632c6b22e044ffa",
+    "outputs/runs/20261111T160714Z_dev/patchtst/patchtst_config.json": "ef573a55c1999de483c8a32cad36b016c4b7fbe8a5439f6b3d43db4019192335"
+   },
+   "facts": {
+    "xgb_ind": "28–32",
+    "xgb_dir": "82–96",
+    "enc_ind": 46,
+    "enc_dir": 63,
+    "enc_min": 72,
+    "enc_max": 168
+   },
+   "takeaway": "Every model is tuned on one objective, the daytime nRMSE in kW of its point forecast, and scored on the same hours. They differ in what they see: XGB 28–32 features (indirect) and 82–96 (direct) per horizon, the sequence models 46 and 63 encoder channels over 72 to 168 hours, and PatchTST only its own past series. XGB fits one model per horizon; each sequence model forecasts the three days at once.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-26": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Every model against persistence: Diebold-Mariano in kW",
+   "file": "outputs/figures/stage_09/S09-26_significance_vs_persistence.png",
+   "file_sha256": "4d0fb7627ec89db420d6f371dd4620750fa32ed932a7095af2e957d3a0d05bd0",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/dm_tests_kw.csv": "a4297f30ab1bfdf6c8b56093257ee816c9293e16c9e83be5b3aac5a6621918a6",
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/dm_tests_kw.csv": "5975bf8b10858b4bc14e58f441aa3f88e0762ee8f9b6514a6fa4c545c9a5f8d7"
+   },
+   "facts": {
+    "n_all": 5,
+    "n_models": 6,
+    "weakest": "PatchTST",
+    "weakest_n": 5,
+    "alpha_x": 0.016667,
+    "alpha_n": 0.007143
+   },
+   "takeaway": "5 of 6 models are significantly better than persistence in all six route and horizon cases; the fewest is PatchTST (5 of 6). No model is significantly worse. The two development runs used different references, because the evaluate step takes XGB when it is in the run and persistence otherwise: the references against XGB (Bonferroni level 0.0167) and every neural model against persistence (0.0071). This grid puts both on persistence.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-27": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The two routes, model by model",
+   "file": "outputs/figures/stage_09/S09-27_route_per_model.png",
+   "file_sha256": "3b910ce8d08017b70aa361125bc566240df2a52b15260113f5625947c27776d8",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/route_comparison.csv": "8c7e346c014162c9dce6e02c144623c2afe4ac4ed72ccf1c166e33bdf77cde3d",
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/route_comparison.csv": "ed59e0f4744a3280b0b743b0f650e242cd727672e88e05e7a60c23e4f8f8632e"
+   },
+   "facts": {
+    "n_direct": 4,
+    "n_indirect": 2,
+    "n_models": 6,
+    "gap": 0.6763150000000007,
+    "gap_model": "PatchTST",
+    "gap_h": 1
+   },
+   "takeaway": "At D+1 the direct route is better for 4 of 6 models and the indirect route for 2; the largest gap is 0.68 points (PatchTST, D+1). Development budgets and one seed: the route of the final models is compared again in stage 10.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-28": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Forecasts on three validation days",
+   "file": "outputs/figures/stage_09/S09-28_example_days.png",
+   "file_sha256": "1cf026b3fa0766a6d11c4a62eb8fb6dcb24891de972ba7004121e043ee3603ee",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/xgb/predictions_xgb_sota_seed42.csv": "5f785062da937920eac5a2d66c78ab8e3ce4111a7a842e70109b6919290b6a6f",
+    "outputs/runs/20261111T160714Z_dev/bilstm/predictions_lstm_sota_seed42.csv": "c941c85c3b0da63da51eb1b2010067e47f75cbb2850d9bbcf9a664436f76c1f2",
+    "outputs/runs/20261111T160714Z_dev/tft96/predictions_tft_96_seed42.csv": "6574bb6d88952efadd518cb24e3ce6695a451de31e175e5ef92e04b82d3fcb0c",
+    "outputs/runs/20261111T160714Z_dev/tft168/predictions_tft_168_seed42.csv": "5e1988ed56bf2a9446bd0e389f384804181e4eff555b5ac51b752e7547fe4684",
+    "outputs/runs/20261111T160714Z_dev/tftbase/predictions_tft_seed42.csv": "f31124a7650540f6245126b02fb9fe5bb70847822b86cf14713b306014eef97a",
+    "outputs/runs/20261111T160714Z_dev/patchtst/predictions_patchtst_seed42.csv": "6238acf59f18da0f873ee816ed9cffd3dc0e642b9f5c6e1ea59b945e16fbb4db",
+    "outputs/runs/20261111T160714Z_dev/baselines/predictions_persistence.csv": "7c47464c8495f6766e69022afb3816a4f6bf250e8eafea052c2e76b0d657a0f5"
+   },
+   "facts": {
+    "d_clear": "2024-03-11",
+    "k_clear": 0.9580309610139609,
+    "d_mid": "2024-06-09",
+    "d_cloud": "2024-02-16",
+    "k_cloud": 0.371591421404043,
+    "c_lo": 53.32569257412705,
+    "c_hi": 191.7153508629822,
+    "m_lo": 31.580496069257666,
+    "m_hi": 59.23296549214041,
+    "o_lo": 263.22966306499393,
+    "o_hi": 975.1053111704941,
+    "o_pers": 451.0843152483804
+   },
+   "takeaway": "On the clear day (2024-03-11, mean k 0.96) the daily RMSE of the models is 53 to 192 kW; on the median day (2024-06-09) 32 to 59 kW; on the overcast day (2024-02-16, mean k 0.37) 263 to 975 kW, where persistence misses by 451 kW. Three days illustrate; the scores are in S09-09.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-29": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The quantile forecasts of the sequence models",
+   "file": "outputs/figures/stage_09/S09-29_quantile_forecasts.png",
+   "file_sha256": "f108302ba896397d24fec2e48354ba8b8575af401cb287ef44179c4949773ea0",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/bilstm/quantiles_lstm_sota_seed42.csv": "397915f5903618a4398e5ff9b8cfd3b6c03dd9821ebaf67cea953bfa7b7e5064",
+    "outputs/runs/20261111T160714Z_dev/tft96/quantiles_tft_96_seed42.csv": "7048cafbfb34ce9fe0a4becf322b88a3bbdc791e8dbb76f213e35fd8ce39e75d",
+    "outputs/runs/20261111T160714Z_dev/tft168/quantiles_tft_168_seed42.csv": "3657865ecd1916d82ba4256ea3ac9e9a3af1c3537bc40c9c08a8ad026a1618f0",
+    "outputs/runs/20261111T160714Z_dev/tftbase/quantiles_tft_seed42.csv": "7ed155c6387679bedf43e7bfd67f5fa0cdec99c343db737bf4ce8d64225428bc",
+    "outputs/runs/20261111T160714Z_dev/bilstm/predictions_lstm_sota_seed42.csv": "c941c85c3b0da63da51eb1b2010067e47f75cbb2850d9bbcf9a664436f76c1f2",
+    "outputs/runs/20261111T160714Z_dev/tft96/predictions_tft_96_seed42.csv": "6574bb6d88952efadd518cb24e3ce6695a451de31e175e5ef92e04b82d3fcb0c",
+    "outputs/runs/20261111T160714Z_dev/tft168/predictions_tft_168_seed42.csv": "5e1988ed56bf2a9446bd0e389f384804181e4eff555b5ac51b752e7547fe4684",
+    "outputs/runs/20261111T160714Z_dev/tftbase/predictions_tft_seed42.csv": "f31124a7650540f6245126b02fb9fe5bb70847822b86cf14713b306014eef97a"
+   },
+   "facts": {
+    "cross_max": 66.36791910835345,
+    "cross_name": "TFT-96, direct",
+    "n_cross": 5,
+    "n_pairs": 8,
+    "cov_min": 62.16247271055958,
+    "cov_max": 87.70538894634035
+   },
+   "takeaway": "The quantiles are out of order on up to 66 % of the hours (TFT-96, direct); 5 of 8 model-route pairs cross on more than 1 % of the hours, and the BiLSTM never. The central interval covers 62 to 88 % of the hours. The point forecast is the median head and is not affected; intervals and the potential skill of L-14 need ordered quantiles (X53).",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-30": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Where the error comes from, model by model",
+   "file": "outputs/figures/stage_09/S09-30_error_breakdown.png",
+   "file_sha256": "91e16d5686684e84db333f9778a2145b8a87a281dfa7951ede2e987a688f7a44",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/seasonal_metrics.csv": "53dfee59f3107c73614c103401188cb17c21a75ce2eb565fcd561be2a858dc01",
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/seasonal_metrics.csv": "6d1c271f620e478768e5742e431ba768507b670cf6103e42c494e99e57de2afb",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/benchmark_views.csv": "d97f8e2973795f0591b778b0b647df954dbe8203c2d551617ebae34dc94217b9",
+    "outputs/runs/20261111T160714Z_dev/evaluate/val/benchmark_views.csv": "7172caa3464df71182ed9bfcb640f287fbdacd7e3efc4d58f5ed237af891cc72"
+   },
+   "facts": {
+    "worst": "Winter",
+    "best": "Summer",
+    "n_fall": 334,
+    "n_winter": 290,
+    "drop_min": 1.2875199999999998,
+    "drop_max": 1.8934930000000003
+   },
+   "takeaway": "Every model errs most in Winter and least in Summer (direct route, D+1; validation spans February to September, so winter is February only, 290 hours, and autumn September only, 334 hours). Leaving out the limited hours lowers the error by 1.3 to 1.9 points for every model and route.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-31": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Learning curves of the XGB final fits",
+   "file": "outputs/figures/stage_09/S09-31_xgb_learning_curves.png",
+   "file_sha256": "00882f40986c88f15dac33059e91df29de966984a372005b3fe9b4293c3d0ea6",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/xgb/learning_curves.csv": "57aaccf917f57cddb50b4f046daad72e3d5fdb4b7a5bc314bc6874bd9a68a68c",
+    "outputs/runs/20261112T063719Z_dev/xgb/best_params.json": "1aa1e9221d6c64c6f1063ee9fdd8aae1b2ca0ff2f34d6e5a3fef5c0af9639f9b"
+   },
+   "facts": {
+    "best_min": 29,
+    "best_max": 340,
+    "n_capped": 1,
+    "n_stopped": 5,
+    "n_fits": 6
+   },
+   "takeaway": "The best rounds lie between 29 and 340. Early stopping ended 5 of 6 fits after 50 rounds without a better validation error; in 1 the best round was the last one allowed. Where the fit went on, the training error kept falling after the best round.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-32": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Optuna searches of XGB",
+   "file": "outputs/figures/stage_09/S09-32_xgb_optimization.png",
+   "file_sha256": "2ff865054ec9fb9516df61e8f42de5bdd63ab6ad6a09a568f70a276f49c9147f",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/xgb/trials.csv": "5cabaf9bb5d0d2258223e24db0881b1905bd0878b9cddcbebdf70a69b4f14e29"
+   },
+   "facts": {
+    "n_trials": 120,
+    "gain_min": 0.14455239946751508,
+    "gain_max": 0.20215113840486154,
+    "n_late": 4,
+    "n_studies": 6
+   },
+   "takeaway": "120 trials in all; the best trial improved on the first by 0.14 to 0.20 points, and 4 of 6 studies found their best value in the last quarter of their trials.",
+   "git_commit": "9ad5af7+dirty"
+  },
+  "S09-33": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The runs of stage 9 so far",
+   "file": "outputs/figures/stage_09/S09-33_stage9_runs.png",
+   "file_sha256": "0244f7c38c00458ae37f5c23e2869e16b5dc8d1a8020589aba77b841aa5149db",
+   "inputs": {
+    "outputs/runs/20261105T195802Z_smoke/run.json": "0560d9aa4083e072b7018e6cdc507bb503196327bb07abb627505d5d928c0c3a",
+    "outputs/runs/20261105T195821Z_dev/run.json": "32d0b0b33c3a4f24f6f92c722395e2f19b4b56f53090b8629484b51538a87a2e",
+    "outputs/runs/20261107T104110Z_smoke/run.json": "4f20b2eb836c53176a6da19f866ac24df9e7c37b54a0e93a64a6af1ad4d85f60",
+    "outputs/runs/20261107T104151Z_dev/run.json": "cb2ea5fc477aec415f3e7f99605bc30cdc5c4853b311283298711fd1963f6c98",
+    "outputs/runs/20261107T132101Z_smoke/run.json": "1efc91a566532d4e08e0dd9a99b79d2adcdad9af7331b9b740f4c53c866916f6",
+    "outputs/runs/20261107T132142Z_dev/run.json": "dd2af9e8e00dba7891615b905a8a4e7094f02216f28943d6c172680ca33d706f",
+    "outputs/runs/20261107T135938Z_dev/run.json": "0a0ab2c18c9fed25b991bb2371685a719913dd19c69e6b328bdde16cfe2051a1",
+    "outputs/runs/20261111T155030Z_smoke/run.json": "8cdd53fa200a188723ca4062ce36d8f5d3398e1ea8d16d8bb02af3d6c153969c",
+    "outputs/runs/20261111T155739Z_smoke/run.json": "83200c9b3620af676357db7cb6890beea458199d377fe8bc1b3a829158b9b5d2",
+    "outputs/runs/20261111T160241Z_smoke/run.json": "27a410301fe93aba0ab950dc953f8f5ee96ceb2b657a5569d3dc59bad46c697f",
+    "outputs/runs/20261111T160714Z_dev/run.json": "4c6ed702fa53d6c1723e0050cfb31c0cda36f8a339ce647f4688de78aff37c68",
+    "outputs/runs/20261112T060949Z_smoke/run.json": "a2433cc883c4660d341b5b647278cfe4ae554232039b687e9119e55398f5e7fb",
+    "outputs/runs/20261112T062618Z_smoke/run.json": "0da81017d053e58597478841a77858093a62169df04569543d9f8f1c498a74c7",
+    "outputs/runs/20261112T063719Z_dev/run.json": "2687a38d6a4353b066b3fada4a13767f70b6dcf721892ba27dcf8db1d8418588"
+   },
+   "facts": {
+    "n_runs": 14,
+    "n_smoke": 8,
+    "n_dev": 6,
+    "hours": 3.929055555555556,
+    "neural_pct": 87.79322144139812,
+    "longest": "20261111T160714Z_dev",
+    "longest_h": 3.217694444444445,
+    "n_failed": 4,
+    "failed_runs": "20261111T155030Z_smoke"
+   },
+   "takeaway": "14 runs: 8 smoke and 6 development, no final run. 3.9 h of steps in all, 88 % of them in the neural models; the longest run is 20261111T160714Z_dev (3.2 h). 4 steps failed, in 20261111T155030Z_smoke, and each passed in the next run that ran it. Each run keeps its configuration hash, and every completed step its commit and fingerprint.",
+   "git_commit": "9ad5af7+dirty"
+  },
   "C-01": {
    "stage": "correction",
    "kind": "correction",
@@ -1159,7 +1405,7 @@
     "rel": 0.021553061462691314
    },
    "takeaway": "All three seed-table rows, seed 42 included, are the training script's own metrics (the seed-42 row equals the training output file): at D+1 they average 19.7 % (indirect) and 8.5 % (direct), while the scored seed-42 forecast has 30.2 % and 12.6 %. The reported relative spread of 2.2% is therefore not a spread of day-ahead errors; only one seed was scored.",
-   "git_commit": "d21a43b"
+   "git_commit": "9ad5af7+dirty"
   },
   "C-08": {
    "stage": "correction",
@@ -1183,7 +1429,7 @@
     "n_rb": 2901
    },
    "takeaway": "In the submission the six models were scored on 2,510 to 2,580 hours at D+1 (BiLSTM 2,510, the three TFTs 2,554, XGB and PatchTST 2,580): each model's input window decided which hours it forecast, so a difference between two models also mixes different hours. In the rebuild all 6 models and the 3 references are scored on the same 2,901 validation hours at every horizon.",
-   "git_commit": "d21a43b"
+   "git_commit": "9ad5af7+dirty"
   },
   "C-09": {
    "stage": "correction",
@@ -1206,7 +1452,7 @@
     "flat": 0.004006476351627942
    },
    "takeaway": "TFT-96 reads only the last 96 hours, so it has no position 168 hours before issuance. In all 4 model-route pairs of the rebuild the first position of the encoder lies 8% to 28% above the same hour of the later days, which agree to within 0.40%: a rise at the edge of the window, whatever its length. A 168-hour encoder puts that edge exactly at -168 h.",
-   "git_commit": "d21a43b"
+   "git_commit": "9ad5af7+dirty"
   },
   "C-10": {
    "stage": "correction",

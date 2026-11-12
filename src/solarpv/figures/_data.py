@@ -20,6 +20,13 @@ NEURAL_DEV_RUN = "outputs/runs/20261111T160714Z_dev"
 # W5: the XGB dev run with select, explain and report; it reproduces 20261107T135938Z_dev byte
 # for byte (R9-21). The neural dev run got select, explain and report by --resume.
 W5_XGB_DEV_RUN = "outputs/runs/20261112T063719Z_dev"
+# Every run of stage 9 so far, in order (S09-33); a new run is added here when a task makes one
+STAGE9_RUNS = tuple(f"outputs/runs/{r}" for r in (
+    "20261105T195802Z_smoke", "20261105T195821Z_dev", "20261107T104110Z_smoke",
+    "20261107T104151Z_dev", "20261107T132101Z_smoke", "20261107T132142Z_dev",
+    "20261107T135938Z_dev", "20261111T155030Z_smoke", "20261111T155739Z_smoke",
+    "20261111T160241Z_smoke", "20261111T160714Z_dev", "20261112T060949Z_smoke",
+    "20261112T062618Z_smoke", "20261112T063719Z_dev"))
 
 
 def table(rel: str, columns: list[str], split: str | None = None) -> pd.DataFrame:

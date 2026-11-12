@@ -3,3 +3,4 @@
 - [Windows text-editing pitfalls](windows-text-editing-pitfalls.md) — heredoc patches fail silently, write_text gives CRLF, cp1252 stdout
 - [Stage notebooks for the committee](stage-notebooks-for-committee.md) — every stage ends with a live notebook built from its outputs
 - [Session recommendation in every reply](session-recommendation-each-reply.md) — end each reply: continue here or open a new session, and why
+- [Figures for every task, shown](figures-every-task.md) — skill task-figures at every task end: look back, uniform across models, sheet, show every figure; corrections only in defense notes

@@ -1437,3 +1437,8 @@ figure registry; S09-20–S09-24 cover the outputs that had no figure (the selec
 booster rounds of SHAP, the dominance and rank checks, the TFT selection weights, the G-1
 points). Sheet: `docs/figure_sheets/S09-W5.md`. From now on every task, W6 included, ends with
 its figures, its sheet, and the figures shown to the user (rule 7 of `docs/figures_plan.md`).
+
+*W4 figures redone (2026-11-12, user request, R9-23):* with a look-back over the earlier tasks
+(rule 8) and one look for every model (rule 9): W4 gained S09-25–S09-30, W2 S09-31 and S09-32,
+W1 S09-33. Figure S09-29 found X53 (TFT quantiles out of order on most direct-route hours), on
+the G-1 list for the user's decision. W6 ends with the skill `task-figures`.

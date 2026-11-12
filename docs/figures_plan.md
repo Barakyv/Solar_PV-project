@@ -72,6 +72,19 @@ figures, says what each one shows or what it led to, or checks that a figure is 
    it led to, file, inputs, commit; generated, never edited), and every PNG is looked at. The
    figures and the sheet are then shown to the user in the app, and the closing message lists
    each figure's ID with its takeaway. A task is not complete until its figures are shown.
+8. **Every task looks back** (user request, 2026-11-12). Before its figures are built, the task
+   reviews every earlier task and stage: what the new outputs now make possible (a run, a table
+   with all models, a report), which earlier figure is now incomplete (a model missing, a
+   number typed that can now be read from an output), and which producer figure has no place
+   in the book. What can be drawn from existing outputs is built, under the task it documents;
+   what needs new computation or a decision is listed for the user. Each look-back is a row of
+   the look-back log (§7); T-72 fails when a completed task has none.
+9. **Uniform figures across the models** (user request, 2026-11-12). Every model-level kind of
+   figure (score against the references, significance, route comparison, learning curves,
+   search history, bias, error breakdown, example days, intervals and explanations where the
+   model has them) covers every model in one layout, and each model keeps one colour and
+   marker in every figure (`MODEL_STYLE` in `solarpv.figures.s09_models`; T-72). A model
+   without the output is named in the figure with the reason. The coverage matrix is §8.
 
 ## 4. Design
 
@@ -146,6 +159,16 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-22 | 9 | Checks of the XGB explanation | W5 XGB dev `xgb_shap_checks.csv`, `xgb_shap_rank_stability.csv` |
 | S09-23 | 9 | What the TFT models select | neural dev `tft_variable_importance.csv` |
 | S09-24 | 9 | Points the run reports raise for G-1 | both dev runs `report_g1_points.csv` |
+| S09-25 | 9 | The six models side by side | the run configurations, `select.json` |
+| S09-26 | 9 | Every model against persistence: Diebold-Mariano in kW | both dev runs `dm_tests_kw.csv` |
+| S09-27 | 9 | The two routes, model by model | both dev runs `route_comparison.csv` |
+| S09-28 | 9 | Forecasts on three validation days | the dev prediction files, stage-6 truth (validation) |
+| S09-29 | 9 | The quantile forecasts of the sequence models | neural dev `quantiles_*.csv`, predictions |
+| S09-30 | 9 | Where the error comes from, model by model | both dev runs `seasonal_metrics.csv`, `benchmark_views.csv` |
+| S09-31 | 9 | Learning curves of the XGB final fits (look-back, W2) | W5 XGB dev `learning_curves.csv`, `best_params.json` |
+| S09-32 | 9 | Optuna searches of XGB (look-back, W2) | W5 XGB dev `trials.csv` |
+| S09-33 | 9 | The runs of stage 9 so far (look-back, W1) | every stage-9 `run.json` |
+| S08-04 | 8 | The secondary views of the evaluation (look-back) | stage-8 `benchmark_views.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
 | C-03 | correction | Clear-sky index of the submission and of the rebuild | submission, stage-6 table |
@@ -178,3 +201,43 @@ found five outputs without one, now S09-20 (the select step's checks), S09-21 (S
 saved booster against the booster cut at the forecast's rounds, X46), S09-22 (dominance and
 rank stability of the XGB explanation), S09-23 (the TFT variable-selection weights by group,
 X48) and S09-24 (the points the run reports list for G-1).
+
+*Added 2026-11-12 (user request: W4 redone, rules 8 and 9):* the W4 figures were reviewed the
+same way, with a look-back over every earlier task and stage and a check that every model gets
+the same kinds of figure. W4 gained S09-25–S09-30 (the models side by side, significance against
+persistence, the two routes, three example days, the quantile forecasts, the error by season and
+by operation); the look-back added S09-31 and S09-32 to W2 (XGB learning curves and searches in
+the layout of the neural ones), S09-33 to W1 (the runs of stage 9), S08-04 to stage 8 (the
+secondary views), redrew S09-06 with all five encoders read from the W3 report (it showed three,
+with typed lengths), and gave XGB one colour in every figure (it was blue in S09-02 and black in
+S09-09). S09-29 found X53: the quantiles of two TFTs are out of order on most direct-route hours.
+Findings: X53, X54 (`docs/errata.md`).
+
+## 7. Look-back log (rule 8)
+
+One row per look-back. *At the end of* is the task that ran it; *Reviewed* the earlier tasks and
+stages; *Built* the figures it added, under the task each documents; *Not built* what needs new
+computation or a decision, for the user.
+
+| Date | At the end of | Reviewed | Built | Not built, and why |
+|---|---|---|---|---|
+| 2026-11-12 | S09-W5 | the W5 outputs against the W5 figures (rule 7; rule 8 came after) | S09-20–S09-24 | none |
+| 2026-11-12 | S09-W4 (redone after W5) | stages 0–8; S09-W1, S09-W2, S09-W3 and S09-W5; every model-level figure against rule 9 | W4: S09-25–S09-30; W2: S09-31, S09-32; W1: S09-33; W3: S09-06 redrawn with all five encoders; stage 8: S08-04; S09-02 redrawn in XGB's colour | explanations of the BiLSTM and PatchTST (no such output; new computation and a change of D-31, the user's decision); seed spread (one seed in the dev runs; the final run has three); intervals of XGB and PatchTST (point forecasts only); test-split figures (stage 10, after G-1); stages 3 and 3b keep their producer figures (complete, listed in the catalog) |
+
+## 8. Coverage of the models (rule 9)
+
+| Kind of figure | XGB | BiLSTM | TFT-96 | TFT-168 | TFT baseline | PatchTST | Figures |
+|---|---|---|---|---|---|---|---|
+| Inputs, outputs and budgets | yes | yes | yes | yes | yes | yes | S09-25 |
+| Score against the references | yes | yes | yes | yes | yes | yes | S09-02, S09-09 |
+| Significance in kW | yes | yes | yes | yes | yes | yes | S09-26 (S09-05: XGB against each reference) |
+| The two routes | yes | yes | yes | yes | yes | yes | S09-27 |
+| Example days | yes | yes | yes | yes | yes | yes | S09-28 |
+| Error by season and by operation | yes | yes | yes | yes | yes | yes | S09-30 |
+| Learning curves | yes | yes | yes | yes | yes | yes | S09-31, S09-08 |
+| Search history | yes | yes | yes | yes | fixed settings | fixed settings | S09-32, S09-10 |
+| Hyper-parameter importance | yes | yes | yes | yes | fixed settings | fixed settings | S09-17 |
+| Mean bias | validation line | yes | yes | yes | yes | yes | S09-12 |
+| Smoke runs and time | yes | yes | yes | yes | yes | yes | S09-33, S09-07, S09-18 |
+| Intervals | point only | yes | yes | yes | yes | point only | S09-29 |
+| Explanation | SHAP | none (D-31) | attention, selection weights | attention, selection weights | attention, selection weights | none (D-31) | S09-14, S09-15, S09-21, S09-22; S09-11, S09-16, S09-23 |

@@ -30,11 +30,12 @@ D15_DECISION = "configs/monotone_decision.yaml"
 L09 = "outputs/09_xgb_checks/l09_check.csv"
 L09_DECISION = "configs/mos_decision.yaml"
 SEQ_CHECKS = "outputs/09_sequence_data/checks_dev.csv"
+SEQ_REPORT = "outputs/09_sequence_data/dataset_report_dev.json"
 REF_NAMES = {"persistence": "persistence (same hour, h days earlier)",
              "climatology": "climatology", "clearsky_k": "clear sky x mean k",
              "xgb_sota": "XGB, development run"}
 REF_STYLE = {"persistence": (C["grey"], "^:"), "climatology": (C["green"], "s--"),
-             "clearsky_k": (C["orange"], "D-."), "xgb_sota": (C["blue"], "o-")}
+             "clearsky_k": (C["orange"], "D-."), "xgb_sota": ("black", "o-")}  # rule 9: as S09-09
 KEYS = [f"{t}_D{h}" for t in ("indirect", "direct") for h in (1, 2, 3)]
 
 
@@ -428,10 +429,11 @@ def _rect(x, y, w, h, face):
     "train and validation origins (23 and 25 hours on daylight-saving days).",
     "{n_train} train and {n_val} validation origins, one per local day. Blocks are {n24:,} "
     "days of 24 hours, {n23} of 23 and {n25} of 25; every check passed (each hour forecast once "
-    "per horizon, the encoder ends at issuance, no step reaches the test period).",
+    "per horizon, the encoder ends at issuance, no step reaches the test period). The encoders "
+    "of the {n_models} models hold {enc_min} to {enc_max} hours.",
     "BiLSTM, the three TFTs and PatchTST read these datasets in W4, with the loss on exactly the "
     "rows XGB is trained on.",
-    (SEQ_CHECKS,))
+    (SEQ_CHECKS, SEQ_REPORT))
 def s09_sequence():
     c = D.csv(SEQ_CHECKS)
     checks = [col for col in c.columns if c[col].dtype == bool]
@@ -439,16 +441,21 @@ def s09_sequence():
     first = c[(c["target"] == "indirect")].drop_duplicates("scope")
     lengths = {s: json.loads(r)
                for s, r in zip(first["scope"], first["block_lengths"], strict=True)}
-    fig, (a1, a2) = subplots(1, 2, height=2.6, gridspec_kw={"width_ratios": [1.6, 1]})
-    for i, (name, enc) in enumerate((("BiLSTM", 72), ("TFT-96", 96), ("TFT-168", 168))):
-        a1.barh(i, enc, left=-enc, color=C["sky"], height=0.5)
-        a1.text(-enc + 2, i, f"{name}: {enc} h", va="center", fontsize=7.5)
+    report = D.jload(SEQ_REPORT)["datasets"]
+    # look-back of 2026-11-12 (rule 8): every model's encoder, read from the W3 report
+    enc = {name: report[f"train/indirect/{step}"]["encoder_hours"] for step, _, name in NEURAL}
+    assert all(report[f"train/direct/{s}"]["encoder_hours"] == enc[n] for s, _, n in NEURAL)
+    fig, (a1, a2) = subplots(1, 2, height=2.8, gridspec_kw={"width_ratios": [1.6, 1]})
+    for i, (name, hours) in enumerate(enc.items()):
+        a1.barh(i, hours, left=-hours, color=C["sky"], height=0.5)
+        a1.text(-hours + 2, i, f"{name}: {hours} h", va="center", fontsize=7)
+    top = len(enc) + 0.2
     for j, h in enumerate((1, 2, 3)):
-        a1.barh(3.2, 24, left=j * 24, color=[C["orange"], C["yellow"], C["green"]][j],
+        a1.barh(top, 24, left=j * 24, color=[C["orange"], C["yellow"], C["green"]][j],
                 height=0.5, edgecolor="white")
-        a1.text(j * 24 + 12, 3.2, f"D+{h}", ha="center", va="center", fontsize=8)
+        a1.text(j * 24 + 12, top, f"D+{h}", ha="center", va="center", fontsize=8)
     a1.axvline(0, color=C["red"], ls="--", lw=1)
-    a1.text(2, 2.6, "issuance (00:00 local)", color=C["red"], fontsize=7.5)
+    a1.text(2, top - 0.6, "issuance (00:00 local)", color=C["red"], fontsize=7)
     a1.set_xlim(-175, 76)
     a1.set_yticks([])
     a1.set_xlabel("hours from issuance")
@@ -468,7 +475,8 @@ def s09_sequence():
     tot = counts.sum(axis=1)
     facts = {"n_train": int(origins.get("train")),
              "n_val": int(origins.get("val", origins.get("validation", 0))),
-             "n23": int(tot.get(23, 0)), "n24": int(tot.get(24, 0)), "n25": int(tot.get(25, 0))}
+             "n23": int(tot.get(23, 0)), "n24": int(tot.get(24, 0)), "n25": int(tot.get(25, 0)),
+             "n_models": len(enc), "enc_min": min(enc.values()), "enc_max": max(enc.values())}
     return fig, facts
 
 

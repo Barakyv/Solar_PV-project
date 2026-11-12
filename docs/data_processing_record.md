@@ -1062,7 +1062,11 @@ amendment of 2026-11-07).**
   sheet in `docs/figure_sheets/`, the gallery is grouped by task, and the process figures
   S09-20–S09-24 cover the W5 outputs that had none (the select checks, the booster rounds of
   SHAP, the dominance and rank checks, the TFT selection weights, the G-1 points): 59 figures,
-  49 process and 10 correction.
+  49 process and 10 correction. The W4 figures were then redone with a look-back and one look
+  for every model (2026-11-12, X53, X54, R9-23): S09-25–S09-30 for W4, S09-31 and S09-32 for
+  W2, S09-33 for W1 and S08-04 for stage 8, with S09-06 and S09-02 redrawn: 69 figures, 59
+  process and 10 correction. S09-28 and S09-29 read the dev prediction and quantile files and
+  the stage-6 truth through `load_truth` with the test split excluded in the reader.
 - *Verification:* `tests/contracts/test_figures.py` (T-72): every registered figure is built,
   unchanged since the build and drawn from unchanged inputs; every takeaway re-renders from its
   facts; the catalog is current; every completed stage has process figures; process figures do

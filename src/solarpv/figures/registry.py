@@ -81,13 +81,13 @@ EXISTING = [
 # its figures are listed here and its sheet is written.
 WORK_ITEMS = {
     "9": {
-        "W1": ("The runner, the baselines and the evaluate step", ("S09-01",)),
+        "W1": ("The runner, the baselines and the evaluate step", ("S09-01", "S09-33")),
         "W2": ("The XGB step and its development run",
-               ("S09-02", "S09-03", "S09-04", "S09-05")),
+               ("S09-02", "S09-03", "S09-04", "S09-05", "S09-31", "S09-32")),
         "W3": ("The datasets of the sequence models", ("S09-06",)),
         "W4": ("The five neural models",
-               ("S09-07", "S09-08", "S09-09", "S09-10", "S09-11", "S09-12",
-                "C-07", "C-08", "C-09")),
+               ("S09-07", "S09-08", "S09-09", "S09-10", "S09-11", "S09-12", "S09-25",
+                "S09-26", "S09-27", "S09-28", "S09-29", "S09-30", "C-07", "C-08", "C-09")),
         "W5": ("Select, explain, report, the final gate and the runbook",
                ("S09-13", "S09-14", "S09-15", "S09-16", "S09-17", "S09-18", "S09-19",
                 "S09-20", "S09-21", "S09-22", "S09-23", "S09-24", "C-10")),
@@ -142,7 +142,15 @@ def tasks(specs: list[FigureSpec]) -> dict[str, list[FigureSpec]]:
 
 def load_all() -> list[FigureSpec]:
     """Import every stage module so that its figures register, in stage order."""
-    from solarpv.figures import correction, s00_s02, s04_s05, s06, s07_s09, s09_w5  # noqa: F401
+    from solarpv.figures import (  # noqa: F401
+        correction,
+        s00_s02,
+        s04_s05,
+        s06,
+        s07_s09,
+        s09_models,
+        s09_w5,
+    )
     order = {s: i for i, s in enumerate(STAGES)}
     ids = [f.id for f in REGISTRY]
     assert len(ids) == len(set(ids)), "duplicate figure id"

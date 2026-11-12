@@ -38,9 +38,12 @@ from solarpv.figures.correction import (
 from solarpv.figures.registry import WORK_ITEMS, load_all, task_of, tasks
 
 # stage -> minimum number of process figures; update when a stage is completed
-REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 3, "9": 24}
+REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 4, "9": 33}
 # completed work item -> minimum number of process figures; add a row when a task is completed
-REQUIRED_TASKS = {"S09-W1": 1, "S09-W2": 4, "S09-W3": 1, "S09-W4": 6, "S09-W5": 12}
+REQUIRED_TASKS = {"S09-W1": 2, "S09-W2": 6, "S09-W3": 1, "S09-W4": 12, "S09-W5": 12}
+# tasks completed before the look-back rule (2026-11-12); they were reviewed in hindsight
+BEFORE_LOOKBACK = {"S09-W1", "S09-W2", "S09-W3"}
+PLAN = REPO_ROOT / "docs" / "figures_plan.md"
 SUBMISSION_READERS = {"S08-02"}  # evaluation code checked on the surviving forecasts (T-15)
 DEFENSE = REPO_ROOT / "docs" / "defense_notes.md"
 
@@ -162,6 +165,38 @@ def test_figure_sheets_are_current(specs, manifest):
     assert SHEET_INDEX.read_text(encoding="utf-8") == sheet_index_text(manifest)
     extra = {p.stem for p in SHEETS.glob("*.md")} - keys - {SHEET_INDEX.stem}
     assert not extra, f"sheets of no task: {sorted(extra)}"
+
+
+def lookback_rows() -> list[list[str]]:
+    text = PLAN.read_text(encoding="utf-8").split("## 7. Look-back log", 1)[1]
+    rows = [r.strip().strip("|").split("|") for r in text.splitlines() if r.startswith("| 20")]
+    return [[c.strip() for c in r] for r in rows]
+
+
+def test_every_completed_task_has_a_lookback(specs):
+    """Rule 8: every completed task ends with a look-back over the earlier tasks and stages,
+    recorded in the look-back log of docs/figures_plan.md; the tasks completed before the rule
+    were reviewed in hindsight."""
+    rows = lookback_rows()
+    assert rows, "the look-back log of docs/figures_plan.md has no row"
+    ended = {r[1].split()[0] for r in rows}
+    reviewed = " ".join(r[2] for r in rows)
+    for key in REQUIRED_TASKS:
+        if key in BEFORE_LOOKBACK:
+            assert key in reviewed or key in ended, f"{key} was never reviewed in hindsight"
+        else:
+            assert key in ended, f"{key}: no look-back row at the end of the task"
+
+
+def test_one_style_per_model():
+    """Rule 9: every model has one colour and marker, the same in every model-level figure."""
+    from solarpv.figures.s07_s09 import NEURAL_STYLE, REF_STYLE
+    from solarpv.figures.s09_models import MODEL_STYLE, MODELS
+
+    assert MODEL_STYLE["xgb_sota"] == REF_STYLE["xgb_sota"]
+    assert all(MODEL_STYLE[m] == NEURAL_STYLE[m] for m in NEURAL_STYLE)
+    colours = [MODEL_STYLE[m][0] for _, m, _ in MODELS]
+    assert len(set(colours)) == len(colours), "two models share a colour"
 
 
 def test_defense_notes_use_every_correction_figure(specs):

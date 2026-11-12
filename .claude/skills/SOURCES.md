@@ -15,6 +15,7 @@ the agent but never overrides `CLAUDE.md` or `PROJECT_MASTER.md`.
 | scientific-writing | same | `skills/scientific-writing` | same | MIT |
 | systematic-debugging | https://github.com/obra/superpowers | `skills/systematic-debugging` | `2ce8aa15d05bd57213e6f746f953aafb7ded7a8b` | MIT (`LICENSE-superpowers.txt`) |
 | verification-before-completion | same | `skills/verification-before-completion` | same | MIT |
+| task-figures | **locally authored** for this project (2026-11-12, user request: figures at the end of every task, a look-back, uniform across the models) | — | — | project |
 | forecasting-validity-review | **locally authored** for this project | — | — | project |
 
 `anthropics/skills` was cloned at `ca45fc496a3436251f191354091d557da31c15b5` to check the

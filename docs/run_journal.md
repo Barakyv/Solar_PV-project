@@ -1728,3 +1728,33 @@ hashes, numbers) and the commit messages are the record:
   - S09-24: the two run reports list 38 points of 7 kinds for G-1.
 - **Checks:** every new PNG looked at (one legend moved off the labels of S09-21); T-72 passes.
 - **Next:** unchanged: W6 after the answers of the college IT (Q-15).
+
+### 2026-11-12 · R9-23 · W4 figures redone: look-back and one look for every model (X53, X54)
+
+- **Request (user):** the same for the W4 figures; the figures must be uniform across the
+  models; every figure production must look back over the earlier stages for figures that can
+  be made in hindsight, from now on; update the Claude folder.
+- **Rules:** rule 8 (look-back, with a log in `docs/figures_plan.md` §7) and rule 9 (uniform
+  across the models, one style per model, coverage matrix §8); the project skill
+  `.claude/skills/task-figures/SKILL.md`; `CLAUDE.md`, the auto-memory and
+  `docs/claude_memory/figures-every-task.md`. T-72 checks the look-back rows and the styles.
+- **W4 figures added** (validation only, dev budgets, one seed, nothing decided):
+  - S09-25: the six models side by side; one objective for all (nRMSE in kW of the point);
+  - S09-26: every model against persistence (DM in kW): 5 of 6 significantly better in all six
+    cases, PatchTST in 5 (not at indirect D+1); none worse. The dev runs used different DM
+    references (XGB's run: XGB; the neural run: persistence), which the evaluate step chooses;
+  - S09-27: the two routes per model: direct better at D+1 for 4 of 6; largest gap PatchTST;
+  - S09-28: three validation days chosen by rule (highest, median, lowest mean k);
+  - S09-29: the quantile forecasts: **X53**, quantiles out of order on 66 % (TFT-96 direct) and
+    56 % (TFT baseline direct) of the scored hours; coverage of the 80 % interval 62–88 %;
+  - S09-30: every model errs most in winter (February) and least in summer; normal operation
+    lowers the error by 1.3–1.9 points.
+- **Look-back (X54):** S09-31 and S09-32 (W2: XGB curves and searches in the neural layout),
+  S09-33 (W1: the 14 runs of stage 9, 3.9 h of steps, 88 % neural; the 4 failed steps of the
+  first neural smoke passed in the next run), S08-04 (stage 8: the secondary views; the
+  data-source views equal all hours on validation), S09-06 redrawn with all five encoders from
+  the W3 report, XGB black in every figure (S09-02 redrawn).
+- **Not built:** explanations of the BiLSTM and PatchTST (new computation, D-31), seed spread
+  (final run), intervals of XGB and PatchTST (point forecasts), test-split figures (stage 10).
+- **Decision needed (user):** X53, whether to sort the quantiles before any interval or the
+  L-14 potential skill uses them; on the G-1 list.
