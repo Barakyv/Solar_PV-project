@@ -1,0 +1,7 @@
+model,target,horizon,n_seeds,std_kw_pp,std_target_unit_pp,above_rule
+xgb_sota,direct,1,1,,,False
+xgb_sota,direct,2,1,,,False
+xgb_sota,direct,3,1,,,False
+xgb_sota,indirect,1,1,,,False
+xgb_sota,indirect,2,1,,,False
+xgb_sota,indirect,3,1,,,False

@@ -1,0 +1,35 @@
+step,model,target,horizon,seed,n_complete,n_trials,all_in_startup,param,importance_mean,importance_std,note
+bilstm,lstm_sota,indirect,all,42,20,20,False,batch_size,0.03357448912999918,0.01728062001561679,
+bilstm,lstm_sota,indirect,all,42,20,20,False,dropout,0.3465120406761833,0.03853084116284056,
+bilstm,lstm_sota,indirect,all,42,20,20,False,hidden,0.09299115988517459,0.02090993390207396,
+bilstm,lstm_sota,indirect,all,42,20,20,False,lr,0.0979252376459798,0.03701175754286899,
+bilstm,lstm_sota,indirect,all,42,20,20,False,n_layers,0.4289970726626632,0.059242283047177165,
+bilstm,lstm_sota,direct,all,42,20,20,False,batch_size,0.33634964436726256,0.047588610981691704,
+bilstm,lstm_sota,direct,all,42,20,20,False,dropout,0.23408270359155633,0.07655457213596749,
+bilstm,lstm_sota,direct,all,42,20,20,False,hidden,0.0497790756719588,0.015714384455690976,
+bilstm,lstm_sota,direct,all,42,20,20,False,lr,0.2545970911956209,0.03829588669109183,
+bilstm,lstm_sota,direct,all,42,20,20,False,n_layers,0.1251914851736014,0.033659593652807816,
+tft96,tft_96,indirect,all,42,7,7,True,attention_head_size,0.05321937235177623,0.012224072674093001,inside TPE's random start-up
+tft96,tft_96,indirect,all,42,7,7,True,dropout,0.24013450324878968,0.03490972196544222,inside TPE's random start-up
+tft96,tft_96,indirect,all,42,7,7,True,hidden_continuous_size,0.46859053239262927,0.03213723558534585,"inside TPE's random start-up; sampled value; the network uses min(value, hidden_size) (X45)"
+tft96,tft_96,indirect,all,42,7,7,True,hidden_size,0.09231402310795359,0.021508098839837432,inside TPE's random start-up
+tft96,tft_96,indirect,all,42,7,7,True,learning_rate,0.05933597817485502,0.027394823443252156,inside TPE's random start-up
+tft96,tft_96,indirect,all,42,7,7,True,lstm_layers,0.08640559072399626,0.027684737997493238,inside TPE's random start-up
+tft96,tft_96,direct,all,42,7,7,True,attention_head_size,0.05099617083549148,0.02428073033285026,inside TPE's random start-up
+tft96,tft_96,direct,all,42,7,7,True,dropout,0.13442708475137358,0.037759495906103585,inside TPE's random start-up
+tft96,tft_96,direct,all,42,7,7,True,hidden_continuous_size,0.08540857301565033,0.04287276184503575,"inside TPE's random start-up; sampled value; the network uses min(value, hidden_size) (X45)"
+tft96,tft_96,direct,all,42,7,7,True,hidden_size,0.18685239984729832,0.04388868139707702,inside TPE's random start-up
+tft96,tft_96,direct,all,42,7,7,True,learning_rate,0.4541826906539222,0.07065728892056809,inside TPE's random start-up
+tft96,tft_96,direct,all,42,7,7,True,lstm_layers,0.08813308089626413,0.03281850472613692,inside TPE's random start-up
+tft168,tft_168,indirect,all,42,7,7,True,attention_head_size,0.5737087245202313,0.06891888730248305,inside TPE's random start-up
+tft168,tft_168,indirect,all,42,7,7,True,dropout,0.15399049063445577,0.034119903507099245,inside TPE's random start-up
+tft168,tft_168,indirect,all,42,7,7,True,hidden_continuous_size,0.0880536871532805,0.03735869077500504,"inside TPE's random start-up; sampled value; the network uses min(value, hidden_size) (X45)"
+tft168,tft_168,indirect,all,42,7,7,True,hidden_size,0.0223862525897805,0.02169214543794658,inside TPE's random start-up
+tft168,tft_168,indirect,all,42,7,7,True,learning_rate,0.09819632464093561,0.015836138138038715,inside TPE's random start-up
+tft168,tft_168,indirect,all,42,7,7,True,lstm_layers,0.06366452046131645,0.031853717046471976,inside TPE's random start-up
+tft168,tft_168,direct,all,42,7,7,True,attention_head_size,0.030688577391959404,0.013968475542348377,inside TPE's random start-up
+tft168,tft_168,direct,all,42,7,7,True,dropout,0.17693423645795786,0.04366424617758538,inside TPE's random start-up
+tft168,tft_168,direct,all,42,7,7,True,hidden_continuous_size,0.1443003147563193,0.02950066385232811,"inside TPE's random start-up; sampled value; the network uses min(value, hidden_size) (X45)"
+tft168,tft_168,direct,all,42,7,7,True,hidden_size,0.149051813169749,0.053294824384355705,inside TPE's random start-up
+tft168,tft_168,direct,all,42,7,7,True,learning_rate,0.3512145073743987,0.06734826515501911,inside TPE's random start-up
+tft168,tft_168,direct,all,42,7,7,True,lstm_layers,0.14781055084961578,0.04937516477973011,inside TPE's random start-up

@@ -1,0 +1,55 @@
+{
+  "step": "baselines",
+  "run_id": "20261112T063719Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-12T06:37:25.711868+00:00",
+  "commit": "46881ae",
+  "fingerprint": "2579325ffd92470b5bd69068e6796fb554cc6c0e699d7bfb46b90c6a71037b98",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261112T063719Z_dev/logs/baselines_20261112T063725Z.log",
+  "status": "ok",
+  "folder": "baselines",
+  "finished_utc": "2026-11-12T06:37:27.710276+00:00",
+  "duration_s": 2.0,
+  "outputs": {
+    "predictions_clearsky_k.csv": "00f6fc4c659d3898a399dbac406a96ac02a2cefc316a582dfc66e324a890dc8c",
+    "predictions_climatology.csv": "a20a5ef563c761d119d588e16788e47455b1957f68a87400f5f99ebe23dcdaac",
+    "predictions_persistence.csv": "7c47464c8495f6766e69022afb3816a4f6bf250e8eafea052c2e76b0d657a0f5"
+  },
+  "values": {
+    "mean_daytime_k": 0.788157,
+    "rows": 104976,
+    "test_access": []
+  },
+  "notes": {},
+  "summary": [
+    "3 reference files, 104,976 rows"
+  ],
+  "warnings": []
+}

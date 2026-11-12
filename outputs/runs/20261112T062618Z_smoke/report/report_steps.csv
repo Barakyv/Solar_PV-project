@@ -1,0 +1,11 @@
+step,status,commit,fingerprint,duration_s,budget,n_outputs,n_warnings
+select,ok,46881ae,a631149604cd,2.7,,8,0
+baselines,ok,46881ae,c5cdb4324071,0.7,,3,0
+xgb,ok,46881ae,1aa13dac4cbe,17.7,"{""seeds"": [42], ""trials"": 1}",16,12
+bilstm,ok,46881ae,3a41416304a8,37.1,"{""epochs_final"": 2, ""epochs_trial"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",25,2
+tft96,ok,46881ae,b833ea5c2e4a,46.0,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4
+tft168,ok,46881ae,212b9642fca8,46.6,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4
+tftbase,ok,46881ae,f53d8f94c66e,40.8,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 0}",23,2
+patchtst,ok,46881ae,3780b0e7c480,38.8,"{""max_steps"": 20, ""patience"": 10, ""seeds"": [42], ""val_check_steps"": 10}",20,2
+evaluate,ok,46881ae,c1c7b97fc6c3,4.9,,10,0
+explain,ok,46881ae,dde55bf5643e,4.0,,15,0

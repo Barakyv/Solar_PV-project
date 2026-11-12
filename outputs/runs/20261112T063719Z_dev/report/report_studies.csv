@@ -1,0 +1,7 @@
+step,subject,n_trials,n_complete,n_at_cap,best_trial,best_value_kw,edges
+xgb,indirect_D1_seed42,20,20,1,18,6.792150576325868,"max_depth, learning_rate"
+xgb,direct_D1_seed42,20,20,0,19,6.6562440977068205,min_child_weight
+xgb,indirect_D2_seed42,20,20,0,17,7.122298801467009,
+xgb,direct_D2_seed42,20,20,2,10,6.8112708032686085,n_estimators
+xgb,indirect_D3_seed42,20,20,0,17,6.65644247554752,
+xgb,direct_D3_seed42,20,20,0,10,6.426054684857406,

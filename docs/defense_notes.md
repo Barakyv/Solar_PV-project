@@ -198,3 +198,40 @@ by checking against a reference that should agree:
 - partial inverter outages lasting days (F-22; S05-02);
 - a pyranometer reading 0.75 of the truth for months (F-19), a QA sensor only;
 - panels facing 185 degrees, not 180 (F-23).
+
+## 10. The explanations of the models
+
+The explanations were rebuilt in stage 9, W5 (`docs/stage9_plan.md` §19.2, findings M25-M31),
+on the development runs; the report's chapter 11 is rewritten from the final run.
+
+- **Submitted:** the SHAP groups of §11.1 came from a 76-feature XGBoost (C-31) and were led by
+  rolling statistics that leak at D+2 and D+3 (F-07); the group shares summed the members'
+  separate magnitudes, with names assigned by the first matching keyword (C-60); the rows and
+  the explainer were not recorded (C-61); the TFT attention, smoothed and read by lag before
+  issuance, was offered as validation of the SHAP lags, with a -168 h peak that TFT-96 cannot
+  have (C-55, C-62); the hyper-parameter importances came from one unseeded evaluation of 20
+  trials (C-63) and had no output file (C-64).
+- **Why it looked right:** each table had plausible shares, and the agreement between two
+  methods looks like a confirmation.
+- **What revealed it:** the input of the explained model against the documented input, the
+  feature groups against the leakage findings, the attention lag against the encoder length, and
+  every claim against an output file.
+- **Rebuild:** exact TreeSHAP of the booster sliced to its forecast rounds (the saved boosters
+  hold 50 rounds more; explained whole they would be off by up to 199 kW in development, X46),
+  on the scored validation hours, with additivity checked; group attribution as the mean of
+  |sum over the group|; attention read per forecast step against the same hour of earlier days;
+  fANOVA over ten seeds; every report number read from a hashed file.
+- **What the rebuild finds (development runs):** the GFS forecasts lead the SHAP attribution in
+  both routes; the TFT models show no preference for the hour they forecast (same-hour ratio
+  0.82 to 1.07) but a preference for fixed clock hours of earlier days (noon for TFT-96). A
+  preference for a fixed clock hour draws peaks every 24 hours in a profile by lag before
+  issuance, like the one in v6; such peaks do not mean "the same time yesterday".
+- **Figures:**
+  - C-10 (`../outputs/figures/correction/C-10_shap_groups_v6.png`), the SHAP groups (C-59,
+    C-60): rolling statistics led the submission; GFS forecasts lead the rebuild;
+  - process views: S09-14 and S09-15 (SHAP), S09-16 (attention), S09-17 (importance).
+- **IDs:** C-31, C-55, C-58-C-64, M25-M31, X46-X48.
+- **Likely question:** "Why does your SHAP chapter differ from the report?" **Answer:** "The
+  submitted SHAP explained a model with leaking inputs and 76 features; the rebuild explains the
+  model that produced the forecasts, on its own inputs, and checks that the explanation adds up
+  to the forecast."

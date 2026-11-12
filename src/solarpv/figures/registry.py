@@ -77,7 +77,7 @@ EXISTING = [
 
 def load_all() -> list[FigureSpec]:
     """Import every stage module so that its figures register, in stage order."""
-    from solarpv.figures import correction, s00_s02, s04_s05, s06, s07_s09  # noqa: F401
+    from solarpv.figures import correction, s00_s02, s04_s05, s06, s07_s09, s09_w5  # noqa: F401
     order = {s: i for i, s in enumerate(STAGES)}
     ids = [f.id for f in REGISTRY]
     assert len(ids) == len(set(ids)), "duplicate figure id"

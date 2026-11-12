@@ -119,6 +119,13 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-10 | 9 | Optuna searches of the neural models | dev `trials.csv`, `best_params.json` |
 | S09-11 | 9 | Where the TFT models look in their encoder | dev `attention_*.csv` |
 | S09-12 | 9 | Mean bias of the neural models | dev `mbe.csv`, `r14_bias.csv` |
+| S09-13 | 9 | The two phases of the final run | the runner's step order and rules (code) |
+| S09-14 | 9 | What the development XGBoost relies on | W5 XGB dev `explain/xgb/*` |
+| S09-15 | 9 | Attribution of the feature groups | W5 XGB dev `xgb_shap_groups.csv` |
+| S09-16 | 9 | TFT attention: same hour or fixed clock hours? | neural dev `explain/tft/*` |
+| S09-17 | 9 | Hyper-parameter importance of the development studies | both dev runs `hparam_importance.csv` |
+| S09-18 | 9 | Expected duration of the final run | the dev `step.json`, curves and trials |
+| S09-19 | 9 | Automatic warnings of the development runs | both dev runs `report_warnings.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
 | C-03 | correction | Clear-sky index of the submission and of the rebuild | submission, stage-6 table |
@@ -128,8 +135,16 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | C-07 | correction | Seed table of the submitted BiLSTM | submission seed table and benchmark |
 | C-08 | correction | Scored hours per model, submitted and rebuilt | submission benchmark, dev-run tables |
 | C-09 | correction | Which lags a TFT encoder can hold | dev `attention_*.csv`, v6 §11.2 claim |
+| C-10 | correction | SHAP groups: the submission against the rebuild | `07_shap/shap_group_importance.csv`, W5 XGB dev groups |
 
 *Added 2026-11-12 (W4 figures review):* S09-07–S09-12 were built with W4 but were missing from
 this table; C-07–C-09 draw the W4 differences from the submission (C-10, C-35, C-54, C-55). The
 review also found X36 (a typed, wrong hour count in a description) and X37 (the seed-42 row of the
 submitted seed table); see `docs/errata.md`.
+
+*Added 2026-11-12 (W5):* S09-13–S09-19 (module `solarpv.figures.s09_w5`) show the final protocol,
+the explanations and the run reports of the two development runs; C-10 draws the difference of
+the SHAP groups from the submission (C-59, C-60). One pre-written claim was refuted by the data
+before the build: S09-16 was drafted to assert that every TFT prefers the same hour of earlier
+days; the dev run shows a ratio of 0.82 to 1.07, so the figure now states what the data show (a
+preference for fixed clock hours) and asserts only the absence of a clear same-hour preference.

@@ -1,0 +1,6 @@
+step,kind,subject,text,status
+bilstm,edge_space,indirect seed 42,"bilstm: indirect seed 42: best trial on the edge of the search space for hidden = 256, n_layers = 1, batch_size = 128 (M23)",matched
+tft96,edge_space,indirect seed 42,"tft96: indirect seed 42: best trial on the edge of the search space for hidden_size = 64, attention_head_size = 4 (M23)",matched
+tft96,edge_space,direct seed 42,"tft96: direct seed 42: best trial on the edge of the search space for hidden_size = 64, attention_head_size = 4 (M23)",matched
+tft168,edge_space,direct seed 42,tft168: direct seed 42: best trial on the edge of the search space for attention_head_size = 4 (M23),matched
+tft168,edge_space,indirect seed 42,tft168: indirect seed 42: best trial on the edge of the search space for hidden_continuous_size = 32 (M23),recomputed only

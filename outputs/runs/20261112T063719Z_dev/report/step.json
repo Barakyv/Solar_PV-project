@@ -1,0 +1,95 @@
+{
+  "step": "report",
+  "run_id": "20261112T063719Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-12T06:43:57.617885+00:00",
+  "commit": "46881ae",
+  "fingerprint": "a90c5c6857c73e728f29532459508a6b02cdd24b28906993a866ae1023c156c1",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "outputs/runs/20261112T063719Z_dev/select/sets/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_indirect_D1.json": "56c6d26ab2b90afa8aaeadc81c00528acd50bafaae10cfc3de61a8f98583be48",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_indirect_D2.json": "e00c69fb95f6de8de88302a2b2f26b23abfb93e38b69d5c5de565b4ad70710e7",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_indirect_D3.json": "dc4eab283083195dd89b0ae82e66b7ea66a3bdd97ba8667b6ae143fe28cf2777",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_direct_D1.json": "e6ec06473241d71ed8648e8390e23476cbf1ef14e9e32a2620e649f59688a1b1",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_direct_D2.json": "30a9ad2065d9cdef1cefe0bc727a790755318ba013639c251e4505262fa6c205",
+    "outputs/runs/20261112T063719Z_dev/select/sets/final_features_direct_D3.json": "3aa261906d0a6fb6052be915e31961818232bbcbbb9baae9e22aa25b4a40108e",
+    "outputs/runs/20261112T063719Z_dev/select/select.json": "da7f712fdb6560a9d88c3f074317190dd485ae363166579ec1aca0e37ff9a26b",
+    "outputs/runs/20261112T063719Z_dev/xgb/mos_coefficients.csv": "08cb8607fb1dc8dfa18a1022d8798bbf3f5e2decc0fc30a2aa009f80fdd078bb",
+    "outputs/runs/20261112T063719Z_dev/xgb/trials.csv": "5cabaf9bb5d0d2258223e24db0881b1905bd0878b9cddcbebdf70a69b4f14e29",
+    "outputs/runs/20261112T063719Z_dev/xgb/learning_curves.csv": "57aaccf917f57cddb50b4f046daad72e3d5fdb4b7a5bc314bc6874bd9a68a68c",
+    "outputs/runs/20261112T063719Z_dev/xgb/best_params.json": "1aa1e9221d6c64c6f1063ee9fdd8aae1b2ca0ff2f34d6e5a3fef5c0af9639f9b",
+    "outputs/runs/20261112T063719Z_dev/xgb/xgb_config.json": "dd1b18dcc1eb50798f9f09a489146711ac3a9d760738d964db60fc34f4fa5bce",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/benchmark_views.csv": "d97f8e2973795f0591b778b0b647df954dbe8203c2d551617ebae34dc94217b9",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/common_mask_sensitivity.csv": "ca64bea6817c58323262048db4c7c3ce0512954e0bc8ac9a08cdfcf55e3a508d",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/common_mask_summary.csv": "4921a98eb59748dff6b42916d0d2cff8587ff752dd8dd17eadeaa0ae73d73faf",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/dm_tests.csv": "1f1966aef8f1a97e53c2e107db783d9f6bd6917afd46744c115953f1cc3fa14c",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/dm_tests_kw.csv": "a4297f30ab1bfdf6c8b56093257ee816c9293e16c9e83be5b3aac5a6621918a6",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/route_comparison.csv": "8c7e346c014162c9dce6e02c144623c2afe4ac4ed72ccf1c166e33bdf77cde3d",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/seasonal_metrics.csv": "53dfee59f3107c73614c103401188cb17c21a75ce2eb565fcd561be2a858dc01",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/seed_variability_summary.csv": "d6d2f7c4827387ceb1566d235d08e596ad09845141af517a4225bd861f6a453f",
+    "outputs/runs/20261112T063719Z_dev/evaluate/val/manifest.json": "6e61fbe885763902b1fe25cb96825332d0e93539a9ebba9dc4a62233470aa63b",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_features.csv": "117836f49c5103041714319ce99081f24b02929aef0a8555c17a459683d77cdd",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_groups.csv": "40a79a23c90f81464faab77574448d75e23cafb014dbad00591b663430757f81",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_checks.csv": "25f84355033650fc65d965777c1b16b0cf3bbabc50b4c8b8bab85756baf150d3",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_rank_stability.csv": "f0cda28a8807141973f724f91454fbab6f46e3c09e7f8b89f6256ce9ab6a7228",
+    "outputs/runs/20261112T063719Z_dev/explain/hparam_importance.csv": "1748710b387ded99afcb75e24807c5d4063a575666696c2f147d9daa22ae46ea",
+    "outputs/runs/20261112T063719Z_dev/explain/explain_config.json": "273e0c1956cfbc29cd00f948d05d424f31ede4f8ffde4b68e909fffb6bbb1067"
+  },
+  "log": "outputs/runs/20261112T063719Z_dev/logs/report_20261112T064357Z.log",
+  "status": "ok",
+  "folder": "report",
+  "finished_utc": "2026-11-12T06:43:58.081962+00:00",
+  "duration_s": 0.5,
+  "outputs": {
+    "report_steps.csv": "0aa30eec82d78e666cfb9e54ceca0c9c86cf70072826b83e093bd4d46d376ead",
+    "report_benchmark_val.csv": "96449b752cc223104c437cf4e1d13cd74fbf0dd3d86826916eac32bddd2ad2ac",
+    "report_dm_kw_val.csv": "23ea45df4eb3a9a92b1009bdb3f3d989131f42cefb4abdcc702a3f0062d2f071",
+    "report_seed_spread.csv": "f98aac05e6366d3936b9f7179a6307ed4a3ac6078fbdb110adc925af097dbf03",
+    "report_training.csv": "8cd9c90ce3c89884665d0fc638cbd8f067bf5f54533f1c333f756712c12140a8",
+    "report_studies.csv": "85a91ff4dd4f42edefc59e698d10178ee4819e55cf07cb8179d70fe24ba7a567",
+    "report_warnings.csv": "06b2e7275c4c126d1d4f09240d44b965583dae3deb09e08d7ffd46e30614f0bd",
+    "report_g1_points.csv": "8deb0ca18cd5d3fb7de2253f2ea6256b955efd1461324bd7d3404dcc129306fa",
+    "report_shap_top.csv": "6c37e17df79e9ff7ff50d936f26b5257ee5c3cc15adb112a94593c37b5b722de",
+    "report_shap_groups.csv": "849c172c6824f4656fd285fb5260e6c8f906d4726bc89cada012feb6239bdc26",
+    "report_hparam_top.csv": "8b04c97f4aec2bd4d814e1260ee8d5fbb91549355aca8b0d623d08d7bde421da",
+    "report_l14_l15_files.csv": "512e82349b6224c2516193c359dafc3b82bc9331ccf51a11ce684a752039654f",
+    "report.json": "6a73e97556d68dd0017c7ee214fe878e2900d161ef66e357002dd122824f4111",
+    "report.md": "82f342680b10d078e2c635ff4df42d8811e799bf25f6bb2c37efb62b1fbd732e"
+  },
+  "values": {
+    "warnings": {
+      "matched": 5
+    },
+    "problems": [],
+    "sources": 8
+  },
+  "notes": {},
+  "summary": [
+    "report: 5 steps, 5 warnings {'matched': 5}, 10 G-1 facts, 8 source files"
+  ],
+  "warnings": []
+}

@@ -1,0 +1,90 @@
+{
+  "step": "explain",
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-12T06:44:10.492546+00:00",
+  "commit": "46881ae",
+  "fingerprint": "84092feb9ea96bbd3387b3fbb18ff7f75a9cca7512d889f710b283c8bd430e2c",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "outputs/runs/20261111T160714Z_dev/tft96/best_params.json": "2f28aa07c02c99c913a258ab76c1244d1eb90dc8a84c1811e0439bfb8250baaa",
+    "outputs/runs/20261111T160714Z_dev/tft96/job/data_direct.npz": "74d5b4f48775644fa3b89468df14dc0964ba724ca00404d7b47d862568a39172",
+    "outputs/runs/20261111T160714Z_dev/tft96/job/data_indirect.npz": "4eaabd8c86a9c7470d2a1a8d67926f9c0f249ba99a0e41f1e04d0a7caecfddb8",
+    "outputs/runs/20261111T160714Z_dev/tft96/job/job.json": "25407343f7bb5461b1fa1e66d0d58c814dd82ee3ed5abad96857216869a4e0ad",
+    "outputs/runs/20261111T160714Z_dev/tft96/worker/forecast_direct_seed42.npz": "26ed1220a0ae435cd7049a2b762dd78cb0a53063108ab094c7b7eb43c476735d",
+    "outputs/runs/20261111T160714Z_dev/tft96/worker/forecast_indirect_seed42.npz": "03f036a5abf7e10f6f098fbafb3e5b7063da0b18466b27d1e02618f36d4369f0",
+    "outputs/runs/20261111T160714Z_dev/tft168/best_params.json": "f46775da896098f5492f95ebeda70f6179a17b0fa7f8102e8adf6036571faba0",
+    "outputs/runs/20261111T160714Z_dev/tft168/job/data_direct.npz": "fb772792dc7d976a269d0bd76a49ec7935167d27988d787139560bcf0395b83b",
+    "outputs/runs/20261111T160714Z_dev/tft168/job/data_indirect.npz": "aaf304167f540ade8407cca00ea73eaa6bc4627a8a8787e33c7f355142c5a867",
+    "outputs/runs/20261111T160714Z_dev/tft168/job/job.json": "fde600aba968246fc4997c7c876c18eae3e8a273cb9b18ec25ae641f7a1ff541",
+    "outputs/runs/20261111T160714Z_dev/tft168/worker/forecast_direct_seed42.npz": "2321c7d932669761f5b3960a7774fbee03de58253b18c9326c42e65547e29c32",
+    "outputs/runs/20261111T160714Z_dev/tft168/worker/forecast_indirect_seed42.npz": "27e95b379a43d0f6c624b4dc401cc0ae7b1c9c8c0d8ea3c83feec9aff8e0b890",
+    "outputs/runs/20261111T160714Z_dev/tftbase/best_params.json": "2487cd25faab68a2401a78af84aebeb249e2950160f572805228ce8caa8f001e",
+    "outputs/runs/20261111T160714Z_dev/tftbase/job/data_direct.npz": "fb772792dc7d976a269d0bd76a49ec7935167d27988d787139560bcf0395b83b",
+    "outputs/runs/20261111T160714Z_dev/tftbase/job/data_indirect.npz": "aaf304167f540ade8407cca00ea73eaa6bc4627a8a8787e33c7f355142c5a867",
+    "outputs/runs/20261111T160714Z_dev/tftbase/job/job.json": "6a8f7065ee2ab0f7cb6a3f07e5a123248896921a608eeb0ad168f71f3fc1dc96",
+    "outputs/runs/20261111T160714Z_dev/tftbase/worker/forecast_direct_seed42.npz": "990150c1c36681a5a5de4f69ebb004e902b74215b5379846a8e22ff47ff37147",
+    "outputs/runs/20261111T160714Z_dev/tftbase/worker/forecast_indirect_seed42.npz": "930be40269720a101db3d0cadcfab323c8956d5a59cdd2efb7351549a491f22e",
+    "outputs/runs/20261111T160714Z_dev/bilstm/worker/optuna.db": "36a331f92d1119abed3a2eeedcae9a30b1a2d72473b8c0ed67da00bb3c9aafb5",
+    "outputs/runs/20261111T160714Z_dev/tft96/worker/optuna.db": "a3ac7651b4178f96211eaec04e4cdbc2732a4cbb03b12116c0baf40ea6315c74",
+    "outputs/runs/20261111T160714Z_dev/tft168/worker/optuna.db": "2e114cfaf1ec6080816e1c64b4443cb1c81477ff910440dbce86aa258b1df40d"
+  },
+  "log": "outputs/runs/20261111T160714Z_dev/logs/explain_20261112T064410Z.log",
+  "status": "ok",
+  "folder": "explain",
+  "finished_utc": "2026-11-12T06:44:29.257582+00:00",
+  "duration_s": 18.8,
+  "outputs": {
+    "tft/tft_attention_lag.csv": "42e36724369a38ff2bef50b91c016033ba95cfad1c18276f7db49476b9bd639c",
+    "tft/tft_attention_summary.csv": "b4ed913a1c1e3392f316792102bc6723674c5f54680d5e349a4034d58bc608b6",
+    "tft/tft_variable_importance.csv": "40a5161d158c83bd4abb2c208b343a9f947cb7baf45db1b4cfbbcfe39760b976",
+    "hparam_importance.csv": "28457b4a75bb9f67aee61078595ba84d92648648628efb3698fc7bf9cef05a2e",
+    "explain_config.json": "273e0c1956cfbc29cd00f948d05d424f31ede4f8ffde4b68e909fffb6bbb1067"
+  },
+  "values": {
+    "tft": {
+      "models": 6,
+      "same_hour_ratio": {
+        "tft96_indirect": 0.9472350485965433,
+        "tft96_direct": 0.947510188176338,
+        "tft168_indirect": 0.9781932182461813,
+        "tft168_direct": 0.9806975769867234,
+        "tftbase_indirect": 0.8169860035072981,
+        "tftbase_direct": 1.074485781486086
+      }
+    },
+    "hparam": {
+      "studies": 6,
+      "in_startup": 4
+    }
+  },
+  "notes": {},
+  "summary": [
+    "explain (dev, D-31): CPU, nothing trained",
+    "  TFT: attention of 6 model-target pairs; same-hour ratio 0.82 to 1.07",
+    "  Optuna: 6 studies, 4 inside TPE's random start-up"
+  ],
+  "warnings": []
+}

@@ -1,0 +1,11 @@
+point,subject,fact
+best value on the edge of the search space,xgb indirect_D1_seed42,"max_depth, learning_rate"
+best value on the edge of the search space,xgb direct_D1_seed42,min_child_weight
+best value on the edge of the search space,xgb direct_D2_seed42,n_estimators
+trials stopped at their cap,xgb,3 of 120 trials
+margin against climatology (kW DM),xgb_sota direct D+1,"103 % of the minimum detectable effect, HLN p 0.0008"
+margin against climatology (kW DM),xgb_sota direct D+2,"95 % of the minimum detectable effect, HLN p 0.0013"
+margin against climatology (kW DM),xgb_sota direct D+3,"110 % of the minimum detectable effect, HLN p 0.0002"
+margin against climatology (kW DM),xgb_sota indirect D+1,"101 % of the minimum detectable effect, HLN p 0.0013"
+margin against climatology (kW DM),xgb_sota indirect D+2,"93 % of the minimum detectable effect, HLN p 0.0024"
+margin against climatology (kW DM),xgb_sota indirect D+3,"104 % of the minimum detectable effect, HLN p 0.0007"

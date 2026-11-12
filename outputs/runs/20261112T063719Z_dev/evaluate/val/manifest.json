@@ -1,0 +1,482 @@
+{
+  "inputs": [
+    "outputs/runs/20261112T063719Z_dev/baselines/predictions_clearsky_k.csv",
+    "outputs/runs/20261112T063719Z_dev/baselines/predictions_climatology.csv",
+    "outputs/runs/20261112T063719Z_dev/baselines/predictions_persistence.csv",
+    "outputs/runs/20261112T063719Z_dev/xgb/predictions_xgb_sota_seed42.csv"
+  ],
+  "inputs_sha256": {
+    "predictions_clearsky_k.csv": "00f6fc4c659d3898a399dbac406a96ac02a2cefc316a582dfc66e324a890dc8c",
+    "predictions_climatology.csv": "a20a5ef563c761d119d588e16788e47455b1957f68a87400f5f99ebe23dcdaac",
+    "predictions_persistence.csv": "7c47464c8495f6766e69022afb3816a4f6bf250e8eafea052c2e76b0d657a0f5",
+    "predictions_xgb_sota_seed42.csv": "5f785062da937920eac5a2d66c78ab8e3ce4111a7a842e70109b6919290b6a6f"
+  },
+  "git_commit": "46881ae",
+  "mode": "feature table",
+  "split": "val",
+  "mean_daytime_k": 0.788157,
+  "dm_reference": "xgb_sota",
+  "references": "from the files",
+  "truth": "data/processed/06_features/features_1H_D1.parquet",
+  "truth_sha256": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+  "cliper_rmse": {
+    "indirect_D1": 0.1341029918797608,
+    "indirect_D2": 0.14219006394881972,
+    "indirect_D3": 0.14295640880225108,
+    "direct_D1": 323.91450767223205,
+    "direct_D2": 358.505071079996,
+    "direct_D3": 357.05164518701497
+  },
+  "site_private": true,
+  "strict": true,
+  "checks": {
+    "alignment": [
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 5832,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      }
+    ],
+    "coverage": [
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 2901,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 2901,
+        "missing": 0
+      }
+    ]
+  },
+  "rows": {
+    "benchmark_summary": 24,
+    "dm_tests": 18,
+    "seasonal_metrics": 96,
+    "common_mask_summary": 24,
+    "benchmark_views": 96,
+    "common_mask_sensitivity": 24,
+    "route_comparison": 24,
+    "seed_variability_summary": 6,
+    "dm_tests_kw": 18
+  },
+  "run_log": "outputs/runs/20261112T063719Z_dev/logs/evaluate_20261112T064250Z.log"
+}

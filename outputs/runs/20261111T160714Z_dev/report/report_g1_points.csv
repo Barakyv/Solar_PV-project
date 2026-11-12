@@ -1,0 +1,29 @@
+point,subject,fact
+final fit against its best trial,bilstm indirect seed 42,"final 7.005 %, best trial 6.844 % (+0.161 pp)"
+best check against the step budget,patchtst indirect seed 42,best step 4900 of a budget of 5000
+best check against the step budget,patchtst direct seed 42,best step 4100 of a budget of 5000
+best value on the edge of the search space,bilstm indirect seed 42,"hidden, n_layers, batch_size"
+best value on the edge of the search space,tft96 indirect seed 42,"hidden_size, attention_head_size"
+best value on the edge of the search space,tft96 direct seed 42,"hidden_size, attention_head_size"
+best value on the edge of the search space,tft168 indirect seed 42,hidden_continuous_size
+best value on the edge of the search space,tft168 direct seed 42,attention_head_size
+study inside TPE's random start-up,tft96 indirect seed 42,7 trials (start-up 10)
+study inside TPE's random start-up,tft96 direct seed 42,7 trials (start-up 10)
+study inside TPE's random start-up,tft168 indirect seed 42,7 trials (start-up 10)
+study inside TPE's random start-up,tft168 direct seed 42,7 trials (start-up 10)
+mean bias on validation,bilstm indirect seed 42,+1.30 % of capacity (+44.9 kW)
+mean bias on validation,bilstm direct seed 42,+0.37 % of capacity (+12.9 kW)
+mean bias on validation,tft96 indirect seed 42,+0.70 % of capacity (+24.3 kW)
+mean bias on validation,tft96 direct seed 42,+0.46 % of capacity (+15.8 kW)
+mean bias on validation,tft168 indirect seed 42,+0.99 % of capacity (+34.1 kW)
+mean bias on validation,tft168 direct seed 42,+1.12 % of capacity (+38.6 kW)
+mean bias on validation,tftbase indirect seed 42,+0.92 % of capacity (+31.6 kW)
+mean bias on validation,tftbase direct seed 42,+0.68 % of capacity (+23.5 kW)
+mean bias on validation,patchtst indirect seed 42,+2.73 % of capacity (+94.2 kW)
+mean bias on validation,patchtst direct seed 42,+0.72 % of capacity (+25.0 kW)
+margin against climatology (kW DM),persistence direct D+1,"109 % of the minimum detectable effect, HLN p 0.0012"
+margin against climatology (kW DM),persistence direct D+2,"136 % of the minimum detectable effect, HLN p 0.0000"
+margin against climatology (kW DM),persistence direct D+3,"117 % of the minimum detectable effect, HLN p 0.0001"
+margin against climatology (kW DM),persistence indirect D+1,"109 % of the minimum detectable effect, HLN p 0.0014"
+margin against climatology (kW DM),persistence indirect D+2,"135 % of the minimum detectable effect, HLN p 0.0000"
+margin against climatology (kW DM),persistence indirect D+3,"117 % of the minimum detectable effect, HLN p 0.0000"

@@ -53,23 +53,24 @@ def s09_final_protocol():
 
     phase1 = select_steps(None, None, "report")
     assert TEST_STEP not in phase1 and STEP_ORDER[-1] == TEST_STEP  # D-32
-    fig, ax = subplots(height=3.0)
+    fig, ax = subplots(height=3.0, width=8.0)
     blank(ax)
-    w = 0.86 / len(phase1)
+    w = 0.96 / len(phase1)
     for i, step in enumerate(phase1):
         x = 0.02 + i * w
-        box(ax, x, 0.58, w * 0.9, 0.16, step, face=C["sky"] + "55", size=6.5)
-        ax.plot(x + w * 0.45, 0.80, "v", color=C["red"], ms=4)
-    ax.text(0.02, 0.86, "phase 1 (stage 10): train, forecast validation and test, score "
+        box(ax, x + 0.006, 0.58, w - 0.022, 0.16, step, face=C["sky"] + "55", size=6)
+        ax.plot(x + w / 2 - 0.004, 0.80, "v", color=C["red"], ms=4)
+    ax.text(0.02, 0.88, "phase 1 (stage 10): train, forecast validation and test, score "
             "validation only", fontsize=8)
-    ax.text(0.02, 0.50, "▼ gate before every step: HEAD carries the tag, clean tree, the "
+    ax.text(0.02, 0.48, "▼ gate before every step: HEAD carries the tag, clean tree, the "
             "preflight's commit (X38)", fontsize=7, color=C["red"])
-    box(ax, 0.10, 0.12, 0.30, 0.22, f"stage-10 acceptance\nwritten to {ACCEPTANCE_FILE}\n"
+    box(ax, 0.36, 0.08, 0.27, 0.24, f"stage-10 acceptance\nwritten to {ACCEPTANCE_FILE}\n"
         "(untracked, X51)", face="white", edge=C["grey"], size=7)
-    box(ax, 0.55, 0.12, 0.30, 0.22, "phase 2: step test\n--allow-test; scores the test split,\n"
+    box(ax, 0.70, 0.08, 0.28, 0.24, "phase 2: step test\n--allow-test; scores the test split,\n"
         "XGB SHAP on test; logged", face=C["orange"] + "55", size=7)
-    arrow(ax, 0.40, 0.23, 0.55, 0.23)
-    arrow(ax, 0.25, 0.58, 0.25, 0.34)
+    last = 0.02 + (len(phase1) - 0.5) * w  # the centre of the report step
+    arrow(ax, last, 0.58, 0.495, 0.32)
+    arrow(ax, 0.63, 0.20, 0.70, 0.20)
     facts = {"n_phase1": len(phase1), "tag": FROZEN_TAG, "acceptance": ACCEPTANCE_FILE}
     return fig, facts
 
@@ -109,7 +110,7 @@ def s09_xgb_shap_top():
                 tops[t] = g["feature"].iloc[0]
     handles = [Patch(facecolor=col, hatch=hatch, edgecolor="white", label=GROUP_NAMES[g])
                for g, (col, hatch) in GROUP_STYLE.items() if g in set(f["group"])]
-    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=6.5)
+    fig.legend(handles=handles, loc="outside lower center", ncol=4, fontsize=6.5)
     assert c["n_rows"].nunique() == 1
     facts = {"top_ind": tops["indirect"], "top_dir": tops["direct"],
              "add": float(c["additivity_relative"].max()), "n_rows": int(c["n_rows"].iloc[0])}
@@ -121,8 +122,8 @@ def s09_xgb_shap_top():
     "How is the XGB-dev attribution shared between the feature groups, and does the measure "
     "matter?",
     "Share of each feature group in the group attribution, the mean over hours of |sum of "
-    "SHAP over the group| (bars), per target and horizon (seed 42); the dots show the share "
-    "that the sum of the members' mean |SHAP| would give on the same values.",
+    "SHAP over the group| (wide bars), per target and horizon (seed 42); the narrow bars show "
+    "the shares that the sum of the members' mean |SHAP| would give on the same values.",
     "The GFS forecasts hold {gfs_min:.0f} to {gfs_max:.0f} % of the group attribution. The "
     "two measures differ by up to {diff:.1f} points ({diff_group}, {diff_key}): members of one "
     "group often push in opposite directions, so summing their separate magnitudes overstates "
@@ -135,8 +136,10 @@ def s09_xgb_shap_groups():
     keys = [(t, h) for t in ("indirect", "direct") for h in (1, 2, 3)]
     fig, ax = subplots(height=3.2)
     groups = [k for k in GROUP_STYLE if k in set(g["group"])]
-    bottom = np.zeros(len(keys))
+    assert (g["sum_member_mean_abs_kw"] >= g["mean_abs_group_kw"] - 1e-9).all()  # |sum| <= sum
+    bottom, bottom6 = np.zeros(len(keys)), np.zeros(len(keys))
     diffs = []
+    x = np.arange(len(keys))
     for grp in groups:
         vals, v6 = [], []
         for t, h in keys:
@@ -145,12 +148,13 @@ def s09_xgb_shap_groups():
             v6.append(float(r["share_pct_v6_measure"].iloc[0]) if len(r) else 0.0)
             diffs.append((abs(vals[-1] - v6[-1]), GROUP_NAMES[grp], f"{t} D+{h}"))
         col, hatch = GROUP_STYLE[grp]
-        x = np.arange(len(keys))
-        ax.bar(x, vals, bottom=bottom, color=col, hatch=hatch, edgecolor="white",
+        ax.bar(x - 0.12, vals, 0.55, bottom=bottom, color=col, hatch=hatch, edgecolor="white",
                label=GROUP_NAMES[grp])
-        ax.plot(x, bottom + np.array(v6), "o", color="black", ms=2.5)
+        ax.bar(x + 0.3, v6, 0.14, bottom=bottom6, color=col, hatch=hatch, edgecolor="white",
+               alpha=0.6)
         bottom += np.array(vals)
-    ax.set_xticks(np.arange(len(keys)), [f"{t}\nD+{h}" for t, h in keys], fontsize=7)
+        bottom6 += np.array(v6)
+    ax.set_xticks(x, [f"{t}\nD+{h}" for t, h in keys], fontsize=7)
     ax.set_ylabel("share of the group attribution (%)")
     ax.legend(fontsize=6.5, ncol=2, loc="upper left", bbox_to_anchor=(1.0, 1.0))
     gfs = g[g["group"] == "nwp_gfs"]["share_pct"]
@@ -161,21 +165,25 @@ def s09_xgb_shap_groups():
 
 
 @register(
-    "S09-16", "9", "tft_same_hour", "TFT attention on the same hour of earlier days",
-    "Do the TFT models attend to the same solar hour of earlier days, beyond what a flat "
-    "attention would give?",
-    "Ratio of the encoder attention on positions a whole number of days before each step's "
-    "valid hour to the share of such positions (1 = no daily preference), per model, target "
-    "and horizon block, on the validation forecasts of the development run.",
-    "Every model puts more weight on the same hour of earlier days than a flat attention: the "
-    "ratio is {rmin:.2f} to {rmax:.2f}. The first position of the window is {edge_min:.2f} to "
-    "{edge_max:.2f} times the same hour of the later days (the window's edge, M22).",
+    "S09-16", "9", "tft_same_hour", "TFT attention: same hour or fixed clock hours?",
+    "Do the TFT models attend to the same solar hour of earlier days as the hour they forecast, "
+    "or to fixed hours of the encoder?",
+    "Left: ratio of the encoder attention on positions a whole number of days before each "
+    "step's valid hour to the share of such positions (1 = no preference), per model, target "
+    "and horizon block. Right: the mean attention by the local clock hour of the encoder "
+    "position, direct route. Validation forecasts of the development run.",
+    "No model prefers the hour it forecasts: the same-hour ratio is {rmin:.2f} to {rmax:.2f} "
+    "({n_below} of {n_pairs} model-target pairs below 1). The daily rhythm of the attention "
+    "(S09-11) is a preference for fixed clock hours of earlier days: in the direct route the "
+    "profile peaks at {peak96}:00 (TFT-96), {peak168}:00 (TFT-168) and {peakbase}:00 (TFT "
+    "baseline) local time, whatever hour is forecast.",
     "Stage 11 reads the final models' attention the same way; agreement with SHAP is not "
-    "claimed as validation (M29).",
-    (ATTENTION,))
+    "claimed as validation (M29, C-62).",
+    (ATTENTION, f"{NDEV}/explain/tft/tft_attention_lag.csv"))
 def s09_tft_same_hour():
     a = D.csv(ATTENTION)
-    fig, ax = subplots(height=2.9)
+    lag = D.csv(f"{NDEV}/explain/tft/tft_attention_lag.csv")
+    fig, (ax, ax2) = subplots(1, 2, height=2.9, width=7.8)
     x0 = 0
     ticks, labels = [], []
     markers = {"1": "o", "2": "s", "3": "^"}
@@ -195,16 +203,31 @@ def s09_tft_same_hour():
             ticks.append(x0)
             labels.append(f"{name}\n{t}")
             x0 += 1
-    ax.axhline(1.0, color=C["red"], ls="--", lw=1, label="flat attention")
-    ax.set_xticks(ticks, labels, fontsize=6.5)
+    ax.axhline(1.0, color=C["red"], ls="--", lw=1, label="no preference")
+    ax.set_xticks(ticks, labels, fontsize=6)
     ax.set_ylabel("same-hour ratio")
     ax.legend(fontsize=6.5)
     allb = a[a["block"] == "all"]
-    assert (allb["same_hour_ratio"] > 1).all(), "a TFT without a daily preference"
+    peaks = {}
+    styles = {"tft96": (C["blue"], "-"), "tft168": (C["sky"], "--"), "tftbase": (C["orange"], ":")}
+    for step, name in TFT:
+        g = lag[(lag["step"] == step) & (lag["target"] == "direct") & (lag["block"] == "all")]
+        hour = (g["lag_h"] % 24).astype(int)  # T0 is local midnight: lag -k is clock hour -k mod 24
+        prof = g.groupby(hour)["attention"].mean()
+        col, ls = styles[step]
+        ax2.plot(prof.index, prof.to_numpy() / prof.mean(), ls, color=col, label=name)
+        peaks[step] = int(prof.idxmax())
+    ax2.axhline(1.0, color="0.6", lw=0.8)
+    ax2.set_xticks(range(0, 24, 6))
+    ax2.set_xlabel("local clock hour of the encoder position")
+    ax2.set_ylabel("attention / its mean")
+    ax2.legend(fontsize=6.5)
+    assert allb["same_hour_ratio"].max() < 1.2, "a TFT with a clear same-hour preference"
     facts = {"rmin": float(allb["same_hour_ratio"].min()),
              "rmax": float(allb["same_hour_ratio"].max()),
-             "edge_min": float(allb["first_position_ratio"].min()),
-             "edge_max": float(allb["first_position_ratio"].max())}
+             "n_below": int((allb["same_hour_ratio"] < 1).sum()), "n_pairs": int(len(allb)),
+             "peak96": peaks["tft96"], "peak168": peaks["tft168"],
+             "peakbase": peaks["tftbase"]}
     return fig, facts
 
 
@@ -296,9 +319,9 @@ def s09_final_time():
     "Warnings of the XGB and neural development runs by kind (rows) and step (bars), from the "
     "run reports; the hatched part is a warning that the steps logged and the report "
     "reproduced from the stored records.",
-    "{n_total} warnings in all, {n_matched} reproduced exactly from the records; {n_step_only} "
-    "are kinds the report does not recompute (test access, missing decisions), and "
-    "{n_recomputed_only} appear only in the recomputation ({why}).",
+    "{n_total} warnings in all, {n_matched} reproduced exactly from the records; step log "
+    "only (kinds the report does not recompute): {n_step_only}; in the recomputation only: "
+    "{n_recomputed_only} ({why}).",
     "The final run's report applies the same checks; every warning goes to the run journal "
     "before the stage-10 acceptance.",
     WARN)
@@ -318,6 +341,8 @@ def s09_report_warnings():
         ax.barh(counts.index, matched[step], left=left, color="none", hatch="///",
                 edgecolor="black", lw=0)
         left += counts[step].to_numpy()
+    ax.barh([], [], color="none", hatch="///", edgecolor="black", lw=0,
+            label="reproduced from the records")
     ax.set_xlabel("warnings")
     ax.legend(fontsize=6.5, ncol=3)
     only = w[w["status"] == "recomputed only"]
@@ -338,7 +363,8 @@ def s09_report_warnings():
     "{v6_roll_dir:.0f} % (direct); those features leak at D+2 and D+3 (F-07) and the model had "
     "76 inputs (C-31). In the rebuild the GFS forecasts lead with {rb_gfs_ind:.0f} % and "
     "{rb_gfs_dir:.0f} %, and rolling statistics hold {rb_roll_max:.0f} %.",
-    "docs/defense_notes.md §8; the v7 text of §11.1 is written from the final run (C-59, C-60).",
+    "docs/defense_notes.md §10; the v7 text of §11.1 is written from the final run (C-59, "
+    "C-60).",
     (V6_GROUPS, SHAP_GROUPS), kind="correction")
 def c10_shap_groups():
     v6 = D.csv(V6_GROUPS)
@@ -346,7 +372,7 @@ def c10_shap_groups():
     rb = rb[(rb["seed"] == DEV_SEED) & (rb["horizon"] == 1)]
     v6 = v6[v6["horizon"] == 1]
     fig, axes = subplots(1, 2, height=3.0, sharey=True)
-    groups = list(GROUP_STYLE)
+    groups = [g for g in GROUP_STYLE if g in set(v6["group"]) | set(rb["group"])]
     for ax, t in zip(axes, ("indirect", "direct"), strict=True):
         a = v6[v6["target"] == t].set_index("group")["pct"]
         b = rb[rb["target"] == t].set_index("group")["share_pct"]

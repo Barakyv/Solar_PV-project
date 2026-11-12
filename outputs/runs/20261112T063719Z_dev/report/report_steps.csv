@@ -1,0 +1,6 @@
+step,status,commit,fingerprint,duration_s,budget,n_outputs,n_warnings
+select,ok,46881ae,099565a4b096,2.8,,8,0
+baselines,ok,46881ae,2579325ffd92,2.0,,3,0
+xgb,ok,46881ae,a1c283311ce1,321.9,"{""seeds"": [42], ""trials"": 20}",16,5
+evaluate,ok,46881ae,a8f58672d34b,9.5,,10,0
+explain,ok,46881ae,b84f765767ac,56.9,,12,0

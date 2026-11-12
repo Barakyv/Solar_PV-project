@@ -1,0 +1,7 @@
+step,subject,n_trials,n_complete,n_at_cap,best_trial,best_value_kw,edges
+bilstm,indirect seed 42,20,20,,19,6.843645129589407,"hidden, n_layers, batch_size"
+bilstm,direct seed 42,20,20,,13,6.739843978376619,
+tft96,indirect seed 42,7,7,,4,6.808107574199681,"hidden_size, attention_head_size"
+tft96,direct seed 42,7,7,,4,6.755931794759736,"hidden_size, attention_head_size"
+tft168,indirect seed 42,7,7,,2,6.827490267131046,hidden_continuous_size
+tft168,direct seed 42,7,7,,5,6.818854668430478,attention_head_size

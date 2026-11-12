@@ -1,0 +1,108 @@
+{
+  "step": "tft96",
+  "run_id": "20261112T060949Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-12T06:11:07.602693+00:00",
+  "commit": "ebc2187+dirty",
+  "fingerprint": "3f8bfd84d6779b963c4d6a518d57301ed0e321f66e26f0feebb408bd21face13",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "epochs": 2,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261112T060949Z_smoke/logs/tft96_20261112T061107Z.log",
+  "status": "ok",
+  "folder": "tft96",
+  "finished_utc": "2026-11-12T06:11:55.206702+00:00",
+  "duration_s": 47.6,
+  "outputs": {
+    "attention_direct_seed42.csv": "cacdcf3123b85c1f03d36d5e0ceaacac88553546b5a2c2c33361a9b7aa236aba",
+    "attention_indirect_seed42.csv": "48b36433d17880cc09cf0ac0a891cc9c50a4c417d740c53860d6eeafeb667f03",
+    "best_params.json": "4be59dead06cda301adf09e48d5c3734d1652854f6f87b5d02a261627bacf7d8",
+    "figures/learning_curves.png": "86ac03d5311a85814f4ec3c5cce4e1651debacaf496d5a4ba5ca3835c63183c2",
+    "figures/optimization_history.png": "62134ed28705819e3014c4a41f563f8bb638dcd77b86e708e6a36a1b5d975f7b",
+    "job/data_direct.npz": "160d05223c60a551cbd0bd77d432decc24b48fa5aeb898a1d3b76bfaddbce1ca",
+    "job/data_indirect.npz": "820bc3d0d443929e515b738a284c51b41ca5b7b5903667cd17b48d46d125d3a3",
+    "job/job.json": "509df582def59e092b349daad0e5ebb822e332584e65bdf18c1427e19606e602",
+    "learning_curves.csv": "6a74e746d8ce8dcae80c52bcfa017f5e87e30ae5ef57494958ad38a35b665f21",
+    "mbe.csv": "e276c5959d42c94a8350833d9805a34af8974b998925916000e9c399a25f7daa",
+    "predictions_tft_96_seed42.csv": "7c29d2228654e262e9e6ef63299db34bef649b87f4dc7304d8a178e5b42b5782",
+    "quantiles_tft_96_seed42.csv": "750b4d4b4686ad233de335189f551e5dec28ce435c1213a2f0d4785aea85951f",
+    "tft_96_config.json": "1779568199f530a6f5aa252d16ad870af10262a0a4b6378eebabce5c0511c04f",
+    "trials.csv": "ff9ab9623a7dd7a8b6a3a57e19814831fa80bc91ee20c52f731aac3cd10d3669",
+    "worker/curves_direct_seed42.csv": "33752d701f02a531fb8d45ac3e9825f406ee3e6d05ba788804942fced3aaf807",
+    "worker/curves_indirect_seed42.csv": "3a56fe39dd04475ad124150e1e32b5559eb7e304b2a552fb26c96da4470f1bc7",
+    "worker/fit_direct_seed42.json": "8ae4df737aee93ed5e24d3dfe4b842db2147a1f69b9e0e87e226b6378a955233",
+    "worker/fit_indirect_seed42.json": "40691dd0ea2ee6dd376dfc1ed6dcfcca62ce0a160a9b575d57d52d015ee35e13",
+    "worker/forecast_direct_seed42.npz": "cdd28637b895fa3784e25165b52307b8fc39294aeeb18f1be11ccf2dd203c6c6",
+    "worker/forecast_indirect_seed42.npz": "9848426fdc5e9d005441def17e6c59ed5a0e46c6d0fe54af2ee8e2a5f2f81588",
+    "worker/models/tft_96_direct_seed42.pt": "c30094379fed9cecf22a70a4a02749770f35772b2bcaa01e317592c1d982779a",
+    "worker/models/tft_96_indirect_seed42.pt": "56d216a6c965c6021b4f20f5f97714ea902217dd655d5d4d9c619d921d796857",
+    "worker/optuna.db": "c1aa0346ac2ea1692c74cfd5fac6765b036d20594b9641f7669d4c92f99935f5",
+    "worker/trials_direct_seed42.csv": "83b3f9e1bf3888ece46937422bb20611af0043d739b0d1e2038b092d89fb043d",
+    "worker/trials_indirect_seed42.csv": "d1c04eae59d4054d9c58db5321850252dcce6cfaf4df1f7e411f7b37c64876c2",
+    "worker/worker.json": "ae6c191a7d6550deedaa519c674cbe31d680beec2af91351a2057fbd8cbd1317",
+    "worker_stdout.log": "78fb14a54a67e1b69cd2062b68a19ee49c9600b894f6113e93f20a7b1aecb555"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 18.670402880845856,
+      "direct_seed42": 48.37830644784687
+    },
+    "test_access": []
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 4
+  },
+  "summary": [
+    "tft96 (smoke, seeds [42]): nRMSE in kW on the tuning window, local days 2024-03-15 to 2024-04-11",
+    "  indirect_seed42        18.670 %  (D+1 19.073, D+2 18.886, D+3 18.036)",
+    "  direct_seed42          48.378 %  (D+1 48.577, D+2 47.708, D+3 48.843)"
+  ],
+  "warnings": [
+    "tft96: indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft96: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)",
+    "tft96: direct seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft96: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)"
+  ]
+}

@@ -642,7 +642,7 @@
     "outputs/runs/20261111T160714Z_dev/tft168/learning_curves.csv": "4eb235060b47d742e546840b48b3f913770deb803aec071f92b26c14abe139f7",
     "outputs/runs/20261111T160714Z_dev/tftbase/learning_curves.csv": "4a0b785221dc3e1f5284e5a3b6ec505a601450f506a2173408840d3112f22e69",
     "outputs/runs/20261111T160714Z_dev/patchtst/learning_curves.csv": "4df97e180cf4b2eaab31aa15c5184cebdb22af620514f932bfe66b8c7c8331cc",
-    "outputs/runs/20261111T160714Z_dev/run.json": "5f7e8abc008e7c982bfc039be305375fd959a56d509e0ea8edf8afbff08bf430"
+    "outputs/runs/20261111T160714Z_dev/run.json": "4c6ed702fa53d6c1723e0050cfb31c0cda36f8a339ce647f4688de78aff37c68"
    },
    "facts": {
     "n_repeat": 4,
@@ -650,10 +650,10 @@
     "fast_name": "BiLSTM",
     "slow": 7.462,
     "slow_name": "TFT-168",
-    "dev_h": 3.211555555555555
+    "dev_h": 3.2176944444444437
    },
    "takeaway": "All five steps and the evaluation passed the smoke run; a second smoke run with the same seed gave identical losses for 4 models. In development an epoch takes 0.3 s (BiLSTM) to 7.5 s (TFT-168); the run took 3.2 h.",
-   "git_commit": "d21a43b"
+   "git_commit": "46881ae+dirty"
   },
   "S09-08": {
    "stage": "9",
@@ -783,6 +783,144 @@
    },
    "takeaway": "On validation the neural biases range from +0.37 to +2.73 % of capacity (XGB-dev: +0.74 % direct, +1.31 % indirect). The largest change from training to validation is 0.63 points (PatchTST, direct).",
    "git_commit": "a0ad8ec"
+  },
+  "S09-13": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The two phases of the final run",
+   "file": "outputs/figures/stage_09/S09-13_final_protocol.png",
+   "file_sha256": "0a52778931f4caf1296e1b8acf426aca820d961a4bdc3dd0560ed7d933dbf0ec",
+   "inputs": {},
+   "facts": {
+    "n_phase1": 11,
+    "tag": "g1-frozen",
+    "acceptance": "stage10_acceptance.md"
+   },
+   "takeaway": "Phase 1 runs 11 steps; each model forecasts validation and test, but only validation is scored. The gate (tag g1-frozen, clean tree, the preflight's commit) is checked before every step. Phase 2 is the step `test`, refused without --allow-test and without the acceptance file `stage10_acceptance.md`; every read of a test row is logged.",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-14": {
+   "stage": "9",
+   "kind": "process",
+   "title": "What the development XGBoost relies on",
+   "file": "outputs/figures/stage_09/S09-14_xgb_shap_top.png",
+   "file_sha256": "e51fb6b8ba3012975b1781ff3558c4bcad473661beeaf883afd964777df9db33",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_features.csv": "117836f49c5103041714319ce99081f24b02929aef0a8555c17a459683d77cdd",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_checks.csv": "25f84355033650fc65d965777c1b16b0cf3bbabc50b4c8b8bab85756baf150d3"
+   },
+   "facts": {
+    "top_ind": "fcst_gfs_k_phys",
+    "top_dir": "fcst_gfs_poa",
+    "add": 1.361448084935546e-06,
+    "n_rows": 2901
+   },
+   "takeaway": "The largest attribution comes from a GFS forecast at every target and horizon: fcst_gfs_k_phys (indirect) and fcst_gfs_poa (direct) at D+1. SHAP adds up to the booster forecast within 1.4e-06 of the output scale on 2,901 hours per horizon, and XGBoost's own contributions agree. A description of the fitted model, not a causal effect.",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-15": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Attribution of the feature groups",
+   "file": "outputs/figures/stage_09/S09-15_xgb_shap_groups.png",
+   "file_sha256": "caaa4ace557e2fe5ea4adaaa405b8a4724cca50517cfdf9698c4c2ff9ed7e4a6",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_groups.csv": "40a79a23c90f81464faab77574448d75e23cafb014dbad00591b663430757f81"
+   },
+   "facts": {
+    "gfs_min": 55.51662812426925,
+    "gfs_max": 79.09224390231161,
+    "diff": 14.066756443418825,
+    "diff_group": "GFS forecasts",
+    "diff_key": "indirect D+3"
+   },
+   "takeaway": "The GFS forecasts hold 56 to 79 % of the group attribution. The two measures differ by up to 14.1 points (GFS forecasts, indirect D+3): members of one group often push in opposite directions, so summing their separate magnitudes overstates the group.",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-16": {
+   "stage": "9",
+   "kind": "process",
+   "title": "TFT attention: same hour or fixed clock hours?",
+   "file": "outputs/figures/stage_09/S09-16_tft_same_hour.png",
+   "file_sha256": "f692299ddc5a674caf5a3f7ecd1d1fce41c62c6c4a98ca7e963d57e02e74f8cb",
+   "inputs": {
+    "outputs/runs/20261111T160714Z_dev/explain/tft/tft_attention_summary.csv": "b4ed913a1c1e3392f316792102bc6723674c5f54680d5e349a4034d58bc608b6",
+    "outputs/runs/20261111T160714Z_dev/explain/tft/tft_attention_lag.csv": "42e36724369a38ff2bef50b91c016033ba95cfad1c18276f7db49476b9bd639c"
+   },
+   "facts": {
+    "rmin": 0.8169860035072981,
+    "rmax": 1.074485781486086,
+    "n_below": 5,
+    "n_pairs": 6,
+    "peak96": 12,
+    "peak168": 18,
+    "peakbase": 16
+   },
+   "takeaway": "No model prefers the hour it forecasts: the same-hour ratio is 0.82 to 1.07 (5 of 6 model-target pairs below 1). The daily rhythm of the attention (S09-11) is a preference for fixed clock hours of earlier days: in the direct route the profile peaks at 12:00 (TFT-96), 18:00 (TFT-168) and 16:00 (TFT baseline) local time, whatever hour is forecast.",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-17": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Hyper-parameter importance of the development studies",
+   "file": "outputs/figures/stage_09/S09-17_hparam_importance.png",
+   "file_sha256": "3e5cf92954baa59fc808fc8159143eee5ecb9dbd9945024d1cc9c8146c3a56c3",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/explain/hparam_importance.csv": "1748710b387ded99afcb75e24807c5d4063a575666696c2f147d9daa22ae46ea",
+    "outputs/runs/20261111T160714Z_dev/explain/hparam_importance.csv": "28457b4a75bb9f67aee61078595ba84d92648648628efb3698fc7bf9cef05a2e"
+   },
+   "facts": {
+    "xgb_top": "learning_rate",
+    "xgb_imp": 0.3062599766246268,
+    "n_startup": 4,
+    "n_neural": 6
+   },
+   "takeaway": "For XGB the most important parameter is learning_rate (0.31 on average). 4 of 6 neural studies lie entirely inside the random start-up, so their importances describe a handful of random trials only (M30).",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-18": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Expected duration of the final run",
+   "file": "outputs/figures/stage_09/S09-18_final_time.png",
+   "file_sha256": "339b2588566bd3661a9eba9bb495fd8315020e9f75b4529257b381457f39fbf0",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/xgb/step.json": "39a69314c48845651049c26803002ce46371446166ed22ba1df0e58afccdde93",
+    "outputs/runs/20261111T160714Z_dev/bilstm/step.json": "bb9c51496819f6ffb3cb191308598b934d3ad0196afa7e8fceb94b3ce01060bb",
+    "outputs/runs/20261111T160714Z_dev/tft96/step.json": "5a85b03b50b8bbb33377e0bb35e0761f5512ad0c09aebb53c7aea02c76b591ef",
+    "outputs/runs/20261111T160714Z_dev/tft168/step.json": "2aa9c29f0f6c01ffbec9ff394e9bbcf937647bec03296f0cd4c265cb8c2bbd68",
+    "outputs/runs/20261111T160714Z_dev/tftbase/step.json": "1790c7c72fe73712b736adbb839e8bee8ad889bf1f26ece0086e47c3f04758e9",
+    "outputs/runs/20261111T160714Z_dev/patchtst/step.json": "141c51f01cf4f4c7216373c2eaa975bf92f7621f8a2f0d7f346264ee13e34ab0"
+   },
+   "facts": {
+    "total": 8.61986111111111,
+    "upper": 19.033047082596653,
+    "longest": "tft168",
+    "longest_h": 3.7776666666666667,
+    "longest_up": 7.212728719172633
+   },
+   "takeaway": "About 8.6 h expected and up to about 19.0 h; the longest step is tft168 (about 3.8 h, up to 7.2 h), which cannot be split.",
+   "git_commit": "46881ae+dirty"
+  },
+  "S09-19": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Automatic warnings of the development runs",
+   "file": "outputs/figures/stage_09/S09-19_report_warnings.png",
+   "file_sha256": "72a075e3e673a2ca53bc11135658bd0c5689b8d686fb277b72af038bbcb29b44",
+   "inputs": {
+    "outputs/runs/20261112T063719Z_dev/report/report_warnings.csv": "06b2e7275c4c126d1d4f09240d44b965583dae3deb09e08d7ffd46e30614f0bd",
+    "outputs/runs/20261111T160714Z_dev/report/report_warnings.csv": "0fdf06fd89bf0e63d647dd17eca8fffec087ad730a6a7afa1e43e58575f8f652"
+   },
+   "facts": {
+    "n_total": 10,
+    "n_matched": 9,
+    "n_step_only": 0,
+    "n_recomputed_only": 1,
+    "why": "the effective hidden_continuous_size, X45"
+   },
+   "takeaway": "10 warnings in all, 9 reproduced exactly from the records; step log only (kinds the report does not recompute): 0; in the recomputation only: 1 (the effective hidden_continuous_size, X45).",
+   "git_commit": "46881ae+dirty"
   },
   "C-01": {
    "stage": "correction",
@@ -957,6 +1095,26 @@
    },
    "takeaway": "TFT-96 reads only the last 96 hours, so it has no position 168 hours before issuance. In all 4 model-route pairs of the rebuild the first position of the encoder lies 8% to 28% above the same hour of the later days, which agree to within 0.40%: a rise at the edge of the window, whatever its length. A 168-hour encoder puts that edge exactly at -168 h.",
    "git_commit": "d21a43b"
+  },
+  "C-10": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "SHAP groups: the submission against the rebuild",
+   "file": "outputs/figures/correction/C-10_shap_groups_v6.png",
+   "file_sha256": "edf1a0fdd433813d4ef48fbbb885e848287881674dc22867f08c426dc5bd6e92",
+   "inputs": {
+    "submission_evidence/07_shap/shap_group_importance.csv": "5614e56a98375e51c93652124a0cc03578691884a777f3820ce3321f902c6d4f",
+    "outputs/runs/20261112T063719Z_dev/explain/xgb/xgb_shap_groups.csv": "40a79a23c90f81464faab77574448d75e23cafb014dbad00591b663430757f81"
+   },
+   "facts": {
+    "v6_roll_ind": 57.0,
+    "v6_roll_dir": 70.7,
+    "rb_gfs_ind": 55.51662812426925,
+    "rb_gfs_dir": 79.09224390231161,
+    "rb_roll_max": 7.567417828746114
+   },
+   "takeaway": "In the submission rolling statistics led with 57 % (indirect) and 71 % (direct); those features leak at D+2 and D+3 (F-07) and the model had 76 inputs (C-31). In the rebuild the GFS forecasts lead with 56 % and 79 %, and rolling statistics hold 8 %.",
+   "git_commit": "46881ae+dirty"
   }
  }
 }

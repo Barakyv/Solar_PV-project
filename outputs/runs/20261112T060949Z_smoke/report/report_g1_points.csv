@@ -1,0 +1,41 @@
+point,subject,fact
+best check against the step budget,patchtst indirect seed 42,best step 10 of a budget of 20
+best check against the step budget,patchtst direct seed 42,best step 20 of a budget of 20
+best value on the edge of the search space,xgb indirect_D1_seed42,max_depth
+best value on the edge of the search space,xgb direct_D1_seed42,max_depth
+best value on the edge of the search space,xgb indirect_D2_seed42,max_depth
+best value on the edge of the search space,xgb direct_D2_seed42,max_depth
+best value on the edge of the search space,xgb indirect_D3_seed42,max_depth
+best value on the edge of the search space,xgb direct_D3_seed42,max_depth
+best value on the edge of the search space,tft96 indirect seed 42,lstm_layers
+best value on the edge of the search space,tft96 direct seed 42,lstm_layers
+best value on the edge of the search space,tft168 indirect seed 42,lstm_layers
+best value on the edge of the search space,tft168 direct seed 42,lstm_layers
+study inside TPE's random start-up,xgb indirect_D1_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,xgb direct_D1_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,xgb indirect_D2_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,xgb direct_D2_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,xgb indirect_D3_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,xgb direct_D3_seed42,1 trials (start-up 10)
+study inside TPE's random start-up,bilstm indirect seed 42,1 trials (start-up 10)
+study inside TPE's random start-up,bilstm direct seed 42,1 trials (start-up 10)
+study inside TPE's random start-up,tft96 indirect seed 42,1 trials (start-up 10)
+study inside TPE's random start-up,tft96 direct seed 42,1 trials (start-up 10)
+study inside TPE's random start-up,tft168 indirect seed 42,1 trials (start-up 10)
+study inside TPE's random start-up,tft168 direct seed 42,1 trials (start-up 10)
+mean bias on validation,bilstm indirect seed 42,-43.29 % of capacity (-1493.2 kW)
+mean bias on validation,bilstm direct seed 42,-35.25 % of capacity (-1215.7 kW)
+mean bias on validation,tft96 indirect seed 42,-4.73 % of capacity (-163.2 kW)
+mean bias on validation,tft96 direct seed 42,+16.88 % of capacity (+582.1 kW)
+mean bias on validation,tft168 indirect seed 42,-4.75 % of capacity (-164.0 kW)
+mean bias on validation,tft168 direct seed 42,+16.35 % of capacity (+563.8 kW)
+mean bias on validation,tftbase indirect seed 42,+5.94 % of capacity (+205.0 kW)
+mean bias on validation,tftbase direct seed 42,-2.39 % of capacity (-82.3 kW)
+mean bias on validation,patchtst indirect seed 42,+3.26 % of capacity (+112.5 kW)
+mean bias on validation,patchtst direct seed 42,+0.32 % of capacity (+11.1 kW)
+margin against climatology (kW DM),xgb_sota direct D+1,"17 % of the minimum detectable effect, HLN p 0.7723"
+margin against climatology (kW DM),xgb_sota direct D+2,"32 % of the minimum detectable effect, HLN p 0.4594"
+margin against climatology (kW DM),xgb_sota direct D+3,"6 % of the minimum detectable effect, HLN p 0.9068"
+margin against climatology (kW DM),xgb_sota indirect D+1,"96 % of the minimum detectable effect, HLN p 0.0679"
+margin against climatology (kW DM),xgb_sota indirect D+2,"78 % of the minimum detectable effect, HLN p 0.1076"
+margin against climatology (kW DM),xgb_sota indirect D+3,"64 % of the minimum detectable effect, HLN p 0.1048"

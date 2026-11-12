@@ -1,0 +1,135 @@
+{
+  "run_id": "20261112T060949Z_smoke",
+  "mode": "smoke",
+  "created_utc": "2026-11-12T06:09:49.801105+00:00",
+  "config_sha256": "e59defcc349b99805dd0708f824752f671fca6ed83402ddcdd62bf69e88cd966",
+  "steps": {
+    "select": {
+      "status": "ok",
+      "folder": "select",
+      "fingerprint": "1b808bb482daeedaa6069241443bad0ca71c2f73890cb9d10e45715f239e20f8",
+      "commit": "ebc2187",
+      "finished_utc": "2026-11-12T06:09:56.449235+00:00",
+      "duration_s": 2.8
+    },
+    "baselines": {
+      "status": "ok",
+      "folder": "baselines",
+      "fingerprint": "9bcae891ea7ed77cefda51f5165e69132217fc3eb830b388879456bcdbc07b6c",
+      "commit": "ebc2187",
+      "finished_utc": "2026-11-12T06:09:57.422220+00:00",
+      "duration_s": 0.7
+    },
+    "xgb": {
+      "status": "ok",
+      "folder": "xgb",
+      "fingerprint": "998c367c7a5e94e84dc81b1fabef5b5397ff2c7750c49d6f51711683e23d7c36",
+      "commit": "ebc2187",
+      "finished_utc": "2026-11-12T06:10:15.894832+00:00",
+      "duration_s": 18.1
+    },
+    "bilstm": {
+      "status": "ok",
+      "folder": "bilstm",
+      "fingerprint": "9ff2028e0e6ec27d3473353df28cd4a8bd303b40855c0633bc3e52343e50bcd7",
+      "commit": "ebc2187",
+      "finished_utc": "2026-11-12T06:11:06.429699+00:00",
+      "duration_s": 49.4
+    },
+    "tft96": {
+      "status": "ok",
+      "folder": "tft96",
+      "fingerprint": "3f8bfd84d6779b963c4d6a518d57301ed0e321f66e26f0feebb408bd21face13",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:11:55.206702+00:00",
+      "duration_s": 47.6
+    },
+    "tft168": {
+      "status": "ok",
+      "folder": "tft168",
+      "fingerprint": "5d366054fb0a64441da0decd9efbf808c5ffc2d9e6eddbe3d19bc21b352ffe0a",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:12:44.557894+00:00",
+      "duration_s": 48.2
+    },
+    "tftbase": {
+      "status": "ok",
+      "folder": "tftbase",
+      "fingerprint": "0a9c2fd99519f2994c0d9f5e7d23b4aa71dcf69d42aee2b827cedf07dc418087",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:13:28.169425+00:00",
+      "duration_s": 42.5
+    },
+    "patchtst": {
+      "status": "ok",
+      "folder": "patchtst",
+      "fingerprint": "e728aea4320df1e0b3876d759bf1c4a2dfc9290fa56902711bce5422287ab4f6",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:14:09.468798+00:00",
+      "duration_s": 40.2
+    },
+    "evaluate": {
+      "status": "ok",
+      "folder": "evaluate",
+      "fingerprint": "c1896e9dd728022b7a56f57996701fc970508e4d49f9cd127af5fe9c7a2bc65f",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:14:15.016775+00:00",
+      "duration_s": 5.2
+    },
+    "explain": {
+      "status": "ok",
+      "folder": "explain",
+      "fingerprint": "3b8e16cbd92589bf78a4a79f7542a405232b6d02c903ecc0a091971981c63e15",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:14:19.897538+00:00",
+      "duration_s": 4.4
+    },
+    "report": {
+      "status": "ok",
+      "folder": "report",
+      "fingerprint": "ef129f58e8b660ac61d20b5f61859054300a24528c666143fcf8ca0eb3ebf54b",
+      "commit": "ebc2187+dirty",
+      "finished_utc": "2026-11-12T06:14:20.890334+00:00",
+      "duration_s": 0.6
+    }
+  },
+  "invocations": [
+    {
+      "started_utc": "2026-11-12T06:09:53.136084+00:00",
+      "command": "python -m solarpv.pipeline run --mode smoke --keep-going",
+      "commit": "ebc2187",
+      "steps": [
+        "select",
+        "baselines",
+        "xgb",
+        "bilstm",
+        "tft96",
+        "tft168",
+        "tftbase",
+        "patchtst",
+        "evaluate",
+        "explain",
+        "report"
+      ],
+      "force": false,
+      "keep_going": true,
+      "allow_test": false,
+      "preflight": "invocations/20261112T060953Z.json",
+      "results": {
+        "select": "ok",
+        "baselines": "ok",
+        "xgb": "ok",
+        "bilstm": "ok",
+        "tft96": "ok",
+        "tft168": "ok",
+        "tftbase": "ok",
+        "patchtst": "ok",
+        "evaluate": "ok",
+        "explain": "ok",
+        "report": "ok"
+      },
+      "log": "outputs/runs/20261112T060949Z_smoke/logs/run_20261112T060953Z.log",
+      "status": "ok"
+    }
+  ]
+}

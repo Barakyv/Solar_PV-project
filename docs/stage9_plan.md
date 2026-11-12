@@ -258,6 +258,14 @@ in S09-09) and X37 (the seed-42 row of the submitted seed table, M19 corrected) 
 **Status (2026-11-12, later):** W5 started. Plan and self-review §19, before any code: M25–M31
 (errata C-58–C-64), X38–X49; proposals Q-20–Q-23 for the user (R9-19).
 
+**Status (2026-11-12, end):** W5 done. The user's decisions D-30, D-31 (with `archive`), D-32 and
+the runbook option A (§19.4–§19.8). Code `ebc2187`, `46881ae`; X50 and X51 found while testing and
+writing the runbook. T-82–T-91. Smoke of the whole sequence at a clean commit, byte-identical to
+the first (R9-20); dev runs of the new steps (R9-21): the XGB dev run reproduces R9-11 byte for
+byte, and the neural dev run was resumed with `select,explain,report`. Runbook
+`docs/runbook_final.md`; figures S09-13–S09-19 and C-10; notebook `06_models.ipynb`; OP-58.
+Next: W6, after the college IT answers Q-15.
+
 ## 8. Questions for the user
 
 Status on 2026-11-05 (§11, approved):
@@ -1414,3 +1422,11 @@ dev runs; the new XGB dev run reproduces `20261107T135938Z_dev` byte for byte; `
 `report` complete on both runs; no test row is read (the access log unchanged). A finding of
 `explain` (for example a dominant feature) is reported and investigated, never acted on by a
 change of a validation decision without the user (§19.1).
+
+*Result (2026-11-12, R9-20, R9-21):* every point holds. Smoke: all 11 steps at `46881ae`,
+additivity at most 8.2e-7 of the output scale, 26 of 26 warnings matched, byte-identical to the
+first smoke run. Dev: `select` passes on both runs; `20261112T063719Z_dev` reproduces
+`20261107T135938Z_dev` byte for byte; `explain` and `report` complete; the access log is
+unchanged. Findings of `explain`, reported and not acted on: a GFS forecast leads every target and
+horizon (no dominance flag); no TFT prefers the hour it forecasts, the attention follows fixed
+clock hours of earlier days; one warning of the W4 records changes under X45.

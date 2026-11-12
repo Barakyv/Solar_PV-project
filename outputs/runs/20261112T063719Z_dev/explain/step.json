@@ -1,0 +1,92 @@
+{
+  "step": "explain",
+  "run_id": "20261112T063719Z_dev",
+  "mode": "dev",
+  "started_utc": "2026-11-12T06:43:00.418625+00:00",
+  "commit": "46881ae",
+  "fingerprint": "b84f765767ac79420868776998b043ed86bfa7d9e5294b1c2bce58dde8023919",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "outputs/runs/20261112T063719Z_dev/xgb/best_params.json": "1aa1e9221d6c64c6f1063ee9fdd8aae1b2ca0ff2f34d6e5a3fef5c0af9639f9b",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_direct_D1_seed42.ubj": "cc264a41e21e641c254d71343d535530716c4e383df6dc7380a44e0c7fc21970",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_direct_D2_seed42.ubj": "b1cba2f909fd0192f61e9b189a3b27320e3b62d9943fdd8535064b89666cd352",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_direct_D3_seed42.ubj": "3c9e0758fa76fb0f343997406dacf0df21c7efa07afbb0b28ec9abf0b1c683d9",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_indirect_D1_seed42.ubj": "a863741b3bab6d40b34cd08f5db8099380b12345a6ca7d9f6e28d0dafd5a9a11",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_indirect_D2_seed42.ubj": "f24dddc5390cdb99253963165a9cf324ff160fe397b8a46864a4dcc7237c59fb",
+    "outputs/runs/20261112T063719Z_dev/xgb/models/xgb_sota_indirect_D3_seed42.ubj": "c5ffa83f784de190d79165ab6b843a9f409a06bb5a24b940994156e908d6871a",
+    "outputs/runs/20261112T063719Z_dev/xgb/optuna.db": "f78867e169377a5abd14535b3fa8c779ad5fb85db6865a50814ceaddbb3ba62f",
+    "outputs/runs/20261112T063719Z_dev/xgb/predictions_xgb_sota_seed42.csv": "5f785062da937920eac5a2d66c78ab8e3ce4111a7a842e70109b6919290b6a6f",
+    "outputs/runs/20261112T063719Z_dev/xgb/uncorrected_xgb_sota_seed42.csv": "21ecec8f81de9bc5fc45b94e6d9684292e644b4c54c29b9eeabe0bd2bf74ed55",
+    "outputs/runs/20261112T063719Z_dev/xgb/xgb_config.json": "dd1b18dcc1eb50798f9f09a489146711ac3a9d760738d964db60fc34f4fa5bce",
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca"
+  },
+  "log": "outputs/runs/20261112T063719Z_dev/logs/explain_20261112T064300Z.log",
+  "status": "ok",
+  "folder": "explain",
+  "finished_utc": "2026-11-12T06:43:57.320901+00:00",
+  "duration_s": 56.9,
+  "outputs": {
+    "xgb/shap_values_indirect_D1_seed42_val.npz": "46902fbd6f29182245a8db8001bcba218010b83bccb21b5359d51bf649df21b8",
+    "xgb/shap_values_direct_D1_seed42_val.npz": "abebff3823d8907cefad8ec4ed87da91b8b57868fc7c4ca974ace5ed873c7f61",
+    "xgb/shap_values_indirect_D2_seed42_val.npz": "6b946302f2f518bd53bb5952d6dde0b3446ed799c9ebffa3bbf9221dec6e928d",
+    "xgb/shap_values_direct_D2_seed42_val.npz": "e1d41d062b87ad7499a568396aae88f8f8bf7c28de552984597a89a9d06e399a",
+    "xgb/shap_values_indirect_D3_seed42_val.npz": "853fe5322dded0f0beded1aa9c2b4b6a536f2d68cb41cec3558a79458c0bf405",
+    "xgb/shap_values_direct_D3_seed42_val.npz": "3bb939aec57358b66c1a4ae42793d25ecef7e417ee82bab51e88922161db1c53",
+    "xgb/xgb_shap_features.csv": "117836f49c5103041714319ce99081f24b02929aef0a8555c17a459683d77cdd",
+    "xgb/xgb_shap_groups.csv": "40a79a23c90f81464faab77574448d75e23cafb014dbad00591b663430757f81",
+    "xgb/xgb_shap_checks.csv": "25f84355033650fc65d965777c1b16b0cf3bbabc50b4c8b8bab85756baf150d3",
+    "xgb/xgb_shap_rank_stability.csv": "f0cda28a8807141973f724f91454fbab6f46e3c09e7f8b89f6256ce9ab6a7228",
+    "hparam_importance.csv": "1748710b387ded99afcb75e24807c5d4063a575666696c2f147d9daa22ae46ea",
+    "explain_config.json": "273e0c1956cfbc29cd00f948d05d424f31ede4f8ffde4b68e909fffb6bbb1067"
+  },
+  "values": {
+    "xgb": {
+      "explained": 6,
+      "rows": 17406,
+      "additivity_relative_max": 1.361448084935546e-06,
+      "additivity_max": 0.002417012583464384,
+      "contribs_max_diff": 0.0,
+      "unsliced_additivity_max": 199.44314006716013,
+      "kw_additivity_max": 0.002637193805185234
+    },
+    "hparam": {
+      "studies": 6,
+      "in_startup": 0
+    }
+  },
+  "notes": {},
+  "summary": [
+    "explain (dev, D-31): CPU, nothing trained",
+    "  XGB SHAP: 6 boosters on 17406 rows; additivity <= 1.4e-06 of the output scale; the unsliced booster would be off by up to 199 (training unit, X46)",
+    "  Optuna: 6 studies, 0 inside TPE's random start-up"
+  ],
+  "warnings": []
+}

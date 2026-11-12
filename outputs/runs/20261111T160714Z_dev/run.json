@@ -59,6 +59,30 @@
       "commit": "c9a75bc",
       "finished_utc": "2026-11-11T19:20:07.173828+00:00",
       "duration_s": 19.4
+    },
+    "select": {
+      "status": "ok",
+      "folder": "select",
+      "fingerprint": "099565a4b0968af1c0cba5b3d452d6e359ec2e2ad849ae3eeb7733fcdc7798cf",
+      "commit": "46881ae",
+      "finished_utc": "2026-11-12T06:44:09.384192+00:00",
+      "duration_s": 2.8
+    },
+    "explain": {
+      "status": "ok",
+      "folder": "explain",
+      "fingerprint": "84092feb9ea96bbd3387b3fbb18ff7f75a9cca7512d889f710b283c8bd430e2c",
+      "commit": "46881ae",
+      "finished_utc": "2026-11-12T06:44:29.257582+00:00",
+      "duration_s": 18.8
+    },
+    "report": {
+      "status": "ok",
+      "folder": "report",
+      "fingerprint": "ce70472cdf814b64cd61cada73b57033ce8e93938ecaedd1900feca25b46deb1",
+      "commit": "46881ae",
+      "finished_utc": "2026-11-12T06:44:30.710668+00:00",
+      "duration_s": 0.5
     }
   },
   "invocations": [
@@ -88,6 +112,27 @@
         "evaluate": "ok"
       },
       "log": "outputs/runs/20261111T160714Z_dev/logs/run_20261111T160717Z.log",
+      "status": "ok"
+    },
+    {
+      "started_utc": "2026-11-12T06:44:06.070319+00:00",
+      "command": "python -m solarpv.pipeline run --mode dev --resume 20261111T160714Z_dev --only select,explain,report",
+      "commit": "46881ae",
+      "steps": [
+        "select",
+        "explain",
+        "report"
+      ],
+      "force": false,
+      "keep_going": false,
+      "allow_test": false,
+      "preflight": "invocations/20261112T064406Z.json",
+      "results": {
+        "select": "ok",
+        "explain": "ok",
+        "report": "ok"
+      },
+      "log": "outputs/runs/20261111T160714Z_dev/logs/run_20261112T064406Z.log",
       "status": "ok"
     }
   ]

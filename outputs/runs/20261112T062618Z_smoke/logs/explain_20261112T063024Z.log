@@ -1,0 +1,73 @@
+[     0.0s] RUN     stage runs/20261112T062618Z_smoke/explain
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke --keep-going
+[     0.2s] RUN     git commit: 46881ae
+[     0.2s] RUN     started (UTC): 2026-11-12T06:30:24+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/best_params.json sha256=98bbb2e802fd90b5
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_direct_D1_seed42.ubj sha256=302218e389b98518
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_direct_D2_seed42.ubj sha256=0ea07ae5ac8f9322
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_direct_D3_seed42.ubj sha256=72a12e8ea9b427c7
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_indirect_D1_seed42.ubj sha256=3529642f31389fd3
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_indirect_D2_seed42.ubj sha256=f3d81cd6663c94ac
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/models/xgb_sota_indirect_D3_seed42.ubj sha256=7cccaa6cc0d8300e
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/optuna.db sha256=790a0db2e4741cca
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/predictions_xgb_sota_seed42.csv sha256=2048d9fb503f3a3f
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/uncorrected_xgb_sota_seed42.csv sha256=f7d728625506d0ad
+[     0.2s] INPUT   outputs/runs/20261112T062618Z_smoke/xgb/xgb_config.json sha256=08938083f095b970
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/best_params.json sha256=3d4a0efe5710f855
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/job/data_direct.npz sha256=160d05223c60a551
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/job/data_indirect.npz sha256=820bc3d0d443929e
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/job/job.json sha256=ad6c28074f228a16
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/worker/forecast_direct_seed42.npz sha256=cdd28637b895fa37
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/worker/forecast_indirect_seed42.npz sha256=9848426fdc5e9d00
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/best_params.json sha256=86c72bba4eb9eb2b
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/job/data_direct.npz sha256=42d2077eb3b76f65
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/job/data_indirect.npz sha256=12f8fa0564fa76fd
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/job/job.json sha256=89cc5afc7c0e6f56
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/worker/forecast_direct_seed42.npz sha256=ecb6c52346b9f269
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/worker/forecast_indirect_seed42.npz sha256=833412fd282695be
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/best_params.json sha256=a59292f86115c8c6
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/job/data_direct.npz sha256=42d2077eb3b76f65
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/job/data_indirect.npz sha256=12f8fa0564fa76fd
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/job/job.json sha256=b51412bcf548e08c
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/worker/forecast_direct_seed42.npz sha256=1aa0c27c130f00ea
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tftbase/worker/forecast_indirect_seed42.npz sha256=9b9d521fa6699843
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/bilstm/worker/optuna.db sha256=adfcb0a96491bb3c
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft96/worker/optuna.db sha256=646102c9e03dbd86
+[     0.4s] INPUT   outputs/runs/20261112T062618Z_smoke/tft168/worker/optuna.db sha256=5b7b7e9546742624
+[     1.3s] STEP    XGB SHAP on local days 2024-03-15 to 2024-04-11 ...
+[     1.5s] NOTE    indirect_D1_seed42 val: SHAP on 321 rows, additivity 2.51e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.0661; kW view 6.08e-04 kW on 321 unclipped rows; top fcst_gfs_kt_poa_daymean
+[     1.9s] NOTE    direct_D1_seed42 val: SHAP on 321 rows, additivity 1.53e-03 (kW), pred_contribs 0.00e+00, unsliced booster 3.63; kW view 1.53e-03 kW on 321 unclipped rows; top fcst_gfs_ghi
+[     2.0s] NOTE    indirect_D2_seed42 val: SHAP on 321 rows, additivity 1.59e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.157; kW view 4.42e-04 kW on 321 unclipped rows; top fcst_gfs_pwat
+[     2.2s] NOTE    direct_D2_seed42 val: SHAP on 321 rows, additivity 6.64e-04 (kW), pred_contribs 0.00e+00, unsliced booster 104; kW view 6.64e-04 kW on 321 unclipped rows; top ghi_clearsky
+[     2.3s] NOTE    indirect_D3_seed42 val: SHAP on 321 rows, additivity 1.60e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.118; kW view 4.87e-04 kW on 321 unclipped rows; top fcst_gfs_pwat
+[     2.7s] NOTE    direct_D3_seed42 val: SHAP on 321 rows, additivity 2.82e-03 (kW), pred_contribs 0.00e+00, unsliced booster 0.15; kW view 2.82e-03 kW on 321 unclipped rows; top s01_inv1_rolling_mean_7d_same_tod
+[     2.8s] STEP    XGB SHAP on local days 2024-03-15 to 2024-04-11 done in 1.5s
+[     2.8s] STEP    TFT attention and variable selection (stored W4 outputs) ...
+[     3.1s] STEP    TFT attention and variable selection (stored W4 outputs) done in 0.3s
+[     3.1s] STEP    Optuna hyper-parameter importance (fANOVA, ten seeds) ...
+[     3.9s] STEP    Optuna hyper-parameter importance (fANOVA, ten seeds) done in 0.8s
+[     3.9s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_indirect_D1_seed42_val.npz sha256=06c58540dd162888
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_direct_D1_seed42_val.npz sha256=ed50e9c5348badbb
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_indirect_D2_seed42_val.npz sha256=edc823837a58ba0c
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_direct_D2_seed42_val.npz sha256=2ebaf7d3b826e4b9
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_indirect_D3_seed42_val.npz sha256=77cd30369d4251ea
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/shap_values_direct_D3_seed42_val.npz sha256=2e981e2db5d61e16
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/xgb_shap_features.csv sha256=6ec516ec48624d01
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/xgb_shap_groups.csv sha256=da27c2a9d4acccd0
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/xgb_shap_checks.csv sha256=e2def07ade063d5a
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/xgb/xgb_shap_rank_stability.csv sha256=b80adadeabcb4aa9
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/tft/tft_attention_lag.csv sha256=3186bc46d40d1063
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/tft/tft_attention_summary.csv sha256=d62988eab15662c4
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/tft/tft_variable_importance.csv sha256=ae28900657d8f2a5
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/hparam_importance.csv sha256=c8218883994ad74a
+[     4.0s] OUTPUT  outputs/runs/20261112T062618Z_smoke/.explain.tmp/explain_config.json sha256=87a233bdadfbc555
+[     4.0s] RUN     warnings: 0
+[     4.0s] RUN     status: ok; duration 4.0s

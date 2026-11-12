@@ -1056,7 +1056,9 @@ amendment of 2026-11-07).**
   (2026-11-12, R9-18) added the correction figures C-07 (the submitted BiLSTM seed table), C-08
   (scored hours per model) and C-09 (the attention window of TFT-96), read from the submitted
   files and the dev runs (validation only), and fixed X36 (a typed hour count) and X37 (C-10).
-  The book now holds 46 figures: 37 process and 9 correction.
+  The book now holds 46 figures: 37 process and 9 correction. W5 (2026-11-12, OP-58) added the
+  process figures S09-13–S09-19 and the correction figure C-10: 54 figures, 44 process and 10
+  correction.
 - *Verification:* `tests/contracts/test_figures.py` (T-72): every registered figure is built,
   unchanged since the build and drawn from unchanged inputs; every takeaway re-renders from its
   facts; the catalog is current; every completed stage has process figures; process figures do
@@ -1109,6 +1111,58 @@ W3 to a training worker in `solar-gpu`, and back into prediction files.**
   of the BiLSTM scored by training metrics (C-10), two objectives for the BiLSTM (C-53), the TFT
   baseline from an earlier code version (C-54), the libraries' own normalisers (settings lost,
   R-16), and unexplained neural biases (C-57).
+
+## 16d. The last runner steps (stage 9, W5, `solarpv.pipeline`)
+
+**OP-58 — `select`, `explain`, `report`, the step `test`, `archive` and `promote` (read-only on
+the data; they explain and summarise model outputs).**
+- *Why:* the runner had to verify the input of every model, explain the trained models, summarise
+  each run with its warnings, and close the final gate before W6. Plan and self-review before the
+  code: `docs/stage9_plan.md` §19 (M25–M31 in the original, X38–X49 in my code; X50 and X51 found
+  while testing and writing the runbook); the user's decisions D-30 (`select` verifies and reuses),
+  D-31 (the `explain` scope, with `archive`) and D-32 (two phases of a final run).
+- *Method:*
+  - **`select`:** no row of any table is read: the stage-7 outputs must be tracked and
+    unmodified, the tables named in the stage-7 run logs must be the current ones (by SHA-256
+    prefix), the manifest must record selection on train with one validation look, and
+    `model_inputs.json` must equal `selection.run.decide_input` on the committed checks (the
+    indirect 05e sets; the direct full pool built from the parquet schemas). Its SHA-256 is
+    recorded; every model step of the run refuses another file.
+  - **`explain`:** XGB: `shap.TreeExplainer` (tree-path-dependent, no background) of each booster
+    sliced to its forecast rounds, on the daytime scoring hours of the validation window with AC
+    truth (never fit rows); additivity against the uncorrected forecast and agreement with
+    XGBoost's `pred_contribs`, both relative to the output scale; the kW view of the indirect
+    route (theo × the L-09 slope); group attribution as the mean of |Σφ over the group|; Spearman
+    rank stability over common features. TFT: the stored validation attention (encoder share on
+    positions whole days before each step's valid hour, against the share of such positions; the
+    profile by lag and per horizon block) and the variable-selection weights per channel and per
+    variable. Optuna: fANOVA with evaluator seeds 0–9, on copies of the study databases.
+  - **`report`:** every table read from a hashed file of the run; the warnings of §3.5 recomputed
+    by the steps' own functions and matched with the step logs; the seed spread in kW from the
+    benchmark; the facts that inform the G-1 list.
+  - **Final gate:** the gate before every final step; no slices in final; every read of a test
+    row logged; validation scored by `evaluate`, the test split only by the step `test` after the
+    acceptance file. `promote` copies a complete final run to the §6.10 paths; `archive` packs a
+    run with the SHA-256 of every file.
+- *Parameters:* SHAP tolerances 1e-4 (additivity) and 1e-5 (`pred_contribs`) relative to the
+  output scale (1 for k, 3,449 for kW), the kW view within 0.34 kW; the stage-7 dominance factor
+  10; ten fANOVA seeds; TPE start-up 10 trials.
+- *Result (run journal R9-20, R9-21):* the smoke run of the whole sequence passed at a clean
+  commit and repeated the first smoke run byte for byte. The XGB dev run `20261112T063719Z_dev`
+  reproduces `20261107T135938Z_dev` byte for byte; its SHAP adds up within 1.4e-6 of the output
+  scale on 2,901 hours per horizon, and the saved boosters would be off by up to 199 kW if
+  explained whole (X46). A GFS forecast leads every target and horizon; the GFS group holds 56 to
+  79 % of the group attribution; no dominance flag (at most 6.7). The neural dev run, resumed with
+  the new steps: no TFT prefers the hour it forecasts (same-hour ratio 0.82 to 1.07); the
+  attention follows fixed clock hours of earlier days. The reports reproduce 9 of 10 warnings
+  exactly; the tenth is X45 (an edge of the effective `hidden_continuous_size` that the W4 step did
+  not see). No test row was read.
+- *Verification:* T-82–T-91 (`tests/unit/test_w5_steps.py`); the smoke and dev runs above;
+  notebook `06_models.ipynb`; figures S09-13–S09-19 and C-10.
+- *Original:* no selection step in the reproduction (C-58); SHAP of a 76-feature model with
+  leaking rolling groups (C-59), first-match group shares (C-60), no record of the rows or the
+  explainer (C-61), attention offered as validation (C-62), one unseeded importance evaluation
+  (C-63), numbers without a file (C-64).
 
 ## 17. Differences from the original data pipeline
 

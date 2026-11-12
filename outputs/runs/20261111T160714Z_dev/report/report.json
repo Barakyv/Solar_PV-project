@@ -1,0 +1,35 @@
+{
+  "run_id": "20261111T160714Z_dev",
+  "mode": "dev",
+  "sources": {
+    "evaluate/val/benchmark_summary.csv": "d4fa8a405e639fe62300668f0b3ff1a7a971152ea00c4244d6c7ae4f315eda79",
+    "evaluate/val/dm_tests_kw.csv": "5975bf8b10858b4bc14e58f441aa3f88e0762ee8f9b6514a6fa4c545c9a5f8d7",
+    "bilstm/best_params.json": "929123522c5e4a097031e600c9a275e9f642c7f1be25fb52978a9c0fe2f4a0b1",
+    "tft96/best_params.json": "2f28aa07c02c99c913a258ab76c1244d1eb90dc8a84c1811e0439bfb8250baaa",
+    "tft168/best_params.json": "f46775da896098f5492f95ebeda70f6179a17b0fa7f8102e8adf6036571faba0",
+    "tftbase/best_params.json": "2487cd25faab68a2401a78af84aebeb249e2950160f572805228ce8caa8f001e",
+    "patchtst/best_params.json": "a9f41f10356860e070b339863a28283b970b0118681f54fb4d07a7be60c9584d",
+    "bilstm/mbe.csv": "322e3559fb5dcd02429c67e4db9755d84791f393dfce66402f25ccce1bd70079",
+    "tft96/mbe.csv": "5f0513aac9d4af89605add57c1528388de83e8c72c9068af69285759993a20e7",
+    "tft168/mbe.csv": "a2194bcfe7a3d339a660e93b3e6d7dbd2b79018f025785959eb7a9cef4cd9540",
+    "tftbase/mbe.csv": "27bd348675aeddc5d00a86f11e507908f477ca65b52a30881046194e982eb059",
+    "patchtst/mbe.csv": "101757ce92e704044e9e5ef0231e4f85f284fafd61a71ef701890b19cae059dd",
+    "explain/tft/tft_attention_summary.csv": "b4ed913a1c1e3392f316792102bc6723674c5f54680d5e349a4034d58bc608b6",
+    "explain/hparam_importance.csv": "28457b4a75bb9f67aee61078595ba84d92648648628efb3698fc7bf9cef05a2e"
+  },
+  "problems": [],
+  "steps_missing": [],
+  "tables": {
+    "steps": "report_steps.csv",
+    "benchmark_val": "report_benchmark_val.csv",
+    "dm_kw_val": "report_dm_kw_val.csv",
+    "seed_spread": "report_seed_spread.csv",
+    "training": "report_training.csv",
+    "studies": "report_studies.csv",
+    "warnings": "report_warnings.csv",
+    "g1_points": "report_g1_points.csv",
+    "tft_attention": "report_tft_attention.csv",
+    "hparam_top": "report_hparam_top.csv",
+    "l14_l15_files": "report_l14_l15_files.csv"
+  }
+}

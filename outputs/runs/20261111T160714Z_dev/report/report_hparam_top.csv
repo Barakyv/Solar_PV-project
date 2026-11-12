@@ -1,0 +1,7 @@
+step,target,horizon,seed,param,importance_mean,importance_std,n_complete,all_in_startup
+tft168,indirect,all,42,attention_head_size,0.5737087245202313,0.06891888730248305,7,True
+tft96,indirect,all,42,hidden_continuous_size,0.46859053239262927,0.03213723558534585,7,True
+tft96,direct,all,42,learning_rate,0.4541826906539222,0.07065728892056809,7,True
+bilstm,indirect,all,42,n_layers,0.4289970726626632,0.059242283047177165,20,False
+tft168,direct,all,42,learning_rate,0.3512145073743987,0.06734826515501911,7,True
+bilstm,direct,all,42,batch_size,0.33634964436726256,0.047588610981691704,20,False

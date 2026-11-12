@@ -1617,3 +1617,87 @@ hashes, numbers) and the commit messages are the record:
   rerun of stage 7), Q-21 (the scope of `explain` and `archive`), Q-22 (the test protocol of a
   final run), Q-23 (the runbook: about 9 h expected, up to about 16 h; the questions to the
   college IT). Nothing is coded before the answers.
+- **The user's answers (2026-11-12):** every recommended option. D-30: `select` verifies and
+  reuses. D-31: the full `explain` scope with `archive`. D-32: two phases of one final run. Q-23:
+  the two questions go to the college IT before W6.
+
+### 2026-11-12 · R9-20 · W5: the code, its tests, and the smoke runs of the whole sequence
+
+- **Code** (`ebc2187`, then `46881ae`): `pipeline/select_step.py`, `explain.py`, `report.py`,
+  `archive.py`, `promote.py`, the step `test`, the gate before every final step, the final
+  scope, the test-access lines, the effective `hidden_continuous_size`, the final estimate.
+  Tests T-82–T-91 in `tests/unit/test_w5_steps.py`.
+- **Found while testing and writing, before any real run:**
+  - X50, the first synthetic run of `explain`: an absolute additivity tolerance failed the
+    direct boosters on float32 precision (0.003 kW on outputs up to 3,449 kW); the tolerances
+    are now relative to the output's scale;
+  - X51, while writing the runbook: a commit recording the stage-10 acceptance would move
+    `HEAD` off the tag and the gate would refuse the test phase; the acceptance goes to an
+    untracked file in the run folder, which the step `test` requires.
+- **First smoke** (`20261112T060949Z_smoke`, all 11 steps ok, 4.5 min): seven steps recorded
+  `ebc2187+dirty` because X51 was edited during the run. Not used as evidence; rerun.
+- **Smoke at a clean commit** (`20261112T062618Z_smoke`, `46881ae`, all 11 steps ok, 240 s):
+  - `select`: the six inputs equal the registered rule on the committed checks (31 / 28 / 32
+    05e features, 96 / 89 / 82 full pool), `model_inputs.json` `b693622407f2`, no row read;
+  - `explain`: SHAP of 6 boosters on 321 hours each; additivity at most 8.2e-7 of the output
+    scale, XGBoost's `pred_contribs` identical (difference 0.0), the kW view at most 0.003 kW;
+    **the unsliced boosters would be off by up to 104 kW** (direct D+2: 38 forecast rounds, 88
+    saved), which confirms X46 on real data; the TFT attention and 12 studies summarised (one
+    trial each, all inside TPE's start-up, as expected in smoke);
+  - `report`: 26 warnings, all reproduced exactly from the records; 19 hashed sources; no
+    consistency problem;
+  - determinism: the 9 prediction files and the explanation tables are byte-identical to the
+    first smoke run;
+  - test split: no step read a test row, the access log is unchanged.
+
+### 2026-11-12 · R9-21 · W5 dev runs of the new steps, their review, figures and notebook 06
+
+- **Commands** (commit `46881ae`, clean tree):
+  - `python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,evaluate,explain,
+    report`: run `20261112T063719Z_dev`, ok (xgb 322 s, explain 57 s); the XGB dev run of R9-11
+    could not be resumed, because it was created with the pre-W4 budgets (X27);
+  - `python -m solarpv.pipeline run --mode dev --resume 20261111T160714Z_dev --only select,
+    explain,report`: ok (its configuration is unchanged since W4, so the resume was accepted).
+- **Reproduction:** every prediction file, the uncorrected L-09 file and the benchmark and DM
+  tables of the new run equal those of `20261107T135938Z_dev` byte for byte.
+- **`select`:** both runs verified the same `model_inputs.json` (`b693622407f2`).
+- **`explain`, XGB** (2,901 scored hours per horizon): additivity at most 1.4e-6 of the output
+  scale, `pred_contribs` identical; the unsliced boosters would be off by up to 199 kW (X46).
+  First feature: `fcst_gfs_k_phys` (indirect D+1), `fcst_gfs_kt_poa_daymean` (indirect D+2, D+3),
+  `fcst_gfs_poa` (direct D+1, D+2), `fcst_gfs_pv_kw` (direct D+3), the same leaders as the
+  stage-7 measure of R9-06; dominance at most 6.7 (direct D+1, threshold 10). Group attribution:
+  GFS 56–79 %; the v6 measure would differ by up to 14.1 points (GFS, indirect D+3). Rank
+  stability across horizons 0.84–0.90 (common features).
+- **`explain`, TFT** (validation forecasts): the same-hour ratio is 0.95 (TFT-96), 0.98
+  (TFT-168) and 0.82 / 1.07 (TFT baseline, indirect / direct), so no model prefers the hour it
+  forecasts. The daily rhythm of the attention (S09-11) is a preference for fixed clock hours of
+  earlier days: in the direct route 12:00 (TFT-96), 18:00 (TFT-168), 16:00 (TFT baseline). TFT-96
+  indirect puts only 22 % of its attention on the encoder, the others 77–91 %. The
+  variable-selection weights sum to 1 per part; leaders differ by model and route.
+- **`explain`, Optuna:** XGB's most important parameter on average is `learning_rate` (0.31);
+  4 of 6 neural studies lie inside TPE's random start-up (7 TFT trials).
+- **`report`:** XGB 5 warnings, all matched (the five of R9-06); neural 5 warnings, 4 matched and
+  one recomputed only: TFT-168 indirect used `hidden_continuous_size` 32, the top of its
+  effective range, which the W4 step had judged by the sampled value (X45 confirmed on real
+  data). 10 and 28 facts for the G-1 list.
+- **Review (forecasting-validity-review):**
+  - issuance: the explained boosters' features equal the allow-list of `model_inputs.json`
+    (asserted); the TFT attention comes from the W3 windows (T-02);
+  - split isolation: no test row read (the access log unchanged); validation is the
+    early-stopping and tuning set (D-10), so the explanations describe the model on hours that
+    tuned it, not on held-out data; the final run's step `test` explains the test window;
+  - comparability: one set of 2,901 hours per horizon for every booster;
+  - uncertainty: one seed; the fANOVA spread over ten evaluator seeds is recorded; nothing is
+    decided from these numbers;
+  - red flags: none (no dominant feature; no implausible margin; D+3 below D+1 is the known
+    validation-sample pattern of R9-06);
+  - provenance: run logs, `step.json` with hashes, one commit.
+- **A pre-written claim refuted:** the draft of figure S09-16 asserted that every TFT prefers the
+  same hour of earlier days; the assert would have failed on the data, and the figure was rewritten
+  to state what the data show before it was built.
+- **Figures:** S09-13–S09-19 and C-10 (`docs/defense_notes.md` §10); S09-07 rebuilt because its
+  input `run.json` grew with the resume (same takeaway). Stage 9's minimum raised to 19 (T-72).
+- **Notebook:** `notebooks/06_models.ipynb` (`scripts/make_models_notebook.py`), executed in a
+  Jupyter kernel; every note formatted from the two runs and every interpretive claim asserted.
+- **Decision / next:** W5 is complete. Next: W6 (G-1, the tag, and the final run by
+  `docs/runbook_final.md`), after the college IT answers the two questions of Q-15.
