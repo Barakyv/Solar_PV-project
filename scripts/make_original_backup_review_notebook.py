@@ -13,7 +13,10 @@ import json
 
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import AUDIT_DIR, REPO_ROOT
+
+no_options("python scripts/make_original_backup_review_notebook.py", __doc__)  # X62
 
 NB = REPO_ROOT / "notebooks" / "00b_original_backup_review.ipynb"
 HERE = AUDIT_DIR / "original_backup_2026-11-01"

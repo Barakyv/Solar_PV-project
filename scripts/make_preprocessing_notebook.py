@@ -13,7 +13,10 @@ import json
 import pandas as pd
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import AUDIT_DIR, CONFIGS_DIR, PROCESSED_DIR, REPO_ROOT
+
+no_options("python scripts/make_preprocessing_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "03_preprocessing.ipynb"
 MANIFEST = PROCESSED_DIR / "04_preprocess" / "preprocess_manifest.json"

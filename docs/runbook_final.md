@@ -46,9 +46,14 @@ Claude Code session (the run must not depend on an agent session). Set
 5. At least 20 GB free on `C:`.
 6. `python -m solarpv.pipeline run --mode final --to report --dry-run` prints the plan and the
    estimates; nothing is written.
-7. No editor holds files under `src/`, `scripts/` or `configs/` open for writing, and **nothing
-   is committed until phase 2 is complete**: the gate is checked before every step and refuses
-   a moved `HEAD` or a dirty tree (X38).
+7. **Nothing is committed and no tracked file may change until phase 2 is complete, documents
+   included** (X56): the gate is checked before every step and refuses a moved `HEAD` or any
+   modified tracked file anywhere in the tree (X38), so an edit of `docs/run_journal.md`,
+   `PROJECT_MASTER.md` or any other tracked document, by hand or by an agent session, stops the
+   next step. Notes taken during the run go to a file outside the repository and are copied in
+   after phase 2. New untracked files (the run folder, the test-access log) do not stop it.
+8. Every command is run from the repository root: the runner refuses a working directory inside
+   another checkout of the project (X55).
 
 ## 3. Phase 1: training and validation (stage 10)
 
@@ -123,8 +128,11 @@ tables (the phase-1 report is moved aside and kept). Then:
   the time is lost.
 - **The code failed** (an exception from a rule or a bug): stop. No code edit during a final run.
   Record it and reopen G-1 (§4).
-- **The gate refused a step** (`refused (final gate: ...)`): something was committed or edited
-  during the run. Do not rewrite history; ask the user how to restore the tagged state.
+- **The gate refused a step** (`refused (final gate: ...)`): something was committed or a tracked
+  file (code or document) was edited during the run. `git status` names the file. Do not rewrite
+  history; an uncommitted edit of a document can be saved outside the repository and undone with
+  `git restore <file>`, then the step is resumed; for a commit, ask the user how to restore the
+  tagged state.
 
 ## 7. After a logoff or a disconnect
 

@@ -20,6 +20,7 @@ import sys
 import numpy as np
 import pandas as pd
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import AUDIT_DIR, CONFIGS_DIR, PROCESSED_DIR
 from solarpv.config.site import load_site
 from solarpv.data.clock import (
@@ -102,7 +103,8 @@ def usable(source: pd.DataFrame, name) -> pd.DataFrame:
     }, index=source.index)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python scripts/estimate_clock_drift.py", __doc__, argv)  # X62: --help runs nothing
     site = load_site()
     raw = pd.read_parquet(PROCESSED_DIR / "01_ingest" / "scada_1min_utc.parquet", columns=COLUMNS)
     comp = clear_sky_components(raw.index, site)

@@ -16,9 +16,12 @@ import pandas as pd
 import yaml
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import CONFIGS_DIR, EVIDENCE_DIR, OUTPUTS_DIR, REPO_ROOT
 from solarpv.selection.common import availability
 from solarpv.selection.run import INNER_TRAIN_END
+
+no_options("python scripts/make_feature_selection_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "05_feature_selection.ipynb"
 OUT = OUTPUTS_DIR / "07_feature_selection"

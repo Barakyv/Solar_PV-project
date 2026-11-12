@@ -21,6 +21,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import yaml  # noqa: E402
 
+from solarpv.config.cli import parser  # noqa: E402
 from solarpv.config.constants import AC_CAPACITY_KW, HORIZONS, RANDOM_SEEDS  # noqa: E402
 from solarpv.config.paths import CONFIGS_DIR, OUTPUTS_DIR, PROCESSED_DIR  # noqa: E402
 from solarpv.config.provenance import git_commit  # noqa: E402
@@ -565,11 +566,17 @@ def validation_only() -> None:
         log.outputs([path, inputs_path, manifest_path])
 
 
-def main() -> int:
-    if "--validation-only" in sys.argv[1:]:
+def main(argv: list[str] | None = None) -> int:
+    p = parser("python -m solarpv.selection.run", __doc__)  # X62: --help runs nothing
+    p.add_argument("--skip-validation", action="store_true",
+                   help="the train part only, without the validation look")
+    p.add_argument("--validation-only", action="store_true",
+                   help="only the one registered validation look (S8)")
+    args = p.parse_args(sys.argv[1:] if argv is None else argv)
+    if args.validation_only:
         validation_only()
     else:
-        run(validation="--skip-validation" not in sys.argv[1:])
+        run(validation=not args.skip_validation)
     return 0
 
 

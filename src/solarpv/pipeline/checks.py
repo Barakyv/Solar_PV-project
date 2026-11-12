@@ -234,6 +234,30 @@ def data_check(manifests=STAGE_MANIFESTS, tracked=TRACKED_INPUTS,
 # ── gates ───────────────────────────────────────────────────────────────────
 
 
+def checkout_of(path: Path) -> Path | None:
+    """The checkout of this project that contains `path`: the nearest folder at or above it that
+    holds `src/solarpv/__init__.py` and `pyproject.toml`; None outside any checkout."""
+    path = Path(path).resolve()
+    for folder in (path, *path.parents):
+        if (folder / "src" / "solarpv" / "__init__.py").is_file() \
+                and (folder / "pyproject.toml").is_file():
+            return folder
+    return None
+
+
+def checkout_problem(cwd: Path | None = None) -> str | None:
+    """X55: `solarpv` is an editable install that points at one checkout. Started from another
+    checkout (a fresh clone, a reviewer's copy) the runner would import this one's code, record
+    its commit and write into its outputs; refuse instead. Outside any checkout nothing is
+    refused: every path of the runner comes from the code's own checkout."""
+    here = checkout_of(Path.cwd() if cwd is None else cwd)
+    if here is None or here == REPO_ROOT.resolve():
+        return None
+    return (f"the working directory is in the checkout {here}, but solarpv is imported from "
+            f"{REPO_ROOT} (an editable install); set PYTHONPATH={here / 'src'} or run from "
+            f"{REPO_ROOT} (X55)")
+
+
 def git_state() -> dict:
     """`tree_clean`: no tracked file modified anywhere, and no untracked file in the code paths
     (`git_commit()` not '+dirty'). Untracked outputs, such as the folders of earlier runs, do not

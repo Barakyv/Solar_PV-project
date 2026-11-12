@@ -20,6 +20,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import (
     AC_CAPACITY_KW,
     DATA_END_UTC,
@@ -199,7 +200,8 @@ def ingest(raw_dir: Path = RAW_DIR, out_dir: Path | None = None) -> pd.DataFrame
     return data
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.data.ingest", __doc__, argv)  # X62: --help runs nothing
     data = ingest()
     print(f"\n{len(data):,} rows, {data.index[0]} .. {data.index[-1]}")
     print(f"missing values (all columns): {int(data.isna().sum().sum()):,}")

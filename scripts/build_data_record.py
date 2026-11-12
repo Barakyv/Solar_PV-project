@@ -13,6 +13,7 @@ import sys
 import pandas as pd
 import yaml
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import (
     AUDIT_DIR,
     CONFIGS_DIR,
@@ -553,7 +554,8 @@ def build() -> str:
     return "\n".join(parts)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python scripts/build_data_record.py", __doc__, argv)  # X62: --help runs nothing
     missing = [k for k, p in SOURCES.items() if not p.exists()]
     if missing:
         print("missing sources:", missing)

@@ -40,6 +40,7 @@ import pandas as pd  # noqa: E402
 import xgboost as xgb  # noqa: E402
 import yaml  # noqa: E402
 
+from solarpv.config.cli import no_options  # noqa: E402
 from solarpv.config.constants import (  # noqa: E402
     AC_CAPACITY_KW,
     DEV_SEED,
@@ -217,7 +218,8 @@ def run() -> dict:
     return decision
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.features.decide_k", __doc__, argv)  # X62: --help runs nothing
     run()
     return 0
 

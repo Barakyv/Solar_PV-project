@@ -18,6 +18,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import pvlib  # noqa: E402
 
+from solarpv.config.cli import no_options  # noqa: E402
 from solarpv.config.constants import (  # noqa: E402
     AC_CAPACITY_KW,
     TEST_START,
@@ -542,7 +543,8 @@ def run() -> dict:
     return manifest
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.eda", __doc__, argv)  # X62: --help runs nothing
     manifest = run()
     print(json.dumps({k: manifest[k] for k in ("figures", "split_hours",
                                                "time_bug_median_offset_min",

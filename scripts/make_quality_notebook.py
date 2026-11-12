@@ -15,9 +15,12 @@ import json
 import nbformat
 from nbclient import NotebookClient
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import REPO_ROOT
 from solarpv.config.provenance import text_sha256
 from solarpv.eda.quality import MANIFEST
+
+no_options("python scripts/make_quality_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "02b_data_quality.ipynb"
 M = json.loads(MANIFEST.read_text(encoding="utf-8"))

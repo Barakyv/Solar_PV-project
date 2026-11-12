@@ -40,6 +40,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import TEST_START, TIMEZONE_LOCAL, TRAIN_END, VAL_END, VAL_START
 from solarpv.config.paths import CONFIGS_DIR, output_dir, stage_dir
 from solarpv.config.provenance import git_commit, sha256, text_sha256
@@ -465,7 +466,8 @@ def clean(in_dir: Path | None = None, out_dir: Path | None = None,
     return hourly
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.data.clean", __doc__, argv)  # X62: --help runs nothing
     clean()
     return 0
 

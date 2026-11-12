@@ -1823,3 +1823,32 @@ hashes, numbers) and the commit messages are the record:
   file's own truth, not a rebuild table; the figures that read the stage-6 table filter to train;
   the untracked log and run folders do not make the tree dirty (`--untracked-files=no`).
 - **Plan:** stage-9 plan §20; nothing coded before this entry is committed.
+
+### 2026-11-12 · R9-26 · W6: the stage modules ran on `--help`; stages 4–5 rewritten and restored (X62, OP-60)
+
+- **What happened:** to write the reproduction script, I called `python -m <module> --help` in a
+  loop over twelve stage modules, to read their options, in this checkout. The modules had no
+  argument parsing, so each ran its stage. `solarpv.data.preprocess` and `solarpv.data.clean`
+  completed and rewrote the stage-4 and stage-5 files and the tracked
+  `outputs/05_cleaning/cleaning_manifest.json`. `ingest`, `features.build`, `features.decide_k`
+  and `nwp.gfs` stopped before their writes (the shell closed their output pipe after 14 lines;
+  the GFS run was stopped by hand); the loop never reached `nwp.check`, the evaluation or the
+  selection (which would have made a fourth validation look).
+- **Damage check:** `git status` and the file times: the four parquet files and two manifests of
+  stages 4–5 and the tracked cleaning manifest changed; the stage-6 tables, `configs/target.yaml`
+  and the GFS tables did not; three new logs of aborted runs.
+- **Content:** the regenerated files equal the originals exactly (shape, columns, types, index,
+  every value), and every statistic of the regenerated cleaning manifest equals the committed
+  one; only the bytes differ, from the parquet writer (pyarrow 26.0.0 and pandas 3.1.0 here, 25.0.0
+  and 3.0.6 on the laptop). An accidental confirmation that stages 4–5 reproduce on this machine.
+- **Restore:** the nine files were extracted from the hand-off package into a new folder, each
+  checked against `HANDOFF_MANIFEST.sha256`, and copied back; the regenerated files were moved
+  aside, not deleted; the three logs went to `outputs/g1_audit/incident_2026-11-12/`. After the
+  restore, 22 of 22 stage files equal the hand-off hashes, the stage-6 and 6b manifests match
+  their tables, and the tree shows only the code being written.
+- **Fix (X62):** `solarpv.config.cli`; every entry point parses its arguments before any work,
+  `--help` runs nothing, unknown and abbreviated options are errors (`--valid` is no longer
+  `--validation-only`, `--allow` no longer `--allow-test`). T-98 checks every entry point
+  statically before it calls any of them.
+- **Lesson for the reproduction and the external review:** never call a stage module to read its
+  help in a checkout that holds data; read the source.

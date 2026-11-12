@@ -19,8 +19,11 @@ import json
 import pandas as pd
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import REPO_ROOT
 from solarpv.pipeline.config import STEPS, TEST_STEP
+
+no_options("python scripts/make_models_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "06_models.ipynb"
 XRUN = "outputs/runs/20261112T063719Z_dev"

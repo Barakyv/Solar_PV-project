@@ -36,6 +36,7 @@ import numpy as np
 import pandas as pd
 import pvlib
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import (
     AC_CAPACITY_KW,
     HORIZONS,
@@ -394,7 +395,8 @@ def run() -> dict:
     return manifest
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.nwp.gfs", __doc__, argv)  # X62: --help runs nothing
     run()
     return 0
 

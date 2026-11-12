@@ -14,7 +14,10 @@ import json
 import pandas as pd
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import EVIDENCE_DIR, OUTPUTS_DIR, REPO_ROOT
+
+no_options("python scripts/make_evaluation_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "07_evaluation.ipynb"
 VAL = OUTPUTS_DIR / "07_evaluation" / "val"

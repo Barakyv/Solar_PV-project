@@ -12,7 +12,10 @@ import json
 import pandas as pd
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import AUDIT_DIR, OUTPUTS_DIR, PROCESSED_DIR, REPO_ROOT
+
+no_options("python scripts/make_data_ingest_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "01_data_ingest.ipynb"
 MANIFEST = PROCESSED_DIR / "01_ingest" / "ingest_manifest.json"

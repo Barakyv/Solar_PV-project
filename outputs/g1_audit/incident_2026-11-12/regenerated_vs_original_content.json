@@ -1,0 +1,74 @@
+{
+ "data/processed/04_preprocess/scada_1min_true_utc.parquet": {
+  "shape_orig": [
+   1971360,
+   31
+  ],
+  "shape_new": [
+   1971360,
+   31
+  ],
+  "columns_equal": true,
+  "dtypes_equal": true,
+  "index_equal": true,
+  "content_equal": true,
+  "created_by_orig": "parquet-cpp-arrow version 25.0.0",
+  "created_by_new": "parquet-cpp-arrow version 26.0.0",
+  "pandas_version_orig": "3.0.6",
+  "pandas_version_new": "3.1.0"
+ },
+ "data/processed/04_preprocess/scada_1H_utc.parquet": {
+  "shape_orig": [
+   32856,
+   35
+  ],
+  "shape_new": [
+   32856,
+   35
+  ],
+  "columns_equal": true,
+  "dtypes_equal": true,
+  "index_equal": true,
+  "content_equal": true,
+  "created_by_orig": "parquet-cpp-arrow version 25.0.0",
+  "created_by_new": "parquet-cpp-arrow version 26.0.0",
+  "pandas_version_orig": "3.0.6",
+  "pandas_version_new": "3.1.0"
+ },
+ "data/processed/05_clean/scada_1min_clean.parquet": {
+  "shape_orig": [
+   1971360,
+   48
+  ],
+  "shape_new": [
+   1971360,
+   48
+  ],
+  "columns_equal": true,
+  "dtypes_equal": true,
+  "index_equal": true,
+  "content_equal": true,
+  "created_by_orig": "parquet-cpp-arrow version 25.0.0",
+  "created_by_new": "parquet-cpp-arrow version 26.0.0",
+  "pandas_version_orig": "3.0.6",
+  "pandas_version_new": "3.1.0"
+ },
+ "data/processed/05_clean/scada_1H_clean.parquet": {
+  "shape_orig": [
+   32856,
+   43
+  ],
+  "shape_new": [
+   32856,
+   43
+  ],
+  "columns_equal": true,
+  "dtypes_equal": true,
+  "index_equal": true,
+  "content_equal": true,
+  "created_by_orig": "parquet-cpp-arrow version 25.0.0",
+  "created_by_new": "parquet-cpp-arrow version 26.0.0",
+  "pandas_version_orig": "3.0.6",
+  "pandas_version_new": "3.1.0"
+ }
+}

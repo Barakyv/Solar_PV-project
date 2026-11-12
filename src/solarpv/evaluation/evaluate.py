@@ -612,7 +612,8 @@ def run(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Evaluate forecasts (PROJECT_MASTER.md §6.9).")
+    parser = argparse.ArgumentParser(description="Evaluate forecasts (PROJECT_MASTER.md §6.9).",
+                                     allow_abbrev=False)  # X62: `--allow` is not `--allow-test`
     parser.add_argument("--fixture", action="store_true",
                         help="evaluate the surviving old LSTM predictions (test T-15)")
     parser.add_argument("--split", choices=["val", "test"], default="val")

@@ -8,7 +8,10 @@ import nbformat
 import pandas as pd
 from nbclient import NotebookClient
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import OUTPUTS_DIR, REPO_ROOT
+
+no_options("python scripts/make_eda_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "02_eda.ipynb"
 FIG = "../outputs/03_eda/figures"

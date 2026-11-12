@@ -1505,6 +1505,12 @@ scratch and an audit of when information is available.
 | X60 | `docs/scope_register.md` is stale: S-14–S-21 are ⬜ although W2–W4 produce them in development, and S-32, S-33, S-36 are produced by `explain` since W5 | `docs/scope_register.md` | Every row gets the code that produces it in development, or the reason it does not exist (X59) | T-97 |
 | X61 | A-01 and A-14 are 🟡 in §6.13 although every part has a test or a check; the last parts (GFS, T-17; the sequence models, T-02 and T-77; the libraries, T-78) were closed in stages 6b and 9 without updating the row | `PROJECT_MASTER.md` §6.13 | Marked ✅ with the evidence once the full suite passes at the commit to be tagged | §8.2 |
 
+Found during the work, after this section was committed:
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X62 | *Found by an accident (R9-26, OP-60):* the stage modules had no argument parsing; `python -m solarpv.data.clean --help`, run to read the options for §20.5, ran the stage, and preprocess and clean rewrote their files on this machine. `selection.run --help` would have rerun the selection and made a fourth validation look, and argparse's abbreviations would read `--valid` as `--validation-only` and `--allow` as `--allow-test` | 10 stage modules and scripts, 11 notebook builders, `selection/run.py`, the runner and `evaluate` | Every entry point parses its arguments first (`solarpv.config.cli`); `--help` runs nothing; unknown and abbreviated options are errors. The original files were restored from the hand-off package after their hashes were checked; the regenerated content was identical | T-98 |
+
 ### 20.4 The checklist of gate G-1, with the evidence for each item
 
 | Item (`PROJECT_MASTER.md` §7) | Evidence |
@@ -1568,6 +1574,7 @@ environment of §20.5, and the review of §20.6.
 | T-95 | X55: the runner refuses a working directory that is another checkout; the worker's environment puts the runner's `src` first; the reproduction asserts the imported file |
 | T-96 | X56: the runbook states that no tracked file may change during a final run; a modified document makes the per-step gate refuse |
 | T-97 | X59, X60: every S-xx row names a producer that exists (a module, a step or a file) or an errata row |
+| T-98 | X62: every entry point of `src/solarpv` and `scripts/` parses its arguments before any work (static check), then `--help` exits 0 and writes nothing and an unknown option exits 2 (run only after the static check passed); no parser accepts abbreviations |
 
 ### 20.9 Order of the work and acceptance
 

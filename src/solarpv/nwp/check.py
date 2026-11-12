@@ -36,6 +36,7 @@ import pandas as pd
 import xgboost as xgb
 import yaml
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import AC_CAPACITY_KW, HORIZONS, RANDOM_SEEDS, TIMEZONE_LOCAL
 from solarpv.config.paths import CONFIGS_DIR, PROCESSED_DIR
 from solarpv.config.provenance import git_commit
@@ -241,7 +242,8 @@ def run() -> dict:
     return {"sanity": sanity, "decision": decision}
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.nwp.check", __doc__, argv)  # X62: --help runs nothing
     run()
     return 0
 

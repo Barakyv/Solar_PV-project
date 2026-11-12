@@ -252,8 +252,12 @@ def main(argv: list[str] | None = None) -> int:
         storage.engine.dispose()
     outputs = {p.relative_to(out).as_posix(): sha256_file(p)
                for p in sorted(out.rglob("*")) if p.is_file()}
+    import solarpv
+
     write_json(out / WORKER_FILE, {
         "step": job["step"], "job_sha256": sha256_file(job_dir / JOB_FILE),
+        # X55: the code this worker ran, checked by the runner against its own
+        "solarpv_file": str(Path(solarpv.__file__).resolve()),
         "environment": env, "determinism": determinism,
         "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(started)),
         "duration_s": round(time.time() - started, 1), "records": records,

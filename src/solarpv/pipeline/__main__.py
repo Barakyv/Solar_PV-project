@@ -35,12 +35,18 @@ def _csv(text: str | None, cast=str):
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m solarpv.pipeline",
-                                     description="Stage-9 runner (docs/stage9_plan.md).")
+                                     description="Stage-9 runner (docs/stage9_plan.md).",
+                                     allow_abbrev=False)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("list", help="the steps, in order")
-    p_check = sub.add_parser("check", help="environment, data and gates; nothing is run")
+
+    def add(name: str, **kw) -> argparse.ArgumentParser:
+        # X62: no abbreviations (with argparse's default `--allow` would mean `--allow-test`)
+        return sub.add_parser(name, allow_abbrev=False, **kw)
+
+    add("list", help="the steps, in order")
+    p_check = add("check", help="environment, data and gates; nothing is run")
     p_check.add_argument("--mode", choices=MODES, default="smoke")
-    p_run = sub.add_parser("run", help="run the selected steps")
+    p_run = add("run", help="run the selected steps")
     p_run.add_argument("--mode", choices=MODES, default="smoke")
     p_run.add_argument("--only", help="comma-separated steps, e.g. baselines,evaluate")
     p_run.add_argument("--from", dest="from_", help="first step of a section")
@@ -57,19 +63,22 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--allow-test", action="store_true",
                        help="final mode only, with the step test: score the test split "
                             "(stage 11, D-32)")
-    p_status = sub.add_parser("status", help="the runs, or one run in detail")
+    p_status = add("status", help="the runs, or one run in detail")
     p_status.add_argument("run_id", nargs="?")
-    p_arch = sub.add_parser("archive", help="pack a run with the SHA-256 of every file (D-31)")
+    p_arch = add("archive", help="pack a run with the SHA-256 of every file (D-31)")
     p_arch.add_argument("run_id", nargs="?")
     p_arch.add_argument("--dest", help="folder of the zip (default outputs/archives)")
     p_arch.add_argument("--verify", metavar="ZIP", help="check an archive instead")
-    p_prom = sub.add_parser("promote", help="copy a complete final run to the §6.10 paths (X8)")
+    p_prom = add("promote", help="copy a complete final run to the §6.10 paths (X8)")
     p_prom.add_argument("run_id")
     p_prom.add_argument("--replace", action="store_true",
                         help="move existing target files aside instead of refusing")
     args = parser.parse_args(argv)
     command = "python -m solarpv.pipeline " + " ".join(argv if argv is not None else sys.argv[1:])
 
+    if args.command != "list" and (problem := checks.checkout_problem()):
+        print(f"refused: {problem}", file=sys.stderr)
+        return 2
     if args.command == "list":
         for s in STEPS:
             state = "implemented" if s.name in IMPLEMENTED else f"comes with {s.work_item}"

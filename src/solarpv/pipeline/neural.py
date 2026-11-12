@@ -68,10 +68,20 @@ def gpu_report(timeout: int = 600) -> dict:
         return {"errors": [f"the GPU environment report failed: {proc.stderr[-500:]}"]}
 
 
+def code_root() -> Path:
+    """The `src` folder the runner's own `solarpv` comes from."""
+    return (REPO_ROOT / "src").resolve()
+
+
 def worker_env() -> dict:
+    """X55: `solarpv` is an editable install in both environments, pointing at one checkout; the
+    runner's `src` goes first on `PYTHONPATH`, so the worker imports the code of the runner even
+    when the runner runs from another checkout."""
     env = os.environ.copy()
     env.update({"CUBLAS_WORKSPACE_CONFIG": ":4096:8", "PYTHONIOENCODING": "utf-8",
                 "PYTHONHASHSEED": "0"})
+    env["PYTHONPATH"] = os.pathsep.join(
+        [str(code_root())] + [p for p in env.get("PYTHONPATH", "").split(os.pathsep) if p])
     return env
 
 
@@ -298,6 +308,10 @@ def verify_worker(out_dir: Path, job: dict) -> dict:
     missing = [n for n in need if n not in worker["outputs"]]
     if missing:
         raise RunnerError(f"the worker did not write {missing}")
+    imported = worker.get("solarpv_file")
+    if imported is None or not Path(imported).resolve().is_relative_to(code_root()):
+        raise RunnerError(f"the worker imported solarpv from {imported}, not from the runner's "
+                          f"{code_root()} (X55)")
     return worker
 
 

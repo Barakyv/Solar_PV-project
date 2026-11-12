@@ -12,7 +12,10 @@ import json
 import pandas as pd
 from _notebook import code, md, write_notebook
 
+from solarpv.config.cli import no_options
 from solarpv.config.paths import AUDIT_DIR, CONFIGS_DIR, OUTPUTS_DIR, REPO_ROOT
+
+no_options("python scripts/make_cleaning_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "04_cleaning.ipynb"
 MANIFEST = OUTPUTS_DIR / "05_cleaning" / "cleaning_manifest.json"

@@ -1220,6 +1220,39 @@ stored file changed).**
 - *Original:* not compared; the surviving submission files were not examined for the order of
   the quantiles.
 
+## 16f. Gate G-1 (W6)
+
+**OP-60 — Stages 4 and 5 rerun by accident on the college machine, and the original files
+restored from the hand-off package (2026-11-12; no number changed).**
+- *Why:* while writing the reproduction script, `python -m <module> --help` was called on the
+  stage modules to read their options. The modules had no argument parsing (X62), so the
+  command ran them: `solarpv.data.preprocess` and `solarpv.data.clean` completed and rewrote
+  `data/processed/04_preprocess/` (both parquet files and the manifest), `05_clean/` (both
+  parquet files and the manifest) and the tracked `outputs/05_cleaning/cleaning_manifest.json`;
+  `ingest`, `features.build`, `features.decide_k` and `nwp.gfs` stopped before writing their
+  outputs (the shell closed their output pipe; the GFS run was stopped by hand); the selection,
+  which would have made a fourth validation look, was never reached.
+- *Method:* the nine affected files were extracted from the hand-off package
+  (`solar_handoff_2026-11-03_ee976e4.zip`, outside the repository, read-only) into a new, empty
+  folder, and each was checked against `HANDOFF_MANIFEST.sha256`. The content of the four
+  regenerated parquet files was compared with the originals (`pandas.testing.assert_frame_equal`,
+  exact). The originals were then copied back, the regenerated files moved aside (not deleted),
+  and the logs of the three aborted runs moved to `outputs/g1_audit/incident_2026-11-12/`.
+- *Result:* the regenerated files had the same shape, columns, types, index and every value as
+  the originals (1,971,360 × 31 and 32,856 × 35 for stage 4; 1,971,360 × 48 and 32,856 × 43 for
+  stage 5); every statistic of the regenerated cleaning manifest equalled the committed one. Only
+  the bytes differed, because the parquet writer differs: pyarrow 26.0.0 and pandas 3.1.0 on the
+  college machine against 25.0.0 and 3.0.6 on the laptop. So stages 4 and 5 reproduce exactly on
+  the college environment, and a reproduction must compare content, not bytes (M33).
+- *Verification:* after the restore, 22 of 22 stage files of the hand-off (stages 1, 4, 5, 6, 6b)
+  equal their hand-off hashes; the stage-6 and 6b manifests match their tables; the tracked
+  cleaning manifest is unmodified (`git status`). Evidence:
+  `outputs/g1_audit/incident_2026-11-12/regenerated_vs_original_content.json`.
+- *Prevention:* every entry point now parses its arguments before any work (`--help` runs
+  nothing, an unknown or abbreviated option is an error): `solarpv.config.cli`, T-98
+  (`tests/contracts/test_entry_points.py`).
+- *Original:* not applicable.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

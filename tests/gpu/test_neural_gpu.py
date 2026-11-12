@@ -336,6 +336,9 @@ def test_the_worker_writes_every_output_with_its_hash(arrays, tmp_path):
     fc = neural_job.read_arrays(tmp_path / "worker" / neural_job.forecast_name("indirect", 42))
     assert fc["train_q"].shape == (48, MAX_STEPS, 3) and fc["val_q"].shape == (12, MAX_STEPS, 3)
     assert worker["determinism"]["use_deterministic_algorithms"] is True
+    # X55: the worker records the code it imported (this checkout's src)
+    src = Path(__file__).resolve().parents[2] / "src"
+    assert Path(worker["solarpv_file"]).is_relative_to(src)
     rec = worker["records"]["indirect"]["42"]
     assert rec["study"]["n_trials"] == 1 and rec["final"]["epochs_run"] == 2
 

@@ -38,6 +38,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import (
     DERIVED_CONSTANTS_FILE,
     HORIZONS,
@@ -553,7 +554,8 @@ def run() -> dict:
     return manifest
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.features.build", __doc__, argv)  # X62: --help runs nothing
     run()
     return 0
 

@@ -12,9 +12,13 @@ T-79  X25, X30, X33: the worker gets no timestamp and no test row; changed or mi
       dataset passes check_dataset
 T-80  X27, X28: every neural budget has every field and follows the decisions; every model step
       writes a model name of the evaluation layer
+T-95  X55: the worker's PYTHONPATH starts with the runner's src; a worker that imported another
+      checkout's solarpv is refused
 """
 
 import json
+import os
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -86,8 +90,13 @@ def stub_worker(ctx, job_dir, out_dir):
         outputs[next(iter(outputs))] = "0" * 64
     if STUB["corrupt"] == "missing":
         outputs = {k: v for k, v in outputs.items() if not k.startswith("forecast_")}
+    import solarpv
+
+    imported = (Path(solarpv.__file__).resolve() if STUB["corrupt"] != "foreign"
+                else Path(r"C:\elsewhere\src\solarpv\__init__.py"))
     J.write_json(out_dir / J.WORKER_FILE, {
         "step": job["step"], "environment": {"stub": True}, "determinism": {"stub": True},
+        "solarpv_file": str(imported),
         "duration_s": 0.1, "records": records, "outputs": outputs})
 
 
@@ -255,13 +264,26 @@ def test_patchtst_job_holds_its_training_series(wired):
         assert a["series_mask"][-len(hours):].any() and np.isfinite(a["series_y"]).all()
 
 
-@pytest.mark.parametrize("corrupt", ["hash", "missing"])
+@pytest.mark.parametrize("corrupt", ["hash", "missing", "foreign"])
 def test_changed_or_missing_worker_outputs_are_refused(wired, corrupt):
     STUB["corrupt"] = corrupt
     code, run_dir = run_step(wired, "bilstm")
     assert code == 1
     assert not (run_dir / "bilstm").exists()  # the try moved aside as failed
-    assert list(run_dir.glob("bilstm.failed-*"))
+    (failed,) = run_dir.glob("bilstm.failed-*")
+    if corrupt == "foreign":  # T-95, X55: a worker that ran another checkout's code
+        assert "X55" in json.loads((failed / "step.json").read_text("utf-8"))["error"]
+
+
+def test_the_worker_runs_the_code_of_the_runner(monkeypatch):
+    """T-95, X55: the runner's src goes first on the worker's PYTHONPATH, before any inherited
+    entry, so an editable install of another checkout cannot win."""
+    monkeypatch.setenv("PYTHONPATH", r"C:\other\src")
+    parts = neural.worker_env()["PYTHONPATH"].split(os.pathsep)
+    assert Path(parts[0]) == neural.code_root() and parts[1] == r"C:\other\src"
+    import solarpv
+
+    assert Path(solarpv.__file__).resolve().is_relative_to(neural.code_root())
 
 
 def test_missing_known_inputs_outside_their_hours_are_an_error(data, tmp_path):

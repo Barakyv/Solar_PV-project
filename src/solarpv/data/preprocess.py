@@ -23,6 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import AC_CAPACITY_KW, HOURLY_MIN_COVERAGE, N_HOURS_EXPECTED
 from solarpv.config.paths import CONFIGS_DIR, stage_dir
 from solarpv.config.provenance import git_commit, sha256, text_sha256
@@ -125,7 +126,8 @@ def preprocess(in_dir: Path | None = None, out_dir: Path | None = None,
     return hourly
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    no_options("python -m solarpv.data.preprocess", __doc__, argv)  # X62: --help runs nothing
     preprocess()
     return 0
 

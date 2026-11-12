@@ -18,10 +18,13 @@ import pandas as pd
 import yaml
 from nbclient import NotebookClient
 
+from solarpv.config.cli import no_options
 from solarpv.config.constants import DERIVED_CONSTANTS_FILE
 from solarpv.config.paths import AUDIT_DIR, CONFIGS_DIR, OUTPUTS_DIR, REPO_ROOT
 from solarpv.config.provenance import text_sha256
 from solarpv.features import report as R
+
+no_options("python scripts/make_features_notebook.py", __doc__)  # X62: --help runs nothing
 
 NB = REPO_ROOT / "notebooks" / "04b_features_target.ipynb"
 MANIFEST = OUTPUTS_DIR / "06_features" / "features_manifest.json"  # the tracked copy
