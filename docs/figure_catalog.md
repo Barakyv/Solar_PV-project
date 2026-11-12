@@ -526,10 +526,10 @@ Figures made earlier by the stage's own producer:
 
 ### S09-29. The quantile forecasts of the sequence models
 
-- **Question:** Are the quantiles of the BiLSTM and the TFTs in order, and how often does their central 80 % interval hold the measured value?
-- **Shows:** Left: share of the scored validation hours (all horizons) on which the forecast quantiles are out of order, per model and route. Right: the share of those hours whose truth lies between the 0.1 and 0.9 quantiles, against the nominal 80 % (dashed). XGB and PatchTST forecast a point only.
-- **Takeaway:** The quantiles are out of order on up to 66 % of the hours (TFT-96, direct); 5 of 8 model-route pairs cross on more than 1 % of the hours, and the BiLSTM never. The central interval covers 62 to 88 % of the hours. The point forecast is the median head and is not affected; intervals and the potential skill of L-14 need ordered quantiles (X53).
-- **Led to:** X53 goes to the G-1 list: whether to sort the quantiles before any interval is used is a decision for the user; no validation number changes until then.
+- **Question:** Are the quantiles of the BiLSTM and the TFTs in order, and what does ordering them per hour do to their central 80 % interval?
+- **Shows:** Left: share of the scored validation hours (all horizons) on which the forecast quantiles are out of order, per model and route. Right: the share of those hours whose truth lies between the 0.1 and 0.9 quantiles, raw (solid) and with the quantiles ordered per hour (light, hatched), against the nominal 80 % (dashed). XGB and PatchTST forecast a point only.
+- **Takeaway:** The quantiles are out of order on up to 66 % of the hours (TFT-96, direct); 5 of 8 model-route pairs cross on more than 1 % of the hours, and the BiLSTM never. Ordering them per hour moves the coverage of the central interval from 62–88 % to 64–88 % (it rises only where the quantiles cross) and lowers the quantile loss by up to 2.6 % (TFT-96, direct); the point forecast, the 0.5 head, is unchanged.
+- **Led to:** Intervals and the potential skill of L-14 read the ordered quantiles (D-33, X53); the point forecast and every score stay as the model wrote them.
 - **File:** `outputs/figures/stage_09/S09-29_quantile_forecasts.png`
 
 ### S09-30. Where the error comes from, model by model
