@@ -1252,6 +1252,8 @@ registered validation look.
   This would be a fourth look, and if the rerun gave other sets (threads, versions), every dev
   result would be on other inputs. A change of D-13.
 
+**Decision (user, 2026-11-12): A** (D-30). `select` verifies and reuses; it reruns nothing.
+
 ### 19.5 Proposal for the user: the scope of `explain` (Q-21)
 
 **A (recommended):**
@@ -1283,6 +1285,8 @@ registered validation look.
 
 **B:** as A, without `archive`. **C:** as A, with validation rows only also in a final run, and
 §6.10 corrected (dated) from test to validation.
+
+**Decision (user, 2026-11-12): A** (D-31), with `archive`.
 
 ### 19.6 The `report` step (no decision needed)
 
@@ -1317,6 +1321,10 @@ split is scored.
   checkpoints). The model steps never read a test row in the first phase, but every model needs
   a second prediction path (the five neural models through the worker), about a day of code.
 
+**Decision (user, 2026-11-12): A** (D-32): two phases of one final run; the test split is scored
+only by the step `test`, in a later invocation with `--allow-test`, after the stage-10 acceptance
+on validation is recorded.
+
 Also in the gate (no decision needed): final refuses off the tag or with a dirty tree, before
 every step (X38), and refuses slices (X39); the budgets are `BUDGETS["final"]`, asserted equal to
 v6 (T-80); `promote <run_id>` is the separate copy of X8 (§6.10 paths: predictions, metrics,
@@ -1341,6 +1349,9 @@ result, X32, only the time is lost).
   segment shorter than the limit; `archive` after each segment.
 - **B:** start without asking IT, in segments, relying on `--resume`; the risk is losing a TFT
   step (up to 7 h) to an unknown logoff.
+
+**Decision (user, 2026-11-12): A.** The two questions go to the college IT before W6 (Q-15 stays
+open for them); the runbook gives both ways (one sequence, or segments).
 
 The runbook (`docs/runbook_final.md`) has: the preconditions (G-1 passed, the tag, `check --mode
 final`); the commands in order with their expected time; the checks before (dry run, disk,

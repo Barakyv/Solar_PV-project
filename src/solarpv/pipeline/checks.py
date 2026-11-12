@@ -276,6 +276,33 @@ def gate_problems(mode: str, state: dict, site_private: bool) -> tuple[list[str]
     return errors, warnings
 
 
+def final_step_gate(expected_commit: str | None) -> list[str]:
+    """X38: the gate of a final run, checked again before every step. `HEAD` must still carry
+    the tag and be the commit the invocation's preflight passed on, and the tree must be clean;
+    a commit or a code edit made during the run stops the next step."""
+    state = git_state()
+    errors, _ = gate_problems("final", state, load_site().is_private)
+    if expected_commit and state["commit"] != expected_commit:
+        errors.append(f"HEAD is {state['commit']}, not {expected_commit} of the preflight: "
+                      "nothing may be committed during a final run")
+    return errors
+
+
+def tracked_unmodified(path: Path) -> dict:
+    """One row: the file exists, is tracked by git and unmodified since the last commit."""
+    path = Path(path)
+    rel = _rel(path)
+    if not path.exists():
+        return {"path": rel, "ok": False, "detail": "missing"}
+    known = _git("ls-files", "--error-unmatch", "--", rel)
+    changed = _git("status", "--porcelain", "--", rel)
+    if known.returncode != 0 or changed.returncode != 0:
+        return {"path": rel, "ok": False, "detail": "not tracked by git, or git unavailable"}
+    clean = changed.stdout.strip() == ""
+    return {"path": rel, "ok": clean,
+            "detail": "tracked, unmodified" if clean else "modified since the last commit"}
+
+
 def preflight(mode: str) -> dict:
     """Everything `check` prints, as one record."""
     env = environment()

@@ -6,10 +6,18 @@
     python -m solarpv.pipeline run --mode dev --from baselines --to evaluate --dry-run
     python -m solarpv.pipeline run --mode smoke --only evaluate --resume <run_id> [--force]
     python -m solarpv.pipeline status [<run_id>]
+    python -m solarpv.pipeline archive <run_id> [--dest DIR] | archive --verify <zip>
+    python -m solarpv.pipeline promote <run_id> [--replace]
 
 Modes: smoke (does the code run? a 28-day validation window), dev (stage 9, the whole
-validation split), final (stage 10, only on the commit tagged g1-frozen with a clean tree; the
-test split only with --allow-test). Smoke and dev never load a test row.
+validation split), final (stage 10, only on the commit tagged g1-frozen with a clean tree,
+checked before every step; the whole v6 scope, no slices). Smoke and dev never load a test row.
+A final run has two phases (D-32): `run --mode final --to report` trains, forecasts validation
+and test, and scores validation only (the stage-10 acceptance); after the acceptance,
+`run --mode final --resume <run_id> --only test,report --force --allow-test` scores the test
+split (the step `test`; every read of a test row is logged). `promote` copies a complete final
+run to the paths of §6.10 (X8); `archive` packs a run with the SHA-256 of every file (D-31).
+See docs/runbook_final.md.
 """
 
 import argparse
@@ -47,9 +55,18 @@ def main(argv: list[str] | None = None) -> int:
                        help="a failed step does not stop the sequence")
     p_run.add_argument("--dry-run", action="store_true", help="print the plan; run nothing")
     p_run.add_argument("--allow-test", action="store_true",
-                       help="final mode only: also evaluate the test split (stage 11)")
+                       help="final mode only, with the step test: score the test split "
+                            "(stage 11, D-32)")
     p_status = sub.add_parser("status", help="the runs, or one run in detail")
     p_status.add_argument("run_id", nargs="?")
+    p_arch = sub.add_parser("archive", help="pack a run with the SHA-256 of every file (D-31)")
+    p_arch.add_argument("run_id", nargs="?")
+    p_arch.add_argument("--dest", help="folder of the zip (default outputs/archives)")
+    p_arch.add_argument("--verify", metavar="ZIP", help="check an archive instead")
+    p_prom = sub.add_parser("promote", help="copy a complete final run to the §6.10 paths (X8)")
+    p_prom.add_argument("run_id")
+    p_prom.add_argument("--replace", action="store_true",
+                        help="move existing target files aside instead of refusing")
     args = parser.parse_args(argv)
     command = "python -m solarpv.pipeline " + " ".join(argv if argv is not None else sys.argv[1:])
 
@@ -68,6 +85,35 @@ def main(argv: list[str] | None = None) -> int:
         return 1 if report["errors"] else 0
     if args.command == "status":
         return Runner().status(args.run_id)
+    if args.command == "archive":
+        from solarpv.pipeline import archive
+        from solarpv.pipeline.runner import RUNS_DIR
+
+        if args.verify:
+            problems = archive.verify(args.verify)
+            print(archive.describe(args.verify))
+            for p in problems:
+                print(f"  PROBLEM {p}")
+            print("archive verified" if not problems else "archive FAILED")
+            return 1 if problems else 0
+        if not args.run_id:
+            parser.error("archive needs a run_id or --verify")
+        path = archive.archive(RUNS_DIR / args.run_id,
+                               archive.Path(args.dest) if args.dest else archive.ARCHIVES_DIR)
+        print(archive.describe(path))
+        print(f"written {path} and {path.name}.sha256; copy both off the VDI")
+        return 0
+    if args.command == "promote":
+        from solarpv.pipeline import promote
+        from solarpv.pipeline.runner import RUNS_DIR
+
+        try:
+            manifest = promote.promote(RUNS_DIR / args.run_id, replace=args.replace)
+        except promote.PromoteError as exc:
+            print(f"promote refused: {exc}", file=sys.stderr)
+            return 2
+        print(f"promoted; manifest {manifest}")
+        return 0
     try:
         steps = select_steps(_csv(args.only), args.from_, args.to)
         return Runner().run(

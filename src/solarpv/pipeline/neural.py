@@ -103,6 +103,7 @@ def call_worker(ctx: Context, job_dir: Path, out_dir: Path) -> None:
 def neural_inputs(ctx: Context, step: str) -> list[Path]:
     from solarpv.models import xgb_sota as X
 
+    steps.check_selected_inputs(ctx)  # M25
     return [*SD.default_paths().files(), X.MODEL_INPUTS_FILE, steps.DERIVED_CONSTANTS_FILE,
             GPU_ENV_LOCK]
 
@@ -222,6 +223,11 @@ def build_job(ctx: Context, step: str, job_dir: Path, seeds: list[int], budget: 
         sources = SD.load_sources(allow_test=with_test)
         if not with_test and sources.frame.index.max() >= pd.Timestamp(TEST_START, tz="UTC"):
             raise RunnerError("test rows reached a neural step in a development run")
+        if with_test:  # final: the test window is forecast, never scored here (D-32, X40)
+            n_test = int((sources.frame.index >= pd.Timestamp(TEST_START, tz="UTC")).sum())
+            report_access = steps.log_test_access(
+                ctx, "forecast the test window (the encoder series and the known inputs)",
+                list(SD.default_paths().files()), n_test)
         scaler = SD.Scaler.fit(sources)
     tune = [w for w in ctx.windows if w.split == "val"]
     if len(tune) != 1:
@@ -271,6 +277,7 @@ def build_job(ctx: Context, step: str, job_dir: Path, seeds: list[int], budget: 
            "tune_scope": "val", "mean_k": float(mean_k), "meta": meta, "files": files}
     J.write_json(job_dir / J.JOB_FILE, job)
     report["scaler_rows"] = scaler.rows
+    report["test_access"] = [report_access] if with_test else []
     return job, datasets, report
 
 
@@ -312,45 +319,58 @@ def mbe_rows(target: str, seed: int, key: str, point: np.ndarray, arrays: dict,
     return rows
 
 
-def _warnings(ctx: Context, step: str, worker: dict, job: dict) -> list[str]:
-    """The automatic warnings of §3.5 for every final fit and study."""
+def warning_list(step: str, records: dict, budget: dict) -> list[dict]:
+    """The automatic warnings of §3.5 for every final fit and study, as records (kind, subject,
+    text) computed from the worker's records alone; the step logs `<step>: <text>`, and the
+    report recomputes them from the stored `best_params.json` (X49)."""
     out = []
     family = J.STEP_FAMILY[step]
-    for target, by_seed in worker["records"].items():
+
+    def add(kind: str, name: str, text: str) -> None:
+        out.append({"kind": kind, "subject": name, "text": f"{step}: {name}: {text}"})
+
+    for target, by_seed in records.items():
         for seed, rec in by_seed.items():
             name, f = f"{target} seed {seed}", rec["final"]
             if family == "patchtst":
                 checks = int(f.get("val_checks") or 0)
                 if f["best_step"] is not None and f["steps_run"] is not None:
-                    if f["best_step"] <= int(job["budget"]["val_check_steps"]):
-                        out.append(f"{name}: best validation check at the first check")
+                    if f["best_step"] <= int(budget["val_check_steps"]):
+                        add("first_check", name, "best validation check at the first check")
                     if checks and f["best_step"] >= f["steps_run"] - 1:
-                        out.append(f"{name}: best validation check at the last step: it may "
-                                   "not have converged")
+                        add("last_step", name, "best validation check at the last step: it "
+                                               "may not have converged")
                 continue
             if f["nan_loss"]:
-                out.append(f"{name}: NaN or infinite loss")
+                add("nan", name, "NaN or infinite loss")
             if f["best_epoch"] == 1:
-                out.append(f"{name}: best epoch at the first epoch")
+                add("first_epoch", name, "best epoch at the first epoch")
             if f["best_epoch"] == f["epochs_run"] and not f["stopped_early"]:
-                out.append(f"{name}: best epoch {f['best_epoch']} at the last epoch: it may "
-                           "not have converged")
+                add("last_epoch", name, f"best epoch {f['best_epoch']} at the last epoch: it "
+                                        "may not have converged")
             if f["train_loss_at_best"] > 0 and (f["best_val_loss"] / f["train_loss_at_best"]
                                                 > GAP_RATIO_WARN):
-                out.append(f"{name}: validation loss {f['best_val_loss']:.4g} is "
-                           f"{f['best_val_loss'] / f['train_loss_at_best']:.1f} x the train "
-                           f"loss {f['train_loss_at_best']:.4g} at the best epoch")
+                add("gap", name, f"validation loss {f['best_val_loss']:.4g} is "
+                                 f"{f['best_val_loss'] / f['train_loss_at_best']:.1f} x the "
+                                 f"train loss {f['train_loss_at_best']:.4g} at the best epoch")
             space = J.SEARCH_SPACES.get(family)
             if rec.get("study") and space:
-                edges = J.edge_params(rec["params"], space)
+                params, eff_space = J.effective(rec["params"], space)  # X45
+                edges = J.edge_params(params, eff_space)
                 if edges:
-                    out.append(f"{name}: best trial on the edge of the search space for "
-                               + ", ".join(f"{p} = {rec['params'][p]}" for p in edges)
-                               + " (M23)")
+                    add("edge_space", name, "best trial on the edge of the search space for "
+                        + ", ".join(f"{p} = {params[p]}" for p in edges) + " (M23)")
             diff = rec.get("reproduce_diff_pp")
             if diff is not None and diff > REPRODUCE_TOL_PP:
-                out.append(f"{name}: the retrained best trial differs from the trial by "
-                           f"{diff:.3g} pp (X32)")
+                add("reproduce", name, f"the retrained best trial differs from the trial by "
+                                       f"{diff:.3g} pp (X32)")
+    return out
+
+
+def _warnings(ctx: Context, step: str, worker: dict, job: dict) -> list[str]:
+    """The automatic warnings of §3.5 for every final fit and study."""
+    out = [w["text"].removeprefix(f"{step}: ")
+           for w in warning_list(step, worker["records"], job["budget"])]
     for w in out:
         ctx.log.warn(f"{step}: {w}")
     return out
@@ -554,5 +574,6 @@ def run_neural(ctx: Context, step: str) -> Result:
         values[key] = f["value_kw"]
         summary.append(f"  {key:<22} {f['value_kw']:6.3f} %  (D+1 {f['value_kw_D1']:.3f}, "
                        f"D+2 {f['value_kw_D2']:.3f}, D+3 {f['value_kw_D3']:.3f})")
-    return Result(sorted(set(outputs)), values={"best": values},
+    return Result(sorted(set(outputs)), values={"best": values,
+                                                "test_access": report["test_access"]},
                   summary=summary, notes={"seed_spread_pp": spread, "warnings": len(warnings)})

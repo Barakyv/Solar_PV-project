@@ -704,6 +704,7 @@ def test_without_the_l09_decision_dev_runs_are_raw_and_final_refuses(wired):
     for b in best.values():
         assert b["mos"] == {"applied": False, "reason": "L-09 not decided yet"}
         assert b["value_kw_forecast"] == b["value_kw"]
-    ctx = SimpleNamespace(mode="final", config={"horizons": [1]})
+    verified = {"select": {"values": {"model_inputs_sha256": sha256(X.MODEL_INPUTS_FILE)}}}
+    ctx = SimpleNamespace(mode="final", config={"horizons": [1]}, completed=verified)
     with pytest.raises(steps.RunnerError, match="L-09"):
         steps.xgb_inputs(ctx)

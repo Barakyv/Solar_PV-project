@@ -1,7 +1,8 @@
-"""The work steps implemented so far: `baselines` and `evaluate` (W1), `xgb` (W2), and the
-neural steps `bilstm`, `tft96`, `tft168`, `tftbase`, `patchtst` (W4, in `pipeline.neural`)
-(docs/stage9_plan.md §3.2, §10.3, §13.4, §18). Every step gets a `Context` and writes only into
-`ctx.out`, a temporary folder that the runner renames when the step succeeds.
+"""The work steps: `baselines` and `evaluate` (W1), `xgb` (W2), the neural steps `bilstm`,
+`tft96`, `tft168`, `tftbase`, `patchtst` (W4, in `pipeline.neural`), and `select`, `explain`,
+`report` and `test` (W5, in `pipeline.select_step`, `pipeline.explain`, `pipeline.report` and
+here) (docs/stage9_plan.md §3.2, §10.3, §13.4, §18, §19). Every step gets a `Context` and writes
+only into `ctx.out`, a temporary folder that the runner renames when the step succeeds.
 
 Rules (the self-reviews of §10 and §13):
 - the truth of smoke and dev runs is read without the test split (X3); the test split is read
@@ -62,6 +63,8 @@ class Context:
     completed: dict[str, dict] = field(default_factory=dict)  # step -> record (step.json)
     failed: list[str] = field(default_factory=list)  # steps of the run whose last try failed
     command: str = ""
+    step: str = ""  # the step this context runs
+    allow_test: bool = False  # the invocation flag of the step `test` (D-32)
 
 
 @dataclass
@@ -101,6 +104,51 @@ def restrict_to_window(truth: pd.DataFrame, window: Window) -> pd.DataFrame:
     return out
 
 
+def log_test_access(ctx: Context, purpose: str, files: list[Path], n_rows: int) -> dict:
+    """X40: every load of a test row writes one line of the test-access log (step, purpose,
+    run, commit, rows, the files read), and the step records it."""
+    if ctx.mode != "final":
+        raise RunnerError(f"{ctx.step}: test rows may be read only in a final run")
+    what = f"{ctx.command} [step {ctx.step}: {purpose}; {n_rows} test rows]"
+    E._log_test_access([Path(f) for f in files], ctx.run_dir, what)
+    ctx.log.warn(f"TEST ROWS READ ({purpose}, {n_rows} rows); recorded in "
+                 f"{E.TEST_ACCESS_LOG.name}")
+    return {"step": ctx.step, "purpose": purpose, "rows": int(n_rows),
+            "files": [Path(f).name for f in files]}
+
+
+def record_file(ctx: Context, step: str, name: str) -> Path:
+    """A file of a completed step of this run, checked against the hash in its record (M1)."""
+    record = ctx.completed.get(step)
+    if record is None:
+        raise RunnerError(f"{step} has not completed in this run")
+    if name not in record["outputs"]:
+        raise RunnerError(f"{record['folder']}/{name} is not an output of {step}")
+    path = ctx.run_dir / record["folder"] / name
+    if not path.exists() or sha256(path) != record["outputs"][name]:
+        raise RunnerError(f"{record['folder']}/{name} is missing or was modified after its step "
+                          "completed; rerun the step with --force")
+    return path
+
+
+def check_selected_inputs(ctx: Context) -> None:
+    """M25 (D-30): a model step reads the `model_inputs.json` that `select` verified in this run
+    (same SHA-256). A final run needs the `select` step; smoke and dev runs without it are
+    allowed (the W2-W4 runs had none)."""
+    from solarpv.models import xgb_sota as X
+
+    record = ctx.completed.get("select")
+    if record is None:
+        if ctx.mode == "final":
+            raise RunnerError("a final run verifies its input first: run the select step")
+        return
+    expected = record["values"]["model_inputs_sha256"]
+    actual = sha256(X.MODEL_INPUTS_FILE)
+    if actual != expected:
+        raise RunnerError(f"{X.MODEL_INPUTS_FILE.name} has SHA-256 {actual[:12]}, not "
+                          f"{expected[:12]} verified by the select step of this run")
+
+
 def assert_no_test_rows(paths: list[Path]) -> None:
     """Smoke and dev: a prediction for a test hour means the model read test features (X7)."""
     first_test = pd.Timestamp(TEST_START, tz="UTC")
@@ -123,10 +171,15 @@ def run_baselines(ctx: Context) -> Result:
     prediction files in the contract of §6.10, so they pass the checks every model passes."""
     mean_k = mean_daytime_k()
     targets, horizons = ctx.config["targets"], ctx.config["horizons"]
-    frames = []
+    frames, access = [], []
     for window in ctx.windows:
         with ctx.log.step(f"references on {window.split}, {window.label}"):
             truth = truth_for(window)
+            if window.split == "test":  # final: the references forecast the test window (D-32)
+                access.append(log_test_access(
+                    ctx, "forecast the references of the test window (observed AC and k "
+                         "before each forecast hour)", [FEATURES_FILE],
+                    int((truth["split"] == "test").sum())))
             refs = reference_predictions(truth, window.split, mean_k, horizons=horizons)
             refs = refs[refs["target"].isin(targets)]
             day = truth["daytime"] & (truth["split"] == window.split)
@@ -142,7 +195,8 @@ def run_baselines(ctx: Context) -> Result:
             path, index=False, lineterminator="\n")
         outputs.append(path)
         ctx.log.value(f"rows_{model}", len(g))
-    return Result(outputs, values={"mean_daytime_k": mean_k, "rows": len(refs)},
+    return Result(outputs, values={"mean_daytime_k": mean_k, "rows": len(refs),
+                                   "test_access": access},
                   summary=[f"{len(outputs)} reference files, {len(refs):,} rows"])
 
 
@@ -157,6 +211,7 @@ def _xgb():
 
 def xgb_inputs(ctx: Context) -> list[Path]:
     X = _xgb()
+    check_selected_inputs(ctx)
     if not MONOTONE_DECISION_FILE.exists():
         raise RunnerError(f"{MONOTONE_DECISION_FILE.name} is missing: D-15 is decided first, by "
                           "python -m solarpv.models.xgb_checks d15 (docs/stage9_plan.md §14.3)")
@@ -228,12 +283,17 @@ def run_xgb(ctx: Context) -> Result:
                  f"{decision['settings']}; L-09 adopted {adopted}")
     predictions = {s: [] for s in seeds}
     uncorrected = {s: [] for s in seeds}  # raw booster output of the corrected targets (X16)
-    trial_frames, curves, best, problems, mos_rows = [], [], {}, {}, []
+    trial_frames, curves, best, problems, mos_rows, access = [], [], {}, {}, [], []
     try:
         for h in ctx.config["horizons"]:
             table = data.model_table(h, splits, allow_test=with_test)
             if not with_test and (table.index >= pd.Timestamp(TEST_START, tz="UTC")).any():
                 raise RunnerError("test rows reached the xgb step in a development run")
+            if with_test:  # final: the test window is forecast, never scored here (D-32)
+                access.append(log_test_access(
+                    ctx, f"forecast the test window of D+{h} (features)",
+                    [data.feature_file(h), data.gfs_file(h)],
+                    int((table["split"] == "test").sum())))
             for target in ctx.config["targets"]:
                 feats = X.input_features(table, target, h, inputs)
                 setting = decision["settings"][target]
@@ -415,27 +475,45 @@ def run_xgb(ctx: Context) -> Result:
     return Result(outputs, values={"best": {k: v["value_kw_forecast"] for k, v in best.items()},
                                    "best_uncorrected": {k: v["value_kw"]
                                                         for k, v in best.items()},
-                                   "trials": int(len(trials))},
+                                   "trials": int(len(trials)), "test_access": access},
                   summary=summary, notes={"seed_spread_pp": spread})
+
+
+def xgb_warning_list(name: str, best_iteration: int, n_estimators: int, curve_finite: bool,
+                     val_rmse: float, train_rmse: float, params: dict) -> list[dict]:
+    """The automatic warnings of docs/stage9_plan.md §3.5 for one final fit, as records (kind,
+    subject, text). The step logs the texts; the report recomputes them from the stored record
+    (X49)."""
+    X = _xgb()
+    out = []
+
+    def add(kind: str, text: str) -> None:
+        out.append({"kind": kind, "subject": name, "text": f"{name}: {text}"})
+
+    if best_iteration == 0:
+        add("first_round", "best iteration at the first round")
+    if best_iteration >= n_estimators - 1:
+        add("cap", f"best iteration {best_iteration} at the cap of {n_estimators} rounds: it "
+                   "may not have converged (M12d)")
+    if not curve_finite:
+        add("nan", "NaN or infinite loss in the learning curve")
+    ratio = val_rmse / train_rmse if train_rmse > 0 else np.inf
+    if ratio > X.GAP_RATIO_WARN:
+        add("gap", f"validation RMSE {val_rmse:.4g} is {ratio:.1f} x the train RMSE "
+                   f"{train_rmse:.4g} at the best iteration")
+    edges = X.edge_params(params)
+    if edges:
+        add("edge_space", "best trial on the edge of the search space for "
+            + ", ".join(f"{p} = {params[p]:.4g}" for p in edges))
+    return out
 
 
 def _xgb_warnings(ctx: Context, X, name: str, fit, params: dict) -> None:
     """The automatic warnings of docs/stage9_plan.md §3.5 for one final fit."""
-    if fit.best_iteration == 0:
-        ctx.log.warn(f"{name}: best iteration at the first round")
-    if fit.cap_hit:
-        ctx.log.warn(f"{name}: best iteration {fit.best_iteration} at the cap of "
-                     f"{fit.n_estimators} rounds: it may not have converged (M12d)")
-    if not np.isfinite(fit.curve[["train_rmse", "val_rmse"]].to_numpy()).all():
-        ctx.log.warn(f"{name}: NaN or infinite loss in the learning curve")
-    ratio = fit.best_val_rmse / fit.best_train_rmse if fit.best_train_rmse > 0 else np.inf
-    if ratio > X.GAP_RATIO_WARN:
-        ctx.log.warn(f"{name}: validation RMSE {fit.best_val_rmse:.4g} is {ratio:.1f} x the "
-                     f"train RMSE {fit.best_train_rmse:.4g} at the best iteration")
-    edges = X.edge_params(params)
-    if edges:
-        ctx.log.warn(f"{name}: best trial on the edge of the search space for "
-                     + ", ".join(f"{p} = {params[p]:.4g}" for p in edges))
+    finite = bool(np.isfinite(fit.curve[["train_rmse", "val_rmse"]].to_numpy()).all())
+    for w in xgb_warning_list(name, fit.best_iteration, fit.n_estimators, finite,
+                              fit.best_val_rmse, fit.best_train_rmse, params):
+        ctx.log.warn(w["text"])
 
 
 def _seed_spread(ctx: Context, X, best: dict) -> dict:
@@ -497,20 +575,61 @@ def run_evaluate(ctx: Context) -> Result:
     outputs, summary, notes = [], [], {"models_missing": missing}
     if missing:
         ctx.log.warn(f"model steps of this run that did not complete: {missing}")
-    for window in ctx.windows:
+    # D-32: evaluate scores the validation window only; the test window of a final run is
+    # scored by the step `test`, after the stage-10 acceptance
+    for window in [w for w in ctx.windows if w.split != "test"]:
         out = ctx.out / window.split
         with ctx.log.step(f"evaluate {window.split}, {window.label}"):
             truth = truth_for(window)
             tables = E.run(files, out, mean_k, site=site, truth=truth, split=window.split,
-                           allow_test=ctx.config["allow_test"] and window.split == "test",
-                           strict=True, with_references=False, ci=True, log=ctx.log,
-                           command=ctx.command,
+                           allow_test=False, strict=True, with_references=False, ci=True,
+                           log=ctx.log, command=ctx.command,
                            record_dir=ctx.run_dir / "evaluate" / window.split)
         outputs += sorted(out.glob("*.csv")) + [out / "manifest.json"]
         summary += benchmark_lines(out / "benchmark_summary.csv", window)
         ctx.log.value(f"rows_benchmark_{window.split}", len(tables["benchmark_summary"]))
     return Result(outputs, values={"files_scored": [f.name for f in files]}, summary=summary,
                   notes=notes)
+
+
+# ── test (D-32, the second phase of a final run) ────────────────────────────
+
+
+def testsplit_inputs(ctx: Context) -> list[Path]:
+    return [FEATURES_FILE, DERIVED_CONSTANTS_FILE, *prediction_files(ctx)[0]]
+
+
+def run_testsplit(ctx: Context) -> Result:
+    """The test split scored by the evaluation layer, and the XGB SHAP on the test window
+    (§6.10, D-31). Only in a final run, with --allow-test, after the run's `evaluate` and
+    `report` completed in an earlier invocation (the stage-10 acceptance is read first)."""
+    if ctx.mode != "final" or not ctx.allow_test:
+        raise RunnerError("the step test runs only in a final run with --allow-test (D-32)")
+    for need in ("baselines", "evaluate", "report"):
+        if need not in ctx.completed:
+            raise RunnerError(f"the step test needs {need} completed first: the validation "
+                              "evaluation and the report are the stage-10 acceptance (D-32)")
+    (window,) = [w for w in ctx.windows if w.split == "test"]
+    files, missing = prediction_files(ctx)
+    mean_k = mean_daytime_k()
+    out = ctx.out / "test"
+    with ctx.log.step(f"evaluate test, {window.label}"):
+        truth = truth_for(window)
+        tables = E.run(files, out, mean_k, site=load_site(), truth=truth, split="test",
+                       allow_test=True, strict=True, with_references=False, ci=True,
+                       log=ctx.log, command=f"{ctx.command} [step test: score the test split]",
+                       record_dir=ctx.run_dir / "test" / "test")
+    outputs = sorted(out.glob("*.csv")) + [out / "manifest.json"]
+    summary = benchmark_lines(out / "benchmark_summary.csv", window)
+    values = {"files_scored": [f.name for f in files], "models_missing": missing,
+              "rows_benchmark": len(tables["benchmark_summary"]), "test_access": []}
+    if "xgb" in ctx.completed:
+        from solarpv.pipeline import explain
+
+        shap_out, access = explain.xgb_shap_test(ctx, window)
+        outputs += shap_out
+        values["test_access"] += access
+    return Result(outputs, values=values, summary=summary)
 
 
 def benchmark_lines(path: Path, window: Window) -> list[str]:
@@ -545,9 +664,26 @@ def _neural_step(step: str) -> Implementation:
     return Implementation(inputs, run)
 
 
+def _lazy(module: str, inputs: str, run: str) -> Implementation:
+    """A W5 step in its own module (`pipeline.<module>`), imported when it runs."""
+    import importlib
+
+    def _inputs(ctx: Context) -> list[Path]:
+        return getattr(importlib.import_module(f"solarpv.pipeline.{module}"), inputs)(ctx)
+
+    def _run(ctx: Context) -> Result:
+        return getattr(importlib.import_module(f"solarpv.pipeline.{module}"), run)(ctx)
+
+    return Implementation(_inputs, _run)
+
+
 IMPLEMENTED = {
+    "select": _lazy("select_step", "select_inputs", "run_select"),
     "baselines": Implementation(baselines_inputs, run_baselines),
     "xgb": Implementation(xgb_inputs, run_xgb),
     **{s: _neural_step(s) for s in ("bilstm", "tft96", "tft168", "tftbase", "patchtst")},
     "evaluate": Implementation(evaluate_inputs, run_evaluate),
+    "explain": _lazy("explain", "explain_inputs", "run_explain"),
+    "report": _lazy("report", "report_inputs", "run_report"),
+    "test": Implementation(testsplit_inputs, run_testsplit),
 }

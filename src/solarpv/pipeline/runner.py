@@ -29,7 +29,7 @@ from solarpv.config.paths import OUTPUTS_DIR, REPO_ROOT
 from solarpv.config.provenance import git_commit, sha256
 from solarpv.config.runlog import RunLog
 from solarpv.pipeline import checks
-from solarpv.pipeline.config import SPEC, STEP_ORDER, Window, resolve
+from solarpv.pipeline.config import BUDGETS, SPEC, STEP_ORDER, TEST_STEP, Window, resolve
 from solarpv.pipeline.steps import IMPLEMENTED, Context, RunnerError
 
 RUNS_DIR = OUTPUTS_DIR / "runs"
@@ -70,7 +70,8 @@ def read_json(path: Path) -> dict:
 
 def select_steps(only: list[str] | None = None, from_: str | None = None,
                  to: str | None = None, order: tuple[str, ...] = STEP_ORDER) -> list[str]:
-    """The steps to run, in the canonical order. `only` and `from_`/`to` exclude each other."""
+    """The steps to run, in the canonical order. `only` and `from_`/`to` exclude each other.
+    The step `test` (the second phase of a final run, D-32) runs only when it is named."""
     if only and (from_ or to):
         raise ValueError("use either --only or --from/--to")
     named = list(only or []) + [s for s in (from_, to) if s]
@@ -83,7 +84,19 @@ def select_steps(only: list[str] | None = None, from_: str | None = None,
     last = order.index(to) if to else len(order) - 1
     if first > last:
         raise ValueError(f"--from {from_} comes after --to {to}")
-    return list(order[first:last + 1])
+    chosen = list(order[first:last + 1])
+    if TEST_STEP not in (from_, to):
+        chosen = [s for s in chosen if s != TEST_STEP]
+    return chosen
+
+
+def check_test_flag(mode: str, steps: list[str], allow_test: bool) -> None:
+    """D-32: --allow-test is the flag of the step `test`, which runs only in final mode."""
+    if TEST_STEP in steps and (mode != "final" or not allow_test):
+        raise ValueError("the step test runs only in a final run, with --allow-test (D-32)")
+    if allow_test and TEST_STEP not in steps:
+        raise ValueError("--allow-test is the flag of the step test: name it with --only test "
+                         "(D-32); the other steps never score the test split")
 
 
 def check_implemented(steps: list[str], implemented=IMPLEMENTED) -> None:
@@ -91,6 +104,66 @@ def check_implemented(steps: list[str], implemented=IMPLEMENTED) -> None:
     if missing:
         later = ", ".join(f"{s} ({SPEC[s].work_item})" if s in SPEC else s for s in missing)
         raise ValueError(f"not implemented yet: {later}. Implemented: {sorted(implemented)}")
+
+
+# ── the time estimate of a final run (X43) ──────────────────────────────────
+
+
+def fits(step: str, budget: dict | None) -> float:
+    """The training work of one target under a budget: XGB trials x seeds; BiLSTM epochs
+    (fixed-epoch trials plus one final fit per seed); TFT trials plus the retrain of the best
+    trial (X32), per seed; one fit per seed for the TFT baseline and PatchTST; 1 otherwise."""
+    if not budget:
+        return 1.0
+    seeds = len(budget.get("seeds") or [1])
+    if step == "xgb":
+        return float(budget["trials"] * seeds)
+    if step == "bilstm":
+        return float(budget["trials"] * budget["epochs_trial"] + seeds * budget["epochs_final"])
+    if step in ("tft96", "tft168"):
+        return float((budget["trials"] + 1) * seeds)
+    return float(seeds)
+
+
+def scale_dev_to_final(step: str, dev_folder: Path) -> tuple[float, float]:
+    """(expected, upper) factors from a dev step folder to the final budget of the step. The
+    expected factor is the ratio of fits; the upper one assumes that every neural fit runs to
+    its epoch (PatchTST: step) cap, from the epochs that the dev fits actually ran, and for XGB
+    that every trial takes as long as the longest dev trial."""
+    record = read_json(dev_folder / "step.json")
+    dev_budget = (record.get("config") or {}).get("budget")
+    final_budget = BUDGETS["final"].get(step)
+    ratio = fits(step, final_budget) / fits(step, dev_budget) if final_budget else 1.0
+    upper = ratio
+    curves = dev_folder / "learning_curves.csv"
+    trials = dev_folder / "trials.csv"
+    if step == "xgb" and trials.exists():
+        import pandas as pd
+
+        d = pd.read_csv(trials)["duration_s"]
+        if len(d) and d.mean() > 0:
+            upper = ratio * float(d.max() / d.mean())
+    elif step in ("bilstm", "tft96", "tft168", "tftbase") and curves.exists():
+        import pandas as pd
+
+        c = pd.read_csv(curves)
+        ran = len(c)  # epochs run by every fit of the dev step, all targets
+        n_targets = c["target"].nunique()
+        b, seeds = final_budget, len(final_budget["seeds"])
+        if step == "bilstm":
+            cap = b["trials"] * b["epochs_trial"] + seeds * b["epochs_final"]
+        elif step == "tftbase":
+            cap = seeds * b["epochs"]
+        else:
+            cap = (b["trials"] + 1) * seeds * b["epochs"]
+        if ran:
+            upper = max(ratio, n_targets * cap / ran)
+    elif step == "patchtst" and (dev_folder / "best_params.json").exists():
+        runs = [r["final"]["steps_run"] for r in read_json(dev_folder / "best_params.json")
+                .values() if r.get("final", {}).get("steps_run")]
+        if runs:
+            upper = max(ratio, ratio * final_budget["max_steps"] / (sum(runs) / len(runs)))
+    return ratio, upper
 
 
 # ── records ─────────────────────────────────────────────────────────────────
@@ -153,11 +226,12 @@ def _move_aside(path: Path, kind: str) -> Path:
 
 class Runner:
     def __init__(self, runs_dir: Path = RUNS_DIR, implemented=IMPLEMENTED,
-                 preflight=checks.preflight, echo: bool = True):
+                 preflight=checks.preflight, echo: bool = True, step_gate=checks.final_step_gate):
         self.runs_dir = Path(runs_dir)
         self.implemented = implemented
         self.preflight = preflight
         self.echo = echo
+        self.step_gate = step_gate  # X38: the final gate before every step of a final run
 
     def say(self, text: str = "") -> None:
         if self.echo:
@@ -201,16 +275,31 @@ class Runner:
                      f"estimate {self.estimate(step, mode)}")
         return 0
 
-    def estimate(self, step: str, mode: str) -> str:
-        """Median duration of the completed tries of this step and mode in earlier runs."""
-        durations = []
-        for record in self.runs_dir.glob(f"*/{step}/step.json"):
+    def durations(self, step: str, mode: str) -> list[tuple[float, Path]]:
+        """(duration, step folder) of the completed tries of this step and mode."""
+        out = []
+        for record in sorted(self.runs_dir.glob(f"*/{step}/step.json")):
             data = read_json(record)
             if data.get("mode") == mode and data.get("status") == "ok":
-                durations.append(float(data["duration_s"]))
-        if not durations:
-            return "unknown (no earlier run)"
-        return f"{statistics.median(durations):.0f} s (median of {len(durations)})"
+                out.append((float(data["duration_s"]), record.parent))
+        return out
+
+    def estimate(self, step: str, mode: str) -> str:
+        """Median duration of the completed tries of this step and mode in earlier runs. For a
+        final run without an earlier one (X43): the latest dev duration scaled by the ratio of
+        the fits of the two budgets, with an upper bound when every fit runs to its cap."""
+        found = self.durations(step, mode)
+        if found:
+            durations = [d for d, _ in found]
+            return f"{statistics.median(durations):.0f} s (median of {len(durations)})"
+        if mode == "final":
+            dev = self.durations(step, "dev")
+            if dev:
+                seconds, folder = dev[-1]
+                ratio, upper = scale_dev_to_final(step, folder)
+                return (f"about {seconds * ratio:.0f} s (dev {seconds:.0f} s x {ratio:.2f} fits), "
+                        f"up to about {seconds * upper:.0f} s")
+        return "unknown (no earlier run)"
 
     # ── running ─────────────────────────────────────────────────────────────
 
@@ -220,6 +309,7 @@ class Runner:
             command: str = "") -> int:
         config = resolve(mode, targets, horizons, seeds, allow_test)
         check_implemented(steps, self.implemented)
+        check_test_flag(mode, steps, allow_test)
         run_id, run_dir, state = self._open(mode, config, resume)  # no side effect
         if dry_run:
             return self.dry_run(mode, steps, config, run_id, state)
@@ -241,8 +331,9 @@ class Runner:
         write_json(run_dir / "invocations" / f"{stamp}.json", report)
         invocation = {"started_utc": started.isoformat(), "command": command,
                       "commit": report["git"]["commit"], "steps": steps, "force": force,
-                      "keep_going": keep_going, "preflight": f"invocations/{stamp}.json",
-                      "results": {}}
+                      "keep_going": keep_going, "allow_test": allow_test,
+                      "preflight": f"invocations/{stamp}.json", "results": {}}
+        self._invocation = {"allow_test": allow_test, "commit": report["git"]["commit"]}
         state["invocations"].append(invocation)
         write_json(run_dir / "run.json", state)
         windows = [Window(**w) for w in config["windows"]]
@@ -279,6 +370,12 @@ class Runner:
     def _step(self, step, mode, config, windows, run_id, run_dir, state, force, command,
               log) -> tuple[str, list[str]]:
         impl = self.implemented[step]
+        invocation = getattr(self, "_invocation", {"allow_test": False, "commit": None})
+        if mode == "final":  # X38: the gate before every step, not only in the preflight
+            problems = self.step_gate(invocation["commit"])
+            if problems:
+                log.warn(f"{step}: refused by the final gate: {problems}")
+                return f"refused (final gate: {'; '.join(problems)})", []
         completed = completed_records(run_dir, state)
         failed = [s for s, e in state["steps"].items() if e.get("status") == "failed"]
         cfg = step_config(step, config)
@@ -288,7 +385,8 @@ class Runner:
                      f"{_move_aside(tmp, 'interrupted').name}")
         tmp.mkdir()
         ctx = Context(run_id=run_id, run_dir=run_dir, mode=mode, config=config, windows=windows,
-                      out=tmp, log=log, completed=completed, failed=failed, command=command)
+                      out=tmp, log=log, completed=completed, failed=failed, command=command,
+                      step=step, allow_test=bool(invocation["allow_test"]))
         try:
             inputs = {_rel(p): sha256(p) for p in impl.inputs(ctx)}
         except Exception as exc:  # e.g. a modified prediction file of an earlier step

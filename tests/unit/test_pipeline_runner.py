@@ -88,15 +88,19 @@ def test_select_steps():
     assert select_steps(["evaluate", "baselines"]) == ["baselines", "evaluate"]  # canonical order
     assert select_steps(None, "baselines", "xgb") == ["baselines", "xgb"]
     assert select_steps(None, "explain") == ["explain", "report"]
-    assert select_steps() == list(STEP_ORDER)
+    # the second phase of a final run (D-32) runs only when it is named
+    assert select_steps() == [s for s in STEP_ORDER if s != "test"]
+    assert select_steps(["test", "report"]) == ["report", "test"]
+    assert select_steps(None, "report", "test") == ["report", "test"]
     for bad in ({"only": ["nope"]}, {"only": ["xgb"], "from_": "xgb"},
                 {"from_": "evaluate", "to": "baselines"}):
         with pytest.raises(ValueError):
             select_steps(**bad)
 
 
-def test_unimplemented_steps_are_refused_with_their_work_item(tmp_path):
-    r = Runner(runs_dir=tmp_path / "runs", preflight=lambda m: fake_report(m), echo=False)
+def test_unimplemented_steps_are_refused_with_their_work_item(tmp_path, source):
+    r = Runner(runs_dir=tmp_path / "runs", implemented={"baselines": fake("b", source)},
+               preflight=lambda m: fake_report(m), echo=False)
     with pytest.raises(ValueError, match=r"explain \(W5\)"):
         r.run("smoke", select_steps(None, "baselines", "explain"))
     assert not (tmp_path / "runs").exists()
@@ -117,7 +121,10 @@ def test_modes_budgets_and_windows():
     (val,) = evaluation_windows("dev")
     assert val.start_ts == pd.Timestamp(VAL_START, tz="UTC")
     assert val.end_ts == pd.Timestamp(TEST_START, tz="UTC")
+    # D-32: a final run always forecasts the test window; only the step test scores it
+    assert [w.split for w in evaluation_windows("final")] == ["val", "test"]
     assert [w.split for w in evaluation_windows("final", allow_test=True)] == ["val", "test"]
+    assert resolve("final")["allow_test"] is True and resolve("dev")["allow_test"] is False
     for mode in ("smoke", "dev"):
         with pytest.raises(PermissionError):
             evaluation_windows(mode, allow_test=True)

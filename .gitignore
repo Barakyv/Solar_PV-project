@@ -32,6 +32,8 @@ outputs/**/lightning_logs/
 # quantile files are bulky; the records, curves, trials, configs and figures are committed
 /outputs/runs/**/*.npz
 /outputs/runs/**/quantiles_*.csv
+# run archives (stage-9 plan §19.5, D-31): one zip per run with its hashes, copied off the VDI
+/outputs/archives/
 
 # --- python ---
 __pycache__/

@@ -128,6 +128,23 @@ def read_json(path: Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+HCS = "hidden_continuous_size"
+
+
+def effective(params: dict, space: dict) -> tuple[dict, dict]:
+    """X45: the TFT samples `hidden_continuous_size` in 8..64 and uses min(value, hidden_size).
+    The parameters with the effective value, and the space with its effective bounds
+    [low, hidden_size], so that an edge is judged on what the network used."""
+    if HCS not in params or HCS not in space or "hidden_size" not in params:
+        return dict(params), dict(space)
+    hidden = int(params["hidden_size"])
+    out = {**params, HCS: min(int(params[HCS]), hidden)}
+    eff = {**space, HCS: {**space[HCS], "high": hidden}}
+    if eff[HCS]["high"] <= eff[HCS]["low"]:  # one possible value: never an edge result
+        eff = {k: v for k, v in eff.items() if k != HCS}
+    return out, eff
+
+
 def edge_params(params: dict, space: dict, fraction: float = EDGE_FRACTION) -> list[str]:
     """Searched parameters on the edge of their space (§3.5, M23): within `fraction` of a bound
     in the sampling scale, or the first or last choice of a categorical."""

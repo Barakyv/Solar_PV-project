@@ -7,7 +7,11 @@ Three modes:
   dev    stage 9: the development budgets (D-17); evaluated on the whole validation split. Test
          rows are never loaded.
   final  stage 10: the budgets of v6 (D-08); only on the commit tagged `g1-frozen` with a clean
-         tree. Validation always; the test split only with --allow-test (stage 11).
+         tree, checked before every step (X38); no slice of targets, horizons or seeds (X39).
+         Two phases (D-32, docs/stage9_plan.md §19.7): the model steps forecast the validation
+         and the test window, and `evaluate` scores validation only (the stage-10 acceptance);
+         the test split is scored only by the step `test`, in a later invocation of the same
+         run with --allow-test (stage 11). Every read of a test row is logged (X40).
 """
 
 from dataclasses import asdict, dataclass
@@ -84,8 +88,9 @@ class StepSpec:
 
 # The work steps, in the order they run. `env` and `data` are the preflight of every run.
 STEPS = (
-    StepSpec("select", "7", "feature selection (rerun of stage 7)", "CPU",
-             "stage-6 and 6b tables", "model_inputs.json", "W5"),
+    StepSpec("select", "7", "verifies the stage-7 selection and records its input; reruns "
+             "nothing (D-30)", "CPU", "stage-7 outputs, the stage-6 and 6b table schemas",
+             "select.json, copies of the sets", "W5"),
     StepSpec("baselines", "8", "persistence, climatology, clear sky x MEAN_DAYTIME_K", "CPU",
              "truth table, MEAN_DAYTIME_K", "predictions_<reference>.csv", "W1"),
     StepSpec("xgb", "9/10", "XGB-Opt", "CPU", "tables, model_inputs.json",
@@ -102,14 +107,19 @@ STEPS = (
              "predictions", "W4"),
     StepSpec("evaluate", "8/11", "the evaluation layer on every prediction file of the run",
              "CPU", "the run's prediction files, truth table", "the stage-8 tables", "W1"),
-    StepSpec("explain", "11", "SHAP, attention, hyper-parameter importance", "CPU/GPU",
-             "trained models", "explanation tables", "W5"),
+    StepSpec("explain", "11", "SHAP (XGB), TFT attention and variable selection, "
+             "hyper-parameter importance (D-31)", "CPU", "the run's models and records",
+             "explanation tables", "W5"),
     StepSpec("report", "11", "one summary of the run with automatic warnings", "CPU",
              "the run's records", "report", "W5"),
+    StepSpec("test", "11", "the test split scored, and the XGB SHAP on test (final only, "
+             "second phase, --allow-test; D-32)", "CPU", "the run's test forecasts, truth",
+             "the stage-8 tables on test", "W5"),
 )
 STEP_ORDER = tuple(s.name for s in STEPS)
 SPEC = {s.name: s for s in STEPS}
 MODEL_STEPS = ("baselines", "xgb", "bilstm", "tft96", "tft168", "tftbase", "patchtst")
+TEST_STEP = "test"
 
 
 @dataclass(frozen=True)
@@ -155,20 +165,44 @@ def split_window(split: str) -> Window:
 
 
 def evaluation_windows(mode: str, allow_test: bool = False) -> list[Window]:
-    """Validation window of the mode, plus the whole test split in final mode with allow_test."""
+    """The windows a run forecasts: the validation window of the mode; in final mode also the
+    whole test split, which the model steps forecast and only the step `test` scores (D-32).
+    `allow_test` is the invocation flag of that step; outside final it is refused."""
     if mode not in MODES:
         raise ValueError(f"unknown mode {mode!r}; one of {MODES}")
     if allow_test and mode != "final":
         raise PermissionError("the test split is evaluated only in final mode (D-08, G-1)")
     windows = [local_days_window(*SMOKE_WINDOW_LOCAL) if mode == "smoke" else split_window("val")]
-    if allow_test:
+    if mode == "final":
         windows.append(split_window("test"))
     return windows
 
 
+def check_final_scope(mode: str, targets=None, horizons=None, seeds=None) -> None:
+    """X39: a final run is the whole v6 scope; it is built step by step with --only and
+    --resume, never by a slice of targets, horizons or seeds."""
+    if mode != "final":
+        return
+    sliced = []
+    if targets is not None and list(targets) != list(TARGETS):
+        sliced.append(f"targets {list(targets)}")
+    if horizons is not None and [int(h) for h in horizons] != list(HORIZONS):
+        sliced.append(f"horizons {list(horizons)}")
+    if seeds is not None:
+        sliced.append(f"seeds {list(seeds)}")
+    if sliced:
+        raise ValueError("a final run takes the whole v6 scope (D-08, X39); refused: "
+                         + ", ".join(sliced))
+
+
 def resolve(mode: str, targets=None, horizons=None, seeds=None, allow_test: bool = False
             ) -> dict:
-    """The resolved configuration of a run, written to its config.yaml."""
+    """The resolved configuration of a run, written to its config.yaml. `allow_test` records
+    whether the run forecasts the test window (final runs, D-32); the invocation flag
+    --allow-test only checks that the mode permits it, and does not change the configuration,
+    so the second phase of a final run resumes the same run."""
+    check_final_scope(mode, targets, horizons, seeds)
+    evaluation_windows(mode, allow_test)  # refuses --allow-test outside final
     targets = list(targets or TARGETS)
     horizons = [int(h) for h in (horizons or HORIZONS)]
     bad = [t for t in targets if t not in TARGETS] + [h for h in horizons if h not in HORIZONS]
@@ -176,8 +210,8 @@ def resolve(mode: str, targets=None, horizons=None, seeds=None, allow_test: bool
         raise ValueError(f"unknown target or horizon: {bad}")
     return {
         "mode": mode,
-        "windows": [w.as_dict() for w in evaluation_windows(mode, allow_test)],
-        "allow_test": allow_test,
+        "windows": [w.as_dict() for w in evaluation_windows(mode)],
+        "allow_test": mode == "final",
         "targets": targets,
         "horizons": horizons,
         "seeds": [int(s) for s in seeds] if seeds else None,
