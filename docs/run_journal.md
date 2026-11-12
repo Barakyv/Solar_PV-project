@@ -1757,4 +1757,36 @@ hashes, numbers) and the commit messages are the record:
 - **Not built:** explanations of the BiLSTM and PatchTST (new computation, D-31), seed spread
   (final run), intervals of XGB and PatchTST (point forecasts), test-split figures (stage 10).
 - **Decision needed (user):** X53, whether to sort the quantiles before any interval or the
-  L-14 potential skill uses them; on the G-1 list.
+  L-14 potential skill uses them; on the G-1 list. Decided in R9-24.
+
+### 2026-11-12 · R9-24 · D-33: the TFT quantiles are sorted after training, the point stays (X53)
+
+- **Question (user):** what is the professional solution for the crossing quantiles, how does it
+  affect the forecast, and is it converted afterwards so that the models can be compared.
+- **Options weighed:** (A) sort for any use as a distribution, point forecast unchanged; (B) sort
+  everything including the point; (C) do not sort; (D) prevent the crossing in training. The user
+  asked whether prevention and sorting differ: they do, because prevention is a new model (new
+  weights, new tuning, about 3 h of development reruns, a change from the submitted TFT) with no
+  guarantee against the current one, while sorting keeps the model and has a proof.
+- **Decision (user):** sorting after training, option A (D-33).
+- **Checks on validation (scored daytime hours, 8,703 per model and route, development run,
+  seed 42):**
+  - the written point forecast equals the raw 0.5 head in kW for all 8 model and route pairs;
+  - sorting then converting equals converting then sorting (largest difference 0.0), because the
+    conversion is a product with a non-negative number followed by a clip;
+  - crossing: TFT-96 direct 66.4 %, TFT baseline direct 56.1 %, TFT-96 indirect 12.4 %, others
+    below 2 %, BiLSTM 0 %;
+  - quantile loss (direct, kW): TFT-96 35.59 to 34.66 (−2.6 %), TFT baseline 35.41 to 34.91
+    (−1.4 %), TFT-168 unchanged to two decimals; the 80 % interval covers 62.2 to 63.8 % and 72.0
+    to 80.5 % for the two TFTs; on the indirect routes of the three TFTs it moves by less than 0.1
+    point;
+  - had the point been sorted too, it would have moved on 60.5 % of the TFT-96 direct hours (8.7
+    kW mean over all hours, 47.6 kW at most) and the nRMSE would have risen by 0.016 points
+    (TFT-96 direct) and 0.010 (TFT baseline direct), below the 0.05 margin.
+- **Code:** `solarpv.evaluation.quantiles` (`ordered`, `crossed`, `pinball`, `coverage`); T-92
+  (`tests/unit/test_quantiles.py`); S09-29 reads the sorted quantiles and asserts that the BiLSTM
+  never crosses and that sorting never raises the loss; its legend moved below the panels.
+- **To do before the report:** state the cost (on crossed hours the point is not the median of
+  the sorted distribution); verify the reference to Chernozhukov, Fernández-Val and Galichon
+  (2010), written from memory; record prevention in training as future work.
+- **Next:** unchanged: W6 after the answers of the college IT (Q-15).

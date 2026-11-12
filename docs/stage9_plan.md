@@ -1442,3 +1442,9 @@ its figures, its sheet, and the figures shown to the user (rule 7 of `docs/figur
 (rule 8) and one look for every model (rule 9): W4 gained S09-25–S09-30, W2 S09-31 and S09-32,
 W1 S09-33. Figure S09-29 found X53 (TFT quantiles out of order on most direct-route hours), on
 the G-1 list for the user's decision. W6 ends with the skill `task-figures`.
+
+*X53 decided (2026-11-12, user, D-33, R9-24, OP-59, T-92):* the quantiles are sorted per row
+after training wherever they are used as a distribution (intervals, coverage, quantile loss,
+L-14); the point forecast stays the 0.5 head, so no score, DM test or Optuna objective changes.
+The cost (on crossed hours the point is not the median of the sorted distribution) goes into the
+report. Prevention in training is future work.

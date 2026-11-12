@@ -211,7 +211,8 @@ the layout of the neural ones), S09-33 to W1 (the runs of stage 9), S08-04 to st
 secondary views), redrew S09-06 with all five encoders read from the W3 report (it showed three,
 with typed lengths), and gave XGB one colour in every figure (it was blue in S09-02 and black in
 S09-09). S09-29 found X53: the quantiles of two TFTs are out of order on most direct-route hours.
-Findings: X53, X54 (`docs/errata.md`).
+Findings: X53, X54 (`docs/errata.md`). X53 was decided the same day (D-33): S09-29 now draws the
+quantiles sorted per hour next to the raw ones.
 
 ## 7. Look-back log (rule 8)
 

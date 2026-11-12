@@ -1174,6 +1174,45 @@ the data; they explain and summarise model outputs).**
   explainer (C-61), attention offered as validation (C-62), one unseeded importance evaluation
   (C-63), numbers without a file (C-64).
 
+## 16e. Quantile forecasts read as a distribution (stage 9, `solarpv.evaluation.quantiles`)
+
+**OP-59 — Quantiles sorted per row wherever they are used as a distribution (D-33, X53; no
+stored file changed).**
+- *Why:* figure S09-29 showed that the seven quantile heads of the TFTs are separate outputs that
+  nothing orders: on the scored validation hours they are out of order on 66 % (TFT-96, direct)
+  and 56 % (TFT baseline, direct) of the hours. An interval or a quantile loss read from such
+  rows is not a distribution. The decision (user, 2026-11-12) is option A: sort after training for
+  every use as a distribution, and leave the point forecast as the model wrote it.
+- *Method:* `ordered(frame)` returns a copy in which the columns `q<level>` are sorted per row
+  (columns taken in the order of their level, never of their position); every other column, the
+  point forecast `y_pred` included, is untouched, and the stored `quantiles_*.csv` files keep the
+  raw model output. The sorting is the monotone rearrangement of the quantile curve. It never
+  raises the summed quantile loss for any truth value: with ρ_t(u) = t·u + max(−u, 0), the sum
+  over the quantiles is Σ t_k (y − q_k) + Σ max(q_k − y, 0); the second sum does not depend on the
+  order and the first is smallest when the q_k rise with the t_k (the rearrangement inequality).
+  The reference (Chernozhukov, Fernández-Val and Galichon, 2010) was written from memory and is
+  to be verified before it enters the report.
+- *Parameters:* none; the central interval is the 0.1 to 0.9 quantile (nominal 80 %).
+- *Result (run journal R9-24; validation, scored daytime hours, 8,703 per model and route,
+  development run, seed 42):* quantiles out of order on 66.4 % (TFT-96 direct), 56.1 % (TFT
+  baseline direct), 12.4 % (TFT-96 indirect) and below 2 % elsewhere; never in the BiLSTM. After
+  sorting, the quantile loss of the direct route falls from 35.59 to 34.66 (TFT-96) and from
+  35.41 to 34.91 kW (TFT baseline), and the 80 % interval covers 63.8 % (was 62.2 %) and 80.5 %
+  (was 72.0 %). The written point forecast equals the raw 0.5 head in kW for all eight model and
+  route pairs, so no score, no Diebold–Mariano test and no Optuna objective changes. Sorting then
+  converting to kW equals converting then sorting (largest difference 0.0): the conversion is a
+  product with a non-negative number followed by a clip.
+- *Cost, stated in the report:* on a crossed hour the point forecast is not the median of the
+  sorted distribution. Sorting the point too would have moved 60.5 % of the TFT-96 direct hours
+  (8.7 kW mean, 47.6 kW at most) and raised the nRMSE by 0.016 points. Prevention of the crossing
+  in training (a new model and tuning, about 3 h of reruns) is future work.
+- *Verification:* T-92 (`tests/unit/test_quantiles.py`: rows in order unchanged, crossed rows
+  sorted, point and other columns untouched, the loss never rises row by row for random truth
+  values, ordering by level, coverage count, a frame without quantiles refused); figure S09-29
+  asserts that the BiLSTM never crosses and that the sorted loss is not above the raw loss.
+- *Original:* not compared; the surviving submission files were not examined for the order of
+  the quantiles.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
