@@ -26,7 +26,9 @@ STAGE9_RUNS = tuple(f"outputs/runs/{r}" for r in (
     "20261107T104151Z_dev", "20261107T132101Z_smoke", "20261107T132142Z_dev",
     "20261107T135938Z_dev", "20261111T155030Z_smoke", "20261111T155739Z_smoke",
     "20261111T160241Z_smoke", "20261111T160714Z_dev", "20261112T060949Z_smoke",
-    "20261112T062618Z_smoke", "20261112T063719Z_dev"))
+    "20261112T062618Z_smoke", "20261112T063719Z_dev",
+    # W6: the smoke run after the guards X55 and X62 (R9-27)
+    "20261112T200502Z_smoke"))
 
 
 def table(rel: str, columns: list[str], split: str | None = None) -> pd.DataFrame:

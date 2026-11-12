@@ -255,12 +255,16 @@ def lookahead_clock() -> dict:
                                          min_obs=3)
     delta = delta.fillna(0.0)
     causal = pd.DataFrame({"minute_meteo": meteo, "minute_inverter": meteo + delta})
-    rows = []
+    rows, per_day = [], pd.DataFrame(index=calendar)
+    per_day.index.name = "day"
+    per_day["warm_up"] = warm.to_numpy()
     for col in ("minute_meteo", "minute_inverter"):
         both = offsets[col].notna() & causal[col].notna()
         applied = offsets[col][both].round()  # apply_correction rounds to whole minutes
         trailing = causal[col][both].round()
         diff = (trailing - applied).abs()
+        per_day[f"{col}_applied_min"] = applied
+        per_day[f"{col}_trailing_min"] = trailing
         rows.append({"clock": col, "days": len(calendar), "days_compared": int(both.sum()),
                      "days_shift_differs": int((diff > 0).sum()),
                      "share_pct": round(100 * float((diff > 0).mean()), 2),
@@ -269,6 +273,7 @@ def lookahead_clock() -> dict:
                      "warm_up_days": int(warm.sum())})
     table = pd.DataFrame(rows)
     write("lookahead_clock.csv", table)
+    write("lookahead_clock_days.csv", per_day.reset_index())
     return {"steps_found_on_the_whole_series": [str(s.date()) for s in steps],
             "by_clock": table.to_dict("records")}
 
@@ -306,8 +311,46 @@ def lookahead_polled() -> dict:
             "by_source": table.to_dict("records")}
 
 
+def smoke_final() -> dict:
+    """5. The newest smoke run (the one at the commit to be tagged): every step ok, one clean
+    commit, and its forecast files byte for byte against the smoke run before it."""
+    import hashlib
+
+    runs = sorted(p for p in (OUTPUTS_DIR / "runs").iterdir() if p.name.endswith("_smoke"))
+    run, previous = runs[-1], runs[-2]
+    steps = {}
+    for sj in sorted(run.glob("*/step.json")):
+        if "." in sj.parent.name:
+            continue
+        rec = json.loads(sj.read_text(encoding="utf-8"))
+        steps[sj.parent.name] = {"status": rec.get("status"), "commit": rec.get("commit")}
+    commits = sorted({s["commit"] for s in steps.values()})
+
+    def forecast_files(r: Path) -> dict[str, str]:
+        out = {}
+        for pat in ("predictions_*.csv", "uncorrected_*.csv", "quantiles_*.csv", "*.npz"):
+            for f in r.rglob(pat):
+                rel = f.relative_to(r)
+                if not any(part.startswith(".") or "failed" in part for part in rel.parts):
+                    out[rel.as_posix()] = hashlib.sha256(f.read_bytes()).hexdigest()
+        return out
+    a, b = forecast_files(previous), forecast_files(run)
+    common = sorted(set(a) & set(b))
+    facts = {"run": run.name, "previous": previous.name, "steps": len(steps),
+             "all_ok": all(s["status"] == "ok" for s in steps.values()),
+             "commits": commits, "commit": commits[0] if len(commits) == 1 else commits,
+             "clean": len(commits) == 1 and not commits[0].endswith("+dirty"),
+             "forecast_files": len(b), "byte_identical_to_previous": sum(a[k] == b[k]
+                                                                         for k in common),
+             "compared_with_previous": len(common), "per_step": steps}
+    path = OUTPUTS_DIR / "g1_audit" / "smoke_final.json"
+    path.write_text(json.dumps(facts, indent=1) + "\n", encoding="utf-8", newline="\n")
+    return {k: v for k, v in facts.items() if k != "per_step"}
+
+
 PARTS = {"test_access": test_access, "lookahead_clean": lookahead_clean,
-         "lookahead_clock": lookahead_clock, "lookahead_polled": lookahead_polled}
+         "lookahead_clock": lookahead_clock, "lookahead_polled": lookahead_polled,
+         "smoke_final": smoke_final}
 
 
 def main(argv: list[str] | None = None) -> int:
