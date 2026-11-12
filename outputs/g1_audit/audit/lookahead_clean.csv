@@ -1,0 +1,8 @@
+source,issuance_days,cells,cells_changed,share_pct,value_vs_missing,max_abs_change,within_6h_of_t0,days_affected,test_days_affected,method_mismatch_cells
+s01_inv1_AC_kW,1364,65472,1,0.0015,1,0.0,0,1,0,0
+s01_inv2_AC_kW,1364,65472,1,0.0015,1,0.0,0,1,0,0
+site_total_AC_kW,1364,65472,1,0.0015,1,0.0,0,1,0,0
+irradiance,1364,65472,18,0.0275,17,0.09347269314391954,16,4,0,0
+mod_temp1,1364,65472,15,0.0229,15,0.0,13,3,0,0
+mod_temp2,1364,65472,15,0.0229,15,0.0,13,3,0,0
+ambient_temp,1364,65472,15,0.0229,15,0.0,13,3,0,0

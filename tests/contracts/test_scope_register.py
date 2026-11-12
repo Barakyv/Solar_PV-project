@@ -5,7 +5,8 @@ rebuild the whole scope. This test fails when:
 - a figure or a numbered section of v6 has no row, or has two;
 - an ID is missing;
 - a row names a stage that does not exist;
-- one of the six v6 models is dropped from decision D-08 in PROJECT_MASTER.md.
+- one of the six v6 models is dropped from decision D-08 in PROJECT_MASTER.md;
+- T-97 (gate G-1): a row names no producer that exists and no reason (X59) for having none.
 """
 
 import re
@@ -71,6 +72,25 @@ def test_every_row_names_known_stages():
         for stage in re.split(r"[,–]\s*|\s+", row[5].strip()):
             if stage:
                 assert stage in STAGES or stage.isdigit(), (row[0], stage)
+
+
+def test_every_row_names_a_producer_that_exists_or_the_reason_it_has_none():
+    """T-97 (X59, X60, gate G-1): a row that is not text only names the code or document that
+    produces it in development, in backticks, and every named path exists; a row without one
+    cites X59 of the errata. A planned part (⬜) says what it waits for: the final run, X59 or
+    stage 11."""
+    assert len(ROWS) >= 45
+    for row in ROWS:
+        status = row[6]
+        if status.strip().startswith("📝"):  # text only, written in stage 11 from results
+            continue
+        tokens = re.findall(r"`([^`]+)`", status)
+        paths = [t for t in tokens if "/" in t and not t.startswith("--")]
+        for path in paths:
+            assert (REPO_ROOT / path).exists(), (row[0], path)
+        assert paths or "X59" in status, (row[0], "names no producer and no reason")
+        if "⬜" in status:
+            assert re.search(r"final|X59|stage.11", status), (row[0], status)
 
 
 def test_the_six_v6_models_stay_in_scope():

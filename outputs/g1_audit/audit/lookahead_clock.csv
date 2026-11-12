@@ -1,0 +1,3 @@
+clock,days,days_compared,days_shift_differs,share_pct,max_shift_difference_min,days_differ_by_2_or_more,warm_up_days
+minute_meteo,1369,1369,552,40.32,3,84,55
+minute_inverter,1369,1369,541,39.52,3,87,55

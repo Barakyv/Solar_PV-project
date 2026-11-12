@@ -1,0 +1,16 @@
+﻿DRY RUN (nothing is written): mode final, a new run
+  window val: the whole val split [2024-02-01T00:00:00+00:00 .. 2024-10-01T00:00:00+00:00)
+  window test: the whole test split [2024-10-01T00:00:00+00:00 .. 2025-06-01T00:00:00+00:00)
+  targets ['indirect', 'direct'], horizons [1, 2, 3], seeds from the budget
+  select     verifies the stage-7 selection and records its input; reruns nothing (D-30); runs; estimate about 3 s (dev 3 s x 1.00 fits), up to about 3 s
+  baselines  persistence, climatology, clear sky x MEAN_DAYTIME_K; runs; estimate about 2 s (dev 2 s x 1.00 fits), up to about 2 s
+  xgb        XGB-Opt; runs; budget {"trials": 60, "seeds": [42, 123, 777]}; estimate about 2897 s (dev 322 s x 9.00 fits), up to about 14888 s
+  bilstm     BiLSTM-Opt; runs; budget {"trials": 60, "epochs_trial": 25, "epochs_final": 60, "patience": 10, "seeds": [42, 123, 777]}; estimate about 1716 s (dev 572 s x 3.00 fits), up to about 1768 s
+  tft96      TFT with a 96-hour encoder; runs; budget {"trials": 20, "epochs": 100, "patience": 10, "seeds": [42]}; estimate about 11359 s (dev 4327 s x 2.62 fits), up to about 23005 s
+  tft168     TFT with a 168-hour encoder; runs; budget {"trials": 20, "epochs": 100, "patience": 10, "seeds": [42]}; estimate about 13600 s (dev 5181 s x 2.62 fits), up to about 25966 s
+  tftbase    TFT with fixed hyper-parameters; runs; budget {"trials": 0, "epochs": 150, "patience": 10, "seeds": [42]}; estimate about 674 s (dev 674 s x 1.00 fits), up to about 2106 s
+  patchtst   PatchTST, univariate; runs; budget {"max_steps": 5000, "val_check_steps": 100, "patience": 10, "seeds": [42]}; estimate about 786 s (dev 786 s x 1.00 fits), up to about 786 s
+  evaluate   the evaluation layer on every prediction file of the run; runs; estimate about 10 s (dev 10 s x 1.00 fits), up to about 10 s
+  explain    SHAP (XGB), TFT attention and variable selection, hyper-parameter importance (D-31); runs; estimate about 57 s (dev 57 s x 1.00 fits), up to about 57 s
+  report     one summary of the run with automatic warnings; runs; estimate about 0 s (dev 0 s x 1.00 fits), up to about 0 s
+exit 0

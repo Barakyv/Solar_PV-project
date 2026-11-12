@@ -1,0 +1,7 @@
+source,polled_issuance_days,max_bound_on_last_hour_mean,median_bound
+s01_inv1_AC_kW,94,0.0,0.0
+s01_inv2_AC_kW,94,0.0,0.0
+irradiance,94,0.2329,0.0
+mod_temp1,94,0.6796,0.1701
+mod_temp2,94,0.652,0.1744
+ambient_temp,94,0.6002,0.1367
