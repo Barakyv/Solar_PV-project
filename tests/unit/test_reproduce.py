@@ -67,9 +67,21 @@ def test_parquet_with_other_bytes_and_the_same_content_is_equal(R, tmp_path):
     row = R.compare_file(ref, new)
     assert row["equal"] is True and row["kind"] == "table"
     changed = df.copy()
-    changed.iloc[50, 0] += 1e-9
+    changed.iloc[50, 0] += 1e-9  # relative 2e-11: floating-point noise, reported, not failed
     changed.to_parquet(new)
-    assert R.compare_file(ref, new)["equal"] is False
+    row = R.compare_file(ref, new)
+    assert row["equal"] is False and row["float_noise"] is True and row["cells"] == 1
+    assert not R.failing([{"path": "data/x.parquet", **row}])
+    changed.iloc[60, 0] += 1.0  # a real difference fails
+    changed.to_parquet(new)
+    row = R.compare_file(ref, new)
+    assert row["float_noise"] is False and row["max_abs"] == pytest.approx(1.0)
+    assert R.failing([{"path": "data/x.parquet", **row}])
+    missing = df.copy()
+    missing.iloc[10, 0] = np.nan  # a value missing on one side only is never noise
+    missing.to_parquet(new)
+    row = R.compare_file(ref, new)
+    assert row["float_noise"] is False and row["other_cells"] == 1
 
 
 def test_csv_times_are_left_out_and_values_are_not(R, tmp_path):
@@ -110,7 +122,8 @@ def test_arrays_are_compared_exactly(R, tmp_path):
     b = a.copy()
     b[0, 0, 0] += 1e-3
     np.savez(new, val_q=b)
-    assert R.compare_file(ref, new)["equal"] is False
+    row = R.compare_file(ref, new)
+    assert row["equal"] is False and row["float_noise"] is False
 
 
 def test_the_script_installs_nothing_and_refuses_a_folder_inside_the_checkout(R):

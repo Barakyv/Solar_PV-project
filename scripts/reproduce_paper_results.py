@@ -74,6 +74,13 @@ VOLATILE_KEYS = {"git_commit", "commit", "run_log", "validation_run_log", "start
 VOLATILE_COLUMN = re.compile(r"(datetime|duration|elapsed|seconds|_time$|^time|started|"
                              r"finished|run_id|commit)", re.I)
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
+# Registered on 2026-11-12 after the first attempt showed that some tables differ between the
+# laptop's and this machine's environments, before the size of any difference was known: a
+# difference is floating-point noise when every differing cell is numeric, no value is missing
+# on one side only, and the largest relative difference is at most 1e-9; noise is reported, not
+# failed. Every other difference fails (M33).
+FLOAT_NOISE_REL = 1e-9
+KEEP_MAX_BYTES = 400 * 2**20  # differing files are kept as evidence up to this size
 NOT_COMPARED = (".png", ".log", ".ipynb", ".pt", ".db", ".zip", ".sha256", ".html")
 TABLES = (".parquet", ".csv", ".npz")
 
@@ -172,20 +179,54 @@ def _diff_paths(a, b, path="", out=None, limit=8):
     return out
 
 
-def _frame_diff(a, b) -> str | None:
+def _frame_diff(a, b) -> dict | None:
+    """None when equal; otherwise what differs and by how much: the number of differing cells,
+    the largest absolute and relative difference of the numeric cells, and the cells that
+    differ in another way (missing on one side, text, types). `float_noise` when every
+    difference is numeric and within FLOAT_NOISE_REL (§20.5)."""
+    import numpy as np
     import pandas as pd
 
     drop = [c for c in a.columns if VOLATILE_COLUMN.search(str(c))]
     a, b = a.drop(columns=drop, errors="ignore"), b.drop(columns=drop, errors="ignore")
     if list(a.columns) != list(b.columns):
-        return f"columns differ: {sorted(set(a.columns) ^ set(b.columns))[:8]}"
+        return {"detail": f"columns differ: {sorted(set(a.columns) ^ set(b.columns))[:8]}",
+                "float_noise": False}
     if a.shape != b.shape:
-        return f"shape {a.shape} != {b.shape}"
+        return {"detail": f"shape {a.shape} != {b.shape}", "float_noise": False}
+    if not a.index.equals(b.index):
+        return {"detail": "the index differs", "float_noise": False}
     try:
         pd.testing.assert_frame_equal(a, b, check_exact=True)
+        return None
     except AssertionError as exc:
-        return " ".join(str(exc).split())[:300]
-    return None
+        first = " ".join(str(exc).split())[:200]
+    cells, other, max_abs, max_rel, cols = 0, 0, 0.0, 0.0, []
+    for col in a.columns:
+        x, y = a[col], b[col]
+        if pd.api.types.is_numeric_dtype(x) and pd.api.types.is_numeric_dtype(y) \
+                and not pd.api.types.is_bool_dtype(x):
+            xv, yv = x.to_numpy(dtype=float), y.to_numpy(dtype=float)
+            nan_x, nan_y = np.isnan(xv), np.isnan(yv)
+            other_c = int((nan_x != nan_y).sum())
+            both = ~nan_x & ~nan_y & (xv != yv)
+            n = int(both.sum())
+            if n:
+                d = np.abs(xv[both] - yv[both])
+                max_abs = max(max_abs, float(d.max()))
+                max_rel = max(max_rel, float((d / np.maximum(np.abs(xv[both]), 1e-300)).max()))
+        else:
+            eq = (x.astype(str) == y.astype(str)).to_numpy()
+            n, other_c = 0, int((~eq).sum())
+        if n or other_c:
+            cols.append(col)
+        cells += n
+        other += other_c
+    noise = other == 0 and max_rel <= FLOAT_NOISE_REL
+    return {"detail": f"{cells} numeric cells differ (max abs {max_abs:.3g}, max rel "
+                      f"{max_rel:.3g}), {other} other cells, in {cols[:6]}; {first}",
+            "cells": cells, "other_cells": other, "max_abs": max_abs, "max_rel": max_rel,
+            "float_noise": bool(noise)}
 
 
 def compare_file(reference: Path, reproduced: Path) -> dict:
@@ -199,26 +240,43 @@ def compare_file(reference: Path, reproduced: Path) -> dict:
     if same_bytes:
         return {"kind": "bytes", "equal": True, "detail": "identical bytes"}
     try:
-        if suffix == ".parquet":
+        if suffix in (".parquet", ".csv"):
             import pandas as pd
 
-            d = _frame_diff(pd.read_parquet(reference), pd.read_parquet(reproduced))
-            return {"kind": "table", "equal": d is None,
-                    "detail": d or "same content, other bytes (parquet writer)"}
-        if suffix == ".csv":
-            import pandas as pd
-
-            d = _frame_diff(pd.read_csv(reference), pd.read_csv(reproduced))
-            return {"kind": "table", "equal": d is None, "detail": d or "same content"}
+            read = pd.read_parquet if suffix == ".parquet" else pd.read_csv
+            d = _frame_diff(read(reference), read(reproduced))
+            if d is None:
+                return {"kind": "table", "equal": True,
+                        "detail": "same content, other bytes" + (" (parquet writer)"
+                                                                 if suffix == ".parquet" else "")}
+            return {"kind": "table", "equal": False, **d}
         if suffix == ".npz":
             import numpy as np
 
             with np.load(reference) as ra, np.load(reproduced) as rb:
                 if sorted(ra.files) != sorted(rb.files):
-                    return {"kind": "array", "equal": False, "detail": "other arrays"}
-                bad = [k for k in ra.files if not np.array_equal(ra[k], rb[k], equal_nan=True)]
-            return {"kind": "array", "equal": not bad, "detail": f"differ: {bad[:5]}" if bad
-                    else "same arrays"}
+                    return {"kind": "array", "equal": False, "detail": "other arrays",
+                            "float_noise": False}
+                bad, max_rel = [], 0.0
+                for k in ra.files:
+                    x, y = ra[k], rb[k]
+                    if np.array_equal(x, y, equal_nan=True):
+                        continue
+                    bad.append(k)
+                    if x.shape == y.shape and np.issubdtype(x.dtype, np.floating):
+                        xv, yv = x.astype(float), y.astype(float)
+                        m = np.isfinite(xv) & np.isfinite(yv)
+                        if (np.isnan(xv) != np.isnan(yv)).any():
+                            max_rel = np.inf
+                        elif m.any():
+                            d = np.abs(xv[m] - yv[m]) / np.maximum(np.abs(xv[m]), 1e-300)
+                            max_rel = max(max_rel, float(d.max()))
+                    else:
+                        max_rel = np.inf
+            return {"kind": "array", "equal": not bad,
+                    "detail": f"differ: {bad[:5]} (max rel {max_rel:.3g})" if bad
+                    else "same arrays", "max_rel": max_rel,
+                    "float_noise": bool(bad) and max_rel <= FLOAT_NOISE_REL}
         if suffix in (".json", ".yaml", ".yml"):
             import yaml
 
@@ -249,15 +307,27 @@ def written_files(clone: Path, roots: list[str], since: float) -> list[str]:
 
 
 def failing(rows: list[dict]) -> list[dict]:
-    """Rows that fail the reproduction: a table or an array whose content differs, or an error.
-    A data file (JSON / YAML) under configs/ is a decision and must not differ either."""
+    """Rows that fail the reproduction: a table or an array whose content differs by more than
+    floating-point noise (FLOAT_NOISE_REL), or an error. A data file (JSON / YAML) under
+    configs/ is a decision and must not differ either. Float noise is reported, not failed."""
     bad = []
     for r in rows:
-        if r["equal"] is False:
+        if r["equal"] is False and not r.get("float_noise"):
             bad.append(r)
         elif r["equal"] is None and r["kind"] == "data" and r["path"].startswith("configs/"):
             bad.append(r)
     return bad
+
+
+def keep_copy(clone: Path, rel: str, record_dir: Path, step: str) -> str | None:
+    """A copy of a regenerated file that differs, before the stage is put back (evidence)."""
+    src = clone / rel
+    if not src.is_file() or src.stat().st_size > KEEP_MAX_BYTES:
+        return None
+    dst = record_dir / "differing" / step / rel
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    return dst.relative_to(REPO).as_posix()
 
 
 # ── the clone ───────────────────────────────────────────────────────────────
@@ -457,6 +527,9 @@ def run(args) -> int:
             else:
                 rows = [{"path": rel, **compare_file(REPO / rel, workdir / rel)}
                         for rel in written_files(workdir, step.roots, started)]
+                for r in rows:  # keep the regenerated version of what differs (evidence)
+                    if r["equal"] is not True and r["kind"] not in ("not compared", "new"):
+                        r["kept"] = keep_copy(workdir, r["path"], record_dir, step.name)
             entry["compared"] = rows
             entry["failing"] = failing(rows)
             entry["counts"] = {k: sum(1 for r in rows if r["kind"] == k)
@@ -491,14 +564,17 @@ def report(record: dict) -> str:
              f"- options: {record['options']}",
              f"- solarpv imported from `{record.get('imported', '?')}`",
              f"- result: **{record.get('result', 'interrupted')}**", "",
-             "| step | exit | seconds | files | compared equal | failing | listed |",
-             "|---|---|---|---|---|---|---|"]
+             f"- floating-point noise: every differing cell numeric, relative difference at most "
+             f"{FLOAT_NOISE_REL:g}, nothing missing on one side only (reported, not failed)", "",
+             "| step | exit | seconds | files | equal | float noise | failing | listed |",
+             "|---|---|---|---|---|---|---|---|"]
     for s in record["steps"]:
         rows = s["compared"]
         equal = sum(1 for r in rows if r["equal"] is True)
+        noise = sum(1 for r in rows if r["equal"] is False and r.get("float_noise"))
         listed = sum(1 for r in rows if r["equal"] is None)
         lines.append(f"| {s['step']} | {s['exit']} | {s['seconds']} | {len(rows)} | {equal} | "
-                     f"{len(s['failing'])} | {listed} |")
+                     f"{noise} | {len(s['failing'])} | {listed} |")
     lines += ["", "## Failing and listed files", ""]
     for s in record["steps"]:
         for r in s["compared"]:
