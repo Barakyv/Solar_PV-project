@@ -363,10 +363,11 @@ def _model_style():
     "development runs per model, against the reference runs; colour and marker per model.",
     "{result}: {stages} stages from the checksums to the two development runs; of {files:,} "
     "compared files, {identical:,} have identical bytes, {content} the same content, {noise} "
-    "differ by floating-point noise only (at most {max_rel:.1g} relative) and {fail} differ. "
-    "{models_equal} of {models} models and the references give the same forecasts as the "
-    "reference runs. The one numeric difference at the start is the parse of the raw text "
-    "(X63), up to {ingest_rel:.1g} relative.",
+    "differ by floating-point noise only (at most {max_rel:.1g} relative) and {fail} differ. The "
+    "files that differ are the numbers of the decision checks run on the laptop (X66); the "
+    "{decisions} decisions they record come out the same. {models_equal} of {models} models "
+    "give the same forecasts as the reference runs. The parse of the raw text differs by up to "
+    "{ingest_rel:.1g} relative (X63).",
     "Evidence of gate G-1 (stage-9 plan §20.5); the final run starts from the same code and "
     "inputs.",
     (REPRO,))
@@ -437,7 +438,31 @@ def s09_reproduction():
     ingest = next((r.get("max_rel", 0.0) for s in steps if s["step"] == "ingest"
                    for r in s["compared"] if r["path"].endswith("scada_1min_utc.parquet")), 0.0)
     models = [m for m in order if m != "references"]
+    # X66: a failing decision file of a stage run on the laptop: are its decisions the same?
+    import yaml
+
+    decisions = []
+    for s in steps:
+        for r in s["failing"]:
+            if not (r["path"].startswith("configs/") and r.get("kept")):
+                continue
+            ref = yaml.safe_load((REPO_ROOT / r["path"]).read_text(encoding="utf-8"))
+            new = yaml.safe_load((REPO_ROOT / r["kept"]).read_text(encoding="utf-8"))
+            if "k_denominator" in ref:
+                keys = ("k_denominator", "training_min_theo_kw", "evaluation_min_theo_kw",
+                        "wins")
+                same = all(ref[k] == new[k] for k in keys)
+            else:
+                same = ref["admitted"] == new["admitted"] and all(
+                    ref["results"][k]["passes"] == new["results"][k]["passes"]
+                    for k in ref["results"])
+            decisions.append((r["path"], same))
+    assert all(same for _, same in decisions), decisions
+    laptop_checks = {"decide_k", "nwp_check"}  # D-11 / L-04 and D-12, run on the laptop
+    assert all(s["step"] in laptop_checks for s in steps if s["failing"]), \
+        [s["step"] for s in steps if s["failing"]]
     facts = {"result": "Reproduced" if rec.get("result") == "reproduced" else "Not reproduced",
+             "decisions": len(decisions),
              "stages": len(steps),
              "files": sum(total[k] for k in total if k != "listed, not compared"),
              "identical": total["identical bytes"], "content": total["same content, other bytes"],

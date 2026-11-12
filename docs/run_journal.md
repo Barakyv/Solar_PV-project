@@ -1878,3 +1878,23 @@ hashes, numbers) and the commit messages are the record:
   libraries), and the offsets file is identical. Preprocess and clean reproduced exactly. The EDA
   failed: it named the raw files relative to the checkout (X64). Fixed; attempt 3 from a new
   clone.
+
+### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
+
+- **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**
+  - cleaning: every issuance day (1,364) cleaned up to T0 and with the next day; 66 of 458,304
+    source cells change, on 4 train issuance days, all communication freezes from the evening
+    into the next morning that R3 removes only once they reach daylight; none is a scored hour;
+    the full-window cleaning equals the stage-5 table on every compared cell (the method check);
+  - clock: a trailing median instead of the centred one would change the whole-minute shift on
+    552 / 541 of 1,369 days (meteo / inverter clock), by at most 3 minutes;
+  - polled reconstruction: test period only, a night hour, bounded by 0.68 °C and 0.23 W/m².
+- **Figures S09-34–S09-39** (module `solarpv.figures.s09_w6`): S09-35, S09-36, S09-37 and S09-39
+  built and looked at (four layout fixes: a cut axis label, two legends over labels, an empty bar
+  explained); S09-34 and S09-38 wait for the reproduction. Look-back: the W6 smoke run added to
+  S09-33.
+- **X65 found by S09-35:** A-13 said the GFS files arrive "at least 5 hours before T0" (four
+  sampled dates); the recorded upload times give a median of 5.1 h and a minimum of 1.1 h on the
+  1,127 issuances of train and validation (53 under 5 h). The row-by-row rule of T-17 always held;
+  the text is corrected.
+- **GPU suite** (after X55): passes, and the worker records the file it imported.

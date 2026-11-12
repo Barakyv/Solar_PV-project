@@ -24,7 +24,7 @@ The answers decide between one sequence (§3, A) and segments (§3, B).
 | Environments | `solar` runs the runner (`C:\Users\204323141\miniforge3\envs\solar\python.exe`); `solar-gpu` runs only the training worker (found by the runner, D-29) |
 | Git | `C:\Users\204323141\PortableGit\cmd\git.exe` (not on `PATH`) |
 | Budgets | XGB 60 trials × seeds 42, 123, 777; BiLSTM 60 trials × 25 epochs, final 60 epochs, patience 10, three seeds; TFT-96 and TFT-168 20 trials per target, up to 100 epochs, seed 42; TFT baseline up to 150 epochs; PatchTST 5,000 steps (D-08, v6) |
-| Time | From `run --mode final --to report --dry-run` on 2026-11-12 (the latest dev duration of each step scaled by the fits, X43; figure S09-18): XGB about 0.8 h (up to 4.1 h if every trial took as long as the longest dev trial); BiLSTM about 0.5 h; TFT-96 about 3.2 h (up to 6.4 h if every fit ran its 100 epochs); TFT-168 about 3.8 h (up to 7.2 h); TFT baseline about 0.2 h (up to 0.6 h); PatchTST about 0.2 h; the rest about 1 minute. **About 8.6 h expected, up to about 19 h**. Rerun the dry run before W6: it reads the latest dev runs |
+| Time | From `run --mode final --to report --dry-run` on 2026-11-12 (the latest dev duration of each step scaled by the fits, X43; figure S09-18): XGB about 0.8 h (up to 4.1 h if every trial took as long as the longest dev trial); BiLSTM about 0.5 h; TFT-96 about 3.2 h (up to 6.4 h if every fit ran its 100 epochs); TFT-168 about 3.8 h (up to 7.2 h); TFT baseline about 0.2 h (up to 0.6 h); PatchTST about 0.2 h; the rest about 1 minute. **About 8.6 h expected, up to about 19 h**. Rerun in W6 (2026-11-12, `outputs/g1_audit/dry_run_final_09533a3.log`): unchanged, 31,104 s expected and 68,591 s at most (8.6 h and 19.1 h). It reads the latest dev runs |
 | Longest step | TFT-168, about 4–7 h; a step is the unit of `--resume` and cannot be split |
 | Disk | The neural dev run folder took 192 MB; a final run is expected below 1 GB; keep 20 GB free |
 | Two phases (D-32) | Phase 1 trains, forecasts validation and test, and scores validation only: the stage-10 acceptance. Phase 2, after the acceptance is written, scores the test split (step `test`) |
@@ -45,7 +45,7 @@ Claude Code session (the run must not depend on an agent session). Set
 4. `nvidia-smi` shows no other process using the GPU.
 5. At least 20 GB free on `C:`.
 6. `python -m solarpv.pipeline run --mode final --to report --dry-run` prints the plan and the
-   estimates; nothing is written.
+   estimates; nothing is written. It does not check the gate: item 2 does.
 7. **Nothing is committed and no tracked file may change until phase 2 is complete, documents
    included** (X56): the gate is checked before every step and refuses a moved `HEAD` or any
    modified tracked file anywhere in the tree (X38), so an edit of `docs/run_journal.md`,
