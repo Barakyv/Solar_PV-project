@@ -1799,3 +1799,27 @@ hashes, numbers) and the commit messages are the record:
   the sorted distribution); verify the reference to Chernozhukov, Fernández-Val and Galichon
   (2010), written from memory; record prevention in training as future work.
 - **Next:** unchanged: W6 after the answers of the college IT (Q-15).
+
+### 2026-11-12 · R9-25 · W6: self-review before the code of gate G-1
+
+- **Start:** the college IT has not answered Q-15 yet; the user said to start W6 anyway (the
+  session stays on all night). The answers decide only the mode of the final run (runbook §3).
+- **Read first:** `PROJECT_MASTER.md` §1, §3, §6.13, §7 (gate G-1), §8.2, §16; the runbook; the
+  stage-9 plan §1.1 and §19; R9-17–R9-24; errata X38–X54; the original
+  `reproduce_paper_results.py` and leakage audit.
+- **Full suite at `b2c3f1f`** (before any W6 change): 564 passed, none skipped or failed, in 538 s,
+  the GPU suite included (`outputs/g1_audit/pytest_full_junit.xml`). The brief's "about 66
+  minutes" was not this suite's time.
+- **The original (M32–M36, errata C-65–C-69):** the reproduction started from the feature
+  parquet, compared nothing, ignored the environment, and covered two of six models; the leakage
+  audit listed names, not availability times.
+- **My own code and documents (X55–X61):** an editable install that makes any other checkout
+  run this checkout's code (X55); a runbook rule narrower than the gate it describes (X56); look-
+  ahead in the data-preparation steps before the hourly table, never audited (X57); decisions
+  still "proposed" (X58); stage-9 analyses without code (X59); a stale scope register (X60); A-01
+  and A-14 not updated (X61).
+- **Facts found while reading:** the test-access log `outputs/07_evaluation/test_access_log.csv`
+  does not exist (it is created at the first access); the fixture of T-15 reads the submitted LSTM
+  file's own truth, not a rebuild table; the figures that read the stage-6 table filter to train;
+  the untracked log and run folders do not make the tree dirty (`--untracked-files=no`).
+- **Plan:** stage-9 plan §20; nothing coded before this entry is committed.

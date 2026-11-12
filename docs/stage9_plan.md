@@ -44,6 +44,10 @@ installed or changed.
 | Software on arrival | No Python (only the Microsoft Store aliases), no git, no conda or mamba, no Docker. `winget` and `wsl.exe` exist (WSL not checked). The user account is in the local Administrators group, but the session runs unelevated |
 | Installed 2026-11-03 | With the user's approval, per user and not on `PATH`: Miniforge 26.9.4-1 in `C:\Users\204323141\miniforge3` and PortableGit 2.56.0.4 in `C:\Users\204323141\PortableGit`. The CPU environment `solar` was created from `environment.yml`; its differences from `environment.lock.yml` are in RH-02 of `docs/run_journal.md`. The user kept it as created rather than aligning it with the laptop lock |
 
+*IT questions (Q-15, runbook §0), 2026-11-12:* not answered yet. The user said to start W6
+without the answers; they decide only the mode of the final run (one sequence or segments, runbook
+§3) and are recorded here when they come.
+
 What this means for the plan (decided in §5 when the GPU environment is built):
 
 - **PyTorch build.** Pascal (sm_61) with a driver capped at CUDA 12.2: use wheels built for CUDA
@@ -1448,3 +1452,137 @@ after training wherever they are used as a distribution (intervals, coverage, qu
 L-14); the point forecast stays the 0.5 head, so no score, DM test or Optuna objective changes.
 The cost (on crossed hours the point is not the median of the sorted distribution) goes into the
 report. Prevention in training is future work.
+
+## 20. W6: gate G-1, the tag and the handover of the final run (self-review and plan, 2026-11-12)
+
+Written before any W6 code. W6 audits the whole pipeline against the checklist of gate G-1
+(`PROJECT_MASTER.md` §7), presents the open points to the user, tags `g1-frozen` only with the
+user's approval, and hands the final run over by `docs/runbook_final.md`. Nothing in W6 trains a
+model on new settings, reads a test row or changes a validation decision; any change to a budget,
+a seed or a validation rule is the user's, and is committed before the tag.
+
+### 20.1 Blocking decisions and sources
+
+- **Q-15 (open).** The college IT has not answered the two questions yet. The user said to start
+  W6 anyway (2026-11-12: the session stays on all night). The answers decide only the mode of the
+  final run (runbook §3 A or B), which is chosen at the handover, after the tag; no checklist item
+  depends on them.
+- **Decided, not changed here:** D-08, D-10, D-13 with F-29, D-14 with Q-19, D-17, D-30–D-33.
+- **The G-1 list** (`PROJECT_MASTER.md` §1) stays a list for the user; W6 measures nothing new
+  for it on validation and decides none of it.
+- **Literature (§16b, gate G-1):** every new external source passes T-17 and a perturbation check;
+  L-11a only from day D−1. No external source was added after stage 6b (GFS, T-17), and L-11a was
+  not adopted as an input (it is the k history of D-24, rejected by its rule), so the item holds
+  without new work; recorded in the audit (§20.4).
+- **Sources (read-only):** the original `submission_evidence/12_scripts/reproduce_paper_results.py`
+  and `10_config/leakage_audit.md`; the rebuild's `docs/leakage_audit.md`, the stage plans, the
+  run journal and the errata.
+
+### 20.2 The original project (M32–M36)
+
+The reproduction script of v6 was reviewed in W1 for its orchestration (M1–M6: failures skipped,
+printed "expected" numbers, no history, silent fallbacks, no development mode, silent
+de-duplication). The points below are those that bear on what gate G-1 asks: a reproduction from
+scratch and an audit of when information is available.
+
+| ID | Mistake | Where | Fix in W6 | Test | Errata |
+|---|---|---|---|---|---|
+| M32 | The reproduction starts from the finished feature parquet: ingestion, the time zone, the clock, cleaning, the features and the selection are outside it, so the defects that sat there (F-01, F-07, F-24, F-26, F-27) could never be found by reproducing; its docstring calls the raw data proprietary and requires the parquet to be in the repository | `reproduce_paper_results.py` (prerequisites, phase 0) | `scripts/reproduce_paper_results.py --dev` starts from `Raw data/` (verified against the checksums) and runs every stage in a fresh checkout | T-93 | C-65 |
+| M33 | The reproduction compares nothing: "All steps completed successfully" means every exit code was 0 and the eight key files exist; a run that produced other numbers passes | same, summary | Every stage's outputs are compared with the committed reference (content, not only bytes) and any difference fails the reproduction with the file named | T-93 | C-66 |
+| M34 | The environment is not part of the reproduction: the CPU steps run in "the current Python (3.14)", whatever it is, no version is recorded or compared, and the GPU environment exists only as printed `pip` commands without pins | same, `PY_XGB`, phase 9 | The reproduction records the versions of both environments and compares them with `environment.lock.yml` and the GPU lock; it installs nothing | T-93 | C-67 |
+| M35 | The leakage audit of v6 is a list of names that may not be inputs; no row states when the information of a feature family is available against the issuance time, and the time-based leaks (F-01, F-07, F-26, F-27) passed it | `10_config/leakage_audit.md` | The G-1 manual audit (§20.4): one row per feature family and per earlier processing step, with the latest source time against T0, the code that enforces it and the test that proves it | T-94 | C-68 |
+| M36 | Four of the six models are outside any reproduction: the script covers XGB and, optionally, the LSTM; the TFT and PatchTST code is not called (and was lost, R-16) | same, phase 9 | `--dev` runs all six models through the runner (D-17 budgets) | T-93 | C-69 |
+
+### 20.3 My own code and documents (X55–X61)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X55 | `solarpv` is an editable install in both environments, pointing at this checkout's `src/`. A run started from another checkout (the fresh clone of a reproduction, a reviewer's copy) silently imports this checkout's code, records its commit and writes into its `outputs/`; the GPU worker inherits the same path | `site-packages/__editable__.solarpv-0.1.0.pth` in `solar` and `solar-gpu`; `pipeline/neural.worker_env` | The runner refuses to start when the working directory is a checkout other than the one its code comes from; the worker's environment puts the runner's `src/` first on `PYTHONPATH`, and the worker records the file it imported; the reproduction sets `PYTHONPATH` and asserts the import | T-95 |
+| X56 | The runbook (§2.7) forbids commits and open editors under the code paths only, but the per-step gate refuses any modified tracked file anywhere (`git status --untracked-files=no`): an edit of a document during the run (the run journal, `PROJECT_MASTER.md`, by hand or by an agent session) stops the next step | `docs/runbook_final.md` §2, §6 | The runbook says that no tracked file may change during a final run, documents included, and that notes go outside the repository until phase 2 is committed | T-96 |
+| X57 | The leakage audit and the perturbation tests (T-09, T-18) start from the cleaned hourly table; the steps before it were never audited for look-ahead. Some are two-sided in time: the clock correction is a centred 31-day median of daily offsets (stage 4, D-19); a frozen run is removed when it reaches daytime, which may be after T0 (R3), with two-sided margins (R1, R3); F3 uses a centred 31-minute window; the polled reconstruction interpolates towards the next poll (up to 15 minutes later, F-18). A past-day value whose source hour ends just before T0 can therefore depend on data after T0 | `data/clock.smooth_within_segments`, `data/clean.py`, `data/preprocess.py` | Measured and declared, not changed in W6: the manual audit gives the size of each look-ahead on the real data (minutes of the last source hours before T0 that a two-sided rule changed; the clock offset of a centred against a trailing median). Accepting it as data preparation, or making these steps causal (a rerun of stages 4–9), is the user's decision | T-94 |
+| X58 | Decisions the frozen pipeline rests on are still "proposed" in `PROJECT_MASTER.md` §3: D-16 (the issuance time, used by every stage), D-14 (the DM test, amended by Q-19), D-06 and D-07 (the environment and the repository path, which still names the laptop) | `PROJECT_MASTER.md` §3 | Listed for the user to confirm before the tag; nothing is changed without the answer | — |
+| X59 | Stage-9 deliverables that have no code: `PROJECT_MASTER.md` §7 asks that "all the CSVs of S-23–S-41 are produced in development", but the 5-fold CV (S-38), the bias² + variance split (S-39), the production quintiles (S-40), the feature-group ablation (S-41) and the D-21 robustness check on validation (D-21 item 6) do not exist. After the tag any code change reopens G-1, so code written in stage 11 would reopen it | `docs/scope_register.md`, `PROJECT_MASTER.md` §7 stage 9, D-21 | Presented to the user with the options (§20.7); the two that train models (S-38, S-41) cannot be added after the tag without reopening G-1 | T-97 |
+| X60 | `docs/scope_register.md` is stale: S-14–S-21 are ⬜ although W2–W4 produce them in development, and S-32, S-33, S-36 are produced by `explain` since W5 | `docs/scope_register.md` | Every row gets the code that produces it in development, or the reason it does not exist (X59) | T-97 |
+| X61 | A-01 and A-14 are 🟡 in §6.13 although every part has a test or a check; the last parts (GFS, T-17; the sequence models, T-02 and T-77; the libraries, T-78) were closed in stages 6b and 9 without updating the row | `PROJECT_MASTER.md` §6.13 | Marked ✅ with the evidence once the full suite passes at the commit to be tagged | §8.2 |
+
+### 20.4 The checklist of gate G-1, with the evidence for each item
+
+| Item (`PROJECT_MASTER.md` §7) | Evidence |
+|---|---|
+| Every assumption verified or declared | §6.13 row by row; A-01 and A-14 with their tests (X61); A-07 and A-08 cannot be verified without the inverter model (Q-11) and go to `docs/deviations.md` as limitations |
+| Every test of §8.2 green, perturbation on every feature and horizon | `pytest` at the commit to be tagged, with its JUnit file in `outputs/g1_audit/`; T-09, T-18, T-17, T-02, T-77 named in the record |
+| Manual leakage audit | `docs/leakage_audit.md` §3: one row per feature family (lags, rolling, imputation, D-22 masks, calendar and geometry, GFS, the encoder and decoder of the sequence models, PatchTST, the scalers, the references, L-09, the k history) and per earlier step (ingest, clock, polled reconstruction, cleaning), each with the latest source time against T0, the enforcing code and the test; X57 measured by `scripts/g1_audit.py` |
+| The test touched no decision; a log of the files read | `scripts/g1_audit.py`: the access log (absent or empty means no access), its git history, the `test_access` record of every step of every run, the loaders' test filter (T-52, T-85), and a table of every data-based decision (D-xx, L-xx, R-xx) with the split it used; the steps that read test-period raw data for data preparation only (ingest QA, clock, polled source, cleaning, the stage-3 EDA) are listed as such |
+| `reproduce_paper_results.py --dev` from scratch in a clean environment | §20.5 |
+| External review | `docs/g1_review_brief.md` for a separate session or the supervisor; every comment answered in `docs/g1_review_log.md` before the tag |
+| Five neural smoke tests and the runbook dry run | a smoke run of the whole sequence at the commit to be tagged, and `run --mode final --to report --dry-run`, its estimate copied into the runbook (§1) |
+| Scope register | every S-xx with its code, or the errata reason (X59, X60) |
+| The tag | only after every row above has its evidence and the user approves; `git status --ignored` first |
+
+### 20.5 `scripts/reproduce_paper_results.py`
+
+- `--dev` reproduces the development state of the project from the raw data, in a new checkout:
+  `git clone` of this repository at `HEAD` into an empty folder outside it, with
+  `PYTHONPATH=<clone>/src` (X55). Inputs given to the clone, never produced by it: `Raw data/`
+  (read in place through `SOLAR_RAW_DIR`, verified against `raw_checksums.sha256`), the GFS
+  point extracts of stage 6b (`data/external/gfs_1p00/`, copied; downloading them again is an
+  external service and needs the user), and `configs/site.private.yaml` (copied into the clone's
+  ignored `configs/`, removed at the end; T-45).
+- The stages run in the order of `docs/data_processing_record.md` §19. A step that writes a
+  committed decision (`configs/clock_offsets.csv`, `target.yaml`, `nwp_decision.yaml`, ...) must
+  leave it unchanged. The selection is verified by the runner's `select` (D-30); `--rerun-selection`
+  also reruns its train part (about 95 minutes) and compares the sets, without the validation look.
+  The runner then runs the whole development sequence (`run --mode dev`, every step, D-17).
+- **Comparison (M33):** every output that a stage manifest or a step record hashes is compared
+  with the reference of this checkout: equal bytes, or else equal content (parquet and CSV read and
+  compared exactly), the difference named. The run fails on any difference of content. Parquet
+  bytes may differ between environments (writer metadata), so content is the criterion.
+- **Environment (M34):** both environments are recorded and compared with the locks; nothing is
+  installed. A fresh environment built from the locks would need downloads: the user's decision
+  (§20.7).
+- Also `--plan` (print the steps, write nothing) and `--from <stage>` (resume a reproduction).
+  Its record goes to `outputs/g1_audit/reproduction_<stamp>/` of this checkout.
+
+### 20.6 The external review
+
+`docs/g1_review_brief.md`: what to read (§6 of `PROJECT_MASTER.md`, the code map, the tests), what
+to check (each rule of §6 against the code, the leakage audit, the runner's gate), what not to do
+(no run of the final mode, no test row, no edits), and the form of a comment (file, line, rule,
+severity). The review runs in a separate session (or by the supervisor) on a commit that W6 does
+not change any more; every comment is answered in `docs/g1_review_log.md` (fixed with a test and
+an errata row, or explained) before the tag.
+
+### 20.7 For the user (decided by the user, not here)
+
+The G-1 list of `PROJECT_MASTER.md` §1, plus the points W6 adds: X57 (accept the look-ahead of the
+data-preparation steps as declared, or make them causal), X58 (confirm D-14, D-16, D-06, D-07),
+X59 (the missing analyses: write them before the tag, or after it with a rule), the clean
+environment of §20.5, and the review of §20.6.
+
+### 20.8 Tests (T-93–T-97)
+
+| ID | Test |
+|---|---|
+| T-93 | M32–M34, M36: the reproduction's plan covers every stage from the raw data to the dev runner and all six models; the comparison fails on a changed parquet or CSV and passes on equal content with other bytes; the environment record names every difference from the lock; nothing is installed |
+| T-94 | M35, X57: the manual audit table has a row for every feature family of the contract and every processing step, each with code and test; the look-ahead measures of `g1_audit.py` equal an independent computation on a constructed series |
+| T-95 | X55: the runner refuses a working directory that is another checkout; the worker's environment puts the runner's `src` first; the reproduction asserts the imported file |
+| T-96 | X56: the runbook states that no tracked file may change during a final run; a modified document makes the per-step gate refuse |
+| T-97 | X59, X60: every S-xx row names a producer that exists (a module, a step or a file) or an errata row |
+
+### 20.9 Order of the work and acceptance
+
+1. This section, with the errata rows C-65–C-69 and X55–X61 and the run-journal note R9-25,
+   committed before any code.
+2. The code: the guards of X55, `scripts/g1_audit.py`, `scripts/reproduce_paper_results.py`, the
+   tests T-93–T-97; ruff; the full suite.
+3. The documents: the leakage audit §3, `docs/deviations.md` (A-07, A-08, and X57 as measured),
+   the scope register, the runbook (X56, the estimate), the review brief.
+4. At a clean commit: the smoke run of the whole sequence, the final dry run, the audit, and
+   `reproduce_paper_results.py --dev` in a fresh clone.
+5. Figures (skill `task-figures`), OP-60, the run journal, `PROJECT_MASTER.md`; the list for the
+   user. The tag and the handover wait for the user's answers.
+
+**Acceptance of W6 before the tag** (registered now): every row of §20.4 has its evidence file;
+the full suite passes at the commit to be tagged; the smoke run completes every step; the dry
+run prints the plan and writes nothing; the reproduction finds no difference of content; no test
+row is read (the access log does not exist or is unchanged); the user has answered §20.7.
