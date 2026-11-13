@@ -96,6 +96,24 @@ def test_csv_times_are_left_out_and_values_are_not(R, tmp_path):
     assert R.compare_file(ref, new)["equal"] is False
 
 
+def test_missing_text_values_are_equal_and_fingerprints_are_volatile(R, tmp_path):
+    """X67 (a regression of the first full attempt): a missing text cell equals a missing one,
+    and a step fingerprint (a hash of the commit) is not compared; a real text change fails."""
+    ref, new = tmp_path / "ref.csv", tmp_path / "new.csv"
+    pd.DataFrame({"step": ["xgb", "select"], "fingerprint": ["a1", "b2"],
+                  "budget": [float("nan"), '{"trials": 20}']}).to_csv(ref, index=False)
+    pd.DataFrame({"step": ["xgb", "select"], "fingerprint": ["ff", "ee"],
+                  "budget": [float("nan"), '{"trials": 20}']}).to_csv(new, index=False)
+    assert R.compare_file(ref, new)["equal"] is True
+    pd.DataFrame({"step": ["xgb", "select"], "fingerprint": ["ff", "ee"],
+                  "budget": ['{"trials": 20}', '{"trials": 20}']}).to_csv(new, index=False)
+    row = R.compare_file(ref, new)
+    assert row["equal"] is False and row["other_cells"] == 1
+    pd.DataFrame({"step": ["xgb", "baselines"], "fingerprint": ["ff", "ee"],
+                  "budget": [float("nan"), '{"trials": 20}']}).to_csv(new, index=False)
+    assert R.compare_file(ref, new)["equal"] is False  # a changed step name is never noise
+
+
 def test_json_volatile_keys_and_decisions(R, tmp_path):
     ref, new = tmp_path / "ref.json", tmp_path / "new.json"
     base = {"git_commit": "abc", "result": {"k_denominator": "poa", "duration_s": 1.0},

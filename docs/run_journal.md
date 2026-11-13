@@ -1879,6 +1879,28 @@ hashes, numbers) and the commit messages are the record:
   failed: it named the raw files relative to the checkout (X64). Fixed; attempt 3 from a new
   clone.
 
+### 2026-11-13 · R9-30 · W6: the reproduction finished; the comparison bug (X67) and the residual differences
+
+- **Result:** `reproduction_20261112T202955Z` (commit `c463603`, fresh clone `r3`), 13 steps,
+  about 4 h 37 min: checksums, ingest, clock, preprocess, clean, eda, quality, orientation,
+  features, decide_k, features_final, gfs, nwp_check, evaluate, fixture, selection (the train part,
+  4,550 s), sequence_data, dev_xgb (398 s), dev_neural (10,518 s). Every step exited 0. The
+  script's verdict is `NOT reproduced`, by its rule (any failing file), not by a failed step.
+- **Failing files, and their causes:**
+  - `decide_k` (3 files) and `nwp_check` (2 files): the laptop's decision checks, numbers
+    differ, decisions equal (X66). Not changed.
+  - `dev_neural`, `report_steps.csv` and `report_warnings.csv`: explained by X45 (the step now
+    emits the `tft168` indirect warning that the W4 step did not) and by the row order of the
+    resumed reference report. The same five warnings, the same forecasts (bytes).
+  - the comparison bug (X67): a missing text value and the step fingerprint were counted as
+    differences. Fixed, with a regression test (T-93); `dev_xgb` now has no failing file.
+- **Forecasts:** every prediction, quantile and benchmark file of both dev runs is identical in
+  bytes or in content (`recheck_dev.json`).
+- **Not yet:** S09-34 and S09-38 are not built. S09-38's builder asserts that every failing file
+  belongs to the decision checks; it has to be changed to the explained classes above, once the
+  user agrees to that classification. The final reproduction must be rerun at the commit that is
+  tagged, because the comparison code changed after this run.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

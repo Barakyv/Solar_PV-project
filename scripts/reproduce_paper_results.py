@@ -72,7 +72,8 @@ VOLATILE_KEYS = {"git_commit", "commit", "run_log", "validation_run_log", "start
                  "fingerprint", "utc_time", "host", "hostname", "worker_s", "gpu_s", "time_s",
                  "solarpv_file", "environment", "invocation", "invocations", "command"}
 VOLATILE_COLUMN = re.compile(r"(datetime|duration|elapsed|seconds|_time$|^time|started|"
-                             r"finished|run_id|commit)", re.I)
+                             r"finished|run_id|commit|fingerprint)", re.I)  # a fingerprint is a
+# hash of the commit and the inputs; the inputs are compared by their own files
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 # Registered on 2026-11-12 after the first attempt showed that some tables differ between the
 # laptop's and this machine's environments, before the size of any difference was known: a
@@ -216,7 +217,8 @@ def _frame_diff(a, b) -> dict | None:
                 max_abs = max(max_abs, float(d.max()))
                 max_rel = max(max_rel, float((d / np.maximum(np.abs(xv[both]), 1e-300)).max()))
         else:
-            eq = (x.astype(str) == y.astype(str)).to_numpy()
+            # X67: a missing text value equals a missing one (pandas compares NaN unequal)
+            eq = ((x.astype(str) == y.astype(str)) | (x.isna() & y.isna())).to_numpy()
             n, other_c = 0, int((~eq).sum())
         if n or other_c:
             cols.append(col)

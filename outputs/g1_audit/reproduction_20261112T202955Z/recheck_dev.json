@@ -1,0 +1,41 @@
+{
+ "dev_xgb": {
+  "run": "20261112T220500Z_dev",
+  "reference": "outputs/runs/20261112T063719Z_dev",
+  "counts": {
+   "bytes": 56,
+   "table": 2,
+   "array": 0,
+   "data": 1,
+   "text": 0
+  },
+  "equal_or_noise": 59,
+  "not_compared": 12,
+  "failing": []
+ },
+ "dev_neural": {
+  "run": "20261112T221138Z_dev",
+  "reference": "outputs/runs/20261111T160714Z_dev",
+  "counts": {
+   "bytes": 78,
+   "table": 21,
+   "array": 0,
+   "data": 21,
+   "text": 0
+  },
+  "equal_or_noise": 120,
+  "not_compared": 51,
+  "failing": [
+   {
+    "path": "<run>/report/report_steps.csv",
+    "kind": "table",
+    "detail": "11 numeric cells differ (max abs 22, max rel 2e+300), 13 other cells, in ['step', 'budget', 'n_outputs', 'n_warnings']; DataFrame.iloc[:, 0] (column name=\"step\") are different DataFrame.iloc[:, 0] (column name=\"step\") values are different (88.88889 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8] [left]: [ba"
+   },
+   {
+    "path": "<run>/report/report_warnings.csv",
+    "kind": "table",
+    "detail": "0 numeric cells differ (max abs 0, max rel 0), 5 other cells, in ['subject', 'text', 'status']; DataFrame.iloc[:, 2] (column name=\"subject\") are different DataFrame.iloc[:, 2] (column name=\"subject\") values are different (40.0 %) [index]: [0, 1, 2, 3, 4] [left]: [indirect seed 42, indirect seed "
+   }
+  ]
+ }
+}
