@@ -90,7 +90,9 @@ Read `outputs/runs/<run_id>/report/report.md` before any test number exists:
   `python -m solarpv.pipeline list` (X74), so that a segment run did not skip `cv` or `ablation`
   (`promote` would refuse the run only at the end);
 - the warnings of §3.5 read and explained (a warning is not a failure; it goes to the run
-  journal);
+  journal). If a step was resumed (the column `n_resumed` of the steps table, the warning
+  "continued from a checkpoint"), the warnings of the units that an earlier try finished are
+  listed by the report as "recomputed only": the report recomputes them from the stored records;
 - the XGB seed spread in kW below 0.15 pp at every target × horizon (the stage-10 rule, read
   in kW as Q-19 implies, X42);
 - the kW DM table: XGB significantly better than the references (D-14, Q-19);
@@ -167,8 +169,10 @@ horizon x seed; PatchTST after every finished target x seed (a fit takes about 2
 shorter than 15 minutes (`cv`, `ablation`, `evaluate`, `explain`, `report`, `test`) start again.
 After a stopped process:
 
-1. find the run: `python -m solarpv.pipeline status` lists the runs, and `status <run_id>` shows the
-   checkpoints (finished units, fits in flight);
+1. check that no `neural_worker` or runner process is alive (`Get-Process python`, `nvidia-smi`): a
+   worker that outlived its runner holds the step's files, and a second process on the same
+   checkpoint folder must not run (R-G1-35). Find the run: `python -m solarpv.pipeline status` lists
+   the runs, and `status <run_id>` shows the checkpoints (finished units, fits in flight);
 2. `git status` (clean, at the tag) and `python -m solarpv.pipeline check --mode final`;
 3. run the same command again with the run id (phase 2: its own command, §5):
 
@@ -179,9 +183,14 @@ After a stopped process:
    The finished steps are skipped. The interrupted step builds its windows again (a few minutes for a
    neural step) and continues: the log says `checkpoint: restored ...`, the step's record
    (`step.json`, `notes.resumed`) and the warnings of the report list what was restored;
-4. the continued step gives the forecasts of an uninterrupted one, bit for bit (T-117, T-118,
-   §23.6). The time lost is the unfinished epoch; a model with a multi-layer LSTM with dropout also
-   runs its earlier training passes again (between a seventh and two fifths of the seconds of the epochs already done, S09-43);
+4. on the same machine, driver and software the continued step gives the forecasts of an
+   uninterrupted one, bit for bit (T-117, T-118, §23.6). On another GPU or software stack it is a
+   valid run that is not claimed to equal an uninterrupted one: the log and the step's record say
+   `environment_differs` (A-20, R-G1-31). The time lost is at most 60 s of epochs, the trial that was running, or the fit that was running
+   (`SOLARPV_CHECKPOINT_INTERVAL_S`, default 60, is the least number of seconds between two writes
+   of a fit's state; 0 writes after every epoch and would add up to about 4.7 h to a final run,
+   `docs/stage9_plan.md` §23.2); a model with a multi-layer LSTM with dropout also runs its earlier
+   training passes again (about a fifth to a third of the seconds of the epochs already done, S09-43);
 5. a checkpoint of other code, inputs or configuration, and any checkpoint on a tree with
    uncommitted code, is moved aside (`checkpoints/<step>.stale-<time>`) and not used; in a final run
    at the tag this does not happen. The folder is deleted when the step succeeds. Never set

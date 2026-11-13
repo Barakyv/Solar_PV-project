@@ -409,6 +409,7 @@ class Runner:
                 state["steps"][step].update({"status": "ok", "folder": step})
                 log.warn(f"{step}: a completed folder that run.json did not list (a write "
                          "interrupted after the rename) was adopted; the step is not run again")
+                CK.remove_all(run_dir / CHECKPOINTS, step)  # R-G1-29: the step is complete
         completed = completed_records(run_dir, state)
         failed = [s for s, e in state["steps"].items() if e.get("status") == "failed"]
         cfg = step_config(step, config)
@@ -430,7 +431,7 @@ class Runner:
         fp = fingerprint(step, mode, cfg, commit, inputs)
         ctx.fingerprint = fp  # §23: the checkpoint of this step is bound to it
         ctx.checkpoints = run_dir / CHECKPOINTS / step
-        ctx.trust_checkpoints = not commit.endswith("+dirty")
+        ctx.trust_checkpoints = not (commit.endswith("+dirty") or commit == "unknown")  # R-G1-31
         # D-32, R-G1-14: the test split is scored once; `--force` does not replace a completed
         # step `test` (a phase-2 retry after a failed `report` would otherwise score it again)
         scored_once = step == TEST_STEP and step in completed
@@ -440,6 +441,7 @@ class Runner:
             tmp.rmdir()
             if record["fingerprint"] == fp and intact and not commit.endswith("+dirty"):
                 log.note(f"{step}: up to date (fingerprint {fp[:12]}), skipped")
+                CK.remove_all(run_dir / CHECKPOINTS, step)  # R-G1-29: nothing of it is left
                 return "skipped (up to date)", record.get("summary", [])
             if scored_once:
                 reason = ("the test split is scored once and --force does not replace it (D-32); "

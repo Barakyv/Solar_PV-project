@@ -27,6 +27,7 @@ from solarpv.config.constants import AC_CAPACITY_KW, DATA_END_UTC, DATA_START_UT
 from solarpv.config.paths import REPO_ROOT
 from solarpv.evaluation.evaluate import withhold_test_truth
 from solarpv.evaluation.units import to_kw
+from solarpv.models import checkpoint as CK
 from solarpv.models import neural_job as J
 from solarpv.models import sequence_data as SD
 from solarpv.pipeline import steps
@@ -35,6 +36,8 @@ from solarpv.selection.common import PREVDAY
 
 GPU_ENV_LOCK = REPO_ROOT / "requirements-gpu.lock.txt"
 GPU_PYTHON_VAR = "SOLARPV_GPU_PYTHON"
+CHECKPOINT_WARNINGS = ("not used", "damaged", "cannot be read", "changed since", "differs",
+                       "not written", "dropped")
 GAP_RATIO_WARN = 2.0  # validation loss more than twice the train loss at the best epoch
 SEED_SPREAD_WARN_PP = 0.15  # the acceptance rule of stage 10
 REPRODUCE_TOL_PP = 1e-6
@@ -99,7 +102,10 @@ def call_worker(ctx: Context, job_dir: Path, out_dir: Path) -> None:
         line = line.rstrip("\n")
         lines.append(line)
         if line.startswith("[worker"):
-            ctx.log.note(line)
+            # a checkpoint that was not used, damaged, or from another environment is a warning
+            # (§23, R-G1-32); the restores themselves are summarised after the worker
+            warned = "] checkpoint:" in line and any(k in line for k in CHECKPOINT_WARNINGS)
+            (ctx.log.warn if warned else ctx.log.note)(line)
     code = proc.wait()
     (ctx.out / "worker_stdout.log").write_text("\n".join(lines) + "\n", encoding="utf-8",
                                                newline="\n")
@@ -295,7 +301,9 @@ def build_job(ctx: Context, step: str, job_dir: Path, seeds: list[int], budget: 
            "tune_scope": "val", "mean_k": float(mean_k), "meta": meta, "files": files}
     if ctx.checkpoints is not None:  # §23: where the worker keeps its checkpoints, and for whom
         job["resume"] = {"dir": str(ctx.checkpoints), "trust": ctx.trust_checkpoints,
-                         "identity": steps.checkpoint_identity(ctx)}
+                         "identity": steps.checkpoint_identity(ctx),
+                         "fit_interval_s": float(os.environ.get(CK.INTERVAL_VARIABLE,
+                                                                CK.FIT_INTERVAL_S))}
     J.write_json(job_dir / J.JOB_FILE, job)
     report["scaler_rows"] = scaler.rows
     report["test_access"] = [report_access] if with_test else []

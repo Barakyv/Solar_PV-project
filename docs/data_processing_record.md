@@ -1358,8 +1358,9 @@ stored file changed).**
   checkpoint by running its training passes again (X95). The folder is deleted when the step
   succeeds; a step that was resumed says so in its record (`notes.resumed`) and its log.
 - *Parameters:* none changed (budgets, seeds, search spaces, the loss, the early stopping and every
-  output are as before, D-37).
-- *Result:* see the run journal R9-36: a fit continued from an epoch, and a worker killed at an
+  output are as before, D-37). New: the seconds between two writes of a fit's state, 60 (R9-37,
+  `SOLARPV_CHECKPOINT_INTERVAL_S`).
+- *Result:* see the run journal R9-36 and R9-37: a fit continued from an epoch, and a worker killed at an
   epoch, a trial and the end of a target x seed and started again, give the forecasts, trials,
   curves and records of an uninterrupted one (bit for bit); the same for the xgb step.
 - *Verification:* T-113 to T-119 (the GPU tests run in `solar-gpu`, T-117 and T-118).

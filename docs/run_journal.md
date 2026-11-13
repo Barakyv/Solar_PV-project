@@ -2051,7 +2051,7 @@ hashes, numbers) and the commit messages are the record:
   after a unit and inside the second study); T-113 to T-115 and T-119. The check script
   (`scripts/g1_resume_check.py`, `outputs/g1_audit/resume_check.json`): the final design is equal in
   7 of 7 configurations, the first design failed in the 4 with dropout between layers (weights up
-  to 2e-2 apart); the replay costs 14 to 37 % of the seconds of the epochs it replaces.
+  to 2e-2 apart); the replay costs 15 to 34 % of the seconds of the epochs it replaces.
 - **Nothing else changed.** A smoke run on the working tree before the commit (13 steps ok, no
   checkpoint folder left; the folder was deleted after the comparison, the smoke run at the candidate
   replaces it) had 27 CSV files byte-identical and 10 worker forecast arrays equal to the previous
@@ -2060,6 +2060,30 @@ hashes, numbers) and the commit messages are the record:
   evidence of the earlier candidate no longer counts: the full suite, the smoke run, the dry run,
   the audit, the reproduction from the raw data and a review of the diff are repeated. The tag and
   the final run were not started.
+
+### 2026-11-13 · R9-37 · W6: the review of the checkpoints (R-G1-27 to R-G1-35)
+
+- **The review** of `9e816ef` (`g1-review2`): 1 should fix, 8 notes, none blocking. The reproduction
+  that had run for 25 minutes on `9e816ef` was stopped (partial record kept apart, the private site
+  file of its clone removed), because the answers change the code.
+- **R-G1-27, right (X97).** The replay in order fails for the TFT when the windows have short rows and
+  several batches per epoch (measured: TFT with 2 and 3 layers; the BiLSTM is equal either way); my
+  tests had one batch of rows of one length for the TFT. Fixed with the real batches; the tests, the
+  check script and a test of the failing version use short rows and batches of 16.
+- **R-G1-33, measured.** The state of the largest BiLSTM is 83 MB and takes 0.44 s to write and
+  sync, against epochs of 0.4 s (development run); that of a TFT with 3 LSTM layers is 43 MB and
+  1.5 s, against epochs of 5.6 s. A write after every epoch would add up to about 4.7 h to the final
+  run (a bound). So a fit's state is written at most every 60 s (`SOLARPV_CHECKPOINT_INTERVAL_S`; 0
+  writes after every epoch, as the user first asked), and the trial and unit checkpoints, which
+  are small, are written every time. **The user's request, "after every epoch", is kept for the
+  epochs that are long enough to be worth it and changed for the short ones; the user is told.**
+- **The notes (X98).** Retried writes, a warning for a fit checkpoint that cannot be written, cleanup
+  and a `.gitignore` rule, an unreadable manifest and a unit without its study, the environment in
+  the manifest, warnings and the column `n_resumed`, a tab in an errata row.
+- **Checks.** 31 CPU tests and 42 GPU tests of the checkpoints pass; the resume check (7 of 7
+  configurations equal, the first design failing in 4) was run again on the new windows.
+- **Next.** Commit the candidate, repeat the smoke run, the audit and the reproduction at it, then
+  the figures, the notebook and the full suite.
 
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 

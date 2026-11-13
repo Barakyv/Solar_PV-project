@@ -1874,7 +1874,7 @@ end of a fit.
 
 | Step | Checkpoint after | What is stored | Resumes from |
 |---|---|---|---|
-| `bilstm`, `tft96`, `tft168`, `tftbase` | every epoch of a fit | model, Adam state, the order generator, every random state, the best epoch's weights, the curve so far | the next epoch of the same fit |
+| `bilstm`, `tft96`, `tft168`, `tftbase` | an epoch of a fit, at most every 60 s (R-G1-33: every epoch of a TFT, whose epochs take 4 to 10 s; a BiLSTM epoch takes 0.4 s and its state 0.44 s to write, so it writes about every 150 epochs, and its trials are covered by the study checkpoint) | model, Adam state, the order generator, every random state, the best epoch's weights, the curve so far | the next epoch of the same fit |
 | the same | every finished fit (a trial or the final fit) | the study: the finished trials and the sampler (its random state) | the next trial, with the parameters the sampler would have drawn |
 | the same | every finished target x seed | the forecast, the model, the curves, the trials and the record, each with its SHA-256 | the next target x seed |
 | `patchtst` | every finished target x seed (a fit takes about 2 minutes: no epoch checkpoint) | as above | the next target x seed |
@@ -1882,6 +1882,7 @@ end of a fit.
 
 Rules:
 
+0. **How often.** `SOLARPV_CHECKPOINT_INTERVAL_S` (default 60) is the least number of seconds between two writes of a fit's state; 0 writes after every epoch. Measured on this machine with the largest models of the search spaces (R-G1-33): the state of a BiLSTM with 256 hidden units and 3 layers is 83 MB and takes 0.44 s to write and sync, that of a TFT with 64 hidden units and 3 LSTM layers is 43 MB and takes 1.5 s (a TFT-168 epoch takes 5.6 s in the development run). Writing after every epoch would add, as a bound from these sizes and the epoch counts of the final budgets, about 70 min to the BiLSTM step and about 105 min to each TFT step; at 60 s the overhead is 1 to 3 %. A write that fails (a held file, a full disk) is a warning and the fit goes on (R-G1-28); a unit or a manifest that cannot be written stays an error.
 1. **Where.** `<run folder>/checkpoints/<step>/`, not inside the step's temporary folder, so that a
    resume finds it after the temporary folder was moved aside. Every write is atomic (a temporary
    file, `fsync`, `os.replace`); a file that exists is complete.
@@ -1962,12 +1963,12 @@ with the previous one. The tag waits for all of it.
   uninterrupted fit (BiLSTM, 2 layers, dropout 0.1), while the same model with one layer or without
   dropout was equal. It was measured, not assumed: two fits in one process are equal; a new module
   is equal to the first call of the old one; a module whose generator is set again is not.
-- **The fix.** A freshly built model runs the same training passes again (the same batch sizes in
-  the same order, on the initial weights: the state advances with the shapes only) and the CUDA
+- **The fix.** A freshly built model runs the same training passes again (the same batches: the
+  permutations are drawn from the fit's own generator, on the initial weights) and the CUDA
   generator is not set afterwards; it has advanced exactly as it did (the head's dropout). Then the
   continued fit is equal, bit for bit, to the uninterrupted one: BiLSTM with 1, 2 layers and with
   dropout 0, TFT with 1, 2 and 3 LSTM layers (T-117, scripts/g1_resume_check.py, S09-43). The
-  cost of a resume is these passes: 14 to 37 % of the seconds of the epochs they replace on the
+  cost of a resume is these passes: 15 to 34 % of the seconds of the epochs they replace on the
   synthetic windows of the GPU tests, and only for such models.
 - **At the worker.** A worker killed at an epoch of a trial, at a trial boundary, in the final fit
   (BiLSTM, TFT-96), in the TFT baseline, and at the end of a target x seed (two seeds), started
@@ -1979,4 +1980,34 @@ with the previous one. The tag waits for all of it.
   PatchTST resumes at the target x seed (a fit takes about 2 minutes). A hardware change between
   the interruption and the resume (another GPU, another driver) is not checked: the equality was
   measured on one machine.
+
+### 23.7 The review of `9e816ef` (R-G1-27 to R-G1-35, 2026-11-13)
+
+The reviewer read the diff of the checkpoints: one should-fix row and eight notes, none blocking
+(`docs/g1_review_log.md`).
+
+- **R-G1-27 (should fix), the replay ran the finished epochs on the rows in their order, and the
+  premise "the state advances with the shapes only" is false for the TFT** (it cuts its decoder to
+  the longest origin of a batch, and the real epochs are shuffled). Measured, X97: with half of the
+  training origins short and batches of 16 rows, the replay in order gave other weights than the
+  uninterrupted fit for the TFT with 2 and 3 LSTM layers, and the replay of the real batches the
+  same weights (the BiLSTM was equal either way). The first tests could not see it: a TFT batch
+  holds 64 rows, and the training windows had 48 rows of one length, so the TFT had one batch of
+  rows of one length. Fixed: `advance_cudnn_dropout` draws the permutations of the fit's own
+  generator and runs the real batches; the tests (T-117, T-118) and `scripts/g1_resume_check.py` use
+  windows with half of the rows short and batches of 16 rows, and a test shows that the replay in
+  order fails for the TFT.
+- **R-G1-28 to R-G1-35 (notes, X98):** a write is retried (5 tries over 2 seconds) and a fit
+  checkpoint that cannot be written is a warning (R-G1-28); a completed step that is adopted or
+  skipped deletes its checkpoint folder, and `.gitignore` ignores `outputs/runs/**/checkpoints/`
+  (R-G1-29); an unreadable manifest is another identity, and a finished unit without a readable study
+  is computed again (R-G1-30); the manifest records the GPU, torch, cuDNN, CUDA and optuna (xgboost
+  and numpy for `xgb`), a resume on another stack is a warning and an event `environment_differs` in
+  `notes.resumed`, and an unknown commit is not trusted (R-G1-31, A-20); the restores of `xgb` and
+  every stale or damaged folder are warnings, and the report's steps table has a column
+  `n_resumed` (R-G1-32); the interval above, with the measured sizes (R-G1-33); the errata row X96
+  had a tab where its test name was, now restored (R-G1-34); the runbook asks to check that no
+  worker or runner process is alive before a resume (R-G1-35).
+- **Consequence for the gate.** The code changed again, so the evidence at `9e816ef` (the smoke
+  run, the audit, the reproduction that had run for 25 minutes) is repeated at the new candidate.
 

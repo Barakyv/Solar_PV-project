@@ -1507,9 +1507,9 @@
    "kind": "process",
    "title": "Checkpoints and resume inside the long steps (D-38)",
    "file": "outputs/figures/stage_09/S09-43_checkpoints.png",
-   "file_sha256": "99321fee9f6272473d8dea8b7aaa097915c2798c367c547778ce34031498c439",
+   "file_sha256": "fdc02aa44b151b96dfd8f7232cd3b4baf27803025e01b9dbbebc8021e8260115",
    "inputs": {
-    "outputs/g1_audit/resume_check.json": "b2883b83670a26d51ee2b2865ffd893a481c06fabf3ca94101c9cfb876a4488e",
+    "outputs/g1_audit/resume_check.json": "0c5780ae37e7e351f523d7337fd706d3226699f18116b369d4499b6a498b58e5",
     "outputs/runs/20261113T075845Z_dev/xgb/step.json": "90e2aa245c6f3cf8c47a9112e56f0389b2e5f9a3bbcae6611e4db1be9c8b407c",
     "outputs/runs/20261113T075845Z_dev/xgb/trials.csv": "75819169be12a10e4bbf1c0dec8128a9bb8c1195f2d80ec00d617ab48d904eb3",
     "outputs/runs/20261111T160714Z_dev/bilstm/step.json": "bb9c51496819f6ffb3cb191308598b934d3ad0196afa7e8fceb94b3ce01060bb",
@@ -1528,15 +1528,15 @@
     "xgb_grain": 9.67,
     "tft168_step": 1.4391111111111112,
     "patch_grain": 375.5,
-    "epoch_grain": 10.209,
+    "epoch_grain": 70.209,
     "n": 7,
     "n_equal": 7,
     "n_broken": 4,
-    "worst": 0.01958414912223816,
-    "replay_pct": 24.904180327951103
+    "worst": 0.022781670093536377,
+    "replay_pct": 27.03117377192345
    },
-   "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or one epoch (at most 10 s, TFT-168). A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.0e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 25 % of the seconds of the epochs it replaces on these small windows.",
-   "git_commit": "aae0a29+dirty"
+   "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or, for the other models, at most 70 s of epochs. A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.3e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 27 % of the seconds of the epochs it replaces on these small windows.",
+   "git_commit": "9e816ef+dirty"
   },
   "C-01": {
    "stage": "correction",

@@ -158,32 +158,37 @@ def has_interlayer_dropout(model) -> bool:
                for m in model.modules())
 
 
-def advance_cudnn_dropout(model, forward, train: Data, epochs_done: int, batch_size: int) -> None:
+def advance_cudnn_dropout(model, forward, train: Data, epochs_done: int, batch_size: int,
+                          seed: int) -> None:
     """Bring a freshly built model to where an uninterrupted fit is after `epochs_done` epochs, in
     the one thing that torch's random state does not carry (measured, T-117): the dropout state
     that cuDNN keeps between the layers of a multi-layer LSTM. It is seeded from the CUDA
     generator at the first training pass after the generator is set, and it advances with every
-    training pass by an amount that depends on the shapes only. So the same passes are run again
-    (the same batch sizes, in the same order), on the initial weights; the CUDA generator advances
-    exactly as it did (the head's dropout) and is NOT restored afterwards, because setting it would
-    reseed cuDNN's state. The weights and the optimiser are loaded after this."""
+    training pass by an amount that depends on the shapes only. The shapes depend on the rows of
+    a batch (the TFT cuts its decoder to the longest of them, R-G1-27), so the passes are those of
+    the real epochs: the same permutations, drawn from the generator of the fit, the same batches,
+    on the initial weights. The CUDA generator advances exactly as it did (the head's dropout) and
+    is NOT restored afterwards, because setting it would reseed cuDNN's state. The weights and the
+    optimiser are loaded after this."""
     model.train()
-    idx_all = torch.arange(train.n, device=train.y.device)
+    gen = torch.Generator().manual_seed(int(seed))
     for _ in range(int(epochs_done)):
+        order = torch.randperm(train.n, generator=gen).to(train.y.device)
         for start in range(0, train.n, int(batch_size)):
-            forward(model, train, idx_all[start:start + int(batch_size)])
+            forward(model, train, order[start:start + int(batch_size)])
 
 
 def fit(model, forward, train: Data, tune: Data, *, epochs: int, patience: int | None, lr: float,
         batch_size: int, clip: float | None, quantiles, seed: int, objective_fn,
         point_index: int, on_epoch=None, resume: dict | None = None,
-        on_checkpoint=None) -> FitResult:
+        on_checkpoint=None, checkpoint_every_s: float = 0.0) -> FitResult:
     """One training run (§18.4). The model is built by the caller after `seed_everything(seed)`.
 
-    `on_checkpoint(state)` is called after every epoch with everything the next epoch needs (§23):
-    the model, the optimiser, the order generator, every random state, the best epoch's weights,
-    the curve and the seconds so far. `resume` is such a state: the fit continues with the epoch
-    after it, in the same random streams, and ends as an uninterrupted fit would."""
+    `on_checkpoint(state)` is called at the end of an epoch, when at least `checkpoint_every_s`
+    seconds passed since the last call (0: after every epoch), with everything the next epoch
+    needs (§23): the model, the optimiser, the order generator, every random state, the best
+    epoch's weights, the curve and the seconds so far. `resume` is such a state: the fit continues
+    with the epoch after it, in the same random streams, and ends as an uninterrupted fit would."""
     device = train.y.device
     q = torch.as_tensor(np.asarray(quantiles, dtype=np.float32), device=device)
     opt = torch.optim.Adam(model.parameters(), lr=lr)
@@ -198,7 +203,7 @@ def fit(model, forward, train: Data, tune: Data, *, epochs: int, patience: int |
         left = not resume["done"] and int(resume["epoch"]) < int(epochs)  # epochs still to train
         interlayer = left and has_interlayer_dropout(model)
         if interlayer:
-            advance_cudnn_dropout(model, forward, train, int(resume["epoch"]), batch_size)
+            advance_cudnn_dropout(model, forward, train, int(resume["epoch"]), batch_size, seed)
         model.load_state_dict(resume["model"])
         opt.load_state_dict(copy.deepcopy(resume["opt"]))  # Adam updates its counters in place
         gen.set_state(resume["gen"])
@@ -210,6 +215,7 @@ def fit(model, forward, train: Data, tune: Data, *, epochs: int, patience: int |
         stopped, nan_loss = resume["stopped"], resume["nan_loss"]
         done, epoch, elapsed_before = resume["done"], int(resume["epoch"]), resume["elapsed_s"]
     t_fit = time.perf_counter() - elapsed_before
+    last_checkpoint = time.perf_counter()
     first = epoch + 1
     for epoch in range(first, int(epochs) + 1) if not done else range(0):
         t0 = time.perf_counter()
@@ -251,7 +257,9 @@ def fit(model, forward, train: Data, tune: Data, *, epochs: int, patience: int |
         elif patience and epoch - best_epoch >= int(patience):
             stopped = True
             stop = True
-        if on_checkpoint is not None:  # §23: after the epoch's bookkeeping, also the last one
+        if on_checkpoint is not None and (time.perf_counter() - last_checkpoint
+                                          >= checkpoint_every_s):  # §23, R-G1-33
+            last_checkpoint = time.perf_counter()
             on_checkpoint({
                 "epoch": epoch, "done": stop, "model": model.state_dict(),
                 "opt": opt.state_dict(), "gen": gen.get_state(), "rng": rng_state(),

@@ -265,7 +265,10 @@ def _write_json(data_: dict, path: Path) -> Path:
 
 def run_xgb(ctx: Context) -> Result:
     """XGB-Opt per target x horizon x seed (docs/stage9_plan.md §13.4, §14.1-§14.2)."""
+    import sys
+
     import optuna
+    import xgboost
 
     X = _xgb()
     budget = ctx.config["budgets"]["xgb"]
@@ -292,7 +295,9 @@ def run_xgb(ctx: Context) -> Result:
     db = ctx.out / "optuna.db"
     storage = optuna.storages.RDBStorage(f"sqlite:///{db.resolve().as_posix()}")
     store = CK.open_store(ctx.checkpoints, checkpoint_identity(ctx), ctx.trust_checkpoints,
-                          say=ctx.log.note)  # §23: after every trial and every finished unit
+                          say=ctx.log.note, warn=ctx.log.warn)  # §23: every trial and unit
+    store.environment({"python": sys.version.split()[0], "xgboost": xgboost.__version__,
+                       "optuna": optuna.__version__, "numpy": np.__version__})  # R-G1-31
     train_text = (f"the last {X.SMOKE_TRAIN_DAYS} local days of train" if ctx.mode == "smoke"
                   else "all of train")
     ctx.log.note(f"budget {n_trials} trials, seeds {seeds}, tuning window {tuning.label}, "
@@ -449,6 +454,11 @@ def run_xgb(ctx: Context) -> Result:
     finally:
         storage.remove_session()
         storage.engine.dispose()  # release the SQLite file before the folder is renamed
+    if store.events:  # §23: a try that continued from a checkpoint says so (R-G1-32)
+        ctx.log.warn("xgb: this try continued from a checkpoint ("
+                     f"{len(store.events)} restores: "
+                     + "; ".join(", ".join(f"{k} {v}" for k, v in e.items())
+                                 for e in store.events) + ")")
     outputs = []
     for seed, frames in predictions.items():
         frame = pd.concat(frames, ignore_index=True).sort_values(

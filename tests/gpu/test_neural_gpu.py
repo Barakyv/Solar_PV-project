@@ -41,14 +41,15 @@ TFT = {"hidden_size": 16, "attention_head_size": 2, "hidden_continuous_size": 8,
 neural_torch.setup_determinism()
 
 
-def scope_arrays(key: str, n: int, seed: int, short: bool = False) -> dict:
+def scope_arrays(key: str, n: int, seed: int, short: bool | int = False) -> dict:
     rng = np.random.default_rng(seed)
     known = rng.normal(size=(n, L + MAX_STEPS, N_KNOWN)).astype(np.float32)
     unknown = rng.normal(size=(n, L, N_UNKNOWN)).astype(np.float32)
     y = (0.5 + 0.3 * known[:, L:, 0] - 0.2 * known[:, L:, 1]).astype(np.float32)
     lengths = np.full(n, MAX_STEPS)
-    if short:
-        lengths[-2:] = (71, 72)
+    if short:  # the last rows are short, as at the end of a split and at the DST origins
+        k = 2 if short is True else int(short)
+        lengths[-k:] = [71 + i % 2 for i in range(k)]
     exists = np.arange(MAX_STEPS)[None, :] < lengths[:, None]
     mask = exists & (rng.random((n, MAX_STEPS)) < 0.6)
     y = np.where(exists, y, np.nan).astype(np.float32)

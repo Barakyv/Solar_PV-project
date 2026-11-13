@@ -95,7 +95,7 @@ def test_a_unit_is_restored_with_its_hashes_and_a_changed_file_discards_it(tmp_p
     assert (out / "forecast.npz").read_bytes() == b"forecast"
     assert (out / "models" / "m.pt").read_bytes() == b"model"
     messages = []
-    store.say = say_into(messages)
+    store.warn = say_into(messages)
     (tmp_path / "ck" / "unit_indirect_seed42" / "forecast.npz").write_bytes(b"changed")
     assert store.restore_unit("indirect_seed42", tmp_path / "out2") is None
     assert not (tmp_path / "ck" / "unit_indirect_seed42").exists()
@@ -116,6 +116,77 @@ def test_describe_counts_both_kinds_of_finished_unit(tmp_path):
     lines = CK.describe(tmp_path / "ck")
     assert "2 finished unit(s), 1 study checkpoint(s)" in lines[0]
     assert "indirect_seed42" in lines[1] and "xgb_indirect_D1_seed42" in lines[1]
+
+
+def test_a_write_is_retried_when_the_target_is_held_for_a_moment(tmp_path, monkeypatch):
+    """R-G1-28: on Windows an antivirus or an indexer may hold the target of the rename."""
+    monkeypatch.setattr(CK, "REPLACE_WAIT_S", 0.0)
+    real, calls = os.replace, []
+
+    def flaky(src, dst):
+        calls.append(1)
+        if len(calls) <= 2:
+            raise PermissionError("held by another process")
+        return real(src, dst)
+    monkeypatch.setattr(CK.os, "replace", flaky)
+    CK.write_atomic(tmp_path / "a.bin", lambda f: f.write(b"abc"))
+    assert (tmp_path / "a.bin").read_bytes() == b"abc" and len(calls) == 3
+    monkeypatch.setattr(CK.os, "replace", lambda s, d: (_ for _ in ()).throw(PermissionError()))
+    with pytest.raises(PermissionError):
+        CK.write_atomic(tmp_path / "b.bin", lambda f: f.write(b"abc"))
+
+
+def test_an_unreadable_manifest_is_another_identity(tmp_path):
+    """R-G1-30: the folder is moved aside and the step starts again, at every resume."""
+    root, messages = tmp_path / "ck", []
+    root.mkdir()
+    (root / CK.MANIFEST).write_text("{ not json", encoding="utf-8")
+    (root / "study_x.pkl").write_bytes(b"x")
+    store = CK.open_store(root, IDENTITY, say=say_into(messages))
+    assert not store.had_checkpoint and list(tmp_path.glob("ck.stale-*"))
+    assert any("manifest cannot be read" in m for m in messages)
+
+
+def test_a_resume_on_another_environment_is_recorded_and_warned(tmp_path):
+    """R-G1-31: valid, and not claimed to equal an uninterrupted run (A-20)."""
+    notes, warnings = [], []
+    first = CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
+    first.environment({"gpu": "P40", "torch": "2.5.1"})
+    same_stack = CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
+    same_stack.environment({"gpu": "P40", "torch": "2.5.1"})
+    assert not same_stack.events and not warnings
+    other = CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
+    other.environment({"gpu": "A100", "torch": "2.5.1"})
+    assert [e["kind"] for e in other.events] == ["environment_differs"]
+    assert other.events[0]["was"]["gpu"] == "P40" and other.events[0]["now"]["gpu"] == "A100"
+    assert warnings and "not claimed to equal" in warnings[0]
+
+
+def test_the_warnings_of_a_store_go_to_the_warn_callback(tmp_path):
+    notes, warnings = [], []
+    CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
+    CK.open_store(tmp_path / "ck", {**IDENTITY, "fingerprint": "x"}, say=notes.append,
+                  warn=warnings.append)
+    assert len(warnings) == 1 and "not used" in warnings[0] and not notes
+
+
+def test_a_finished_unit_without_its_study_is_computed_again(tmp_path):
+    """R-G1-30: it was a failure at every resume; now the unit is dropped."""
+    from solarpv.models import neural_worker
+
+    src = tmp_path / "f.bin"
+    src.write_bytes(b"x")
+    messages = []
+    store = CK.open_store(tmp_path / "ck", IDENTITY, say=lambda m: None, warn=messages.append)
+    store.save_unit("indirect_seed42", {"f.bin": src}, {"seed": 42})
+    out = tmp_path / "out"
+    out.mkdir()
+    assert neural_worker.restore_unit(store, out, "indirect_seed42", None, "bilstm", 42) is None
+    assert not store.has("unit_indirect_seed42") and not (out / "f.bin").exists()
+    assert any("no readable study checkpoint" in m for m in messages)
+    # a unit of a step without a study (the TFT baseline, PatchTST) needs none
+    store.save_unit("direct_seed42", {"f.bin": src}, {"seed": 42})
+    assert neural_worker.restore_unit(store, out, "direct_seed42") == {"seed": 42}
 
 
 def test_a_damaged_pickle_is_dropped(tmp_path):
@@ -302,6 +373,64 @@ def test_a_tree_with_uncommitted_code_does_not_trust_a_checkpoint(tmp_path, monk
     assert list((run_dir / "checkpoints").glob("xgb.stale-*"))
 
 
+def test_an_unknown_commit_is_not_trusted_either(tmp_path, monkeypatch):
+    """R-G1-31: when git fails the fingerprints of different code are equal."""
+    seen = []
+    monkeypatch.setattr(runner, "git_commit", lambda: "unknown")
+    r = make_runner(tmp_path, impls={"xgb": checkpointing_step(seen)})
+    assert r.run("smoke", ["xgb"]) == 1
+    assert r.run("smoke", ["xgb"], resume=only_run(tmp_path).name) == 1
+    assert not seen[0]["trust"] and not seen[1]["trust"] and not seen[1]["had"]
+
+
+def test_a_complete_step_leaves_no_checkpoint_when_it_is_adopted_or_skipped(
+        tmp_path, monkeypatch):
+    """R-G1-29: the folder was removed only on the success path of the try that wrote it."""
+    monkeypatch.setattr(runner, "git_commit", lambda: "abc1234")
+    seen = []
+    r = make_runner(tmp_path, impls={"xgb": checkpointing_step(seen, fail_first=False)})
+    assert r.run("smoke", ["xgb"]) == 0
+    run_dir = only_run(tmp_path)
+    left = run_dir / "checkpoints" / "xgb"
+    left.mkdir(parents=True)
+    (left / "study_x.pkl").write_bytes(b"x")
+    assert r.run("smoke", ["xgb"], resume=run_dir.name) == 0  # up to date: skipped
+    assert not (run_dir / "checkpoints").exists()
+    # an adopted folder: run.json lost the entry of the completed step
+    state = read(run_dir / "run.json")
+    state["steps"].pop("xgb")
+    (run_dir / "run.json").write_text(json.dumps(state), encoding="utf-8")
+    left.mkdir(parents=True)
+    (left / "study_x.pkl").write_bytes(b"x")
+    assert r.run("smoke", ["xgb"], resume=run_dir.name) == 0
+    assert not (run_dir / "checkpoints").exists()
+
+
+def test_git_ignores_the_checkpoints_of_a_run():
+    from solarpv.config.paths import REPO_ROOT
+    from solarpv.config.provenance import find_git
+
+    for name in ("study_a.pkl", "fit_a.pt", "unit_a/unit.json", "manifest.json"):
+        out = subprocess.run([find_git(), "check-ignore", "-q",
+                              f"outputs/runs/20261113T000000Z_final/checkpoints/bilstm/{name}"],
+                             cwd=REPO_ROOT)
+        assert out.returncode == 0, name
+
+
+def test_the_report_counts_the_restores_of_a_step():
+    from types import SimpleNamespace
+
+    from solarpv.pipeline import report
+
+    rec = {"status": "ok", "commit": "abc", "fingerprint": "f" * 16, "duration_s": 1.0,
+           "outputs": {}, "warnings": [], "config": {}}
+    ctx = SimpleNamespace(step="report", failed=[], completed={
+        "xgb": {**rec, "notes": {}},
+        "bilstm": {**rec, "notes": {"resumed": [{"kind": "unit"}, {"kind": "fit"}]}}})
+    table = report.steps_table(ctx).set_index("step")
+    assert table.loc["bilstm", "n_resumed"] == 2 and table.loc["xgb", "n_resumed"] == 0
+
+
 def test_archive_does_not_pack_the_checkpoints(tmp_path):
     run = tmp_path / "run"
     (run / "xgb").mkdir(parents=True)
@@ -364,6 +493,7 @@ def test_the_xgb_step_interrupted_continues_to_the_files_of_an_uninterrupted_ste
     result = steps.run_xgb(resumed)
     same_outputs(plain.out, resumed.out)
     assert [e["kind"] for e in result.notes["resumed"]] == kinds
+    assert any("continued from a checkpoint" in w for w in resumed.log.warnings)  # R-G1-32
     # the studies of the step's database hold every trial, as in the uninterrupted step
     import optuna
 
@@ -413,6 +543,7 @@ def test_the_neural_step_passes_the_checkpoint_folder_and_records_what_was_resto
     assert job["resume"]["dir"] == str(run_dir / "checkpoints" / "bilstm")
     assert job["resume"]["trust"] is True
     assert set(job["resume"]["identity"]) == {"run_id", "step", "mode", "fingerprint"}
+    assert job["resume"]["fit_interval_s"] == CK.FIT_INTERVAL_S  # R-G1-33
     assert job["resume"]["identity"]["step"] == "bilstm"
     record = read(run_dir / "bilstm" / "step.json")
     assert [e["kind"] for e in record["notes"]["resumed"]] == ["unit", "fit"]

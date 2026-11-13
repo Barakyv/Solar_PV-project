@@ -29,6 +29,8 @@ outputs/**/lightning_logs/
 /outputs/runs/**/uncorrected_*.csv
 /outputs/runs/**/ablation_forecasts_seed*.csv
 /outputs/runs/**/.*.tmp/
+# the checkpoints of a step in flight (stage-9 plan §23): deleted when the step succeeds
+/outputs/runs/**/checkpoints/
 # the neural steps (stage-9 plan §18): the job arrays and the worker's forecast arrays and
 # quantile files are bulky; the records, curves, trials, configs and figures are committed
 /outputs/runs/**/*.npz

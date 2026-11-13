@@ -85,14 +85,21 @@ def restore_unit(store, out: Path, unit: str, storage=None, study_name: str | No
                  seed: int | None = None):
     """The record of a target x seed that an earlier try finished, with its files copied into
     `out` (each checked against its hash); the study is replayed into `storage` so that
-    `optuna.db` holds it as in an uninterrupted worker. None when there is no such unit."""
+    `optuna.db` holds it as in an uninterrupted worker. None when there is no such unit, and when a
+    finished unit has lost its study checkpoint (R-G1-30): it is dropped and computed again."""
+    state = None
+    if study_name is not None:
+        state = store.load_pickle(f"study_{unit}.pkl")
+        if state is None:
+            if store.has(f"unit_{unit}"):
+                store.warn(f"checkpoint: unit {unit} has no readable study checkpoint; it is "
+                           "dropped and computed again")
+                store.drop(f"unit_{unit}")
+            return None
     record = store.restore_unit(unit, out)
     if record is None:
         return None
     if study_name is not None:
-        state = store.load_pickle(f"study_{unit}.pkl")
-        if state is None:
-            raise JobError(f"{unit}: the finished unit has no study checkpoint")
         from solarpv.models import checkpoint
 
         checkpoint.replayed_study(storage, study_name, seed, state)
@@ -125,6 +132,7 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage,
 
     budget = job["budget"]
     fixed = FIXED[family]
+    interval = float((job.get("resume") or {}).get("fit_interval_s", CK.FIT_INTERVAL_S))
     records = {}
     for seed in job["seeds"]:
         unit = f"{target}_seed{seed}"
@@ -162,7 +170,11 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage,
                 curves.append({"target": target, "seed": seed, "fit": label, **row})
 
             def on_checkpoint(state):
-                store.save_torch(fit_key, {"key": key, "state": state})
+                try:
+                    store.save_torch(fit_key, {"key": key, "state": state})
+                except OSError as exc:  # R-G1-28: the result of the fit does not depend on the file
+                    say(f"checkpoint: {fit_key} not written ({exc}); the fit goes on")
+                    return
                 CK.fault(f"epoch:{unit}:{label}:{state['epoch']}")
 
             res = neural_torch.fit(model, module.forward, data["train"], data[tune],
@@ -170,7 +182,8 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage,
                                    batch_size=s["batch_size"], clip=s["clip"],
                                    quantiles=quantiles, seed=seed, objective_fn=obj,
                                    point_index=point, on_epoch=on_epoch, resume=resume,
-                                   on_checkpoint=on_checkpoint if store.enabled else None)
+                                   on_checkpoint=on_checkpoint if store.enabled else None,
+                                   checkpoint_every_s=interval)
             say(f"{target} seed {seed} {label}: {res.objective_at_best['value_kw']:.4f} % kW, "
                 f"best epoch {res.best_epoch} of {res.epochs_run}, {res.seconds} s")
             return model, res
@@ -321,6 +334,9 @@ def main(argv: list[str] | None = None) -> int:
     store = CK.open_store(Path(resume["dir"]) if resume else None,
                           resume["identity"] if resume else None,
                           trust=bool(resume["trust"]) if resume else False, say=say)
+    store.environment({"gpu": env["gpu"]["name"], "torch": env["versions"]["torch"],
+                       "cudnn": env["cudnn"], "cuda_runtime": env["cuda_runtime"],
+                       "optuna": env["versions"]["optuna"]})  # R-G1-31
     records = {}
     try:
         for target in job["targets"]:

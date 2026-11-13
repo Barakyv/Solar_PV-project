@@ -929,11 +929,18 @@ RESUME_INPUTS = (RESUME_CHECK, *[f"{run}/{step}/{name}" for run, step, grain in
 
 
 def _grain_seconds(run: str, step: str, grain: str) -> float:
-    """The longest stretch between two checkpoints in the development run of the step."""
+    """The longest stretch between two checkpoints in the development run of the step. A neural fit
+    is written at most every FIT_INTERVAL_S seconds, at the end of an epoch (R-G1-33), and its
+    trials are covered by the study checkpoint: the stretch is the shorter of the longest fit and
+    the interval plus the longest epoch."""
+    from solarpv.models.checkpoint import FIT_INTERVAL_S
+
     if grain == "trial":
         return float(D.csv(f"{run}/{step}/trials.csv")["duration_s"].max())
     if grain == "epoch":
-        return float(D.csv(f"{run}/{step}/learning_curves.csv")["seconds"].max())
+        curves = D.csv(f"{run}/{step}/learning_curves.csv")
+        longest_fit = float(curves.groupby(["target", "seed", "fit"])["seconds"].sum().max())
+        return min(longest_fit, FIT_INTERVAL_S + float(curves["seconds"].max()))
     best = D.jload(f"{run}/{step}/best_params.json")
     return float(max(r["final"]["duration_s"] for r in best.values()))
 
@@ -944,18 +951,20 @@ def _grain_seconds(run: str, step: str, grain: str) -> float:
     "as the uninterrupted fit does?",
     "Left, for every model: the seconds of the whole step in its development run (what an "
     "interruption lost until now: `--resume` started the step again) and the longest stretch "
-    "between two checkpoints in the same run (an epoch; for XGB a trial; for PatchTST a fit, "
-    "which takes minutes); the final run is larger, so the step bars grow and the checkpoint bars "
-    "do not. Right: for the BiLSTM and the TFT with one to three LSTM layers, with and without "
-    "dropout between the layers, the largest weight difference between a fit continued after "
-    "epoch 2 of 5 and the uninterrupted fit, for the first design (every random state restored) "
-    "and the final one; zero is the left edge. The measurements are those of "
-    "`scripts/g1_resume_check.py`, on the synthetic windows of the GPU tests; the other models "
-    "resume at the model level and have no such fit.",
+    "between two checkpoints in the same run (XGB: a trial; PatchTST: a fit, which takes minutes; "
+    "the other models: the shorter of a fit and the 60 s between two writes of a fit's state, "
+    "plus its longest epoch); the final run is larger, so the step bars grow and the checkpoint "
+    "bars do not. Right: for the BiLSTM and the TFT with one to three LSTM layers, with and "
+    "without dropout between the layers, the largest weight difference between a fit continued "
+    "after epoch 2 of 5 and the uninterrupted fit, for the first design (every random state "
+    "restored) and the final one; zero is the left edge. The measurements are those of "
+    "`scripts/g1_resume_check.py`, on the synthetic windows of the GPU tests (half of the "
+    "training origins short, batches of 16 rows); the other models resume at the model level and "
+    "have no such fit.",
     "With the development budgets an interruption lost a whole step ({xgb_step:.0f} s of XGB, "
     "{tft168_step:.1f} h of TFT-168); a checkpoint now bounds the loss to one trial of XGB "
-    "({xgb_grain:.1f} s), one PatchTST fit ({patch_grain:.0f} s) or one epoch (at most "
-    "{epoch_grain:.0f} s, TFT-168). A fit continued from an epoch checkpoint is equal to the "
+    "({xgb_grain:.1f} s), one PatchTST fit ({patch_grain:.0f} s) or, for the other models, at most "
+    "{epoch_grain:.0f} s of epochs. A fit continued from an epoch checkpoint is equal to the "
     "uninterrupted fit, bit for bit, in {n_equal} of {n} configurations. The first design, with "
     "every random state restored, failed in the {n_broken} that have dropout between their LSTM "
     "layers (weights up to {worst:.1e} apart), because cuDNN keeps a dropout state that torch's "
@@ -1001,7 +1010,7 @@ def s09_checkpoints():
     fig.legend(handles=[
         Patch(facecolor="white", edgecolor="0.3", hatch="//", label="until now: the whole step"),
         Patch(facecolor="0.55", edgecolor="black", lw=0.4,
-              label="now: an epoch (XGB a trial, PatchTST a fit)"),
+              label="now: the longest stretch between two checkpoints"),
         Line2D([0], [0], marker="D", ls="", mfc="white", mec="0.2", mew=1.4,
                label="first design: random states restored"),
         Line2D([0], [0], marker="o", ls="", color="0.55", mec="black",

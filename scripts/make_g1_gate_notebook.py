@@ -34,8 +34,10 @@ REPRO = RECORDS[-1]
 REPRO_REL = REPRO.relative_to(REPO_ROOT).as_posix()
 CV = REPO_ROOT / W6_DEV_RUN / "cv" / "cv_summary.csv"
 AB = REPO_ROOT / W6_DEV_RUN / "ablation" / "ablation_summary.csv"
+RESUME = OUTPUTS_DIR / "g1_audit" / "resume_check.json"  # scripts/g1_resume_check.py (D-38)
 SOURCES = [LEAKAGE, AUDIT / "test_access.json", AUDIT / "lookahead_clean.csv",
-           AUDIT / "lookahead_clock.csv", AUDIT / "lookahead_polled.csv", INCIDENT, REPRO, CV, AB]
+           AUDIT / "lookahead_clock.csv", AUDIT / "lookahead_polled.csv", INCIDENT, REPRO, CV, AB,
+           RESUME]
 
 
 def table_rows(text: str, start: str, stop: str, width: int) -> pd.DataFrame:
@@ -62,7 +64,14 @@ CVS = pd.read_csv(CV)
 ABS = pd.read_csv(AB)
 GFS = ABS[ABS["mode"] == "no_nwp_gfs"]["mean_delta_pp"]
 GAP = -CVS["validation_minus_cv_pp"]
+RES = json.loads(RESUME.read_text(encoding="utf-8"))
+RES_BROKEN = [r for r in RES["configs"] if not r["first_design"]["equal"]]
+RES_REPLAY = [r["replay_seconds"] / r["seconds_of_the_epochs_done"] for r in RES["configs"]
+              if r["interlayer_dropout"]]
 # claims of the notes below, asserted here and not typed
+assert all(r["final"]["equal"] for r in RES["configs"]), "a continued fit differs"
+assert RES_BROKEN and all(r["interlayer_dropout"] for r in RES_BROKEN), "X95 changed"
+assert all(r["first_design"]["equal"] for r in RES["configs"] if not r["interlayer_dropout"])
 assert (CLEAN["test_days_affected"] == 0).all(), "a cleaned cell changed on a test day"
 assert (CLEAN["method_mismatch_cells"] == 0).all(), "cleaning differs from the stage-5 table"
 assert (GAP > 0).all(), "validation is not below the CV mean everywhere"
@@ -214,7 +223,28 @@ raises the error by {GFS.min():.2f} to {GFS.max():.2f} pp, the largest change of
 `minimal`, which keeps only the time encodings.
 These are single-seed development values and the verdicts are provisional; the final run repeats
 them with three seeds and the pooled seed std."""),
-    md("""## 7. Where the gate stands
+    md("## 7. Checkpoints and resume inside the long steps (D-38, X95)"),
+    code("""resume = json.loads((OUTPUTS_DIR / "g1_audit" / "resume_check.json").read_text("utf-8"))
+pd.DataFrame([{"configuration": r["name"],
+               "first design: largest weight difference": r["first_design"]["max_abs_weight_diff"],
+               "final: largest weight difference": r["final"]["max_abs_weight_diff"],
+               "dropout between layers": r["interlayer_dropout"]}
+              for r in resume["configs"]])"""),
+    md(f"""**What it shows.** For each of {len(RES['configs'])} configurations of the BiLSTM and the
+TFT, a fit of {RES['epochs']} epochs is continued from the checkpoint after epoch
+{RES['resumed_after_epoch']}, and its weights are compared with those of the uninterrupted fit
+(`scripts/g1_resume_check.py`, synthetic windows, on {RES['gpu']}). The first design restored every
+random state of torch; the final one also runs the earlier training passes again.
+
+**What it means.** The final design is equal to the uninterrupted fit in
+{sum(r['final']['equal'] for r in RES['configs'])} of {len(RES['configs'])} configurations. The
+first design failed in the {len(RES_BROKEN)} that have dropout between their LSTM layers (weights up
+to {max(r['first_design']['max_abs_weight_diff'] for r in RES_BROKEN):.1e} apart): cuDNN keeps a
+dropout state that torch's random state does not hold (X95). The replay costs
+{100 * min(RES_REPLAY):.0f} to {100 * max(RES_REPLAY):.0f} % of the seconds of the epochs it
+replaces. A worker that is killed and started again, and the xgb step, continue to the files of an
+uninterrupted run (T-116, T-118); this table is the check of the fit itself."""),
+    md("""## 8. Where the gate stands
 
 The checklist, with the state of every item read from its evidence file, is figure S09-34 of the
 figure book (`docs/figure_sheets/S09-W6.md`). What remains is outside this notebook: the

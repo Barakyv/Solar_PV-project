@@ -46,6 +46,7 @@ CONFIGS = [
     ("TFT, 3 LSTM layers, dropout 0.3", tft_model, {**TFT, "lstm_layers": 3, "dropout": 0.3}),
 ]
 EPOCHS, FROM_EPOCH = 5, 2
+BATCH = 16  # several batches per epoch, also for the TFT (its own batch size is 64)
 
 
 def roundtrip(state):
@@ -73,7 +74,8 @@ def train(module, params, arrays, resume=None):
     t0 = time.perf_counter()
     res = neural_torch.fit(
         model, module.forward, data_of(arrays, "train"), data_of(arrays, "val"), epochs=EPOCHS,
-        patience=None, lr=s["lr"], batch_size=s["batch_size"], clip=s["clip"], quantiles=q, seed=7,
+        patience=None, lr=s["lr"], batch_size=min(s["batch_size"], BATCH), clip=s["clip"],
+        quantiles=q, seed=7,
         objective_fn=objective_fn(arrays), point_index=q.index(0.5), resume=resume,
         on_checkpoint=lambda st: states.append(roundtrip(st)))
     return res, states, time.perf_counter() - t0
@@ -85,7 +87,7 @@ def replay_seconds(module, params, arrays) -> float:
     torch.cuda.synchronize()
     t0 = time.perf_counter()
     neural_torch.advance_cudnn_dropout(model, module.forward, data_of(arrays, "train"), FROM_EPOCH,
-                                       s["batch_size"])
+                                       min(s["batch_size"], BATCH), 7)
     torch.cuda.synchronize()
     return time.perf_counter() - t0
 
@@ -104,7 +106,9 @@ def main(argv: list[str] | None = None) -> int:
                    help="where to write the measurements")
     args = p.parse_args(sys.argv[1:] if argv is None else argv)
     neural_torch.setup_determinism()
-    arrays = {**scope_arrays("train", 48, 0), **scope_arrays("val", 12, 1, short=True)}
+    # half of the training origins are short, as the real windows are at the DST origins and at
+    # the end of a split (R-G1-27)
+    arrays = {**scope_arrays("train", 48, 0, short=24), **scope_arrays("val", 12, 1, short=True)}
     rows = []
     train(lstm_sota, BILSTM, arrays)  # warm-up: the first fit of a process pays for CUDA start-up
     for name, module, params in CONFIGS:

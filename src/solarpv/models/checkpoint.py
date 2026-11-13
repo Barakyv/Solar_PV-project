@@ -39,6 +39,12 @@ UNIT_FILE = "unit.json"
 PART = ".part"
 FAULT_VARIABLE = "SOLARPV_TEST_FAULT"
 FAULT_EXIT_CODE = 86
+# the seconds between two checkpoints of a fit in flight (R-G1-33: the state of a large BiLSTM is
+# 83 MB and takes 0.44 s to write and sync, more than its epochs; a TFT epoch takes 5 s, its state
+# 1.5 s). 0 writes after every epoch. The environment variable changes it for one run.
+FIT_INTERVAL_S = 60.0
+INTERVAL_VARIABLE = "SOLARPV_CHECKPOINT_INTERVAL_S"
+REPLACE_TRIES, REPLACE_WAIT_S = 5, 0.4  # R-G1-28: an antivirus or an indexer may hold a file
 
 
 class CheckpointError(RuntimeError):
@@ -70,7 +76,14 @@ def write_atomic(path: Path, write) -> None:
         write(f)
         f.flush()
         os.fsync(f.fileno())
-    os.replace(tmp, path)
+    for attempt in range(REPLACE_TRIES):
+        try:
+            os.replace(tmp, path)
+            return
+        except OSError:  # on Windows another process may hold the target for a moment
+            if attempt == REPLACE_TRIES - 1:
+                raise
+            time.sleep(REPLACE_WAIT_S)
 
 
 def _stamp() -> str:
@@ -86,10 +99,12 @@ class Store:
     was started without checkpoints, for example by a test)."""
 
     def __init__(self, root: Path | None, identity: dict | None = None, trust: bool = True,
-                 say=print):
+                 say=print, warn=None):
         self.root = None if root is None else Path(root)
         self.identity = dict(identity or {})
         self.say = say
+        self.warn = warn if warn is not None else say  # a folder that is not used, a damaged file
+        self.env: dict | None = None  # the software and the GPU of the try that made the folder
         self.enabled = self.root is not None
         self.events: list[dict] = []  # what this try restored (the provenance of §23.2 rule 5)
         self.stale: Path | None = None
@@ -103,13 +118,19 @@ class Store:
             if not manifest.exists():
                 reason = "a folder without a manifest" if any(self.root.iterdir()) else None
             else:
-                old = json.loads(manifest.read_text(encoding="utf-8"))
-                if old.get("version") != VERSION or old.get("identity") != self.identity:
+                try:
+                    old = json.loads(manifest.read_text(encoding="utf-8"))
+                except (OSError, ValueError):  # R-G1-30: unreadable: another identity
+                    old = None
+                if old is None:
+                    reason = "its manifest cannot be read"
+                elif old.get("version") != VERSION or old.get("identity") != self.identity:
                     reason = "it belongs to another step fingerprint (other code, inputs or run)"
                 elif not trust:
                     reason = "the tree has uncommitted code, which a resume does not trust"
                 else:
                     self.data = dict(old.get("data", {}))
+                    self.env = old.get("environment")
                     self.events = []
             if reason is not None:
                 self.stale = self.root.with_name(f"{self.root.name}.stale-{_stamp()}")
@@ -118,8 +139,8 @@ class Store:
                     n += 1
                     self.stale = self.stale.with_name(f"{self.stale.name}_{n}")
                 os.replace(self.root, self.stale)
-                self.say(f"checkpoint: {self.root.name} not used ({reason}); moved to "
-                         f"{self.stale.name}, the step starts from its first line")
+                self.warn(f"checkpoint: {self.root.name} not used ({reason}); moved to "
+                          f"{self.stale.name}, the step starts from its first line")
         self.root.mkdir(parents=True, exist_ok=True)
         for part in self.root.rglob(f"*{PART}"):
             part.unlink()  # a write that was cut off
@@ -132,6 +153,7 @@ class Store:
     def _write_manifest(self) -> None:
         write_atomic(self.root / MANIFEST, lambda f: f.write(_json_bytes({
             "version": VERSION, "identity": self.identity, "data": self.data,
+            "environment": self.env,
             "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})))
 
     def bind(self, name: str, digest: str) -> None:
@@ -142,11 +164,27 @@ class Store:
             return
         old = self.data.get(name)
         if old is not None and old != digest:
-            self.say(f"checkpoint: the data of {name} changed since the checkpoint; its "
-                     "checkpoints are dropped")
+            self.warn(f"checkpoint: the data of {name} changed since the checkpoint; its "
+                      "checkpoints are dropped")
             self.drop_matching(f"_{name}_seed")
         if old != digest:
             self.data[name] = digest
+            self._write_manifest()
+
+    def environment(self, info: dict) -> None:
+        """Record the software and the GPU of this try. A resume on another stack (another GPU,
+        driver, torch or cuDNN) is a valid run but not claimed to equal an uninterrupted one
+        (A-20, R-G1-31): the difference is a warning and an event of the step's record."""
+        if not self.enabled:
+            return
+        if self.env is not None and self.env != info:
+            event = {"kind": "environment_differs", "was": self.env, "now": info}
+            self.events.append(event)
+            self.warn(f"checkpoint: the environment differs from the one that made the folder "
+                      f"(was {self.env}, now {info}); the continued step is valid, and not "
+                      "claimed to equal an uninterrupted one")
+        if self.env != info:
+            self.env = info
             self._write_manifest()
 
     def note(self, kind: str, **fields) -> None:
@@ -192,7 +230,7 @@ class Store:
             with open(self.root / name, "rb") as f:
                 return pickle.load(f)
         except Exception as exc:  # noqa: BLE001 - a damaged checkpoint is dropped, never trusted
-            self.say(f"checkpoint: {name} cannot be read ({type(exc).__name__}); it is deleted")
+            self.warn(f"checkpoint: {name} cannot be read ({type(exc).__name__}); it is deleted")
             self.drop(name)
             return None
 
@@ -210,7 +248,7 @@ class Store:
         try:
             return torch.load(self.root / name, map_location="cpu", weights_only=False)
         except Exception as exc:  # noqa: BLE001
-            self.say(f"checkpoint: {name} cannot be read ({type(exc).__name__}); it is deleted")
+            self.warn(f"checkpoint: {name} cannot be read ({type(exc).__name__}); it is deleted")
             self.drop(name)
             return None
 
@@ -245,7 +283,7 @@ class Store:
                 if sha256_file(folder / rel) != digest:
                     raise CheckpointError(f"{rel}: SHA-256 differs from the unit record")
         except Exception as exc:  # noqa: BLE001
-            self.say(f"checkpoint: unit {name} is damaged ({exc}); it is deleted")
+            self.warn(f"checkpoint: unit {name} is damaged ({exc}); it is deleted")
             shutil.rmtree(folder, ignore_errors=True)
             return None
         dest = Path(dest)
@@ -255,8 +293,9 @@ class Store:
         return meta["record"]
 
 
-def open_store(root: Path | None, identity: dict | None, trust: bool = True, say=print) -> Store:
-    return Store(root, identity, trust=trust, say=say)
+def open_store(root: Path | None, identity: dict | None, trust: bool = True, say=print,
+               warn=None) -> Store:
+    return Store(root, identity, trust=trust, say=say, warn=warn)
 
 
 # ── Optuna studies: replayed, not edited ────────────────────────────────────

@@ -38,7 +38,10 @@ pytestmark = pytest.mark.skipif(not torch.cuda.is_available(), reason="needs the
 
 @pytest.fixture(scope="module")
 def arrays():
-    return {**scope_arrays("train", 48, 0), **scope_arrays("val", 12, 1, short=True)}
+    """R-G1-27: half of the training origins are short (71 or 72 steps), as the real windows are
+    at the DST origins and the end of a split; the TFT cuts its decoder to the longest origin of a
+    batch, so the shapes of a batch depend on which rows it holds."""
+    return {**scope_arrays("train", 48, 0, short=24), **scope_arrays("val", 12, 1, short=True)}
 
 
 # ── T-117: fit, stopped and continued ───────────────────────────────────────
@@ -60,7 +63,8 @@ def fit_epochs(module, params, arrays, epochs, stop_after=None, resume=None, pat
 
     res = neural_torch.fit(model, module.forward, data_of(arrays, "train"), data_of(arrays, "val"),
                            epochs=epochs, patience=patience, lr=s["lr"],
-                           batch_size=s["batch_size"], clip=s["clip"], quantiles=q, seed=7,
+                           batch_size=min(s["batch_size"], 16), clip=s["clip"], quantiles=q,
+                           seed=7,
                            objective_fn=objective_fn(arrays), point_index=q.index(0.5),
                            resume=resume, on_checkpoint=keep)
     return model, res, states
@@ -95,6 +99,68 @@ def test_a_fit_continued_from_an_epoch_equals_an_uninterrupted_fit(arrays, modul
     assert cont.best_epoch == full.best_epoch and cont.epochs_run == full.epochs_run
     assert [(r["epoch"], r["train_loss"], r["val_loss"]) for r in cont.curve] == \
            [(r["epoch"], r["train_loss"], r["val_loss"]) for r in full.curve]
+
+
+def test_the_replay_runs_the_batches_of_the_real_epochs(arrays):
+    """R-G1-27: the replay of cuDNN's dropout state draws the permutations of the fit's own
+    generator, so it runs exactly the batches (rows, order and sizes) of the finished epochs."""
+    seen = []
+
+    def spy(model, data, idx):
+        if model.training:
+            seen.append(idx.tolist())
+        return tft_model.forward(model, data, idx)
+    params = {**TFT, "lstm_layers": 2}
+    neural_torch.seed_everything(7)
+    model = tft_model.build_model(params, META).to(DEVICE)
+    s = tft_model.train_settings(params, neural_job.FIXED["tft"])
+    neural_torch.fit(model, spy, data_of(arrays, "train"), data_of(arrays, "val"), epochs=3,
+                     patience=None, lr=s["lr"], batch_size=16, clip=s["clip"],
+                     quantiles=QUANTILES["tft"], seed=7, objective_fn=objective_fn(arrays),
+                     point_index=3)
+    real = list(seen)
+    seen.clear()
+    neural_torch.seed_everything(7)
+    fresh = tft_model.build_model(params, META).to(DEVICE)
+    neural_torch.advance_cudnn_dropout(fresh, spy, data_of(arrays, "train"), 3, 16, 7)
+    assert seen == real and len(real) == 3 * 3  # three epochs of three batches, the same rows
+
+
+def test_the_replay_of_the_rows_in_their_order_would_not_do_for_the_tft(arrays, monkeypatch):
+    """R-G1-27 (should fix, the reviewer's finding): the first replay ran the finished epochs on
+    the rows in their order. With short rows in the windows and several batches per epoch, the
+    TFT (which cuts its decoder to the longest row of a batch) then ended with other weights than
+    the uninterrupted fit; the replay of the real batches is equal (the tests above). The BiLSTM,
+    whose forward has fixed shapes, was equal either way. (The first tests had one batch of all
+    the rows for the TFT, so they could not see it.)"""
+    def in_order(model, forward, train, epochs_done, batch_size, seed):
+        model.train()
+        idx_all = torch.arange(train.n, device=train.y.device)
+        for _ in range(int(epochs_done)):
+            for start in range(0, train.n, int(batch_size)):
+                forward(model, train, idx_all[start:start + int(batch_size)])
+    params = {**TFT, "lstm_layers": 2}
+    _, full, states = fit_epochs(tft_model, params, arrays, epochs=5)
+    monkeypatch.setattr(neural_torch, "advance_cudnn_dropout", in_order)
+    _, wrong, _ = fit_epochs(tft_model, params, arrays, epochs=5, resume=states[1])
+    assert not same(wrong.state, full.state)
+
+
+def test_the_interval_of_the_checkpoints_of_a_fit(arrays):
+    """R-G1-33: a checkpoint is written at the end of an epoch only if `checkpoint_every_s`
+    seconds passed since the last one; 0 writes after every epoch."""
+    for every, expected in ((0.0, [1, 2, 3, 4]), (1e9, [])):
+        neural_torch.seed_everything(7)
+        model = lstm_sota.build_model(BILSTM, META, 3).to(DEVICE)
+        s = lstm_sota.train_settings(BILSTM, neural_job.FIXED["bilstm"])
+        got = []
+        neural_torch.fit(model, lstm_sota.forward, data_of(arrays, "train"), data_of(arrays, "val"),
+                         epochs=4, patience=None, lr=s["lr"], batch_size=s["batch_size"],
+                         clip=s["clip"], quantiles=QUANTILES["bilstm"], seed=7,
+                         objective_fn=objective_fn(arrays), point_index=1,
+                         on_checkpoint=lambda st, got=got: got.append(st["epoch"]),
+                         checkpoint_every_s=every)
+        assert got == expected
 
 
 def test_a_state_can_be_resumed_from_twice_with_the_same_result(arrays):
@@ -134,7 +200,7 @@ def job_files(folder: Path, arrays: dict, step: str, budget: dict, ckpt: Path | 
            "tune_scope": "val", "mean_k": 0.788, "meta": {"indirect": META},
            "files": {"indirect": {"path": "data_indirect.npz", "sha256": sha}}}
     if ckpt is not None:
-        job["resume"] = {"dir": str(ckpt), "trust": True,
+        job["resume"] = {"dir": str(ckpt), "trust": True, "fit_interval_s": 0,
                          "identity": {"run_id": "test", "step": step, "mode": "smoke",
                                       "fingerprint": "abc"}}
     neural_job.write_json(folder / neural_job.JOB_FILE, job)

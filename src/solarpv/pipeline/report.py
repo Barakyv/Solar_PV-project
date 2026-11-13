@@ -81,11 +81,13 @@ def steps_table(ctx: Context) -> pd.DataFrame:
                      "fingerprint": rec["fingerprint"][:12], "duration_s": rec["duration_s"],
                      "budget": json.dumps(budget, sort_keys=True) if budget else "",
                      "n_outputs": len(rec["outputs"]), "n_warnings": len(rec.get("warnings")
-                                                                          or [])})
+                                                                          or []),
+                     "n_resumed": len((rec.get("notes") or {}).get("resumed") or [])})  # §23
     for step in ctx.failed:
         if step not in ctx.completed:
             rows.append({"step": step, "status": "failed", "commit": "", "fingerprint": "",
-                         "duration_s": np.nan, "budget": "", "n_outputs": 0, "n_warnings": 0})
+                         "duration_s": np.nan, "budget": "", "n_outputs": 0, "n_warnings": 0,
+                         "n_resumed": 0})
     return pd.DataFrame(rows)
 
 
