@@ -836,6 +836,18 @@ SHORT_TITLE = {
     "R-G1-24": "promote refusal names no file",
     "R-G1-25": "an adopted folder of another run",
     "R-G1-26": "what a failure in test leaves behind",
+    "R-G1-27": "dropout replay in order, not the real batches",
+    "R-G1-28": "a held file stops a checkpoint write",
+    "R-G1-29": "an adopted step keeps its checkpoints",
+    "R-G1-30": "a damaged manifest or unit fails every resume",
+    "R-G1-31": "the identity holds no software or GPU",
+    "R-G1-32": "a resumed xgb step shows no warning",
+    "R-G1-33": "the cost of a write per epoch not measured",
+    "R-G1-34": "a tab inside an errata row",
+    "R-G1-35": "no lock on a checkpoint folder",
+    "R-G1-36": "only the latest environment is kept",
+    "R-G1-37": "wording left behind by the 60 s rule",
+    "R-G1-38": "the 60 s wording can be misread",
 }
 SEVERITY_ORDER = {"blocking": 0, "should fix": 1, "note": 2}
 SEVERITY_COLOUR = {"blocking": "red", "should fix": "orange", "note": "sky"}
@@ -884,7 +896,7 @@ def s09_external_review():
     order = sorted(comments, key=lambda c: (SEVERITY_ORDER[c["severity"]], c["id"]))
     unknown = [c["id"] for c in comments if c["id"] not in SHORT_TITLE]
     assert not unknown, f"add a short title for {unknown}"
-    fig, ax = subplots(height=6.4, width=7.8)
+    fig, ax = subplots(height=1.2 + 0.235 * len(order), width=7.8)
     for y, c in enumerate(order):
         x = DISPOSITIONS.index(c["disposition"])
         ax.scatter([x], [y], s=70, color=C[SEVERITY_COLOUR[c["severity"]]], edgecolor="black",
