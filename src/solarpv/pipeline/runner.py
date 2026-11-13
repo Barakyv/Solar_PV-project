@@ -34,8 +34,9 @@ from solarpv.pipeline.steps import IMPLEMENTED, Context, RunnerError
 
 RUNS_DIR = OUTPUTS_DIR / "runs"
 # the budget of each model step (one budget per step, X27)
-BUDGET_FAMILY = {"xgb": "xgb", "bilstm": "bilstm", "tft96": "tft96", "tft168": "tft168",
-                 "tftbase": "tftbase", "patchtst": "patchtst"}
+BUDGET_FAMILY = {"xgb": "xgb", "cv": "xgb", "ablation": "xgb", "bilstm": "bilstm",
+                 "tft96": "tft96", "tft168": "tft168", "tftbase": "tftbase",
+                 "patchtst": "patchtst"}
 
 
 def _now() -> datetime:
@@ -132,7 +133,7 @@ def scale_dev_to_final(step: str, dev_folder: Path) -> tuple[float, float]:
     that every trial takes as long as the longest dev trial."""
     record = read_json(dev_folder / "step.json")
     dev_budget = (record.get("config") or {}).get("budget")
-    final_budget = BUDGETS["final"].get(step)
+    final_budget = BUDGETS["final"].get(BUDGET_FAMILY.get(step, step))  # X72: cv and ablation
     ratio = fits(step, final_budget) / fits(step, dev_budget) if final_budget else 1.0
     upper = ratio
     curves = dev_folder / "learning_curves.csv"

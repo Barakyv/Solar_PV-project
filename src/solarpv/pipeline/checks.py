@@ -258,6 +258,26 @@ def checkout_problem(cwd: Path | None = None) -> str | None:
             f"{REPO_ROOT} (X55)")
 
 
+# D-36: after the tag `g1-frozen` only code that reads the frozen outputs of a finished final run
+# may change; any other path reopens G-1
+AFTER_TAG_ALLOWED = ("src/solarpv/figures/", "scripts/make_", "notebooks/", "docs/", "tests/",
+                     "outputs/", ".claude/", "PROJECT_MASTER.md", "CLAUDE.md")
+
+
+def after_tag_problems(paths: list[str]) -> list[str]:
+    """The paths of a diff between the tag and HEAD that D-36 does not allow."""
+    return [p for p in paths if not p.replace("\\", "/").startswith(AFTER_TAG_ALLOWED)]
+
+
+def after_tag_changes(base: str = FROZEN_TAG, head: str = "HEAD") -> list[str]:
+    """Files changed between the tag and `head` that D-36 does not allow (empty: G-1 stays
+    closed). Raises when the tag does not exist."""
+    out = _git("diff", "--name-only", f"{base}..{head}")
+    if out.returncode != 0:
+        raise RuntimeError(f"git diff {base}..{head} failed: {out.stderr.strip()[:200]}")
+    return after_tag_problems(out.stdout.split())
+
+
 def git_state() -> dict:
     """`tree_clean`: no tracked file modified anywhere, and no untracked file in the code paths
     (`git_commit()` not '+dirty'). Untracked outputs, such as the folders of earlier runs, do not

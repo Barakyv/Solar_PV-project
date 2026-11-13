@@ -95,6 +95,12 @@ STEPS = (
              "truth table, MEAN_DAYTIME_K", "predictions_<reference>.csv", "W1"),
     StepSpec("xgb", "9/10", "XGB-Opt", "CPU", "tables, model_inputs.json",
              "predictions, training logs, study", "W2"),
+    StepSpec("cv", "11", "S-38: the xgb models on five expanding date folds of the train rows "
+             "(v6 §12.2, D-36)", "CPU", "the xgb step's records, the train tables",
+             "cv_folds.csv, cv_summary.csv", "W6"),
+    StepSpec("ablation", "11", "S-41: the xgb models refitted without one feature group at a "
+             "time (v6 §12.5, D-36)", "CPU", "the xgb step's records, the tables",
+             "ablation_results.csv, ablation_summary.csv, forecasts", "W6"),
     StepSpec("bilstm", "9/10", "BiLSTM-Opt", "GPU", "sequence datasets (W3)",
              "predictions, training logs, study", "W4"),
     StepSpec("tft96", "9/10", "TFT with a 96-hour encoder", "GPU", "sequence datasets (W3)",

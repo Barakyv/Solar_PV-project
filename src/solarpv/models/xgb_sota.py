@@ -458,21 +458,33 @@ class Mos:
         return {"a_kw": self.a, "b": self.b, "n_oof": self.n_oof, "folds": self.folds}
 
 
+def oof_folds(table: pd.DataFrame, target: str, feats: list[str], params: dict, seed: int,
+              constraints: dict[str, int], n_rounds: int, scope: pd.Series,
+              usable: pd.Series, what: str = "the out-of-fold fits"):
+    """The out-of-fold loop, one implementation for the L-09 correction and the CV step (X68):
+    for each of the five expanding date folds of `scope`, the model (its parameters, seed,
+    constraints and rounds, fixed; no early stopping) is fitted on the fold's fit rows and
+    predicts the fold's held rows (the `usable` rows of the held block). Yields
+    (fold, fit rows, held rows, raw prediction on the held rows, in the training unit)."""
+    y = table[TARGET_COLUMN[target]]
+    fit_all = scope & fit_mask(table, target)
+    for i, (fold_fit, fold_held) in enumerate(mos_folds(table, scope)):
+        rows, held = fold_fit & fit_all, fold_held & usable
+        if not rows.any() or not held.any():
+            raise ValueError(f"{target}: fold {i} of {what} has no fit or held rows")
+        booster = fit_fixed(table.loc[rows, feats], y[rows], params, seed, constraints, n_rounds)
+        yield i, rows, held, predict(booster, table.loc[held, feats], n_rounds)
+
+
 def fit_mos(table: pd.DataFrame, target: str, feats: list[str], params: dict, seed: int,
             constraints: dict[str, int], n_rounds: int, scope: pd.Series) -> Mos:
     """Out-of-fold kW predictions of the base model (its parameters, seed, constraints and
     rounds, fixed; no early stopping) on the date folds of `scope`, then OLS (§14.4). Only train
     rows enter: neither the features nor the labels of validation are used (A-14)."""
-    y = table[TARGET_COLUMN[target]]
-    fit_all = scope & fit_mask(table, target)
-    usable = mos_rows(table)
     preds, truth, folds = [], [], []
-    for i, (fold_fit, fold_held) in enumerate(mos_folds(table, scope)):
-        rows, held = fold_fit & fit_all, fold_held & usable
-        if not rows.any() or not held.any():
-            raise ValueError(f"{target}: fold {i} of the L-09 correction has no fit or held rows")
-        booster = fit_fixed(table.loc[rows, feats], y[rows], params, seed, constraints, n_rounds)
-        pred = predict(booster, table.loc[held, feats], n_rounds)
+    for i, rows, held, pred in oof_folds(table, target, feats, params, seed, constraints,
+                                         n_rounds, scope, mos_rows(table),
+                                         what="the L-09 correction"):
         preds.append(to_kw(target, pred, table.loc[held, "theo_kw"].to_numpy()))
         truth.append(table.loc[held, TRUTH_KW].to_numpy(float))
         folds.append({"fold": i, "fit_rows": int(rows.sum()), "held_rows": int(held.sum())})

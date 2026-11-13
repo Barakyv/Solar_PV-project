@@ -27,6 +27,7 @@ outputs/**/lightning_logs/
 # temporary folders are not
 /outputs/runs/**/predictions_*.csv
 /outputs/runs/**/uncorrected_*.csv
+/outputs/runs/**/ablation_forecasts_seed*.csv
 /outputs/runs/**/.*.tmp/
 # the neural steps (stage-9 plan §18): the job arrays and the worker's forecast arrays and
 # quantile files are bulky; the records, curves, trials, configs and figures are committed

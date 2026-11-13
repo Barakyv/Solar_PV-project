@@ -21,7 +21,9 @@ from solarpv.figures.s09_models import NDEV, QUANTILE_STEPS
 
 MODULE = "src/solarpv/evaluation/quantiles.py"
 WRITER = "src/solarpv/pipeline/neural.py"  # writes the raw quantile columns
-NAMES_ONLY = ("src/solarpv/pipeline/report.py",)  # lists the file names, reads no value
+NAMES_ONLY = ("src/solarpv/pipeline/report.py",  # list the file names, read no value
+              "src/solarpv/figures/s09_w6.py")
+BYTES_ONLY = ("scripts/g1_audit.py",)  # hashes the files' bytes (G-1 smoke comparison), no value
 # a quantile file name ("quantiles_<model>...") or a quantile column label ("q0.1", f"q{level}")
 USES_QUANTILES = re.compile(r"""quantiles_|["']q0\.\d|f["']q\{""")
 IMPORTS_MODULE = re.compile(r"evaluation(\.| import )quantiles")
@@ -34,7 +36,7 @@ def sources() -> dict[str, str]:
 
 def unsorted_readers(files: dict[str, str]) -> list[str]:
     """Files that use quantiles without the sorting module and are not allowed to."""
-    allowed = {MODULE, WRITER, *NAMES_ONLY}
+    allowed = {MODULE, WRITER, *NAMES_ONLY, *BYTES_ONLY}
     return sorted(name for name, text in files.items()
                   if name not in allowed and USES_QUANTILES.search(text)
                   and not IMPORTS_MODULE.search(text))
@@ -72,6 +74,15 @@ def test_the_report_only_lists_quantile_file_names():
         hits = [m.start() for m in re.finditer("quantiles_", flat)]
         assert all("startswith" in flat[max(0, i - 120):i] for i in hits), \
             f"{name} must only filter by name"
+
+
+def test_the_audit_script_only_hashes_quantile_files():
+    """W6: `scripts/g1_audit.py` compares the forecast files of two smoke runs byte for byte;
+    it must name the quantile files only in a glob and never parse them."""
+    for name in BYTES_ONLY:
+        text = sources()[name]
+        assert len(re.findall("quantiles_", text)) == 1 and '"quantiles_*.csv"' in text, name
+        assert "read_bytes" in text and not re.search(r"read_csv\([^)]*quantiles", text), name
 
 
 def _merged(step: str, model: str) -> pd.DataFrame:

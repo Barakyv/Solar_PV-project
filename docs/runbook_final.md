@@ -67,7 +67,7 @@ python -m solarpv.pipeline run --mode final --to report --keep-going
 run and prints its id; every later one resumes it:
 
 ```
-python -m solarpv.pipeline run --mode final --only select,baselines,xgb
+python -m solarpv.pipeline run --mode final --only select,baselines,xgb,cv,ablation
 python -m solarpv.pipeline run --mode final --resume <run_id> --only bilstm
 python -m solarpv.pipeline run --mode final --resume <run_id> --only tft96
 python -m solarpv.pipeline run --mode final --resume <run_id> --only tft168
@@ -81,7 +81,9 @@ After every segment:
 ## 4. The stage-10 acceptance (between the phases)
 
 Read `outputs/runs/<run_id>/report/report.md` before any test number exists:
-- every step completed, at one commit, the tagged one;
+- every step completed, at one commit, the tagged one: compare the steps of the report with
+  `python -m solarpv.pipeline list` (X74), so that a segment run did not skip `cv` or `ablation`
+  (`promote` would refuse the run only at the end);
 - the warnings of §3.5 read and explained (a warning is not a failure; it goes to the run
   journal);
 - the XGB seed spread in kW below 0.15 pp at every target × horizon (the stage-10 rule, read

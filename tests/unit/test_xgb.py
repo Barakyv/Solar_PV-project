@@ -100,10 +100,9 @@ def tables():
     return build_tables()
 
 
-@pytest.fixture
-def wired(tmp_path, monkeypatch, tables):
+def wire(tmp_path, monkeypatch, tables):
     """The synthetic tables, inputs and decision wired into the runner instead of the real
-    files."""
+    files (one function, so that a module-scoped fixture can use it too, T-100)."""
     base, gfs = tables
     (tmp_path / "06_features").mkdir()
     (tmp_path / "06b_gfs").mkdir()
@@ -139,6 +138,11 @@ def wired(tmp_path, monkeypatch, tables):
     return SimpleNamespace(tmp=tmp_path, base=base, gfs=gfs, decision=decision, mos=mos,
                            inputs={k: v["features"] for k, v in inputs.items()},
                            truth_file=truth_file)
+
+
+@pytest.fixture
+def wired(tmp_path, monkeypatch, tables):
+    return wire(tmp_path, monkeypatch, tables)
 
 
 def fake_report(mode):

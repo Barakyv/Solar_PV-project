@@ -60,7 +60,8 @@ def report_inputs(ctx: Context) -> list[Path]:
         for name in rec["outputs"]:
             if name.endswith((".csv", ".json")) and not name.startswith(("predictions_",
                                                                          "uncorrected_",
-                                                                         "quantiles_")):
+                                                                         "quantiles_",
+                                                                         "ablation_forecasts_")):
                 paths.append(record_file(ctx, step, name))
     return paths
 
@@ -290,6 +291,19 @@ def g1_points(src: Sources, fits: pd.DataFrame, studies: pd.DataFrame) -> pd.Dat
     return pd.DataFrame(rows, columns=["point", "subject", "fact"])
 
 
+def analysis_tables(src: Sources) -> dict[str, pd.DataFrame]:
+    """The summaries of the steps `cv` (S-38) and `ablation` (S-41), and their test values from
+    the step `test`, each read from its file with its hash (X73, M31)."""
+    out = {}
+    for key, step, name in (("cv", "cv", "cv_summary.csv"),
+                            ("ablation", "ablation", "ablation_summary.csv"),
+                            ("cv_vs_test", "test", "analyses/cv_vs_test.csv"),
+                            ("ablation_test", "test", "analyses/ablation_test_summary.csv")):
+        if src.has(step, name):
+            out[key] = src.csv(step, name)
+    return out
+
+
 def explain_tables(src: Sources) -> dict[str, pd.DataFrame]:
     """The highlights of `explain`: the top three SHAP features and the group shares per
     booster, the TFT same-hour attention ratio, the most important hyper-parameter per study."""
@@ -378,6 +392,17 @@ def markdown(ctx: Context, tables: dict[str, pd.DataFrame], sources: dict[str, s
         lines += _md_table(tables["hparam_top"], ["step", "target", "horizon", "param",
                                                   "importance_mean", "importance_std",
                                                   "n_complete", "all_in_startup"], 2)
+    if "cv" in tables:
+        lines += ["", "## Cross-validation of the xgb models on the train rows (S-38, nRMSE in "
+                  "kW, mean and std over five folds)", ""]
+        lines += _md_table(tables["cv"], ["target", "horizon", "seed", "cv_mean", "cv_std",
+                                          "validation_uncorrected", "validation_minus_cv_pp"], 2)
+    if "ablation" in tables:
+        lines += ["", "## Feature-group ablation of the xgb models (S-41, delta of nRMSE in kW "
+                  "against the full fit, pp)", ""]
+        lines += _md_table(tables["ablation"], ["target", "horizon", "mode", "n_seeds",
+                                                "mean_delta_pp", "std_delta_pp", "margin_pp",
+                                                "verdict"], 3)
     lines += ["", "## Points for the G-1 list (facts, no verdict)", ""]
     lines += _md_table(tables["g1_points"], ["point", "subject", "fact"])
     if problems:
@@ -400,6 +425,7 @@ def run_report(ctx: Context) -> Result:
     tables["warnings"] = match_warnings(ctx, recomputed, spread)
     tables["g1_points"] = g1_points(src, fits, studies)
     tables.update(explain_tables(src))
+    tables.update(analysis_tables(src))
     problems = spread_check(ctx, spread)
     files = [{"step": s, "file": n} for s in NEURAL for n in
              ctx.completed.get(s, {}).get("outputs", {}) if n.startswith(("quantiles_",

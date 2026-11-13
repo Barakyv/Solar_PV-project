@@ -599,7 +599,10 @@ def run_evaluate(ctx: Context) -> Result:
 
 
 def testsplit_inputs(ctx: Context) -> list[Path]:
-    return [FEATURES_FILE, DERIVED_CONSTANTS_FILE, *prediction_files(ctx)[0]]
+    from solarpv.pipeline import analyses
+
+    return [FEATURES_FILE, DERIVED_CONSTANTS_FILE, *prediction_files(ctx)[0],
+            *analyses.phase2_inputs(ctx)]
 
 
 def run_testsplit(ctx: Context) -> Result:
@@ -639,6 +642,12 @@ def run_testsplit(ctx: Context) -> Result:
 
         shap_out, access = explain.xgb_shap_test(ctx, window)
         outputs += shap_out
+        values["test_access"] += access
+    if "cv" in ctx.completed or "ablation" in ctx.completed:  # S-38, S-41 on the test window
+        from solarpv.pipeline import analyses
+
+        extra, access = analyses.phase2_tables(ctx, window)
+        outputs += extra
         values["test_access"] += access
     return Result(outputs, values=values, summary=summary)
 
@@ -692,6 +701,8 @@ IMPLEMENTED = {
     "select": _lazy("select_step", "select_inputs", "run_select"),
     "baselines": Implementation(baselines_inputs, run_baselines),
     "xgb": Implementation(xgb_inputs, run_xgb),
+    "cv": _lazy("analyses", "analysis_inputs", "run_cv"),
+    "ablation": _lazy("analyses", "analysis_inputs", "run_ablation"),
     **{s: _neural_step(s) for s in ("bilstm", "tft96", "tft168", "tftbase", "patchtst")},
     "evaluate": Implementation(evaluate_inputs, run_evaluate),
     "explain": _lazy("explain", "explain_inputs", "run_explain"),

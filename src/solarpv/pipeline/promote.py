@@ -2,7 +2,8 @@
 the paths of §6.10 (X8 of docs/stage9_plan.md, §19.7).
 
 Refused unless the run is a complete final run of the whole v6 scope (X39): every model step,
-`select`, `evaluate`, `explain`, `report` and the second-phase step `test` (D-32) completed,
+`cv`, `ablation` (D-36), `select`, `evaluate`, `explain`, `report` and the second-phase step
+`test` (D-32) completed,
 every step at one commit that carries the tag `g1-frozen`, none `+dirty`, and every output as
 recorded. It never overwrites an existing file unless `--replace`, which moves the old file aside.
 It copies, for every model of the run:
@@ -11,6 +12,8 @@ It copies, for every model of the run:
   outputs/06_<model>/models/                              boosters and checkpoints
   outputs/06_xgb_sota/shap/shap_<target>_D<h>.csv         feature, shap_importance (mean |SHAP|
                                                           on test, booster unit, mean over seeds)
+  outputs/06_xgb_sota/analysis/                           the tables of the steps cv and ablation
+                                                          and their test values (S-38, S-41)
 and writes `outputs/06_promoted.json` with the source run and the SHA-256 of every file.
 """
 
@@ -30,7 +33,12 @@ from solarpv.pipeline import checks
 from solarpv.pipeline.config import FROZEN_TAG, MODEL_STEPS, TARGETS
 from solarpv.pipeline.runner import completed_records, outputs_intact, read_json
 
-REQUIRED = (*MODEL_STEPS, "select", "evaluate", "explain", "report", "test")
+REQUIRED = (*MODEL_STEPS, "cv", "ablation", "select", "evaluate", "explain", "report", "test")
+ANALYSIS_FILES = {"cv": ("cv_folds.csv", "cv_summary.csv", "cv_config.json"),
+                  "ablation": ("ablation_results.csv", "ablation_modes.csv",
+                               "ablation_summary.csv", "ablation_config.json")}
+ANALYSIS_TEST = ("analyses/cv_vs_test.csv", "analyses/ablation_test.csv",
+                 "analyses/ablation_test_summary.csv")
 PRED = re.compile(r"^predictions_(?P<model>.+?)(?:_seed(?P<seed>\d+))?\.csv$")
 MANIFEST_NAME = "06_promoted.json"
 
@@ -85,6 +93,14 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
                 model = {"xgb": "xgb_sota"}.get(step) or _neural_model(step)
                 copies.append((out_root / f"06_{model}" / "models" / Path(name).name,
                                folder / name))
+    for step, names in ANALYSIS_FILES.items():  # X73: the tables of S-38 and S-41
+        for name in names:
+            copies.append((out_root / "06_xgb_sota" / "analysis" / name,
+                           run_dir / records[step]["folder"] / name))
+    for name in ANALYSIS_TEST:
+        source = run_dir / records["test"]["folder"] / name
+        if source.exists():
+            copies.append((out_root / "06_xgb_sota" / "analysis" / Path(name).name, source))
     shap_file = run_dir / records["test"]["folder"] / "shap_test" / "xgb_shap_features_test.csv"
     if shap_file.exists():
         shap = pd.read_csv(shap_file)

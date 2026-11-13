@@ -584,7 +584,13 @@ def complete_final_run(root):
             (folder / "models" / "xgb_sota_indirect_D1_seed42.ubj").write_bytes(b"b")
             outputs["models/xgb_sota_indirect_D1_seed42.ubj"] = sha256(
                 folder / "models" / "xgb_sota_indirect_D1_seed42.ubj")
+        for name in promote.ANALYSIS_FILES.get(step, ()):  # S-38, S-41 (D-36, X73)
+            (folder / name).write_text("a\n1\n", encoding="utf-8")
+            outputs[name] = sha256(folder / name)
         if step == "test":
+            (folder / "analyses").mkdir()
+            for name in promote.ANALYSIS_TEST:
+                (folder / name).write_text("a\n1\n", encoding="utf-8")
             (folder / "test").mkdir()
             pd.DataFrame({"model": ["xgb_sota", "persistence"], "seed": [42, -1],
                           "target": "direct", "horizon": 1, "nRMSE_kW_pct": [6.0, 9.0]}
@@ -617,6 +623,9 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
     assert "06_xgb_sota/predictions_xgb_sota_seed42.csv" in files
     assert "06_xgb_sota/metrics_xgb_sota_seed42.csv" in files
     assert "06_xgb_sota/models/xgb_sota_indirect_D1_seed42.ubj" in files
+    for name in ("cv_summary.csv", "ablation_summary.csv", "cv_vs_test.csv",
+                 "ablation_test_summary.csv"):  # X73: the tables of S-38 and S-41
+        assert f"06_xgb_sota/analysis/{name}" in files, name
     shap = pd.read_csv(out / "06_xgb_sota" / "shap" / "shap_direct_D1.csv")
     assert list(shap.columns[:2]) == ["feature", "shap_importance"]
     metrics = pd.read_csv(out / "06_persistence" / "metrics_persistence.csv")
@@ -638,3 +647,10 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
     (run2 / "run.json").write_text(json.dumps(state), encoding="utf-8")
     with pytest.raises(promote.PromoteError, match="not complete"):
         promote.plan(run2, out, check_tag=False)
+    for step in ("cv", "ablation"):  # D-36: a final run without them is not the v6 scope
+        run3 = complete_final_run(tmp_path / f"no_{step}")
+        state = read(run3 / "run.json")
+        del state["steps"][step]
+        (run3 / "run.json").write_text(json.dumps(state), encoding="utf-8")
+        with pytest.raises(promote.PromoteError, match=f"not complete.*{step}"):
+            promote.plan(run3, out, check_tag=False)
