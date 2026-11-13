@@ -585,7 +585,7 @@ HORIZON_STYLE = {1: ("o", "-"), 2: ("s", "--"), 3: ("^", ":")}  # XGB is black i
     "How much does the error of the XGB models vary between five expanding date folds of the "
     "train rows, and how does it compare with their validation value?",
     "nRMSE in kW (% of 3,449 kW) of each of the five folds of the stage-7 expanding-window split "
-    "(3-day gap) for each target and horizon, seed {seed}; the model of the development run "
+    "(3-day gap) for each target and horizon, one seed; the model of the development run "
     "refitted on the fold's earlier days with its rounds fixed, scored on the fold's daytime hours "
     "with AC truth. Right of each panel: the validation value of the same model (its "
     "early-stopping set, raw forecast). XGB only: S-38 is a v6 analysis of XGB-Opt.",
@@ -654,9 +654,9 @@ def _mode_label(mode: str) -> str:
     "removed and the model is refitted?",
     "For each target and horizon, the change in nRMSE in kW (pp) of the model refitted without "
     "one feature group of the contract (and without all measured history, and with only the "
-    "time encodings), against the full model of the development run, seed {seed}. Bars right of "
+    "time encodings), against the full model of the development run, one seed. Bars right of "
     "zero: removing the group raises the error (hatched red); the dotted lines are the registered "
-    "margin of {margin:.2f} pp (with one seed, the floor). XGB only: S-41 is a v6 analysis of "
+    "margin (with one seed, its floor). XGB only: S-41 is a v6 analysis of "
     "XGB-Opt.",
     "Removing the GFS forecasts raises the error by {nwp_lo:.2f}–{nwp_hi:.2f} pp in every case "
     "and is the largest change of any single group; with only the time encodings the error is "
@@ -876,8 +876,8 @@ def _review_comments() -> list[dict]:
     "All {n_serious} blocking and should-fix comments were fixed in code with a test and an "
     "errata row; {n_docs} comments were answered by correcting the documents, {n_test} by a test "
     "and {n_expl} by an explanation. {n_open} are unanswered.",
-    "The evidence of the gate is repeated at the commit that is tagged (D-36), and the "
-    "reproduction from the raw data runs once more at it.",
+    "The reproduction from the raw data, the full suite, the smoke run and the audit were "
+    "repeated at the final candidate; the tag waits for the user's approval.",
     (REVIEW_LOG,))
 def s09_external_review():
     comments = _review_comments()
