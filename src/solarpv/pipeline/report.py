@@ -74,6 +74,8 @@ def report_inputs(ctx: Context) -> list[Path]:
 def steps_table(ctx: Context) -> pd.DataFrame:
     rows = []
     for step, rec in ctx.completed.items():
+        if step == ctx.step:  # a forced rerun does not list its own earlier record (R-G1-18)
+            continue
         budget = (rec.get("config") or {}).get("budget")
         rows.append({"step": step, "status": rec["status"], "commit": rec["commit"],
                      "fingerprint": rec["fingerprint"][:12], "duration_s": rec["duration_s"],

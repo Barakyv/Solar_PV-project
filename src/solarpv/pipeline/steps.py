@@ -53,6 +53,7 @@ class RunnerError(RuntimeError):
 
 
 ACCEPTANCE_FILE = "stage10_acceptance.md"  # D-32, X51: written after reading the report
+TEST_TRUTH_FILE = "truth_test.csv"  # R-G1-16: the truth of the test rows, written by the step test
 
 
 @dataclass
@@ -621,14 +622,23 @@ def check_acceptance_binding(ctx: Context, acceptance: Path, files: list[Path]) 
         raise RunnerError(f"the step test would score prediction files that the run's evaluate "
                           f"did not score on validation: {names}; rerun evaluate and the report, "
                           "read them, and write the acceptance again (R-G1-03)")
+    finished = {s: datetime.fromisoformat(rec["finished_utc"])
+                for s, rec in ctx.completed.items()
+                if s not in (TEST_STEP, REPORT_STEP) and rec.get("finished_utc")}
     accepted = datetime.fromtimestamp(acceptance.stat().st_mtime, UTC)
-    later = sorted(s for s, rec in ctx.completed.items()
-                   if s not in (TEST_STEP, REPORT_STEP) and rec.get("finished_utc")
-                   and datetime.fromisoformat(rec["finished_utc"]) > accepted)
+    later = sorted(s for s, t in finished.items() if t > accepted)
     if later:
         raise RunnerError(f"{later} finished after the stage-10 acceptance was written: the "
                           "acceptance judged an earlier state; read the report and write it "
                           "again (R-G1-03)")
+    # R-G1-15: the report the acceptance read was written after every step it reports on; a
+    # report of an earlier phase-2 invocation (after the acceptance) passes
+    report = ctx.completed["report"].get("finished_utc")
+    newer = sorted(s for s, t in finished.items()
+                   if report and t > datetime.fromisoformat(report))
+    if newer:
+        raise RunnerError(f"the report is older than {newer}: rerun the report, read it, and "
+                          "write the acceptance again (R-G1-15)")
 
 
 def run_testsplit(ctx: Context) -> Result:
@@ -660,6 +670,11 @@ def run_testsplit(ctx: Context) -> Result:
                        log=ctx.log, command=f"{ctx.command} [step test: score the test split]",
                        record_dir=ctx.run_dir / "test" / "test")
     outputs = sorted(out.glob("*.csv")) + [out / "manifest.json"]
+    # R-G1-16: the truth of the test rows, for the promoted prediction files of §6.10 (phase 1
+    # wrote them blank); this step read it from the feature table, logged by E.run above
+    is_test = truth["split"] == "test"
+    outputs.append(_write_csv(truth.loc[is_test, ["indirect", "direct"]].rename_axis("timestamp")
+                              .reset_index(), ctx.out / TEST_TRUTH_FILE))
     summary = benchmark_lines(out / "benchmark_summary.csv", window)
     values = {"files_scored": [f.name for f in files], "models_missing": missing,
               "rows_benchmark": len(tables["benchmark_summary"]), "test_access": [],

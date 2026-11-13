@@ -415,13 +415,22 @@ class Runner:
             return f"refused ({exc})", []  # the step's state is left as it was
         commit = git_commit()
         fp = fingerprint(step, mode, cfg, commit, inputs)
-        if step in completed and not force:
+        # D-32, R-G1-14: the test split is scored once; `--force` does not replace a completed
+        # step `test` (a phase-2 retry after a failed `report` would otherwise score it again)
+        scored_once = step == TEST_STEP and step in completed
+        if step in completed and (not force or scored_once):
             record = completed[step]
             intact = outputs_intact(run_dir, record)
             tmp.rmdir()
             if record["fingerprint"] == fp and intact and not commit.endswith("+dirty"):
                 log.note(f"{step}: up to date (fingerprint {fp[:12]}), skipped")
                 return "skipped (up to date)", record.get("summary", [])
+            if scored_once:
+                reason = ("the test split is scored once and --force does not replace it (D-32); "
+                          "the step test of this run was completed with other code, inputs or "
+                          "outputs")
+                log.warn(f"{step}: {reason}")
+                return f"refused ({reason})", []
             reason = ("its outputs were modified" if not intact
                       else "it ran from uncommitted code (+dirty), which a resume does not "
                            "trust" if commit.endswith("+dirty")

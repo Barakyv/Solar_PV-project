@@ -1403,7 +1403,7 @@ python scripts/make_features_notebook.py
 python -m solarpv.nwp.download               # about 26 GB of transfer, resumable; --recheck
 python -m solarpv.nwp.gfs
 python -m solarpv.nwp.check                  # writes configs/nwp_decision.yaml (committed)
-python -m solarpv.evaluation.evaluate        # validation; the test needs --allow-test
+python -m solarpv.evaluation.evaluate        # validation; the test split is scored by the step `test` of a final run (D-32)
 python -m solarpv.evaluation.evaluate --fixture
 python -m solarpv.selection.run --skip-validation   # about 95 min on 8 threads; writes configs/k_history_decision.yaml
 python -m solarpv.selection.run --validation-only   # the one validation look; writes model_inputs.json

@@ -7,7 +7,9 @@ Refused unless the run is a complete final run of the whole v6 scope (X39): ever
 every step at one commit that carries the tag `g1-frozen`, none `+dirty`, and every output as
 recorded. It never overwrites an existing file unless `--replace`, which moves the old file aside.
 It copies, for every model of the run:
-  outputs/06_<model>/predictions_<model>[_seedN].csv      the run's prediction files
+  outputs/06_<model>/predictions_<model>[_seedN].csv      the run's prediction files, with the
+                                                          y_true of the test rows (phase 1 wrote
+                                                          it blank) from the step test (R-G1-16)
   outputs/06_<model>/metrics_<model>[_seedN].csv          its rows of the test benchmark
   outputs/06_<model>/models/                              boosters and checkpoints
   outputs/06_xgb_sota/shap/shap_<target>_D<h>.csv         feature, shap_importance (mean |SHAP|
@@ -32,6 +34,7 @@ from solarpv.config.provenance import sha256
 from solarpv.pipeline import checks
 from solarpv.pipeline.config import FROZEN_TAG, MODEL_STEPS, TARGETS
 from solarpv.pipeline.runner import completed_records, outputs_intact, read_json
+from solarpv.pipeline.steps import TEST_TRUTH_FILE
 
 REQUIRED = (*MODEL_STEPS, "cv", "ablation", "select", "evaluate", "explain", "report", "test")
 ANALYSIS_FILES = {"cv": ("cv_folds.csv", "cv_summary.csv", "cv_config.json"),
@@ -81,7 +84,14 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
         if not outputs_intact(run_dir, rec):
             raise PromoteError(f"{step}: outputs differ from its record")
     copies: list[tuple[Path, Path | pd.DataFrame]] = []
-    bench = pd.read_csv(run_dir / records["test"]["folder"] / "test" / "benchmark_summary.csv")
+    test_folder = run_dir / records["test"]["folder"]
+    bench = pd.read_csv(test_folder / "test" / "benchmark_summary.csv")
+    truth_file = test_folder / TEST_TRUTH_FILE  # R-G1-16: phase 1 wrote the test y_true blank
+    if not truth_file.exists():
+        raise PromoteError(f"the step test wrote no {TEST_TRUTH_FILE}: the prediction files of "
+                           "§6.10 cannot get the truth of their test rows")
+    test_truth = pd.read_csv(truth_file)
+    test_truth.index = pd.DatetimeIndex(pd.to_datetime(test_truth.pop("timestamp"), utc=True))
     for step in MODEL_STEPS:
         folder = run_dir / records[step]["folder"]
         for name in sorted(records[step]["outputs"]):
@@ -89,7 +99,8 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
             if m:
                 model, seed = m["model"], m["seed"]
                 dest = out_root / f"06_{model}"
-                copies.append((dest / name, folder / name))
+                copies.append((dest / name, with_test_truth(folder / name, test_truth,
+                                                            run_dir)))
                 rows = bench[(bench["model"] == model)
                              & (bench["seed"] == (int(seed) if seed else -1))]
                 metrics = name.replace("predictions_", "metrics_")
@@ -120,6 +131,26 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
     return copies
 
 
+def with_test_truth(source: Path, truth: pd.DataFrame, run_dir: Path) -> Path | pd.DataFrame:
+    """R-G1-16: a prediction file of phase 1 has a blank `y_true` on its test rows (D-32). The
+    promoted copy of §6.10 gets it from the truth the step `test` wrote (a read it logged); every
+    other cell is the file's own. A file without such rows is copied unchanged."""
+    frame = pd.read_csv(source)
+    if not {"timestamp", "target", "split", "y_true"} <= set(frame.columns):
+        return source
+    rows = (frame["split"] == "test") & frame["y_true"].isna()
+    if not rows.any():
+        return source
+    stamps = pd.DatetimeIndex(pd.to_datetime(frame.loc[rows, "timestamp"], utc=True))
+    for target in frame.loc[rows, "target"].unique():
+        sel = (frame.loc[rows, "target"] == target).to_numpy()
+        values = truth[target].reindex(stamps[sel]).to_numpy()
+        frame.loc[frame.index[rows][sel], "y_true"] = values
+    frame.attrs["origin"] = (f"{source.relative_to(run_dir).as_posix()} with the y_true of its "
+                             f"test rows from the step test ({TEST_TRUTH_FILE})")
+    return frame
+
+
 def _neural_model(step: str) -> str:
     from solarpv.models.neural_job import STEP_MODEL
 
@@ -142,7 +173,7 @@ def promote(run_dir: Path, out_root: Path = OUTPUTS_DIR, replace: bool = False,
         target.parent.mkdir(parents=True, exist_ok=True)
         if isinstance(source, pd.DataFrame):
             source.to_csv(target, index=False, lineterminator="\n")
-            origin = "table of the run"
+            origin = source.attrs.get("origin", "table of the run")
         else:
             shutil.copyfile(source, target)
             if sha256(target) != sha256(source):

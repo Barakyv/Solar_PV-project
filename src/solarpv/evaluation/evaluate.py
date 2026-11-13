@@ -2,10 +2,10 @@
 
     python -m solarpv.evaluation.evaluate                          # validation (default)
     python -m solarpv.evaluation.evaluate --predictions a.csv b.csv  # files named explicitly
-    python -m solarpv.evaluation.evaluate --split test --allow-test  # final evaluation only
     python -m solarpv.evaluation.evaluate --fixture                # old LSTM predictions (T-15)
 
-The stage-9 runner (`python -m solarpv.pipeline`) calls `run` with the files of its own run.
+The stage-9 runner (`python -m solarpv.pipeline`) calls `run` with the files of its own run. The
+test split is scored only by the step `test` of a final run (D-32, R-G1-05), never from here.
 
 Rules:
   * predictions follow the file contract (§6.10): one row per model/seed/target/horizon/ts;
@@ -15,8 +15,9 @@ Rules:
     models are scored on the same n (E9). Strict mode is the default outside the fixture;
   * daytime = sun elevation at the middle of the hour > 5 deg (F-02), from geometry only, never
     from the truth (E3). It must equal the feature table's `daytime`;
-  * validation is the default split. The test split needs --allow-test, and every such run is
-    appended to outputs/07_evaluation/test_access_log.csv (E10);
+  * the command line scores validation. The test split is scored by the step `test` (`run` with
+    allow_test=True), and every such run is appended to outputs/07_evaluation/test_access_log.csv
+    (E10);
   * the references (persistence, climatology, clear sky x MEAN_K) are computed from the truth
     table by one code path (models.baselines). Persistence (h days, DST-safe) is the skill
     reference;
@@ -134,7 +135,10 @@ def check_alignment(preds: pd.DataFrame, truth: pd.DataFrame, split: str) -> pd.
     """Largest |y_true in the file - truth| and the split labels, per model/seed/target/horizon.
 
     A model that wrote its truth one hour late (the v6 BiLSTM bug), swapped the targets, or
-    mislabelled the split shows here. Returns one row per key with `ok`."""
+    mislabelled the split shows here. Returns one row per key with `ok`. `compared_rows` is the
+    number of rows whose truth was compared: a file whose truth is withheld (the test rows of
+    phase 1, D-32) has none, and a `max_abs_diff` of 0 then compares nothing; the writer's own
+    alignment is checked on its validation rows (R-G1-13)."""
     rows = []
     for key, g in preds.groupby(KEY, sort=True):
         target = key[2]
@@ -144,9 +148,11 @@ def check_alignment(preds: pd.DataFrame, truth: pd.DataFrame, split: str) -> pd.
         diff = float(np.max(np.abs(own[both] - ref[both]))) if both.any() else 0.0
         in_split = truth["split"].reindex(g["timestamp"]).to_numpy() == split
         rows.append({**dict(zip(KEY, key, strict=True)), "rows": len(g),
+                     "compared_rows": int(both.sum()),
                      "max_abs_diff": diff, "rows_outside_split": int((~in_split).sum()),
                      "ok": diff <= ALIGN_TOL[target] and bool(in_split.all())})
-    return pd.DataFrame(rows, columns=[*KEY, "rows", "max_abs_diff", "rows_outside_split", "ok"])
+    return pd.DataFrame(rows, columns=[*KEY, "rows", "compared_rows", "max_abs_diff",
+                                       "rows_outside_split", "ok"])
 
 
 def attach_truth(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
@@ -163,10 +169,11 @@ def attach_truth(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
 
 
 def withhold_test_truth(frame: pd.DataFrame) -> pd.DataFrame:
-    """D-32, R-G1-04: phase 1 of a final run forecasts the test window but holds no test truth.
-    The `y_true` of a test row is blank in the file; the step `test` takes the truth from the
-    feature table (`attach_truth`), where the read is logged. Alignment is checked on the
-    validation rows, which the same writer produced."""
+    """D-32, R-G1-04: phase 1 of a final run forecasts the test window but holds no test truth as
+    a label or a score. The `y_true` of a test row is blank in the file; the step `test` takes the
+    truth from the feature table (`attach_truth`), where the read is logged, and `promote` fills
+    the promoted file from it (R-G1-16). Alignment is checked on the validation rows, which the
+    same writer produced."""
     out = frame.copy()
     out.loc[out["split"] == "test", "y_true"] = np.nan
     return out

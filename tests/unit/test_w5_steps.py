@@ -583,7 +583,12 @@ def complete_final_run(root):
                                                                       neural_model(step))
             name = (f"predictions_{model}.csv" if step == "baselines"
                     else f"predictions_{model}_seed42.csv")
-            (folder / name).write_text("timestamp,y_pred\n", encoding="utf-8")
+            # phase 1 of a final run: the test rows have no y_true (R-G1-04, R-G1-16)
+            (folder / name).write_text(
+                "timestamp,y_true,y_pred,target,horizon,model,seed,split\n"
+                "2024-09-30 23:00:00+00:00,5.0,6.0,direct,1,m,42,val\n"
+                "2024-10-01 00:00:00+00:00,,7.0,direct,1,m,42,test\n"
+                "2024-10-01 01:00:00+00:00,,0.4,indirect,1,m,42,test\n", encoding="utf-8")
             outputs[name] = sha256(folder / name)
         if step == "xgb":
             (folder / "models").mkdir()
@@ -594,6 +599,10 @@ def complete_final_run(root):
             (folder / name).write_text("a\n1\n", encoding="utf-8")
             outputs[name] = sha256(folder / name)
         if step == "test":
+            pd.DataFrame({"timestamp": ["2024-10-01 00:00:00+00:00", "2024-10-01 01:00:00+00:00"],
+                          "indirect": [0.5, 0.6], "direct": [1000.0, 1200.0]}).to_csv(
+                folder / steps.TEST_TRUTH_FILE, index=False)
+            outputs[steps.TEST_TRUTH_FILE] = sha256(folder / steps.TEST_TRUTH_FILE)
             (folder / "analyses").mkdir()
             for name in promote.ANALYSIS_TEST:
                 (folder / name).write_text("a\n1\n", encoding="utf-8")
@@ -629,6 +638,11 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
     assert "06_xgb_sota/predictions_xgb_sota_seed42.csv" in files
     assert "06_xgb_sota/metrics_xgb_sota_seed42.csv" in files
     assert "06_xgb_sota/models/xgb_sota_indirect_D1_seed42.ubj" in files
+    # R-G1-16: the promoted file of §6.10 has the y_true of its test rows, from the step test
+    promoted = pd.read_csv(out / "06_xgb_sota" / "predictions_xgb_sota_seed42.csv")
+    assert promoted["y_true"].tolist() == [5.0, 1000.0, 0.6]
+    assert promoted["y_pred"].tolist() == [6.0, 7.0, 0.4]
+    assert "step test" in files["06_xgb_sota/predictions_xgb_sota_seed42.csv"]["source"]
     for name in ("cv_summary.csv", "ablation_summary.csv", "cv_vs_test.csv",
                  "ablation_test_summary.csv"):  # X73: the tables of S-38 and S-41
         assert f"06_xgb_sota/analysis/{name}" in files, name

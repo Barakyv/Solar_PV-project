@@ -116,9 +116,12 @@ aside and kept). `--allow-test` runs only these two steps. Before it scores anyt
 checks that the prediction files are those that `evaluate` scored on validation (same SHA-256)
 and that no other step finished after `stage10_acceptance.md` was written: **write the acceptance
 last, after the final phase-1 step and after reading the report**, and if any step is rerun
-afterwards, read the report again and rewrite it (R-G1-03). Phase 1 holds no test truth in any
-file (R-G1-04): the `y_true` of the test rows is blank until the step `test` takes the truth from
-the feature table. Then:
+afterwards, read the report again and rewrite it (R-G1-03). Phase 1 holds no test truth as a label
+or a score (R-G1-04, R-G1-17): the `y_true` of the test rows is blank until the step `test` takes the
+truth from the feature table and writes it to `truth_test.csv`; the encoder series and the persistence
+forecast hold observed test-period values as past inputs, as any forecast does. The report must
+be newer than every step it reports on (R-G1-15). `--force` never replaces a completed step `test`:
+the test split is scored once. Then:
 
 1. `python -m solarpv.pipeline promote <run_id>`: copies the run to the §6.10 paths
    (`outputs/06_<model>/`) and writes `outputs/06_promoted.json`; it refuses an incomplete,
@@ -135,6 +138,8 @@ the feature table. Then:
   cause outside the code and rerun the step with `--resume <run_id> --only <step>`. The seeds
   are fixed and the training is deterministic (X32), so the rerun gives the same result; only
   the time is lost.
+- **`report` failed in phase 2** (the step `test` is ok): run `python -m solarpv.pipeline run --mode final --resume <run_id> --only report --force`, without `--allow-test` (R-G1-14). The same
+  phase-2 command also works: it skips the completed `test`, scores nothing again and reruns `report`.
 - **The code failed** (an exception from a rule or a bug): stop. No code edit during a final run.
   Record it and reopen G-1 (§4). An exception of the step `ablation` that says the mode `full`
   does not reproduce the `xgb` step (R-G1-10) is rerun once with `--resume <run_id> --only

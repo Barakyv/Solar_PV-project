@@ -134,7 +134,11 @@ def test_test_split_needs_explicit_permission(tmp_path, monkeypatch):
 def test_alignment_catches_a_shift_and_a_swap():
     t = _truth()
     good = _model_preds(t)
-    assert E.check_alignment(good, t, "val")["ok"].all()
+    table = E.check_alignment(good, t, "val")
+    assert table["ok"].all() and (table["compared_rows"] == table["rows"]).all()
+    # R-G1-13: a file whose truth is withheld (phase 1) compares nothing, and the table says so
+    vacuous = E.check_alignment(E.withhold_test_truth(_model_preds(t, split="test")), t, "test")
+    assert (vacuous["compared_rows"] == 0).all() and vacuous["ok"].all()
     shifted = good.copy()
     shifted["timestamp"] = shifted["timestamp"] + pd.Timedelta(hours=1)  # the v6 BiLSTM bug
     assert not E.check_alignment(shifted, t, "val")["ok"].all()

@@ -9,6 +9,12 @@ T-105  R-G1-02: named together, `test` runs before `report`, and the report writ
 T-106  R-G1-03: `--allow-test` runs `test` and `report` only; the step test refuses prediction files
        that the run's `evaluate` did not score, and a step that finished after the acceptance
 T-107  R-G1-05: the evaluation CLI cannot score the test split
+T-108  R-G1-07: the copies of the k to kW conversion agree with `units.to_kw`
+T-109  R-G1-14, R-G1-16: a phase-2 retry after a failed `report` scores nothing again (`--force`
+       does not replace a completed `test`); `promote` fills `y_true` of the test rows (in
+       test_w5_steps)
+T-110  R-G1-15, R-G1-13: `test` refuses a report older than a step it reports on; the alignment
+       table says how many rows it compared (in test_evaluation_8b)
 """
 
 import numpy as np
@@ -165,7 +171,52 @@ def test_the_step_test_refuses_a_step_that_finished_after_the_acceptance(tmp_pat
     assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 1
     error = read(run_dir / "run.json")["steps"]["test"]["error"]
     assert "baselines" in error and "finished after the stage-10 acceptance" in error
+    assert r.run("final", ["report"], resume=run_dir.name, force=True) == 0  # R-G1-15: read it
     (run_dir / steps.ACCEPTANCE_FILE).write_text("accepted again\n", encoding="utf-8")
+    assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 0
+
+
+def test_a_phase_2_retry_after_a_failed_report_does_not_score_the_test_split_again(
+        tmp_path, monkeypatch, access_log):
+    """R-G1-14: the same command is run again after `report` failed; the good `test` was moved
+    aside by the forced rerun and replaced by a refused one, and the test split was scored twice."""
+    r, run_dir = phase_1(tmp_path, monkeypatch)
+    (run_dir / steps.ACCEPTANCE_FILE).write_text("stage 10 accepted on validation\n",
+                                                 encoding="utf-8")
+    real, calls = steps.IMPLEMENTED["report"], []
+
+    def flaky(ctx):
+        calls.append(1)
+        if len(calls) == 1:
+            raise RuntimeError("the report failed")
+        return real.run(ctx)
+    r2 = make_runner(tmp_path, impls={**steps.IMPLEMENTED,
+                                      "report": steps.Implementation(real.inputs, flaky)})
+    command = select_steps(["report", "test"])
+    assert r2.run("final", command, resume=run_dir.name, allow_test=True, force=True) == 1
+    state = read(run_dir / "run.json")["steps"]
+    assert state["test"]["status"] == "ok" and state["report"]["status"] == "failed"
+    scorings = pd.read_csv(access_log)["command"].str.contains("score the test split").sum()
+    assert scorings == 1
+    assert r2.run("final", command, resume=run_dir.name, allow_test=True, force=True) == 0
+    state = read(run_dir / "run.json")["steps"]
+    assert state["test"]["status"] == state["report"]["status"] == "ok"
+    assert not list(run_dir.glob("test.superseded-*"))  # the good scoring was never moved aside
+    assert pd.read_csv(access_log)["command"].str.contains("score the test split").sum() == 1
+    assert "Benchmark on test" in (run_dir / "report" / "report.md").read_text(encoding="utf-8")
+
+
+def test_the_step_test_refuses_a_report_older_than_a_later_step(tmp_path, monkeypatch):
+    """R-G1-15: `evaluate` was rerun after the report, and the acceptance was rewritten; the
+    files equal `evaluate`'s inputs, but the report the acceptance read is not of that state."""
+    r, run_dir = phase_1(tmp_path, monkeypatch)
+    assert r.run("final", ["evaluate"], resume=run_dir.name, force=True) == 0
+    (run_dir / steps.ACCEPTANCE_FILE).write_text("accepted\n", encoding="utf-8")
+    r2 = make_runner(tmp_path)
+    assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 1
+    error = read(run_dir / "run.json")["steps"]["test"]["error"]
+    assert "the report is older than" in error and "evaluate" in error
+    assert r.run("final", ["report"], resume=run_dir.name, force=True) == 0
     assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 0
 
 

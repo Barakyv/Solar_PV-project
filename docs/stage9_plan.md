@@ -1800,7 +1800,7 @@ asked for. The author verified each row in the code before answering.
 | R-G1-12 | what the reviewer did not verify | coverage by the author written into the log | none |
 
 D-32 is made exact (the decision of the user, 12 November, is unchanged): phase 1 forecasts the
-test window and scores validation only, **and holds no test truth in any file**; phase 2 is the
+test window and scores validation only, **and holds no test truth as a label or a score** (observed test-period values enter only as past inputs of a forecast); phase 2 is the
 step `test`, bound to the files that `evaluate` scored and to an acceptance written after them.
 
 ### 22.2 Tests (T-104–T-108)
@@ -1812,6 +1812,18 @@ step `test`, bound to the files that `evaluate` scored and to an acceptance writ
 | T-106 | `--allow-test` refuses any step but `test` and `report`; the step `test` refuses prediction files that `evaluate` did not score, and a step that finished after the acceptance |
 | T-107 | The evaluation CLI accepts neither `--split test` nor `--allow-test` |
 | T-108 | `features.target.to_kw`, `selection.common.to_kw` and the inline expression of the closed stages equal `units.to_kw` on a grid with negative k and k above the capacity |
+| T-109 | A phase-2 retry after a failed `report` scores nothing again and replaces no completed `test`; `promote` fills `y_true` of the test rows from `truth_test.csv` |
+| T-110 | `test` refuses a report older than a step it reports on; the alignment table says how many rows it compared |
+
+### 22.2b The fix check and its six new rows (R-G1-13 to R-G1-18)
+
+The reviewer read the fixes (`git diff 22f05d2..780e5e4`), closed R-G1-01 to R-G1-05 and R-G1-11, and
+wrote six new rows, none blocking: three should fix and three notes. All were answered in code
+and tests: a retry of the phase-2 command after a failed `report` (R-G1-14: `--force` no longer
+replaces a completed `test`, X84), a report older than `evaluate` (R-G1-15, X85), the promoted
+prediction files without the test `y_true` (R-G1-16: `test` writes `truth_test.csv`, `promote` fills
+the column, X86), the vacuous alignment of withheld rows (R-G1-13, X87), the exact wording of what
+phase 1 holds (R-G1-17) and leftovers (R-G1-18, X88). Tests T-109 and T-110.
 
 ### 22.3 What it changes for the gate
 

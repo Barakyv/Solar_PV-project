@@ -248,8 +248,8 @@ Rebuilt in stage 9 (D-32) and tightened by the external review of gate G-1 (R-G1
 - **What revealed it:** the January backup (feature selection on the whole table) and the
   reproduction script, which printed expected values from constants.
 - **Rebuild:** the final run has two phases of one run. Phase 1 trains, forecasts validation and
-  test, and scores validation only; no file of phase 1 holds the test truth and no step computes
-  a number against it. The stage-10 acceptance is written after reading the validation results.
+  test, and scores validation only; no file of phase 1 holds the test truth as a label or a score
+  (observed test-period values enter only as past inputs of a forecast) and no step computes a number against it. The stage-10 acceptance is written after reading the validation results.
   Phase 2 is one step, `test`, which scores the files that phase 1 evaluated (the same SHA-256),
   refuses a step that finished after the acceptance, and logs every read of a test row. Nothing is
   decided from a test number.
@@ -259,7 +259,7 @@ Rebuilt in stage 9 (D-32) and tightened by the external review of gate G-1 (R-G1
   split alone. All were closed before the code was frozen, with regression tests (T-104-T-107).
 - **Likely question:** "How do you know no choice was made on the test split?" **Answer:** "The
   access log of the evaluation layer does not exist until phase 2, no run before the final one
-  holds a test hour (S09-37), and phase 1 of the final run holds no test truth; the one step that
+  holds a test hour (S09-37), and phase 1 of the final run holds no test truth as a label or a score; the one step that
   reads it, after the acceptance, is logged."
 
 ## 12. The cross-validation and the ablation
