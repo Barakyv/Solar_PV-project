@@ -174,6 +174,8 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-37 | 9 | No run has read the test split | `outputs/g1_audit/audit/test_access.json` |
 | S09-38 | 9 | The pipeline reproduced from the raw data | the reproduction's `record.json` |
 | S09-39 | 9 | Entry points that run nothing on --help (X62) | the code at `b2c3f1f` and now, the incident record |
+| S09-40 | 9 | Cross-validation of the XGB models on the train rows (S-38) | W6 dev run `cv/cv_folds.csv`, `cv_summary.csv` |
+| S09-41 | 9 | Feature-group ablation of the XGB models (S-41) | W6 dev run `ablation/ablation_results.csv`, `ablation_summary.csv` |
 | S08-04 | 8 | The secondary views of the evaluation (look-back) | stage-8 `benchmark_views.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
@@ -228,6 +230,12 @@ points before and after X62. S09-35 found X65: the GFS margin before T0 is 1.1 h
 not the 5 h that A-13 stated (the row-by-row rule always held). The look-back added the W6 smoke
 run to S09-33.
 
+*Added 2026-11-13 (W6, D-36):* S09-40 and S09-41 draw the two analyses that train models, the CV
+of the xgb models on the train rows (S-38) and the feature-group ablation (S-41), from the
+development run `20261113T075845Z_dev`; both are XGB only, as in v6, and say so. S09-38 now
+asserts that every failing file of the reproduction is one that D-34 explains, and S09-34 trusts
+earlier evidence only while no code path changed since (D-36).
+
 ## 7. Look-back log (rule 8)
 
 One row per look-back. *At the end of* is the task that ran it; *Reviewed* the earlier tasks and
@@ -238,7 +246,7 @@ computation or a decision, for the user.
 |---|---|---|---|---|
 | 2026-11-12 | S09-W5 | the W5 outputs against the W5 figures (rule 7; rule 8 came after) | S09-20–S09-24 | none |
 | 2026-11-12 | S09-W4 (redone after W5) | stages 0–8; S09-W1, S09-W2, S09-W3 and S09-W5; every model-level figure against rule 9 | W4: S09-25–S09-30; W2: S09-31, S09-32; W1: S09-33; W3: S09-06 redrawn with all five encoders; stage 8: S08-04; S09-02 redrawn in XGB's colour | explanations of the BiLSTM and PatchTST (no such output; new computation and a change of D-31, the user's decision); seed spread (one seed in the dev runs; the final run has three); intervals of XGB and PatchTST (point forecasts only); test-split figures (stage 10, after G-1); stages 3 and 3b keep their producer figures (complete, listed in the catalog) |
-| 2026-11-12 | S09-W6 | stages 0–8 and S09-W1–S09-W5 against the W6 outputs (the audit files, the reproduction record, the runs); every model-level figure against rule 9 | W6: S09-34–S09-39 (S09-38 per model for all six and the references); W1: S09-33 redrawn with the W6 smoke run | the per-day data of the look-ahead in stage-4 and stage-5 figures (the audit is drawn once, under W6, where it was measured); a figure of the reproduction's environment (the record lists it; a table fits better); test-split figures (stage 10) |
+| 2026-11-12 | S09-W6 | stages 0–8 and S09-W1–S09-W5 against the W6 outputs (the audit files, the reproduction record, the runs); every model-level figure against rule 9 | W6: S09-34–S09-41 (S09-38 per model for all six and the references; S09-40 and S09-41 XGB only, as in v6); W1: S09-33 redrawn with the W6 smoke runs and the dev run of the new steps | the per-day data of the look-ahead in stage-4 and stage-5 figures (the audit is drawn once, under W6, where it was measured); a figure of the reproduction's environment (the record lists it; a table fits better); test-split figures (stage 10) |
 
 ## 8. Coverage of the models (rule 9)
 
@@ -257,4 +265,5 @@ computation or a decision, for the user.
 | Smoke runs and time | yes | yes | yes | yes | yes | yes | S09-33, S09-07, S09-18 |
 | Intervals | point only | yes | yes | yes | yes | point only | S09-29 |
 | Reproduced from the raw data | yes | yes | yes | yes | yes | yes | S09-38 |
+| Cross-validation and ablation (S-38, S-41) | yes | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | S09-40, S09-41 |
 | Explanation | SHAP | none (D-31) | attention, selection weights | attention, selection weights | attention, selection weights | none (D-31) | S09-14, S09-15, S09-21, S09-22; S09-11, S09-16, S09-23 |

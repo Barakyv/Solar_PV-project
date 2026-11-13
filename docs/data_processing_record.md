@@ -1280,6 +1280,31 @@ stored file changed).**
 - *Verification:* T-93–T-99, T-72 (S09-34–S09-39); the full suite at the commit to be tagged.
 - *Difference from the original:* the original reproduction started from the finished table.
 
+**OP-62 — The steps `cv` (S-38) and `ablation` (S-41) of D-36 (no stored file changed).**
+- *Why:* v6 §12.2 (a 5-fold expanding-window CV against the test) and §12.5 (a feature-group
+  ablation) are part of the approved scope and train models, so by D-36 they are written before
+  the tag, as runner steps. The originals were scored on the test split (the ablation), could
+  not be reproduced (the CV script was lost), used groups by substring that left the six rolling
+  std features in the model, and read differences below the seed noise as findings (M37–M44).
+- *Method:* `solarpv.pipeline.analyses`, after the `xgb` step of the same run. `cv`: the five
+  expanding date folds of stage 7 (3-day gap) over the train rows, the model of each `xgb`
+  record (searched parameters, seed, constraints, rounds, fixed), scored on the daytime hours with
+  AC truth, op-limited hours included, in nRMSE of kW. `ablation`: the final fit of the `xgb`
+  step repeated without one feature group of the contract at a time, without all measured
+  history and with the time encodings only; early stopping on the validation rows; the raw
+  forecast in kW; the delta against the `full` fit of the same seed; the verdict by
+  max(0.05 pp, 2 × the pooled seed std). In a final run the test window is forecast (logged) and
+  scored only by the step `test`. One fold loop for L-09 and the CV (`xgb_sota.oof_folds`).
+- *Parameters:* folds 5, gap 3 days, fold warning below 500 held hours; margin floor 0.05 pp;
+  seeds those of the `xgb` step (dev 42; final 42, 123, 777).
+- *Result (development run `20261113T075845Z_dev`, one seed; stage-9 plan §21.7):* the mode `full`
+  reproduced the `xgb` step in 55 of 55 fits; CV means 7.41–8.11 % against validation 6.43–7.12 %;
+  removing GFS raises the error by 0.96–1.48 pp; the xgb outputs equal those of the W5 run byte
+  for byte.
+- *Verification:* T-100–T-103; smoke `20261113T075016Z_smoke`; figures S09-40 and S09-41.
+- *Original:* v6 §12.2 (CV 16.08 % against test 29.09 %) and §12.5 (deltas on the test) are
+  withdrawn (C-70–C-77); the rebuild's values are not comparable.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

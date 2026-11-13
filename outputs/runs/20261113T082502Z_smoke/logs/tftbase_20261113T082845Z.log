@@ -1,0 +1,61 @@
+[     0.0s] RUN     stage runs/20261113T082502Z_smoke/tftbase
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: 22f05d2
+[     0.2s] RUN     started (UTC): 2026-11-13T08:28:45+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.0s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.0s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.0s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.0s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.0s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    16.2s] NOTE    tftbase (tft): budget {'trials': 0, 'epochs': 2, 'patience': 10, 'seeds': [42]}, seeds [42]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    16.2s] STEP    load the inputs before TEST_START ...
+[    16.7s] STEP    load the inputs before TEST_START done in 0.5s
+[    16.7s] STEP    indirect: build and check the windows ...
+[    17.1s] NOTE    indirect: train 58 origins, val 30 origins; 46 encoder and 30 decoder channels; 168 encoder hours
+[    17.1s] STEP    indirect: build and check the windows done in 0.4s
+[    17.1s] STEP    direct: build and check the windows ...
+[    17.6s] NOTE    direct: train 58 origins, val 30 origins; 63 encoder and 49 decoder channels; 168 encoder hours
+[    17.6s] STEP    direct: build and check the windows done in 0.5s
+[    17.6s] STEP    tftbase: the training worker in solar-gpu ...
+[    17.6s] NOTE    worker: C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe -m solarpv.models.neural_worker C:\Users\204323141\Desktop\solar\outputs\runs\20261113T082502Z_smoke\.tftbase.tmp\job C:\Users\204323141\Desktop\solar\outputs\runs\20261113T082502Z_smoke\.tftbase.tmp\worker
+[    30.0s] NOTE    [worker 10:29:15] tftbase (smoke): targets ['indirect', 'direct'], seeds [42], budget {'trials': 0, 'epochs': 2, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+[    35.9s] NOTE    [worker 10:29:21] indirect seed 42 final: 13.9013 % kW, best epoch 2 of 2, 2.81 s
+[    38.9s] NOTE    [worker 10:29:24] direct seed 42 final: 26.2150 % kW, best epoch 2 of 2, 2.19 s
+[    39.6s] NOTE    [worker 10:29:25] done in 21.6 s, 9 outputs
+[    41.5s] STEP    tftbase: the training worker in solar-gpu done in 23.8s
+[    41.7s] WARN    tftbase: indirect seed 42: best epoch 2 at the last epoch: it may not have converged
+[    41.7s] WARN    tftbase: direct seed 42: best epoch 2 at the last epoch: it may not have converged
+[    41.7s] NOTE    tftbase: seed spread: one seed per target, not computed
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/attention_direct_seed42.csv sha256=ce4ffa15086b3405
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/attention_indirect_seed42.csv sha256=8aaa5d93b34e1679
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/best_params.json sha256=a01b3136519cdebc
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/figures/learning_curves.png sha256=db41b1927beb6b71
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/job/data_direct.npz sha256=42d2077eb3b76f65
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/job/data_indirect.npz sha256=12f8fa0564fa76fd
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/job/job.json sha256=b63edb6b0f6a74d2
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/learning_curves.csv sha256=cda898c1c3cd451b
+[    42.1s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/mbe.csv sha256=a7567466007fa7e6
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/predictions_tft_seed42.csv sha256=37bb4fa9ebd83f21
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/quantiles_tft_seed42.csv sha256=b8728cdf4e3a3cc8
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/tft_config.json sha256=7b86b87c17085901
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/curves_direct_seed42.csv sha256=11bf09023c978d35
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/curves_indirect_seed42.csv sha256=e40e6a1078759bc9
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/fit_direct_seed42.json sha256=39f0a5ce29d784da
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/fit_indirect_seed42.json sha256=1dd05a09679c35a7
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/forecast_direct_seed42.npz sha256=1aa0c27c130f00ea
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/forecast_indirect_seed42.npz sha256=9b9d521fa6699843
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/models/tft_direct_seed42.pt sha256=da71e57b29199926
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/models/tft_indirect_seed42.pt sha256=6986538738e15ac1
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/optuna.db sha256=767d478c5d69a433
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker/worker.json sha256=553da9ede671115a
+[    42.2s] OUTPUT  outputs/runs/20261113T082502Z_smoke/.tftbase.tmp/worker_stdout.log sha256=36484b868625af68
+[    42.2s] RUN     warnings: 2
+[    42.2s] RUN     status: ok; duration 42.2s

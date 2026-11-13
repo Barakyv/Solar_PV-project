@@ -1,0 +1,108 @@
+{
+  "step": "tft96",
+  "run_id": "20261113T082502Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-13T08:27:05.773819+00:00",
+  "commit": "22f05d2",
+  "fingerprint": "cdbc6331412366d979820674745591f8f8544772d8c229a7ea785ddab6bc7c68",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "epochs": 2,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261113T082502Z_smoke/logs/tft96_20261113T082705Z.log",
+  "status": "ok",
+  "folder": "tft96",
+  "finished_utc": "2026-11-13T08:27:56.011087+00:00",
+  "duration_s": 50.2,
+  "outputs": {
+    "attention_direct_seed42.csv": "cacdcf3123b85c1f03d36d5e0ceaacac88553546b5a2c2c33361a9b7aa236aba",
+    "attention_indirect_seed42.csv": "48b36433d17880cc09cf0ac0a891cc9c50a4c417d740c53860d6eeafeb667f03",
+    "best_params.json": "ef316d992d7ce4bf1eb835249d96d166889c4510fe1bd3c2136211bc37b89f6a",
+    "figures/learning_curves.png": "86ac03d5311a85814f4ec3c5cce4e1651debacaf496d5a4ba5ca3835c63183c2",
+    "figures/optimization_history.png": "62134ed28705819e3014c4a41f563f8bb638dcd77b86e708e6a36a1b5d975f7b",
+    "job/data_direct.npz": "160d05223c60a551cbd0bd77d432decc24b48fa5aeb898a1d3b76bfaddbce1ca",
+    "job/data_indirect.npz": "820bc3d0d443929e515b738a284c51b41ca5b7b5903667cd17b48d46d125d3a3",
+    "job/job.json": "c990f703f765e70caef073823277d89606da1b4e9ba07a3ab1d600e8106a6e87",
+    "learning_curves.csv": "23751c3ac83754fb44a02f49257de3f115e2e974c74318ff9145124feffa07c1",
+    "mbe.csv": "e276c5959d42c94a8350833d9805a34af8974b998925916000e9c399a25f7daa",
+    "predictions_tft_96_seed42.csv": "7c29d2228654e262e9e6ef63299db34bef649b87f4dc7304d8a178e5b42b5782",
+    "quantiles_tft_96_seed42.csv": "750b4d4b4686ad233de335189f551e5dec28ce435c1213a2f0d4785aea85951f",
+    "tft_96_config.json": "b391af7099b5bbf89ed508693a24a9a92fce1e0068617addadc62550d9e0c952",
+    "trials.csv": "d13aab11789fc2243d89bc4ae187e8cffe375ef0d99728dafe40a7bc6b57cf3d",
+    "worker/curves_direct_seed42.csv": "545256beb7ffd46b41406c64a8f4b6ec3e7c90c457662cc8efe25c7cbc520636",
+    "worker/curves_indirect_seed42.csv": "98d57dcd248daf3ad4e740d92625a9824ccf0b23ea5d20cccafa221be3ca33ce",
+    "worker/fit_direct_seed42.json": "8ae4df737aee93ed5e24d3dfe4b842db2147a1f69b9e0e87e226b6378a955233",
+    "worker/fit_indirect_seed42.json": "bc99d01f2648fdccc7cb80c100b630ae5ada66d6113ae9dd6cc4c6b30345191a",
+    "worker/forecast_direct_seed42.npz": "cdd28637b895fa3784e25165b52307b8fc39294aeeb18f1be11ccf2dd203c6c6",
+    "worker/forecast_indirect_seed42.npz": "9848426fdc5e9d005441def17e6c59ed5a0e46c6d0fe54af2ee8e2a5f2f81588",
+    "worker/models/tft_96_direct_seed42.pt": "c30094379fed9cecf22a70a4a02749770f35772b2bcaa01e317592c1d982779a",
+    "worker/models/tft_96_indirect_seed42.pt": "56d216a6c965c6021b4f20f5f97714ea902217dd655d5d4d9c619d921d796857",
+    "worker/optuna.db": "41f1d3a310f9c11ce3a722aa07b2a07eb7b2bc72d13570e07db0b44ba7d598be",
+    "worker/trials_direct_seed42.csv": "86b28d9c9c7e3ee38796dbf9fe4e6fd69aa3cd7425fb992e3b09e27498e8c7c7",
+    "worker/trials_indirect_seed42.csv": "7fc4fbbdfd25e40c9c7d8929e1acdcb97f3b36cb0e11fdef94ef6e64fc95e1e5",
+    "worker/worker.json": "748fe0304168553b102908ee885241124e827ee56d602045c9066b00599d5be7",
+    "worker_stdout.log": "bd13fd3eeb4a0ae1dbc4ed1cde0409734f4881f51ddc3c6c5b3417b5f0117a72"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 18.670402880845856,
+      "direct_seed42": 48.37830644784687
+    },
+    "test_access": []
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 4
+  },
+  "summary": [
+    "tft96 (smoke, seeds [42]): nRMSE in kW on the tuning window, local days 2024-03-15 to 2024-04-11",
+    "  indirect_seed42        18.670 %  (D+1 19.073, D+2 18.886, D+3 18.036)",
+    "  direct_seed42          48.378 %  (D+1 48.577, D+2 47.708, D+3 48.843)"
+  ],
+  "warnings": [
+    "tft96: indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft96: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)",
+    "tft96: direct seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft96: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)"
+  ]
+}

@@ -1734,3 +1734,40 @@ seed, 180 in a final run (dev: 60). `cv` is 30 fits per seed. The dry run report
 test row read; `full` reproduces the `xgb` step's validation value for every target × horizon ×
 seed; every table is complete (5 folds per fit; every mode of every input); no earlier output
 changes. The values of the CV, the ablation and their verdicts are reported and never acted on.
+
+### 21.7 Result (2026-11-13, R9-32, OP-62)
+
+Every point of the acceptance holds. Code at `acea8ea` (clean), tests T-100–T-103.
+
+- **Smoke** (`20261113T075016Z_smoke`, all 12 steps ok, 328 s): `cv` and `ablation` complete; the
+  30 warnings of `cv` are folds of about 80 held hours in the 56-day smoke window (the warning
+  threshold is 500); no test row read.
+- **Dev** (`20261113T075845Z_dev`: `select,baselines,xgb,cv,ablation,evaluate,explain,report`, all
+  ok): every prediction and uncorrected file and the benchmark, DM, seasonal and route tables of
+  `xgb` and `evaluate` equal those of `20261112T063719Z_dev` byte for byte, so the new steps and
+  the refactor of `fit_mos` changed nothing. `cv` took 34 s and `ablation` 102 s (the final
+  estimate: 102 s and 304 s, X72).
+- **`ablation`:** the mode `full` reproduced the `xgb` step's validation value in 55 of 55 fits
+  (to 1e-9) and its rounds; 55 fits in all (10 / 10 / 10 / 9 / 8 / 8 per direct and indirect D+1 to
+  D+3; the indirect D+2 and D+3 inputs have no time-encoding feature, so `minimal` is skipped
+  there with its reason, and the indirect inputs have no rolling statistics).
+- **Values (reported, not acted on):**
+  - CV: the fold values range from 4.74 to 11.05 %, with means of 7.41 to 8.11 % and a std of 2.10
+    to 2.62 pp over the five folds; the validation value of the same models is 6.43 to 7.12 %,
+    0.62 to 1.68 pp below the CV mean in all six cases (validation tuned the model, and the early
+    folds train on 1,374 to 17,005 rows);
+  - ablation: removing the GFS forecasts raises the error by 0.96 to 1.48 pp, the largest change of
+    any group in every case; the time encodings alone leave it 1.21 to 1.52 pp higher; every other
+    change lies between −0.02 and +0.19 pp. With one seed the margin is the floor of 0.05 pp, so
+    the verdicts are provisional (marked so in the report, the step summary and S09-41).
+- **Review (forecasting-validity-review):** issuance: both steps repeat the xgb model on the same
+  allow-list features, nothing new enters; split isolation: `cv` reads train rows only (asserted),
+  `ablation` reads train and validation, no test row (the access log does not exist and no step
+  record holds an access); comparability: one metric and one hour set with the `xgb` step
+  (`full` equals it), and the CV differs from validation by treatment (documented); uncertainty:
+  one seed, margin at the floor, fold std over five folds reported; red flags: none (the error
+  rises from D+1 to D+3 in the CV, and the time-only model is near climatology); provenance: one
+  clean commit, hashed outputs.
+- **Found while testing:** the first final-mode replay in the tests refused its own check, because
+  the ablation took the training rows from the step's mode instead of from the `xgb` record it
+  repeats; both steps now read it from the record (`smoke_rows`).

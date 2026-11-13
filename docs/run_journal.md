@@ -1922,6 +1922,31 @@ hashes, numbers) and the commit messages are the record:
   Errata C-70–C-77 and X68–X75.
 - **Also:** OP-61 written (the reproduction and the audit); R9-30 said 13 steps, it was 19 (fixed).
 
+### 2026-11-13 · R9-32 · W6: the steps `cv` and `ablation` (D-36), their runs and figures
+
+- **Code** (`acea8ea`): `solarpv.pipeline.analyses` (both steps and their phase-2 scoring), the
+  refactor of `fit_mos` into `oof_folds` (X68), the registration (config, estimate, `promote`,
+  report, the step `test`, the runbook), the after-tag rule (`checks.after_tag_problems`, T-103).
+  Tests T-100–T-103: 18 in `tests/unit/test_analyses.py` plus the contract test and the updated
+  promote and quantile-guard tests.
+- **Found while testing:** a final-mode replay of a smoke record refused its own `full` check:
+  the training rows now come from the `xgb` record (`smoke_rows`). The quantile guard (D-33)
+  flagged the audit script and the figure module, which only hash or name quantile files; both
+  are now listed as such, with a test.
+- **Runs:** smoke at `acea8ea` ok (12 steps, 328 s); dev `20261113T075845Z_dev` ok; the xgb
+  outputs are byte-identical to the W5 dev run; `full` reproduced the `xgb` value in 55 of 55
+  fits. Values and the validity review: stage-9 plan §21.7. A presentation fix followed the
+  review: a one-seed verdict is marked provisional in the report, the step summary and S09-41.
+- **Figures:** S09-40 (the CV folds against validation) and S09-41 (the ablation deltas with the
+  margin), looked at; S09-38 now asserts that every failing file of the reproduction is one that
+  D-34 explains; S09-34 trusts earlier evidence only while no code path changed since (D-36).
+- **Candidate freeze** (`22f05d2`): the full suite (the figure contract excluded, because it
+  checks figures that read this evidence) passed: 607 passed, 1 skipped (T-103, active from the
+  tag); the dry run writes nothing.
+- **The external review did not start:** the session `g1-review` was created but never ran
+  (its setup did not finish, no message reached it), and it opened in the main folder and not in
+  a worktree. It keeps its task; the user starts it from its row, or asks for a new one.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**
