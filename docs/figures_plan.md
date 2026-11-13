@@ -171,11 +171,12 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-34 | 9 | Gate G-1: the checklist and its evidence | the register, the final suite's JUnit file, `outputs/g1_audit/*`, the review log, the scope register, git tags |
 | S09-35 | 9 | When the information of each input is known | the code's window constants, GFS table (train rows) |
 | S09-36 | 9 | Look-ahead in the steps before the hourly table (X57) | `outputs/g1_audit/audit/lookahead_*.csv` |
-| S09-37 | 9 | No run has read the test split | `outputs/g1_audit/audit/test_access.json` |
+| S09-37 | 9 | No run has read the test split (every forecast file: predictions, uncorrected and ablation forecasts) | `outputs/g1_audit/audit/test_access.json` |
 | S09-38 | 9 | The pipeline reproduced from the raw data | the reproduction's `record.json` |
 | S09-39 | 9 | Entry points that run nothing on --help (X62) | the code at `b2c3f1f` and now, the incident record |
 | S09-40 | 9 | Cross-validation of the XGB models on the train rows (S-38) | W6 dev run `cv/cv_folds.csv`, `cv_summary.csv` |
 | S09-41 | 9 | Feature-group ablation of the XGB models (S-41) | W6 dev run `ablation/ablation_results.csv`, `ablation_summary.csv` |
+| S09-42 | 9 | The external review of gate G-1 and its comments | `docs/g1_review_log.md` |
 | S08-04 | 8 | The secondary views of the evaluation (look-back) | stage-8 `benchmark_views.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |

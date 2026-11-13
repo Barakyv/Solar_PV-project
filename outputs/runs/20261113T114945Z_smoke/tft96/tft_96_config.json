@@ -1,0 +1,372 @@
+{
+  "step": "tft96",
+  "model": "tft_96",
+  "family": "tft",
+  "mode": "smoke",
+  "budget": {
+    "trials": 1,
+    "epochs": 2,
+    "patience": 10,
+    "seeds": [
+      42
+    ]
+  },
+  "seeds": [
+    42
+  ],
+  "windows": [
+    {
+      "split": "val",
+      "start": "2024-03-14T22:00:00+00:00",
+      "end": "2024-04-11T21:00:00+00:00",
+      "label": "local days 2024-03-15 to 2024-04-11"
+    }
+  ],
+  "encoder_hours": 96,
+  "quantiles": [
+    0.02,
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    0.9,
+    0.98
+  ],
+  "point_forecast": "quantile 0.5",
+  "search_space": {
+    "hidden_size": {
+      "type": "categorical",
+      "choices": [
+        16,
+        32,
+        64
+      ]
+    },
+    "attention_head_size": {
+      "type": "int",
+      "low": 1,
+      "high": 4,
+      "log": false
+    },
+    "hidden_continuous_size": {
+      "type": "int",
+      "low": 8,
+      "high": 64,
+      "log": false
+    },
+    "dropout": {
+      "type": "float",
+      "low": 0.1,
+      "high": 0.3,
+      "log": false
+    },
+    "learning_rate": {
+      "type": "float",
+      "low": 0.0001,
+      "high": 0.01,
+      "log": true
+    },
+    "lstm_layers": {
+      "type": "int",
+      "low": 1,
+      "high": 3,
+      "log": false
+    }
+  },
+  "fixed": {
+    "bilstm": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "tft": {
+      "batch_size": 64,
+      "grad_clip_norm": 0.1,
+      "optimizer": "Adam"
+    },
+    "tftbase": {
+      "hidden_size": 64,
+      "dropout": 0.1,
+      "attention_head_size": 4,
+      "hidden_continuous_size": 8,
+      "lstm_layers": 1,
+      "learning_rate": 0.001
+    },
+    "patchtst": {
+      "input_size": 168,
+      "h": 73,
+      "patch_len": 16,
+      "stride": 8,
+      "scaler_type": "identity",
+      "revin": true
+    }
+  },
+  "objective": "daytime nRMSE in kW (% of 3,449 kW) of the point forecast on the daytime steps of the tuning window with AC truth, op-limited hours included, pooled over the three horizons; indirect through units.to_kw (docs/stage9_plan.md \u00a714.1, \u00a718.4)",
+  "early_stopping": "the training loss on the loss-mask steps of the tuning window; the weights of the best epoch (PatchTST: validation check) restored",
+  "loss": "a mean over the steps of the W3 loss mask only (X31)",
+  "normalisers": "none fitted in the libraries: inputs scaled by the W3 scaler (train hours), targets in model units; TFT identity output transformer, PatchTST scaler_type identity with RevIN (X29)",
+  "missing_known_inputs": {
+    "indirect": {
+      "irradiance_clear_index_prevday@D1": {
+        "train": 24,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D2": {
+        "train": 24,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D3": {
+        "train": 24,
+        "val": 0
+      }
+    },
+    "direct": {
+      "airmass": {
+        "train": 779,
+        "val": 388
+      },
+      "irradiance_clear_index_prevday@D1": {
+        "train": 24,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D2": {
+        "train": 24,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D3": {
+        "train": 24,
+        "val": 0
+      }
+    }
+  },
+  "datasets": {
+    "indirect/train": {
+      "n_origins": 58,
+      "first_t0": "2023-12-05T22:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "72": 58
+      },
+      "kept_steps_per_horizon": {
+        "D1": 1322,
+        "D2": 1322,
+        "D3": 1322
+      },
+      "loss_steps_per_horizon": {
+        "D1": 496,
+        "D2": 496,
+        "D3": 496
+      },
+      "scope_hours": 1322,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 96,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "24": 168
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the last 56 local days of train"
+    },
+    "indirect/val": {
+      "n_origins": 30,
+      "first_t0": "2024-03-12T22:00:00+00:00",
+      "last_t0": "2024-04-10T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 27
+      },
+      "kept_steps_per_horizon": {
+        "D1": 671,
+        "D2": 671,
+        "D3": 671
+      },
+      "loss_steps_per_horizon": {
+        "D1": 296,
+        "D2": 296,
+        "D3": 296
+      },
+      "scope_hours": 671,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 87
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "local days 2024-03-15 to 2024-04-11"
+    },
+    "direct/train": {
+      "n_origins": 58,
+      "first_t0": "2023-12-05T22:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "72": 58
+      },
+      "kept_steps_per_horizon": {
+        "D1": 1322,
+        "D2": 1322,
+        "D3": 1322
+      },
+      "loss_steps_per_horizon": {
+        "D1": 1239,
+        "D2": 1239,
+        "D3": 1239
+      },
+      "scope_hours": 1322,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 3054,
+        "decoder": 2214
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "24": 168
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the last 56 local days of train"
+    },
+    "direct/val": {
+      "n_origins": 30,
+      "first_t0": "2024-03-12T22:00:00+00:00",
+      "last_t0": "2024-04-10T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 27
+      },
+      "kept_steps_per_horizon": {
+        "D1": 671,
+        "D2": 671,
+        "D3": 671
+      },
+      "loss_steps_per_horizon": {
+        "D1": 631,
+        "D2": 631,
+        "D3": 631
+      },
+      "scope_hours": 671,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 1310,
+        "decoder": 969
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 87
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "local days 2024-03-15 to 2024-04-11"
+    }
+  },
+  "scaler_rows": 20859,
+  "seed_spread_pp": {},
+  "warnings": [
+    "indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)",
+    "direct seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)"
+  ],
+  "gpu_environment": {
+    "python": "3.11.18",
+    "executable": "C:\\Users\\204323141\\miniforge3\\envs\\solar-gpu\\python.exe",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "versions": {
+      "torch": "2.5.1+cu121",
+      "pytorch-forecasting": "1.7.0",
+      "neuralforecast": "3.1.7",
+      "lightning": "2.6.6",
+      "pytorch-lightning": "2.6.6",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "scipy": "1.17.1",
+      "scikit-learn": "1.9.1",
+      "optuna": "5.0.0"
+    },
+    "errors": [],
+    "cuda_runtime": "12.1",
+    "cudnn": 90100,
+    "arch_list": [
+      "sm_50",
+      "sm_60",
+      "sm_61",
+      "sm_70",
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90"
+    ],
+    "cuda_available": true,
+    "gpu": {
+      "name": "GRID P40-24Q",
+      "capability": "6.1",
+      "memory_gb": 24.0,
+      "device_count": 1
+    }
+  },
+  "determinism": {
+    "use_deterministic_algorithms": true,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false,
+    "tf32": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "precision": "float32",
+    "data_loader_workers": 0
+  },
+  "worker_duration_s": 30.3,
+  "job_files": {
+    "indirect": {
+      "path": "data_indirect.npz",
+      "sha256": "820bc3d0d443929e515b738a284c51b41ca5b7b5903667cd17b48d46d125d3a3"
+    },
+    "direct": {
+      "path": "data_direct.npz",
+      "sha256": "160d05223c60a551cbd0bd77d432decc24b48fa5aeb898a1d3b76bfaddbce1ca"
+    }
+  }
+}

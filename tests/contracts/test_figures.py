@@ -38,10 +38,10 @@ from solarpv.figures.correction import (
 from solarpv.figures.registry import WORK_ITEMS, load_all, task_of, tasks
 
 # stage -> minimum number of process figures; update when a stage is completed
-REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 4, "9": 41}
+REQUIRED = {"0": 1, "1": 3, "2": 3, "4": 3, "5": 2, "6": 5, "6b": 3, "7": 2, "8": 4, "9": 42}
 # completed work item -> minimum number of process figures; add a row when a task is completed
 REQUIRED_TASKS = {"S09-W1": 2, "S09-W2": 6, "S09-W3": 1, "S09-W4": 12, "S09-W5": 12,
-                  "S09-W6": 8}
+                  "S09-W6": 9}
 # tasks completed before the look-back rule (2026-11-12); they were reviewed in hindsight
 BEFORE_LOOKBACK = {"S09-W1", "S09-W2", "S09-W3"}
 PLAN = REPO_ROOT / "docs" / "figures_plan.md"

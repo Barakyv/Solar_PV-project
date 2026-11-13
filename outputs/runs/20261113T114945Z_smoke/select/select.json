@@ -1,0 +1,154 @@
+{
+  "decision": "D-30: verify and reuse the stage-7 selection; nothing is rerun",
+  "rows_read": 0,
+  "tracked": [
+    {
+      "path": "outputs/07_feature_selection/model_inputs.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/selection_manifest.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/inner_train_check.csv",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/validation_check.csv",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_indirect_D1.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_indirect_D2.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_indirect_D3.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_direct_D1.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_direct_D2.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    },
+    {
+      "path": "outputs/07_feature_selection/final_features_direct_D3.json",
+      "ok": true,
+      "detail": "tracked, unmodified"
+    }
+  ],
+  "tables": [
+    {
+      "path": "data/processed/06_features/features_1H_D1.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    },
+    {
+      "path": "data/processed/06_features/features_1H_D2.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    },
+    {
+      "path": "data/processed/06_features/features_1H_D3.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    },
+    {
+      "path": "data/processed/06b_gfs/gfs_features_D1.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    },
+    {
+      "path": "data/processed/06b_gfs/gfs_features_D2.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    },
+    {
+      "path": "data/processed/06b_gfs/gfs_features_D3.parquet",
+      "source": "stage-7 provenance (20261103T113918Z.log)",
+      "ok": true,
+      "detail": "selected on this table"
+    }
+  ],
+  "manifest": {
+    "git_commit": "190e4df",
+    "run_log": "outputs/07_feature_selection/runs/20261103T113918Z.log",
+    "validation_run_log": "outputs/07_feature_selection/runs/20261103T131740Z.log",
+    "splits_read_for_selection": [
+      "train"
+    ],
+    "validation_read": "S8 only"
+  },
+  "inputs": [
+    {
+      "key": "indirect_D1",
+      "source": "05e",
+      "n_features": 31,
+      "matches": true
+    },
+    {
+      "key": "indirect_D2",
+      "source": "05e",
+      "n_features": 28,
+      "matches": true
+    },
+    {
+      "key": "indirect_D3",
+      "source": "05e",
+      "n_features": 32,
+      "matches": true
+    },
+    {
+      "key": "direct_D1",
+      "source": "full pool",
+      "n_features": 96,
+      "matches": true
+    },
+    {
+      "key": "direct_D2",
+      "source": "full pool",
+      "n_features": 89,
+      "matches": true
+    },
+    {
+      "key": "direct_D3",
+      "source": "full pool",
+      "n_features": 82,
+      "matches": true
+    }
+  ],
+  "code_changed_since_selection": [
+    "src/solarpv/selection/run.py"
+  ],
+  "model_inputs_sha256": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+  "copies": {
+    "model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "final_features_indirect_D1.json": "56c6d26ab2b90afa8aaeadc81c00528acd50bafaae10cfc3de61a8f98583be48",
+    "final_features_indirect_D2.json": "e00c69fb95f6de8de88302a2b2f26b23abfb93e38b69d5c5de565b4ad70710e7",
+    "final_features_indirect_D3.json": "dc4eab283083195dd89b0ae82e66b7ea66a3bdd97ba8667b6ae143fe28cf2777",
+    "final_features_direct_D1.json": "e6ec06473241d71ed8648e8390e23476cbf1ef14e9e32a2620e649f59688a1b1",
+    "final_features_direct_D2.json": "30a9ad2065d9cdef1cefe0bc727a790755318ba013639c251e4505262fa6c205",
+    "final_features_direct_D3.json": "3aa261906d0a6fb6052be915e31961818232bbcbbb9baae9e22aa25b4a40108e"
+  }
+}

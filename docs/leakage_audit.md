@@ -85,7 +85,7 @@ before T0.
 
 `python scripts/g1_audit.py --only test_access` (2026-11-12, rerun 2026-11-13 after the runs of
 that day, X76): the access log `outputs/07_evaluation/test_access_log.csv` does not exist and has
-never been in git; 159 step records of 21 runs hold no test access; 149 forecast files
+never been in git; 172 step records of 22 runs hold no test access; 160 forecast files
 (predictions, uncorrected and ablation forecast files) hold no hour at or after 2024-10-01, the
 last one being 2024-09-30 23:00 UTC. Every data-based decision used train or validation
 (`PROJECT_MASTER.md` §3; stage plans). The raw data of the test period were read for data
