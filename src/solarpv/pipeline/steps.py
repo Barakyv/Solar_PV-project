@@ -663,13 +663,29 @@ def run_testsplit(ctx: Context) -> Result:
     check_acceptance_binding(ctx, acceptance, files)
     mean_k = mean_daytime_k()
     out = ctx.out / "test"
+    # R-G1-20: what can fail by design (the SHAP additivity checks) and the tables of the analyses
+    # come first, and the benchmark is written last: a failure in them leaves no test benchmark
+    outputs: list[Path] = []
+    test_access: list[dict] = []
+    if "xgb" in ctx.completed:
+        from solarpv.pipeline import explain
+
+        shap_out, access = explain.xgb_shap_test(ctx, window)
+        outputs += shap_out
+        test_access += access
+    if "cv" in ctx.completed or "ablation" in ctx.completed:  # S-38, S-41 on the test window
+        from solarpv.pipeline import analyses
+
+        extra, access = analyses.phase2_tables(ctx, window)
+        outputs += extra
+        test_access += access
     with ctx.log.step(f"evaluate test, {window.label}"):
         truth = truth_for(window)
         tables = E.run(files, out, mean_k, site=load_site(), truth=truth, split="test",
                        allow_test=True, strict=True, with_references=False, ci=True,
                        log=ctx.log, command=f"{ctx.command} [step test: score the test split]",
                        record_dir=ctx.run_dir / "test" / "test")
-    outputs = sorted(out.glob("*.csv")) + [out / "manifest.json"]
+    outputs += sorted(out.glob("*.csv")) + [out / "manifest.json"]
     # R-G1-16: the truth of the test rows, for the promoted prediction files of §6.10 (phase 1
     # wrote them blank); this step read it from the feature table, logged by E.run above
     is_test = truth["split"] == "test"
@@ -677,20 +693,8 @@ def run_testsplit(ctx: Context) -> Result:
                               .reset_index(), ctx.out / TEST_TRUTH_FILE))
     summary = benchmark_lines(out / "benchmark_summary.csv", window)
     values = {"files_scored": [f.name for f in files], "models_missing": missing,
-              "rows_benchmark": len(tables["benchmark_summary"]), "test_access": [],
+              "rows_benchmark": len(tables["benchmark_summary"]), "test_access": test_access,
               "acceptance_sha256": sha256(acceptance)}
-    if "xgb" in ctx.completed:
-        from solarpv.pipeline import explain
-
-        shap_out, access = explain.xgb_shap_test(ctx, window)
-        outputs += shap_out
-        values["test_access"] += access
-    if "cv" in ctx.completed or "ablation" in ctx.completed:  # S-38, S-41 on the test window
-        from solarpv.pipeline import analyses
-
-        extra, access = analyses.phase2_tables(ctx, window)
-        outputs += extra
-        values["test_access"] += access
     return Result(outputs, values=values, summary=summary)
 
 

@@ -1988,6 +1988,7 @@ hashes, numbers) and the commit messages are the record:
   property (R-G1-06); the conversion copies tested against `units.to_kw` (T-108); the runbook
   tells how to read a failure of `full` (R-G1-10).
 - **Fix check by the reviewer** (6 rows closed, 6 new: 3 should fix, 3 notes): a retry of the phase-2 command after a failed `report` scored the test split twice (`--force` now never replaces a completed `test`, X84); the report could be older than `evaluate` (X85); the promoted prediction files had a blank test `y_true` (the step `test` writes `truth_test.csv`, `promote` fills the column, X86); the alignment table says how many rows it compared (X87); the wording of what phase 1 holds, and leftovers (X88). Tests T-109 and T-110.
+- **Second fix check** (6 rows closed, 5 new: 1 should fix, 4 notes): `promote` now compares what it promotes with what `test` scored (X89, T-111); the benchmark of `test` is written after the SHAP and the analyses (X90); a step folder that `run.json` did not list is adopted (X91, T-112); the runbook says the two refusals that are not defects (X92).
 - **The audit script (X76)** now reads every kind of forecast file (147 files of 18 runs, no test
   hour), with a test; its stand-alone check file was removed.
 - **Next:** the full suite, smoke and dry run at the new candidate, the audit over the new runs, the

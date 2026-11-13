@@ -1814,6 +1814,8 @@ step `test`, bound to the files that `evaluate` scored and to an acceptance writ
 | T-108 | `features.target.to_kw`, `selection.common.to_kw` and the inline expression of the closed stages equal `units.to_kw` on a grid with negative k and k above the capacity |
 | T-109 | A phase-2 retry after a failed `report` scores nothing again and replaces no completed `test`; `promote` fills `y_true` of the test rows from `truth_test.csv` |
 | T-110 | `test` refuses a report older than a step it reports on; the alignment table says how many rows it compared |
+| T-111 | `promote` refuses prediction files that differ from the inputs of the completed `test`, and a step other than `report` that finished after it |
+| T-112 | The benchmark of the step `test` is written after the SHAP and the analyses; a step folder that `run.json` did not list is adopted and not run again |
 
 ### 22.2b The fix check and its six new rows (R-G1-13 to R-G1-18)
 
@@ -1824,6 +1826,10 @@ replaces a completed `test`, X84), a report older than `evaluate` (R-G1-15, X85)
 prediction files without the test `y_true` (R-G1-16: `test` writes `truth_test.csv`, `promote` fills
 the column, X86), the vacuous alignment of withheld rows (R-G1-13, X87), the exact wording of what
 phase 1 holds (R-G1-17) and leftovers (R-G1-18, X88). Tests T-109 and T-110.
+
+### 22.2c The second fix check and its five new rows (R-G1-19 to R-G1-23)
+
+The reviewer closed R-G1-13 to R-G1-18 and wrote five more rows, none blocking: one should fix and four notes. `promote` now compares the promoted prediction files with the inputs of the completed `test` and refuses a step that finished after it (R-G1-19, X89, T-111); the benchmark of `test` is written after the SHAP and the analyses (R-G1-20, X90); a step folder that `run.json` did not list is adopted (R-G1-21, X91, T-112); the runbook says the two cases in which a time rule refuses a legitimate run, and the data-record entry is marked superseded (R-G1-22, R-G1-23, X92).
 
 ### 22.3 What it changes for the gate
 

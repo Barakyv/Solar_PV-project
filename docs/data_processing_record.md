@@ -562,7 +562,9 @@ current manifest with a note under every code cell, and the claims of the notes 
 - *Daytime:* F-02, from geometry only. It is asserted equal to the table's flag, and is never
   taken from the truth (E3).
 - *Split guard:* validation by default. The test split needs `--allow-test`, and every such
-  run is appended to `outputs/07_evaluation/test_access_log.csv` (E10).
+  run is appended to `outputs/07_evaluation/test_access_log.csv` (E10). *(Superseded by D-32
+  and R-G1-05: the command line scores validation only; the step `test` of a final run scores
+  the test split.)*
 - *New columns and tables:*
   - nRMSE in kW for both targets;
   - nRMSE by the mean actual AC of the evaluated rows (L-16);

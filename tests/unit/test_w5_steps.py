@@ -573,7 +573,7 @@ def complete_final_run(root):
     """A final run folder whose every required step is complete (constructed records)."""
     run = root / "runs" / "20261112T000000Z_final"
     run.mkdir(parents=True)
-    states = {}
+    states, scored = {}, {}  # `scored`: the prediction files, as the inputs of the step test
     for step in promote.REQUIRED:
         folder = run / step
         folder.mkdir()
@@ -590,6 +590,7 @@ def complete_final_run(root):
                 "2024-10-01 00:00:00+00:00,,7.0,direct,1,m,42,test\n"
                 "2024-10-01 01:00:00+00:00,,0.4,indirect,1,m,42,test\n", encoding="utf-8")
             outputs[name] = sha256(folder / name)
+            scored[f"outputs/runs/{run.name}/{step}/{name}"] = outputs[name]
         if step == "xgb":
             (folder / "models").mkdir()
             (folder / "models" / "xgb_sota_indirect_D1_seed42.ubj").write_bytes(b"b")
@@ -617,6 +618,8 @@ def complete_final_run(root):
                                                 "xgb_shap_features_test.csv", index=False)
         record = {"step": step, "status": "ok", "folder": step, "commit": "abc1234",
                   "fingerprint": "f" * 64, "outputs": outputs, "duration_s": 1.0}
+        if step == "test":
+            record["inputs"] = dict(scored)
         (folder / "step.json").write_text(json.dumps(record), encoding="utf-8")
         states[step] = {"status": "ok", "folder": step}
     (run / "run.json").write_text(json.dumps({"run_id": run.name, "mode": "final",
@@ -679,6 +682,21 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
         else:
             with pytest.raises(promote.PromoteError, match="report was written before"):
                 promote.plan(run4, out, check_tag=False)
+    # R-G1-19: what is promoted is what the step test scored, and no step ran after it
+    run5 = complete_final_run(tmp_path / "rerun")  # xgb rerun after the test: other hash
+    record = read(run5 / "test" / "step.json")
+    record["inputs"][next(iter(record["inputs"]))] = "0" * 64
+    (run5 / "test" / "step.json").write_text(json.dumps(record), encoding="utf-8")
+    with pytest.raises(promote.PromoteError, match="differ from those the step test scored"):
+        promote.plan(run5, out, check_tag=False)
+    run6 = complete_final_run(tmp_path / "later")
+    for step, stamp in (("test", "2026-11-14T10:00:00+00:00"),
+                        ("xgb", "2026-11-14T10:05:00+00:00")):
+        record = read(run6 / step / "step.json")
+        record["finished_utc"] = stamp
+        (run6 / step / "step.json").write_text(json.dumps(record), encoding="utf-8")
+    with pytest.raises(promote.PromoteError, match="finished after the step test"):
+        promote.plan(run6, out, check_tag=False)
     for step in ("cv", "ablation"):  # D-36: a final run without them is not the v6 scope
         run3 = complete_final_run(tmp_path / f"no_{step}")
         state = read(run3 / "run.json")

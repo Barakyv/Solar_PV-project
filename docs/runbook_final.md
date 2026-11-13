@@ -140,6 +140,8 @@ the test split is scored once. Then:
   the time is lost.
 - **`report` failed in phase 2** (the step `test` is ok): run `python -m solarpv.pipeline run --mode final --resume <run_id> --only report --force`, without `--allow-test` (R-G1-14). The same
   phase-2 command also works: it skips the completed `test`, scores nothing again and reruns `report`.
+- **The step `test` says the report is older than a step, or that a step finished after the acceptance** (R-G1-15, R-G1-22): this is a refusal and not a defect of the run. After a rerun that gave byte-identical files the report is skipped as up to date and stays older than that step, and a clock set back on the VDI between two steps gives the same message. Run `--only report --force`, read the report, write `stage10_acceptance.md` again, and rerun phase 2.
+- **`test` failed after it scored** (R-G1-20): its numbers are in `test.failed-<stamp>/`; do not read them before the retry. The retry scores the test split again and the access log shows both; if the failure was in the code, stop and reopen G-1 instead.
 - **The code failed** (an exception from a rule or a bug): stop. No code edit during a final run.
   Record it and reopen G-1 (§4). An exception of the step `ablation` that says the mode `full`
   does not reproduce the `xgb` step (R-G1-10) is rerun once with `--resume <run_id> --only

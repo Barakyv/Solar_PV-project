@@ -396,6 +396,16 @@ class Runner:
             if problems:
                 log.warn(f"{step}: refused by the final gate: {problems}")
                 return f"refused (final gate: {'; '.join(problems)})", []
+        listed = run_dir / step / "step.json"
+        if step not in state["steps"] and listed.exists():  # R-G1-21
+            record = read_json(listed)
+            if record.get("status") == "ok" and record.get("step") == step:
+                # a process killed between the rename of the folder and the write of run.json
+                state["steps"][step] = {k: record[k] for k in ("fingerprint", "commit",
+                                                              "finished_utc", "duration_s")}
+                state["steps"][step].update({"status": "ok", "folder": step})
+                log.warn(f"{step}: a completed folder that run.json did not list (a write "
+                         "interrupted after the rename) was adopted; the step is not run again")
         completed = completed_records(run_dir, state)
         failed = [s for s, e in state["steps"].items() if e.get("status") == "failed"]
         cfg = step_config(step, config)

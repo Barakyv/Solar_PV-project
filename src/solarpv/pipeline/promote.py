@@ -83,6 +83,23 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
     for step, rec in records.items():
         if not outputs_intact(run_dir, rec):
             raise PromoteError(f"{step}: outputs differ from its record")
+    # R-G1-19: what is promoted is what the step test scored, and nothing but the report was
+    # written after it (a model step rerun after the test would leave old test numbers beside
+    # new forecasts)
+    scored = {f"{Path(k).parent.name}/{Path(k).name}": v
+              for k, v in records["test"].get("inputs", {}).items()
+              if Path(k).name.startswith("predictions_")}
+    promoted = {f"{records[s]['folder']}/{n}": digest for s in MODEL_STEPS
+                for n, digest in records[s]["outputs"].items() if PRED.match(n)}
+    if scored != promoted:
+        raise PromoteError("the prediction files differ from those the step test scored: "
+                           f"{sorted(set(scored) ^ set(promoted))[:3]}")
+    tested = records["test"].get("finished_utc")
+    later = sorted(s for s, r in records.items() if s not in ("report", "test") and tested
+                   and r.get("finished_utc") and r["finished_utc"] > tested)
+    if later:
+        raise PromoteError(f"{later} finished after the step test: its numbers describe an "
+                           "earlier state")
     copies: list[tuple[Path, Path | pd.DataFrame]] = []
     test_folder = run_dir / records["test"]["folder"]
     bench = pd.read_csv(test_folder / "test" / "benchmark_summary.csv")

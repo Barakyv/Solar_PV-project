@@ -15,7 +15,13 @@ T-109  R-G1-14, R-G1-16: a phase-2 retry after a failed `report` scores nothing 
        test_w5_steps)
 T-110  R-G1-15, R-G1-13: `test` refuses a report older than a step it reports on; the alignment
        table says how many rows it compared (in test_evaluation_8b)
+T-111  R-G1-19: `promote` refuses prediction files that differ from the inputs of the completed
+       `test`, and a step that finished after it (in test_w5_steps)
+T-112  R-G1-20, R-G1-21: the benchmark of `test` is written after the SHAP; a step folder that
+       run.json did not list is adopted
 """
+
+import json
 
 import numpy as np
 import pandas as pd
@@ -218,6 +224,40 @@ def test_the_step_test_refuses_a_report_older_than_a_later_step(tmp_path, monkey
     assert "the report is older than" in error and "evaluate" in error
     assert r.run("final", ["report"], resume=run_dir.name, force=True) == 0
     assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 0
+
+
+def test_a_completed_step_that_run_json_did_not_list_is_adopted_not_run_again(tmp_path,
+                                                                              monkeypatch):
+    """R-G1-21: a process killed between the rename of a step folder and the write of run.json
+    left a finished folder that the next invocation moved aside and ran again, which for the step
+    `test` is a second scoring of the test split."""
+    r, run_dir = phase_1(tmp_path, monkeypatch)
+    state = read(run_dir / "run.json")
+    del state["steps"]["report"]
+    (run_dir / "run.json").write_text(json.dumps(state), encoding="utf-8")
+    assert r.run("final", ["report"], resume=run_dir.name) == 0
+    state = read(run_dir / "run.json")
+    assert state["steps"]["report"]["status"] == "ok"
+    assert not list(run_dir.glob("report.superseded-*"))
+    assert "skipped" in read(run_dir / "run.json")["invocations"][-1]["results"]["report"]
+
+
+def test_the_step_test_scores_the_benchmark_after_what_can_fail_by_design(tmp_path, monkeypatch):
+    """R-G1-20: a failure of the SHAP checks or of the analyses of the test window leaves no test
+    benchmark in the failed folder (the first contact with the test rows is where they fail)."""
+    r, run_dir = phase_1(tmp_path, monkeypatch)
+    (run_dir / steps.ACCEPTANCE_FILE).write_text("accepted\n", encoding="utf-8")
+    state = read(run_dir / "run.json")
+    state["steps"]["xgb"] = {"status": "ok", "folder": "xgb"}  # which the SHAP code refuses
+    (run_dir / "xgb").mkdir()
+    (run_dir / "xgb" / "step.json").write_text(json.dumps(
+        {"step": "xgb", "status": "ok", "folder": "xgb", "outputs": {}, "commit": "abc1234",
+         "fingerprint": "f" * 64, "finished_utc": "2020-01-01T00:00:00+00:00"}), encoding="utf-8")
+    (run_dir / "run.json").write_text(json.dumps(state), encoding="utf-8")
+    r2 = make_runner(tmp_path)
+    assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 1
+    failed = list(run_dir.glob("test.failed-*"))
+    assert failed and not (failed[0] / "test" / "benchmark_summary.csv").exists()
 
 
 # ── T-108 the copies of the k to kW conversion ──────────────────────────────
