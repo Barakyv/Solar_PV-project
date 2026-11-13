@@ -1,0 +1,13 @@
+step,status,commit,fingerprint,duration_s,budget,n_outputs,n_warnings,n_resumed
+select,ok,ac63bb0,a3b6e146e389,2.8,,8,0,0
+baselines,ok,ac63bb0,c391e78ab77c,0.8,,3,0,0
+xgb,ok,ac63bb0,0f5e3ef7dd39,22.3,"{""seeds"": [42], ""trials"": 1}",16,12,0
+cv,ok,ac63bb0,1e909ee9fa31,13.9,"{""seeds"": [42], ""trials"": 1}",3,30,0
+ablation,ok,ac63bb0,f46725bf90d3,52.2,"{""seeds"": [42], ""trials"": 1}",5,0,0
+bilstm,ok,ac63bb0,d0f3ec769d57,39.4,"{""epochs_final"": 2, ""epochs_trial"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",25,2,0
+tft96,ok,ac63bb0,80576b481893,48.5,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4,0
+tft168,ok,ac63bb0,1804cea1a19b,49.0,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4,0
+tftbase,ok,ac63bb0,ee2b27a0cbbd,42.4,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 0}",23,2,0
+patchtst,ok,ac63bb0,332e77adbf7f,39.7,"{""max_steps"": 20, ""patience"": 10, ""seeds"": [42], ""val_check_steps"": 10}",20,2,0
+evaluate,ok,ac63bb0,99c45d0feb8f,4.9,,10,0,0
+explain,ok,ac63bb0,921afd61d7a1,4.5,,15,0,0

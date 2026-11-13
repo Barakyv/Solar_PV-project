@@ -1,0 +1,105 @@
+{
+  "step": "bilstm",
+  "run_id": "20261113T202356Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-13T20:25:34.679685+00:00",
+  "commit": "ac63bb0",
+  "fingerprint": "d0f3ec769d5775ec127702589af381c5349963a2312f9d0c78b9be086144da34",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "epochs_trial": 2,
+      "epochs_final": 2,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261113T202356Z_smoke/logs/bilstm_20261113T202534Z.log",
+  "status": "ok",
+  "folder": "bilstm",
+  "finished_utc": "2026-11-13T20:26:14.084267+00:00",
+  "duration_s": 39.4,
+  "outputs": {
+    "best_params.json": "906163589d087d33f9da962d2dc134d1c17de6abed72cea1b64041631e043097",
+    "figures/learning_curves.png": "78a14bee62506a781c2c32b1c13e5cc7fa30aadd8063159f5bbd498a3229dd30",
+    "figures/optimization_history.png": "3ff26e72db6b8cf41b48f50a4f2aa5a868ba5a05c86f44e17e5af88efe2af034",
+    "job/data_direct.npz": "e34c514098b6915abced05ae573589245d9aa38571a1c8d1b5474b6b0b434961",
+    "job/data_indirect.npz": "44fad2a2d8c8675adf22148cf7a847c1b31e8fc1e8587b95718fa509e982e465",
+    "job/job.json": "b3f46b21fad94bac901bd9468eeb43fae8a6417cf699fe8500910c8ea9e8e3fa",
+    "learning_curves.csv": "4051698b144a0a7be0022553e303c8eb76525c52dbee5191c1bddfc8b9cbd4af",
+    "lstm_sota_config.json": "ffe319be2f7acd975f66af4d7626f9f3c0f76ba50757ce8ca9f16cbd0243f7a9",
+    "mbe.csv": "18d5ba4e01083f1b9a9afcb64c48f821554d1c49627986855613940a9e8c48b9",
+    "predictions_lstm_sota_seed42.csv": "6108e9898f69089f03c8df88ee433fdf627c10758b6280555ffb407f5b821d4f",
+    "quantiles_lstm_sota_seed42.csv": "5c9d66f242942dc35860afac10182b5e62222d6946e2afce0eff0e04abf6af8d",
+    "trials.csv": "6e663d646fc20a10622a3a5c428e5bd7e4d81174a5d6bfeeff29c5c5aa6af10c",
+    "worker/curves_direct_seed42.csv": "685e19cbb01c9d142366de4c238f7ce7cf474c572409c4411b00d9171066c4eb",
+    "worker/curves_indirect_seed42.csv": "a7bd61eae4cc86338341653662645000cfb18bd2b780a7ac1aa6a31891aa3ae7",
+    "worker/fit_direct_seed42.json": "ab3f3558682ce188ba12bf9b395da3f1589682670867e1df9a4ba30a2a4c11f5",
+    "worker/fit_indirect_seed42.json": "a1611cb89d46eca41d8259d2fbcd9189fe2227d384199875db9a7a3f62a85f72",
+    "worker/forecast_direct_seed42.npz": "3fe54f25a2c680392b0b14246ccbf7970b68dcbd103dc249be4b2b2916d85104",
+    "worker/forecast_indirect_seed42.npz": "d657f14dcf30679c3014cfd1b0b753c677f8d3641fe3ddc478dc2dc5c4e26b76",
+    "worker/models/lstm_sota_direct_seed42.pt": "8ac1e1ac01f51332cfe0194e3b886416f9e9efd2a6f913a0141b7a8902c900d6",
+    "worker/models/lstm_sota_indirect_seed42.pt": "fe905ba60e0ddf7a2250a3e9c7a34a148dc9bb27ddf2a1f89cf0c4a6af7e0d11",
+    "worker/optuna.db": "062c3c94d3d43a92154ffe7bb5688f4449bc17386d42462c6d6b9947bffcf311",
+    "worker/trials_direct_seed42.csv": "143e396806a688250f4edc8498686ff579c5f73e20f91c0b5dee148e681fe8ce",
+    "worker/trials_indirect_seed42.csv": "d9ac857a03c385ea768bf87378606ff1e6ad01458656d4aac6ed8bf38bf42e03",
+    "worker/worker.json": "7a89344470246860c8d195f4a0ccd3d3ae9f82bf3796d7f7b0b573a6dd0a2e67",
+    "worker_stdout.log": "64d8608364a77f1a6305ec57c7589c8ffc5b78d0a030075b9a73d87c53953351"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 49.01123543293941,
+      "direct_seed42": 41.69688614554782
+    },
+    "test_access": []
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 2
+  },
+  "summary": [
+    "bilstm (smoke, seeds [42]): nRMSE in kW on the tuning window, local days 2024-03-15 to 2024-04-11",
+    "  indirect_seed42        49.011 %  (D+1 49.011, D+2 49.011, D+3 49.011)",
+    "  direct_seed42          41.697 %  (D+1 41.592, D+2 41.698, D+3 41.801)"
+  ],
+  "warnings": [
+    "bilstm: indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "bilstm: direct seed 42: best epoch 2 at the last epoch: it may not have converged"
+  ]
+}

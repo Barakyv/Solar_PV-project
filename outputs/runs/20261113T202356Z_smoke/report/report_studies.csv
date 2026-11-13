@@ -1,0 +1,13 @@
+step,subject,n_trials,n_complete,n_at_cap,best_trial,best_value_kw,edges
+xgb,indirect_D1_seed42,1,1,0.0,0,10.227836085068539,max_depth
+xgb,direct_D1_seed42,1,1,0.0,0,12.252962614630132,max_depth
+xgb,indirect_D2_seed42,1,1,0.0,0,11.425631243866992,max_depth
+xgb,direct_D2_seed42,1,1,0.0,0,11.598139223539523,max_depth
+xgb,indirect_D3_seed42,1,1,0.0,0,11.26860932872464,max_depth
+xgb,direct_D3_seed42,1,1,0.0,0,12.604406353761858,max_depth
+bilstm,indirect seed 42,1,1,,0,49.01123543293941,
+bilstm,direct seed 42,1,1,,0,41.69688614554782,
+tft96,indirect seed 42,1,1,,0,18.670402880845856,lstm_layers
+tft96,direct seed 42,1,1,,0,48.37830644784687,lstm_layers
+tft168,indirect seed 42,1,1,,0,18.8557187099574,lstm_layers
+tft168,direct seed 42,1,1,,0,48.20540335664978,lstm_layers

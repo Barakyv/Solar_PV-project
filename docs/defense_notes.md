@@ -305,7 +305,7 @@ M37-M44, decision D-36). They train models, so they were written before the code
 Added in stage 9, W6, at the user's request (`docs/stage9_plan.md` §23, decision D-38, findings X94
 to X96). The submitted project had no resume at all (M3): a run that stopped was started again.
 
-- **Rebuild:** the long steps keep a checkpoint of a fit at the end of an epoch at least every 60 s, after every finished trial and
+- **Rebuild:** the long steps keep a checkpoint of a fit about once a minute (at the end of the first epoch that ends 60 s or more after the last write), after every finished trial and
   every finished model; a step that was interrupted continues from where it stopped, and says so in
   its record. Budgets, seeds, rules and outputs are unchanged; with no interruption the outputs are
   byte-identical to those of the code without checkpoints (the smoke run, 27 CSV files and 10

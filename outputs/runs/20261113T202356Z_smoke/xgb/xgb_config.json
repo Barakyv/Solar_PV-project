@@ -1,0 +1,874 @@
+{
+  "model": "xgb_sota",
+  "mode": "smoke",
+  "budget": {
+    "trials": 1,
+    "seeds": [
+      42
+    ]
+  },
+  "seeds": [
+    42
+  ],
+  "tuning_window": {
+    "split": "val",
+    "start": "2024-03-14T22:00:00+00:00",
+    "end": "2024-04-11T21:00:00+00:00",
+    "label": "local days 2024-03-15 to 2024-04-11"
+  },
+  "windows": [
+    {
+      "split": "val",
+      "start": "2024-03-14T22:00:00+00:00",
+      "end": "2024-04-11T21:00:00+00:00",
+      "label": "local days 2024-03-15 to 2024-04-11"
+    }
+  ],
+  "objective": "daytime nRMSE in kW (% of 3,449 kW) on the daytime hours of the tuning window with AC truth, op-limited hours included; indirect converted with evaluate.to_kw (docs/stage9_plan.md \u00a714.1)",
+  "early_stopping": "50 rounds on the RMSE in the training unit over the tuning window's rows with the fit mask (\u00a714.2)",
+  "fit_rows": "indirect: train, not warm-up, not op-limited, k valid, theo > 50 kW; direct: train, not warm-up, not op-limited, AC present (M11); smoke: the last 56 local days of train",
+  "imputation": "none: NaN is passed to XGBoost (M8)",
+  "fixed_params": {
+    "tree_method": "hist",
+    "n_jobs": 8,
+    "objective": "reg:squarederror",
+    "eval_metric": "rmse",
+    "verbosity": 0
+  },
+  "search_space": {
+    "n_estimators": {
+      "type": "int",
+      "low": 200,
+      "high": 2000,
+      "log": false
+    },
+    "max_depth": {
+      "type": "int",
+      "low": 3,
+      "high": 10,
+      "log": false
+    },
+    "learning_rate": {
+      "type": "float",
+      "low": 0.01,
+      "high": 0.3,
+      "log": true
+    },
+    "subsample": {
+      "type": "float",
+      "low": 0.6,
+      "high": 1.0,
+      "log": false
+    },
+    "colsample_bytree": {
+      "type": "float",
+      "low": 0.5,
+      "high": 1.0,
+      "log": false
+    },
+    "min_child_weight": {
+      "type": "int",
+      "low": 1,
+      "high": 20,
+      "log": false
+    },
+    "reg_alpha": {
+      "type": "float",
+      "low": 1e-08,
+      "high": 10.0,
+      "log": true
+    },
+    "reg_lambda": {
+      "type": "float",
+      "low": 1e-08,
+      "high": 10.0,
+      "log": true
+    }
+  },
+  "mean_daytime_k": 0.788157,
+  "monotone_decision": {
+    "decision": "D-15",
+    "decided_on": "2026-11-07",
+    "features": [
+      "ghi_clearsky",
+      "poa_global_clearsky",
+      "sun_elevation"
+    ],
+    "sign": 1,
+    "settings": {
+      "indirect": "A",
+      "direct": "A"
+    },
+    "setting_meaning": {
+      "A": "+1 on the D-15 features present (v6 \u00a75.1)",
+      "B": "no constraint"
+    },
+    "rule": "B for k only if gain_1 > margin_1 and gain_h > -margin_h at D+2 and D+3; gain = mean_A - mean_B; margin = max(0.05 pp, 2 x pooled seed std); otherwise A, the v6 setting (docs/stage9_plan.md \u00a714.3). The direct target keeps the D-15 list with +1, not part of the question",
+    "model": "the fixed XGBoost of D-11 (decide_k.XGB_PARAMS), indirect fit rows of train, scored on the daytime validation hours with AC truth (\u00a714.1)",
+    "seeds": [
+      42,
+      123,
+      777
+    ],
+    "results": {
+      "D1": {
+        "mean_A": 6.8062,
+        "std_A": 0.0011,
+        "mean_B": 6.8356,
+        "std_B": 0.0122,
+        "gain_pp": -0.0294,
+        "margin_pp": 0.05,
+        "passes": false
+      },
+      "D2": {
+        "mean_A": 7.2515,
+        "std_A": 0.0305,
+        "mean_B": 7.2567,
+        "std_B": 0.0197,
+        "gain_pp": -0.0053,
+        "margin_pp": 0.0514,
+        "passes": true
+      },
+      "D3": {
+        "mean_A": 6.7013,
+        "std_A": 0.0396,
+        "mean_B": 6.7078,
+        "std_B": 0.0852,
+        "gain_pp": -0.0065,
+        "margin_pp": 0.1329,
+        "passes": true
+      }
+    },
+    "constraints_A_indirect": {
+      "D1": {
+        "ghi_clearsky": 1
+      },
+      "D2": {
+        "ghi_clearsky": 1
+      },
+      "D3": {
+        "ghi_clearsky": 1
+      }
+    },
+    "marginal_sign_train": {
+      "ghi_clearsky": {
+        "spearman_k": -0.3815,
+        "spearman_ac_kw": 0.8992
+      },
+      "poa_global_clearsky": {
+        "spearman_k": -0.4058,
+        "spearman_ac_kw": 0.9252
+      },
+      "sun_elevation": {
+        "spearman_k": -0.3699,
+        "spearman_ac_kw": 0.8854
+      }
+    },
+    "git_commit": "a3b8467"
+  },
+  "monotone_decision_sha256": "141636b887c1d672de6210fe470ef1d71a8477b18222facf6745f3e7f43986c6",
+  "mos": "L-09 where adopted: clip(a + b * kW forecast, 0, 3449) on daytime hours, a and b by OLS on out-of-fold train predictions of the final fit's model (five expanding date folds, 3-day gap, fixed rounds), refitted in this run; for k divided by theo again (docs/stage9_plan.md \u00a714.4, \u00a715)",
+  "mos_adopted": {
+    "indirect": true,
+    "direct": false
+  },
+  "mos_decision": {
+    "decision": "L-09",
+    "decided_on": "2026-11-07",
+    "adopted": {
+      "indirect": true,
+      "direct": false
+    },
+    "rule": "per target: adopted only if gain_1 > margin_1 and gain_h > -margin_h at D+2 and D+3; gain = mean(uncorrected) - mean(corrected); margin = max(0.05 pp, 2 x pooled seed std) (docs/stage9_plan.md \u00a714.4)",
+    "base_model": "best parameters of the dev study, fixed rounds = best iteration + 1, no early stopping; seeds 42, 123, 777",
+    "correction": "OLS y = a + b * y_hat on out-of-fold kW predictions of the five expanding date folds of train (3-day gap), daytime, AC truth, not op-limited, not warm-up; applied as clip(a + b * y_hat, 0, 3449)",
+    "source_run": "20261107T104151Z_dev",
+    "best_params_sha256": "97bd6764951c950eb6024c16cfdabf9a3c3674df3b3f4b8f897db9d706df318a",
+    "results": {
+      "indirect": {
+        "adopted": true,
+        "by_horizon": {
+          "D1": {
+            "uncorrected_mean": 6.809,
+            "corrected_mean": 6.6986,
+            "gain_pp": 0.1104,
+            "margin_pp": 0.05,
+            "a_mean_kw": 15.047,
+            "b_mean": 0.98482,
+            "passes": true
+          },
+          "D2": {
+            "uncorrected_mean": 7.2164,
+            "corrected_mean": 7.0005,
+            "gain_pp": 0.2159,
+            "margin_pp": 0.1753,
+            "a_mean_kw": 20.092,
+            "b_mean": 0.97131,
+            "passes": true
+          },
+          "D3": {
+            "uncorrected_mean": 6.6919,
+            "corrected_mean": 6.5994,
+            "gain_pp": 0.0925,
+            "margin_pp": 0.0892,
+            "a_mean_kw": 29.775,
+            "b_mean": 0.9793,
+            "passes": true
+          }
+        }
+      },
+      "direct": {
+        "adopted": false,
+        "by_horizon": {
+          "D1": {
+            "uncorrected_mean": 6.7042,
+            "corrected_mean": 6.7623,
+            "gain_pp": -0.0581,
+            "margin_pp": 0.0759,
+            "a_mean_kw": -34.894,
+            "b_mean": 1.01951,
+            "passes": false
+          },
+          "D2": {
+            "uncorrected_mean": 6.8051,
+            "corrected_mean": 6.9364,
+            "gain_pp": -0.1312,
+            "margin_pp": 0.05,
+            "a_mean_kw": -65.018,
+            "b_mean": 1.05836,
+            "passes": false
+          },
+          "D3": {
+            "uncorrected_mean": 6.4506,
+            "corrected_mean": 6.5619,
+            "gain_pp": -0.1112,
+            "margin_pp": 0.0759,
+            "a_mean_kw": -40.135,
+            "b_mean": 1.02884,
+            "passes": false
+          }
+        }
+      }
+    },
+    "coefficients": {
+      "indirect_D1_seed42": {
+        "a_kw": 14.6201,
+        "b": 0.985296,
+        "n_oof": 7834
+      },
+      "indirect_D1_seed123": {
+        "a_kw": 15.1876,
+        "b": 0.983867,
+        "n_oof": 7834
+      },
+      "indirect_D1_seed777": {
+        "a_kw": 15.3328,
+        "b": 0.985294,
+        "n_oof": 7834
+      },
+      "direct_D1_seed42": {
+        "a_kw": -35.8021,
+        "b": 1.021191,
+        "n_oof": 7834
+      },
+      "direct_D1_seed123": {
+        "a_kw": -34.662,
+        "b": 1.0193,
+        "n_oof": 7834
+      },
+      "direct_D1_seed777": {
+        "a_kw": -34.217,
+        "b": 1.018027,
+        "n_oof": 7834
+      },
+      "indirect_D2_seed42": {
+        "a_kw": 18.7093,
+        "b": 0.972206,
+        "n_oof": 7834
+      },
+      "indirect_D2_seed123": {
+        "a_kw": 18.4129,
+        "b": 0.974403,
+        "n_oof": 7834
+      },
+      "indirect_D2_seed777": {
+        "a_kw": 23.1543,
+        "b": 0.967326,
+        "n_oof": 7834
+      },
+      "direct_D2_seed42": {
+        "a_kw": -62.4812,
+        "b": 1.057128,
+        "n_oof": 7834
+      },
+      "direct_D2_seed123": {
+        "a_kw": -64.8658,
+        "b": 1.058576,
+        "n_oof": 7834
+      },
+      "direct_D2_seed777": {
+        "a_kw": -67.7064,
+        "b": 1.059381,
+        "n_oof": 7834
+      },
+      "indirect_D3_seed42": {
+        "a_kw": 28.0762,
+        "b": 0.979129,
+        "n_oof": 7834
+      },
+      "indirect_D3_seed123": {
+        "a_kw": 31.6296,
+        "b": 0.978669,
+        "n_oof": 7834
+      },
+      "indirect_D3_seed777": {
+        "a_kw": 29.6198,
+        "b": 0.980105,
+        "n_oof": 7834
+      },
+      "direct_D3_seed42": {
+        "a_kw": -40.9449,
+        "b": 1.03045,
+        "n_oof": 7834
+      },
+      "direct_D3_seed123": {
+        "a_kw": -36.1728,
+        "b": 1.025704,
+        "n_oof": 7834
+      },
+      "direct_D3_seed777": {
+        "a_kw": -43.2873,
+        "b": 1.03038,
+        "n_oof": 7834
+      }
+    },
+    "max_abs_diff_seed42_vs_dev": 0.0,
+    "git_commit": "45c7a84"
+  },
+  "mos_decision_sha256": "20d159081fdd8093fc6ff5d90a0c848c031a602453a93720d39397dbaa312c25",
+  "seed_spread_pp": {},
+  "problems": {
+    "indirect_D1": {
+      "features": [
+        "ghi_clearsky",
+        "dni_clearsky",
+        "ambient_temp_lag_1d",
+        "aoi",
+        "doy_sin",
+        "day_length",
+        "time_to_solar_noon",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_tcell",
+        "fcst_gfs_k_phys",
+        "poa_direct_clearsky",
+        "irradiance_lag_3d",
+        "mod_temp1_lag_1d",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_7d",
+        "hour_local",
+        "doy_cos",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "irradiance_clear_index_prevday"
+      ],
+      "n_features": 31,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1
+      },
+      "rows": {
+        "fit": 496,
+        "early_stopping": 296,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {
+          "irradiance_clear_index_prevday": 6
+        },
+        "early_stopping": {},
+        "scoring": {}
+      },
+      "nan_counts_predicted": {}
+    },
+    "direct_D1": {
+      "features": [
+        "ghi_clearsky",
+        "dhi_clearsky",
+        "dni_clearsky",
+        "sun_elevation",
+        "poa_global_clearsky",
+        "poa_direct_clearsky",
+        "poa_diffuse_clearsky",
+        "poa_sky_diffuse_clearsky",
+        "poa_ground_diffuse_clearsky",
+        "s01_inv1_rolling_mean_3d_same_tod",
+        "s01_inv1_rolling_mean_7d_same_tod",
+        "s01_inv1_rolling_std_3d_same_tod",
+        "s01_inv1_rolling_std_7d_same_tod",
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "s01_inv2_rolling_std_3d_same_tod",
+        "s01_inv2_rolling_std_7d_same_tod",
+        "site_total_rolling_mean_3d_same_tod",
+        "site_total_rolling_mean_7d_same_tod",
+        "site_total_rolling_std_3d_same_tod",
+        "site_total_rolling_std_7d_same_tod",
+        "s01_inv1_AC_kW_lag_1d",
+        "s01_inv1_AC_kW_lag_2d",
+        "s01_inv1_AC_kW_lag_3d",
+        "s01_inv1_AC_kW_lag_7d",
+        "s01_inv1_AC_kW_lag_14d",
+        "s01_inv2_AC_kW_lag_1d",
+        "s01_inv2_AC_kW_lag_2d",
+        "s01_inv2_AC_kW_lag_3d",
+        "s01_inv2_AC_kW_lag_7d",
+        "s01_inv2_AC_kW_lag_14d",
+        "site_total_AC_kW_lag_1d",
+        "site_total_AC_kW_lag_2d",
+        "site_total_AC_kW_lag_3d",
+        "site_total_AC_kW_lag_7d",
+        "site_total_AC_kW_lag_14d",
+        "irradiance_lag_1d",
+        "irradiance_lag_2d",
+        "irradiance_lag_3d",
+        "irradiance_lag_7d",
+        "irradiance_lag_14d",
+        "mod_temp1_lag_1d",
+        "mod_temp1_lag_2d",
+        "mod_temp1_lag_3d",
+        "mod_temp1_lag_7d",
+        "mod_temp1_lag_14d",
+        "mod_temp2_lag_1d",
+        "mod_temp2_lag_2d",
+        "mod_temp2_lag_3d",
+        "mod_temp2_lag_7d",
+        "mod_temp2_lag_14d",
+        "ambient_temp_lag_1d",
+        "ambient_temp_lag_2d",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_7d",
+        "ambient_temp_lag_14d",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "month",
+        "season",
+        "is_weekend",
+        "hour_local",
+        "aoi",
+        "solar_azimuth",
+        "solar_zenith",
+        "airmass",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "daylight_fraction",
+        "day_of_week",
+        "fcst_gfs_ghi",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_hcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_pv_kw",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday"
+      ],
+      "n_features": 96,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1,
+        "sun_elevation": 1,
+        "poa_global_clearsky": 1
+      },
+      "rows": {
+        "fit": 1239,
+        "early_stopping": 631,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {
+          "airmass": 675,
+          "irradiance_clear_index_prevday": 13
+        },
+        "early_stopping": {
+          "airmass": 302
+        },
+        "scoring": {}
+      },
+      "nan_counts_predicted": {
+        "val": {
+          "airmass": 302
+        }
+      }
+    },
+    "indirect_D2": {
+      "features": [
+        "dni_clearsky",
+        "aoi",
+        "doy_sin",
+        "day_length",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_lcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_t2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_k_phys",
+        "ghi_clearsky",
+        "poa_direct_clearsky",
+        "s01_inv2_rolling_std_7d_same_tod",
+        "ambient_temp_lag_2d",
+        "ambient_temp_lag_7d",
+        "doy_cos",
+        "time_to_solar_noon",
+        "fcst_gfs_kt",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_tcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "irradiance_clear_index_prevday"
+      ],
+      "n_features": 28,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1
+      },
+      "rows": {
+        "fit": 496,
+        "early_stopping": 296,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {},
+        "early_stopping": {},
+        "scoring": {}
+      },
+      "nan_counts_predicted": {}
+    },
+    "direct_D2": {
+      "features": [
+        "ghi_clearsky",
+        "dhi_clearsky",
+        "dni_clearsky",
+        "sun_elevation",
+        "poa_global_clearsky",
+        "poa_direct_clearsky",
+        "poa_diffuse_clearsky",
+        "poa_sky_diffuse_clearsky",
+        "poa_ground_diffuse_clearsky",
+        "s01_inv1_rolling_mean_3d_same_tod",
+        "s01_inv1_rolling_mean_7d_same_tod",
+        "s01_inv1_rolling_std_3d_same_tod",
+        "s01_inv1_rolling_std_7d_same_tod",
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "s01_inv2_rolling_std_3d_same_tod",
+        "s01_inv2_rolling_std_7d_same_tod",
+        "site_total_rolling_mean_3d_same_tod",
+        "site_total_rolling_mean_7d_same_tod",
+        "site_total_rolling_std_3d_same_tod",
+        "site_total_rolling_std_7d_same_tod",
+        "s01_inv1_AC_kW_lag_2d",
+        "s01_inv1_AC_kW_lag_3d",
+        "s01_inv1_AC_kW_lag_7d",
+        "s01_inv1_AC_kW_lag_14d",
+        "s01_inv2_AC_kW_lag_2d",
+        "s01_inv2_AC_kW_lag_3d",
+        "s01_inv2_AC_kW_lag_7d",
+        "s01_inv2_AC_kW_lag_14d",
+        "site_total_AC_kW_lag_2d",
+        "site_total_AC_kW_lag_3d",
+        "site_total_AC_kW_lag_7d",
+        "site_total_AC_kW_lag_14d",
+        "irradiance_lag_2d",
+        "irradiance_lag_3d",
+        "irradiance_lag_7d",
+        "irradiance_lag_14d",
+        "mod_temp1_lag_2d",
+        "mod_temp1_lag_3d",
+        "mod_temp1_lag_7d",
+        "mod_temp1_lag_14d",
+        "mod_temp2_lag_2d",
+        "mod_temp2_lag_3d",
+        "mod_temp2_lag_7d",
+        "mod_temp2_lag_14d",
+        "ambient_temp_lag_2d",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_7d",
+        "ambient_temp_lag_14d",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "month",
+        "season",
+        "is_weekend",
+        "hour_local",
+        "aoi",
+        "solar_azimuth",
+        "solar_zenith",
+        "airmass",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "daylight_fraction",
+        "day_of_week",
+        "fcst_gfs_ghi",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_hcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_pv_kw",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday"
+      ],
+      "n_features": 89,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1,
+        "sun_elevation": 1,
+        "poa_global_clearsky": 1
+      },
+      "rows": {
+        "fit": 1239,
+        "early_stopping": 631,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {
+          "airmass": 675,
+          "irradiance_clear_index_prevday": 14
+        },
+        "early_stopping": {
+          "airmass": 302
+        },
+        "scoring": {}
+      },
+      "nan_counts_predicted": {
+        "val": {
+          "airmass": 302
+        }
+      }
+    },
+    "indirect_D3": {
+      "features": [
+        "ghi_clearsky",
+        "dni_clearsky",
+        "ambient_temp_lag_7d",
+        "aoi",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "fcst_gfs_kt",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday",
+        "poa_direct_clearsky",
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_14d",
+        "solar_azimuth",
+        "fcst_gfs_hcc"
+      ],
+      "n_features": 32,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1
+      },
+      "rows": {
+        "fit": 496,
+        "early_stopping": 296,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {
+          "irradiance_clear_index_prevday": 10
+        },
+        "early_stopping": {},
+        "scoring": {}
+      },
+      "nan_counts_predicted": {}
+    },
+    "direct_D3": {
+      "features": [
+        "ghi_clearsky",
+        "dhi_clearsky",
+        "dni_clearsky",
+        "sun_elevation",
+        "poa_global_clearsky",
+        "poa_direct_clearsky",
+        "poa_diffuse_clearsky",
+        "poa_sky_diffuse_clearsky",
+        "poa_ground_diffuse_clearsky",
+        "s01_inv1_rolling_mean_3d_same_tod",
+        "s01_inv1_rolling_mean_7d_same_tod",
+        "s01_inv1_rolling_std_3d_same_tod",
+        "s01_inv1_rolling_std_7d_same_tod",
+        "s01_inv2_rolling_mean_3d_same_tod",
+        "s01_inv2_rolling_mean_7d_same_tod",
+        "s01_inv2_rolling_std_3d_same_tod",
+        "s01_inv2_rolling_std_7d_same_tod",
+        "site_total_rolling_mean_3d_same_tod",
+        "site_total_rolling_mean_7d_same_tod",
+        "site_total_rolling_std_3d_same_tod",
+        "site_total_rolling_std_7d_same_tod",
+        "s01_inv1_AC_kW_lag_3d",
+        "s01_inv1_AC_kW_lag_7d",
+        "s01_inv1_AC_kW_lag_14d",
+        "s01_inv2_AC_kW_lag_3d",
+        "s01_inv2_AC_kW_lag_7d",
+        "s01_inv2_AC_kW_lag_14d",
+        "site_total_AC_kW_lag_3d",
+        "site_total_AC_kW_lag_7d",
+        "site_total_AC_kW_lag_14d",
+        "irradiance_lag_3d",
+        "irradiance_lag_7d",
+        "irradiance_lag_14d",
+        "mod_temp1_lag_3d",
+        "mod_temp1_lag_7d",
+        "mod_temp1_lag_14d",
+        "mod_temp2_lag_3d",
+        "mod_temp2_lag_7d",
+        "mod_temp2_lag_14d",
+        "ambient_temp_lag_3d",
+        "ambient_temp_lag_7d",
+        "ambient_temp_lag_14d",
+        "hour_sin",
+        "hour_cos",
+        "month_sin",
+        "month_cos",
+        "month",
+        "season",
+        "is_weekend",
+        "hour_local",
+        "aoi",
+        "solar_azimuth",
+        "solar_zenith",
+        "airmass",
+        "doy_sin",
+        "doy_cos",
+        "day_length",
+        "time_to_solar_noon",
+        "daylight_fraction",
+        "day_of_week",
+        "fcst_gfs_ghi",
+        "fcst_gfs_kt",
+        "fcst_gfs_poa",
+        "fcst_gfs_kt_poa",
+        "fcst_gfs_kt_poa_ma3",
+        "fcst_gfs_kt_poa_daymean",
+        "fcst_gfs_tcc",
+        "fcst_gfs_lcc",
+        "fcst_gfs_mcc",
+        "fcst_gfs_hcc",
+        "fcst_gfs_tcc_mean3x3",
+        "fcst_gfs_tcc_std3x3",
+        "fcst_gfs_tcc_daymean",
+        "fcst_gfs_t2m",
+        "fcst_gfs_rh2m",
+        "fcst_gfs_pwat",
+        "fcst_gfs_wind10",
+        "fcst_gfs_sunsd",
+        "fcst_gfs_tcell",
+        "fcst_gfs_pv_kw",
+        "fcst_gfs_k_phys",
+        "irradiance_clear_index_prevday"
+      ],
+      "n_features": 82,
+      "monotone_setting": "A",
+      "monotone_constraints": {
+        "ghi_clearsky": 1,
+        "sun_elevation": 1,
+        "poa_global_clearsky": 1
+      },
+      "rows": {
+        "fit": 1239,
+        "early_stopping": 631,
+        "scoring": 321,
+        "scoring_op_limited": 40
+      },
+      "nan_counts": {
+        "fit": {
+          "airmass": 675,
+          "irradiance_clear_index_prevday": 24
+        },
+        "early_stopping": {
+          "airmass": 302
+        },
+        "scoring": {}
+      },
+      "nan_counts_predicted": {
+        "val": {
+          "airmass": 302
+        }
+      }
+    }
+  },
+  "optuna": "5.0.0"
+}

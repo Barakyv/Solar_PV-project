@@ -1,0 +1,28 @@
+[     0.0s] RUN     stage runs/20261113T202356Z_smoke
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: ac63bb0
+[     0.2s] RUN     started (UTC): 2026-11-13T20:23:59+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261113T202356Z_smoke, mode smoke, steps ['select', 'baselines', 'xgb', 'cv', 'ablation', 'bilstm', 'tft96', 'tft168', 'tftbase', 'patchtst', 'evaluate', 'explain', 'report']
+[     3.3s] NOTE    select: ok in 2.8 s, 8 outputs
+[     4.4s] NOTE    baselines: ok in 0.8 s, 3 outputs
+[    27.4s] NOTE    xgb: its checkpoints were removed (13 files, 4 MB)
+[    27.4s] NOTE    xgb: ok in 22.3 s, 16 outputs
+[    41.6s] NOTE    cv: ok in 13.9 s, 3 outputs
+[    94.3s] NOTE    ablation: ok in 52.2 s, 5 outputs
+[   134.8s] NOTE    bilstm: its checkpoints were removed (15 files, 7 MB)
+[   134.8s] NOTE    bilstm: ok in 39.4 s, 25 outputs
+[   184.3s] NOTE    tft96: its checkpoints were removed (15 files, 4 MB)
+[   184.3s] NOTE    tft96: ok in 48.5 s, 27 outputs
+[   234.5s] NOTE    tft168: its checkpoints were removed (15 files, 5 MB)
+[   234.5s] NOTE    tft168: ok in 49.0 s, 27 outputs
+[   277.9s] NOTE    tftbase: its checkpoints were removed (11 files, 6 MB)
+[   277.9s] NOTE    tftbase: ok in 42.4 s, 23 outputs
+[   318.7s] NOTE    patchtst: its checkpoints were removed (11 files, 5 MB)
+[   318.7s] NOTE    patchtst: ok in 39.7 s, 20 outputs
+[   323.9s] NOTE    evaluate: ok in 4.9 s, 10 outputs
+[   328.9s] NOTE    explain: ok in 4.5 s, 15 outputs
+[   329.9s] NOTE    report: ok in 0.6 s, 16 outputs
+[   329.9s] VALUE   status = ok
+[   329.9s] RUN     warnings: 0
+[   329.9s] RUN     status: ok; duration 329.9s

@@ -1,0 +1,94 @@
+[     0.0s] RUN     stage runs/20261113T202356Z_smoke/xgb
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: ac63bb0
+[     0.2s] RUN     started (UTC): 2026-11-13T20:24:04+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.3s] INPUT   configs/monotone_decision.yaml sha256=141636b887c1d672
+[     0.4s] INPUT   configs/mos_decision.yaml sha256=20d159081fdd8093
+[     0.4s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.9s] NOTE    budget 1 trials, seeds [42], tuning window local days 2024-03-15 to 2024-04-11, training rows the last 56 local days of train; MEAN_DAYTIME_K 0.788157; D-15 settings {'indirect': 'A', 'direct': 'A'}; L-09 adopted {'indirect': True, 'direct': False}
+[     1.9s] NOTE    indirect_D1: 31 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 496, 'early_stopping': 296, 'scoring': 321, 'scoring_op_limited': 40}
+[     1.9s] NOTE    indirect_D1: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 6}
+[     1.9s] STEP    indirect_D1_seed42: 1 trial(s) ...
+[     3.3s] NOTE    indirect_D1_seed42 trial 0: 10.2278 % kW, 20.4038 % k, best iteration 22 of 874, 1.02 s
+[     3.8s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits ...
+[     4.4s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits done in 0.5s
+[     4.4s] NOTE    indirect_D1_seed42: L-09 a +49.950 kW, b 0.94000 on 409 out-of-fold hours; tuning window 10.2278 -> 10.0857 % of capacity
+[     4.4s] WARN    indirect_D1_seed42: validation RMSE 0.194 is 4.6 x the train RMSE 0.04174 at the best iteration
+[     4.4s] WARN    indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10
+[     4.4s] NOTE    indirect_D1_seed42: best trial 0, validation 10.0857 % of capacity (uncorrected 10.2278 %), best iteration 22 of 874
+[     4.4s] STEP    indirect_D1_seed42: 1 trial(s) done in 2.5s
+[     4.5s] NOTE    direct_D1: 96 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 1239, 'early_stopping': 631, 'scoring': 321, 'scoring_op_limited': 40}
+[     4.5s] NOTE    direct_D1: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 675, 'irradiance_clear_index_prevday': 13}
+[     4.5s] NOTE    direct_D1: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 302}
+[     4.5s] STEP    direct_D1_seed42: 1 trial(s) ...
+[     7.0s] NOTE    direct_D1_seed42 trial 0: 12.2530 % kW, best iteration 158 of 874, 2.16 s
+[     9.3s] WARN    direct_D1_seed42: validation RMSE 273.8 is 263.6 x the train RMSE 1.039 at the best iteration
+[     9.3s] WARN    direct_D1_seed42: best trial on the edge of the search space for max_depth = 10
+[     9.3s] NOTE    direct_D1_seed42: best trial 0, validation 12.2530 % of capacity, best iteration 158 of 874
+[     9.3s] STEP    direct_D1_seed42: 1 trial(s) done in 4.8s
+[     9.4s] NOTE    indirect_D2: 28 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 496, 'early_stopping': 296, 'scoring': 321, 'scoring_op_limited': 40}
+[     9.4s] STEP    indirect_D2_seed42: 1 trial(s) ...
+[     9.9s] NOTE    indirect_D2_seed42 trial 0: 11.4256 % kW, 23.6068 % k, best iteration 11 of 874, 0.22 s
+[    10.2s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits ...
+[    10.6s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits done in 0.4s
+[    10.6s] NOTE    indirect_D2_seed42: L-09 a +39.942 kW, b 0.95901 on 409 out-of-fold hours; tuning window 11.4256 -> 11.2532 % of capacity
+[    10.6s] WARN    indirect_D2_seed42: validation RMSE 0.2146 is 2.7 x the train RMSE 0.07976 at the best iteration
+[    10.6s] WARN    indirect_D2_seed42: best trial on the edge of the search space for max_depth = 10
+[    10.6s] NOTE    indirect_D2_seed42: best trial 0, validation 11.2532 % of capacity (uncorrected 11.4256 %), best iteration 11 of 874
+[    10.7s] STEP    indirect_D2_seed42: 1 trial(s) done in 1.3s
+[    10.7s] NOTE    direct_D2: 89 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 1239, 'early_stopping': 631, 'scoring': 321, 'scoring_op_limited': 40}
+[    10.7s] NOTE    direct_D2: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 675, 'irradiance_clear_index_prevday': 14}
+[    10.7s] NOTE    direct_D2: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 302}
+[    10.7s] STEP    direct_D2_seed42: 1 trial(s) ...
+[    11.8s] NOTE    direct_D2_seed42 trial 0: 11.5981 % kW, best iteration 37 of 874, 0.84 s
+[    12.7s] WARN    direct_D2_seed42: validation RMSE 254.2 is 8.6 x the train RMSE 29.42 at the best iteration
+[    12.7s] WARN    direct_D2_seed42: best trial on the edge of the search space for max_depth = 10
+[    12.7s] NOTE    direct_D2_seed42: best trial 0, validation 11.5981 % of capacity, best iteration 37 of 874
+[    12.7s] STEP    direct_D2_seed42: 1 trial(s) done in 2.0s
+[    12.8s] NOTE    indirect_D3: 32 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 496, 'early_stopping': 296, 'scoring': 321, 'scoring_op_limited': 40}
+[    12.8s] NOTE    indirect_D3: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 10}
+[    12.8s] STEP    indirect_D3_seed42: 1 trial(s) ...
+[    13.4s] NOTE    indirect_D3_seed42 trial 0: 11.2686 % kW, 23.5549 % k, best iteration 11 of 874, 0.25 s
+[    13.7s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits ...
+[    14.0s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits done in 0.3s
+[    14.0s] NOTE    indirect_D3_seed42: L-09 a +36.390 kW, b 0.97837 on 409 out-of-fold hours; tuning window 11.2686 -> 11.2007 % of capacity
+[    14.0s] WARN    indirect_D3_seed42: validation RMSE 0.2147 is 2.7 x the train RMSE 0.08027 at the best iteration
+[    14.0s] WARN    indirect_D3_seed42: best trial on the edge of the search space for max_depth = 10
+[    14.1s] NOTE    indirect_D3_seed42: best trial 0, validation 11.2007 % of capacity (uncorrected 11.2686 %), best iteration 11 of 874
+[    14.1s] STEP    indirect_D3_seed42: 1 trial(s) done in 1.3s
+[    14.1s] NOTE    direct_D3: 82 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 1239, 'early_stopping': 631, 'scoring': 321, 'scoring_op_limited': 40}
+[    14.1s] NOTE    direct_D3: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 675, 'irradiance_clear_index_prevday': 24}
+[    14.1s] NOTE    direct_D3: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 302}
+[    14.1s] STEP    direct_D3_seed42: 1 trial(s) ...
+[    17.3s] NOTE    direct_D3_seed42 trial 0: 12.6044 % kW, best iteration 329 of 874, 2.93 s
+[    20.3s] WARN    direct_D3_seed42: validation RMSE 276.3 is 2835.5 x the train RMSE 0.09745 at the best iteration
+[    20.3s] WARN    direct_D3_seed42: best trial on the edge of the search space for max_depth = 10
+[    20.4s] NOTE    direct_D3_seed42: best trial 0, validation 12.6044 % of capacity, best iteration 329 of 874
+[    20.4s] STEP    direct_D3_seed42: 1 trial(s) done in 6.3s
+[    20.5s] NOTE    seed spread: one seed per target x horizon, not computed
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/predictions_xgb_sota_seed42.csv sha256=2048d9fb503f3a3f
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/uncorrected_xgb_sota_seed42.csv sha256=f7d728625506d0ad
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/mos_coefficients.csv sha256=1dd803c27c849659
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/trials.csv sha256=6634d9b57b1eaf9e
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/learning_curves.csv sha256=1971fa2fff9929a9
+[    22.2s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/best_params.json sha256=98bbb2e802fd90b5
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/xgb_config.json sha256=08938083f095b970
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/figures/learning_curves.png sha256=bc794e3b3ca39c40
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/figures/optimization_history.png sha256=91f05017adeee642
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/optuna.db sha256=c83b52ba7035e3ab
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_direct_D1_seed42.ubj sha256=302218e389b98518
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_direct_D2_seed42.ubj sha256=0ea07ae5ac8f9322
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_direct_D3_seed42.ubj sha256=72a12e8ea9b427c7
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_indirect_D1_seed42.ubj sha256=3529642f31389fd3
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_indirect_D2_seed42.ubj sha256=f3d81cd6663c94ac
+[    22.3s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.xgb.tmp/models/xgb_sota_indirect_D3_seed42.ubj sha256=7cccaa6cc0d8300e
+[    22.3s] RUN     warnings: 12
+[    22.3s] RUN     status: ok; duration 22.3s

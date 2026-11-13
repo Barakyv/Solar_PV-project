@@ -2073,7 +2073,7 @@ hashes, numbers) and the commit messages are the record:
 - **R-G1-33, measured.** The state of the largest BiLSTM is 83 MB and takes 0.44 s to write and
   sync, against epochs of 0.4 s (development run); that of a TFT with 3 LSTM layers is 43 MB and
   1.5 s, against epochs of 5.6 s. A write after every epoch would add up to about 4.7 h to the final
-  run (a bound). So a fit's state is written at most every 60 s (`SOLARPV_CHECKPOINT_INTERVAL_S`; 0
+  run (a bound). So a fit's state is written about once a minute (`SOLARPV_CHECKPOINT_INTERVAL_S`; 0
   writes after every epoch, as the user first asked), and the trial and unit checkpoints, which
   are small, are written every time. **The user's request, "after every epoch", is kept for the
   epochs that are long enough to be worth it and changed for the short ones; the user is told.**

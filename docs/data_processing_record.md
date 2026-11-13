@@ -1349,7 +1349,7 @@ stored file changed).**
 - *Method:* `solarpv.models.checkpoint` (docs/stage9_plan.md §23, D-38). A folder
   `<run folder>/checkpoints/<step>/`, written atomically and bound to the run, the step and its
   fingerprint (code commit, configuration, SHA-256 of every input; for the neural steps also the
-  content digest of every target's arrays). The neural worker saves at the end of an epoch at least every 60 s (model,
+  content digest of every target's arrays). The neural worker saves a fit's state about once a minute (at the end of the first epoch that ends 60 s or more after the last write) (model,
   Adam state, the order generator, the random states, the best epoch's weights, the curve), after
   every finished trial (the finished trials and the sampler) and after every finished target x
   seed; PatchTST after every target x seed. The `xgb` step saves after every finished trial and

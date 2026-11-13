@@ -163,7 +163,7 @@ the test split is scored once. Then:
 ## 7. After an interruption: checkpoints (D-38), a logoff, a disconnect
 
 **Checkpoints** (`docs/stage9_plan.md` §23). The long steps keep a checkpoint in
-`outputs/runs/<run_id>/checkpoints/<step>/`: the neural steps at the end of an epoch at least every 60 s (every epoch of a TFT, about every 150th of a BiLSTM), every finished trial
+`outputs/runs/<run_id>/checkpoints/<step>/`: the neural steps about once a minute (at the end of the first epoch that ends 60 s or more after the last write) (about every 6th to 15th epoch of a TFT, about every 150th of a BiLSTM), every finished trial
 and every finished target x seed; `xgb` after every finished trial and every finished target x
 horizon x seed; PatchTST after every finished target x seed (a fit takes about 2 minutes). The steps
 shorter than 15 minutes (`cv`, `ablation`, `evaluate`, `explain`, `report`, `test`) start again.

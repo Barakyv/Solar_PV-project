@@ -1,0 +1,14 @@
+{
+  "step": "cv",
+  "mode": "smoke",
+  "seeds": [
+    42
+  ],
+  "folds": "the five expanding date folds of stage 7 (selection.common.date_folds, 3-day gap) over the local days of the train rows (smoke: the last 56 days), the loop of the L-09 correction (X68)",
+  "model": "the xgb record of each fit: searched parameters, seed, constraints by exact name, rounds n_rounds, fixed; no early stopping",
+  "held_rows": "daytime hours with AC truth, op-limited included, warm-up excluded (X69)",
+  "metric": "nRMSE in kW, % of 3,449 kW (units.nrmse_kw); the k forecast through to_kw",
+  "forecast": "raw, not corrected by L-09",
+  "comparison": "validation_uncorrected is the xgb step's value of the same fit on the validation window, which was its early-stopping set (D-10); the CV folds were not",
+  "xgb_best_params_sha256": "98bbb2e802fd90b5f53ec553aca6671e83b1d9026c6019f271179f6ee36ce61d"
+}

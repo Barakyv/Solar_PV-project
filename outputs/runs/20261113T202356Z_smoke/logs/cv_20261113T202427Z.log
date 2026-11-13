@@ -1,0 +1,69 @@
+[     0.0s] RUN     stage runs/20261113T202356Z_smoke/cv
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: ac63bb0
+[     0.2s] RUN     started (UTC): 2026-11-13T20:24:27+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T202356Z_smoke/xgb/best_params.json sha256=98bbb2e802fd90b5
+[     0.2s] INPUT   outputs/runs/20261113T202356Z_smoke/xgb/xgb_config.json sha256=08938083f095b970
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.4s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.4s] NOTE    CV of the xgb models on the train rows, seeds [42], five expanding date folds with a 3-day gap, the raw forecast, nRMSE in kW (% of 3,449 kW)
+[     0.4s] STEP    indirect_D1_seed42: five folds ...
+[     0.9s] STEP    indirect_D1_seed42: five folds done in 0.5s
+[     0.9s] NOTE    indirect_D1_seed42: CV 9.905 +- 2.419 % kW over 5 folds; validation (raw) 10.228 %
+[     0.9s] STEP    direct_D1_seed42: five folds ...
+[     5.3s] STEP    direct_D1_seed42: five folds done in 4.4s
+[     5.3s] NOTE    direct_D1_seed42: CV 10.254 +- 2.100 % kW over 5 folds; validation (raw) 12.253 %
+[     5.3s] STEP    indirect_D2_seed42: five folds ...
+[     5.6s] STEP    indirect_D2_seed42: five folds done in 0.3s
+[     5.6s] NOTE    indirect_D2_seed42: CV 10.169 +- 1.903 % kW over 5 folds; validation (raw) 11.426 %
+[     5.6s] STEP    direct_D2_seed42: five folds ...
+[     7.0s] STEP    direct_D2_seed42: five folds done in 1.3s
+[     7.0s] NOTE    direct_D2_seed42: CV 10.317 +- 2.139 % kW over 5 folds; validation (raw) 11.598 %
+[     7.0s] STEP    indirect_D3_seed42: five folds ...
+[     7.4s] STEP    indirect_D3_seed42: five folds done in 0.3s
+[     7.4s] NOTE    indirect_D3_seed42: CV 10.438 +- 2.038 % kW over 5 folds; validation (raw) 11.269 %
+[     7.4s] STEP    direct_D3_seed42: five folds ...
+[    13.8s] STEP    direct_D3_seed42: five folds done in 6.5s
+[    13.8s] NOTE    direct_D3_seed42: CV 11.898 +- 2.885 % kW over 5 folds; validation (raw) 12.604 %
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 4: 78 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 4: 78 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 4: 78 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 4: 78 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 4: 78 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 0: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 1: 81 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 2: 82 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 3: 90 held hours
+[    13.8s] WARN    cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 4: 78 held hours
+[    13.9s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.cv.tmp/cv_folds.csv sha256=dca37edf3dc367e5
+[    13.9s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.cv.tmp/cv_summary.csv sha256=19f38ed5b56212c3
+[    13.9s] OUTPUT  outputs/runs/20261113T202356Z_smoke/.cv.tmp/cv_config.json sha256=13289da7d4f9dfcd
+[    13.9s] RUN     warnings: 30
+[    13.9s] RUN     status: ok; duration 13.9s

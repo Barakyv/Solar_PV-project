@@ -1,0 +1,108 @@
+{
+  "step": "tft168",
+  "run_id": "20261113T202356Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-13T20:27:04.736327+00:00",
+  "commit": "ac63bb0",
+  "fingerprint": "1804cea1a19b3ef65186d59051c0741880e3fd8635c33933b7150c40bcdf3b90",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "epochs": 2,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261113T202356Z_smoke/logs/tft168_20261113T202704Z.log",
+  "status": "ok",
+  "folder": "tft168",
+  "finished_utc": "2026-11-13T20:27:53.752950+00:00",
+  "duration_s": 49.0,
+  "outputs": {
+    "attention_direct_seed42.csv": "1334b8eda1af942dd35d77461be2cf1eb1e49974280ee971fa8034f45a3f3254",
+    "attention_indirect_seed42.csv": "f14b2350e07d2ee9f6001b77c86d577738ffc3993cd0ffddb64236b0677b199a",
+    "best_params.json": "32554f3b87b72d4074b55443a84511b3a040bb80821ed2b84772febacc1428fe",
+    "figures/learning_curves.png": "423c3d37d296f08e99671128ab460f8ad27468ebc6ce12242b84826e441daa07",
+    "figures/optimization_history.png": "0b5af51e94d2908b6c348d43315e9535781b54583eaf2f2c34395de309e9b41c",
+    "job/data_direct.npz": "42d2077eb3b76f65a21e489203d3f6eeaecb01200c55e6f35f8353215a360ebb",
+    "job/data_indirect.npz": "12f8fa0564fa76fd2040bbb8dde8f73d2eb77bbec595baef16cfb23e48dc481f",
+    "job/job.json": "40d42c4281e5bccc3d57cac49d092bbea29f12ca0722eb66835544626658a94d",
+    "learning_curves.csv": "eaa31ac25e29c7346e2166fb33a00dd095a4c88d0dfa9e20507c4c3d4c435625",
+    "mbe.csv": "06c9309b1cf2892f6f9862117276a3e053f5cff526b8b3d4607bd2839fbf7c2f",
+    "predictions_tft_168_seed42.csv": "88db102569788ebc95a18cc80e8f46371b0b398435fd15e26412dffd086738e7",
+    "quantiles_tft_168_seed42.csv": "0ae79003b6af1d3937e589a0f1bb7bc53a9767cae8f91cb59c61c64ea925196b",
+    "tft_168_config.json": "d6337cbb666596c2445be9289d542bc0fd811968bc672b7064a2e4bf5f77c6ed",
+    "trials.csv": "95c94859425b0ffc95baadd10d3935dded5ca5cdf6ba02a574f15d07746a1a2a",
+    "worker/curves_direct_seed42.csv": "8a2458f65bdaacddbaa4709cbe2e1ad665a87e244434b1de8a63b72d6272196b",
+    "worker/curves_indirect_seed42.csv": "9e112d2375f1761501918b3bc1687d970d7a237c3f6ba91d4107e63797a0b3f8",
+    "worker/fit_direct_seed42.json": "c9602db18831c4216f3808988227c0bb2255393b90c0e4baac9e160f23ee82cd",
+    "worker/fit_indirect_seed42.json": "4c70060e42d5d5d77df8b3e2f69265d065789bb4f10530b84f3816b8c47da1b3",
+    "worker/forecast_direct_seed42.npz": "ecb6c52346b9f269ad92101ac045d61bf138a3175bf3415e62d61c70f29570f2",
+    "worker/forecast_indirect_seed42.npz": "833412fd282695beb134aaa2f838d77a5a1d285ca628ec0305dc7a4ba67d61fe",
+    "worker/models/tft_168_direct_seed42.pt": "bc5767d1a600c2addc464be1dcae4f2e7d3a19904f35da36638d4f5a10c40d36",
+    "worker/models/tft_168_indirect_seed42.pt": "30625590bc357d8655159567ad45df3843980e5965a9eff4c72ebac342e708dc",
+    "worker/optuna.db": "889f998f096d6f44913f97037fc455b2d0121c476b216303921d6a0557b82a55",
+    "worker/trials_direct_seed42.csv": "b6a285ac634454f2362cc96492c2675fdcd40fe95f2d03622a86639d65ab0a5c",
+    "worker/trials_indirect_seed42.csv": "8a0f0e21595d5fffc52c07029c5c6524ab0d504002185efe0e55b7dec2562ddb",
+    "worker/worker.json": "9a5aec1e74935ab92a2f0ecc0802794f2b7564cc456e06fdf15d12aedb2726bb",
+    "worker_stdout.log": "e8e5c557ed892639abf386b4fa581621d2754906db45c15b831c773f2b35ca36"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 18.8557187099574,
+      "direct_seed42": 48.20540335664978
+    },
+    "test_access": []
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 4
+  },
+  "summary": [
+    "tft168 (smoke, seeds [42]): nRMSE in kW on the tuning window, local days 2024-03-15 to 2024-04-11",
+    "  indirect_seed42        18.856 %  (D+1 19.257, D+2 19.121, D+3 18.171)",
+    "  direct_seed42          48.205 %  (D+1 48.483, D+2 47.529, D+3 48.597)"
+  ],
+  "warnings": [
+    "tft168: indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft168: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)",
+    "tft168: direct seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tft168: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)"
+  ]
+}

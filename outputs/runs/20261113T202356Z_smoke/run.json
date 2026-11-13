@@ -1,0 +1,155 @@
+{
+  "run_id": "20261113T202356Z_smoke",
+  "mode": "smoke",
+  "created_utc": "2026-11-13T20:23:56.152757+00:00",
+  "config_sha256": "e59defcc349b99805dd0708f824752f671fca6ed83402ddcdd62bf69e88cd966",
+  "steps": {
+    "select": {
+      "status": "ok",
+      "folder": "select",
+      "fingerprint": "a3b6e146e38977f0dda86bc92a3b0b8007676d96c1990e2952652853e9c71c0d",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:24:02.689821+00:00",
+      "duration_s": 2.8
+    },
+    "baselines": {
+      "status": "ok",
+      "folder": "baselines",
+      "fingerprint": "c391e78ab77c69bb61220f0cd6de14bc986fb2505c5d7b75ecd2951fc3bf3608",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:24:03.773823+00:00",
+      "duration_s": 0.8
+    },
+    "xgb": {
+      "status": "ok",
+      "folder": "xgb",
+      "fingerprint": "0f5e3ef7dd39279362cfc135a8b6fe3c1c7ec6a5fcf0955b1682b0e9ebb7b9f1",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:24:26.680299+00:00",
+      "duration_s": 22.3
+    },
+    "cv": {
+      "status": "ok",
+      "folder": "cv",
+      "fingerprint": "1e909ee9fa31b520661bc303248821672a2c4813d91a617ba4c5070f63752ca8",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:24:41.002562+00:00",
+      "duration_s": 13.9
+    },
+    "ablation": {
+      "status": "ok",
+      "folder": "ablation",
+      "fingerprint": "f46725bf90d34bbbaaf64e7693c69542564d70f3b2543930c7a18faec7a85b73",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:25:33.618626+00:00",
+      "duration_s": 52.2
+    },
+    "bilstm": {
+      "status": "ok",
+      "folder": "bilstm",
+      "fingerprint": "d0f3ec769d5775ec127702589af381c5349963a2312f9d0c78b9be086144da34",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:26:14.084267+00:00",
+      "duration_s": 39.4
+    },
+    "tft96": {
+      "status": "ok",
+      "folder": "tft96",
+      "fingerprint": "80576b4818938828e75dc05d35822f2ae9c01711593181cb9bb4c43e01f48ddb",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:27:03.641743+00:00",
+      "duration_s": 48.5
+    },
+    "tft168": {
+      "status": "ok",
+      "folder": "tft168",
+      "fingerprint": "1804cea1a19b3ef65186d59051c0741880e3fd8635c33933b7150c40bcdf3b90",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:27:53.752950+00:00",
+      "duration_s": 49.0
+    },
+    "tftbase": {
+      "status": "ok",
+      "folder": "tftbase",
+      "fingerprint": "ee2b27a0cbbd0dd833a1e34da9c89f16b38fc1fab63193a903c075bab451ecf6",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:28:37.220783+00:00",
+      "duration_s": 42.4
+    },
+    "patchtst": {
+      "status": "ok",
+      "folder": "patchtst",
+      "fingerprint": "332e77adbf7f6f7a9eb9c421bef15320eeae7035f008e45a842f2ed0072e5821",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:29:18.017255+00:00",
+      "duration_s": 39.7
+    },
+    "evaluate": {
+      "status": "ok",
+      "folder": "evaluate",
+      "fingerprint": "99c45d0feb8fe72ce8c7f69043b50180a1f17f3fcb2ca98eee0726fecc49484b",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:29:23.210131+00:00",
+      "duration_s": 4.9
+    },
+    "explain": {
+      "status": "ok",
+      "folder": "explain",
+      "fingerprint": "921afd61d7a1896ffe0a5257951e1c96de8fec2072ebf19bfb7dd9253ea4a461",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:29:28.220202+00:00",
+      "duration_s": 4.5
+    },
+    "report": {
+      "status": "ok",
+      "folder": "report",
+      "fingerprint": "59aeba02d09db7e93d81bff6af6063658347c36cb7ae9be9c41c1c362179fc99",
+      "commit": "ac63bb0",
+      "finished_utc": "2026-11-13T20:29:29.251159+00:00",
+      "duration_s": 0.6
+    }
+  },
+  "invocations": [
+    {
+      "started_utc": "2026-11-13T20:23:59.360853+00:00",
+      "command": "python -m solarpv.pipeline run --mode smoke",
+      "commit": "ac63bb0",
+      "steps": [
+        "select",
+        "baselines",
+        "xgb",
+        "cv",
+        "ablation",
+        "bilstm",
+        "tft96",
+        "tft168",
+        "tftbase",
+        "patchtst",
+        "evaluate",
+        "explain",
+        "report"
+      ],
+      "force": false,
+      "keep_going": false,
+      "allow_test": false,
+      "preflight": "invocations/20261113T202359Z.json",
+      "results": {
+        "select": "ok",
+        "baselines": "ok",
+        "xgb": "ok",
+        "cv": "ok",
+        "ablation": "ok",
+        "bilstm": "ok",
+        "tft96": "ok",
+        "tft168": "ok",
+        "tftbase": "ok",
+        "patchtst": "ok",
+        "evaluate": "ok",
+        "explain": "ok",
+        "report": "ok"
+      },
+      "log": "outputs/runs/20261113T202356Z_smoke/logs/run_20261113T202359Z.log",
+      "status": "ok"
+    }
+  ]
+}
