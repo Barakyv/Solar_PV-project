@@ -1607,3 +1607,130 @@ and not a match to the submitted report (D-34).
 the full suite passes at the commit to be tagged; the smoke run completes every step; the dry
 run prints the plan and writes nothing; the reproduction finds no difference of content; no test
 row is read (the access log does not exist or is unchanged); the user has answered §20.7.
+
+*Updated 2026-11-13 (D-34, R9-30):* the reproduction is a consistency check; a difference that
+follows from a documented fix (X45, X66) or from the row order of a resumed report is explained,
+and no comparison rule is widened for it. The acceptance line "finds no difference of content"
+reads: finds none that is not explained by an errata row.
+
+## 21. W6, the two analyses that train models: the steps `cv` (S-38) and `ablation` (S-41)
+
+Written on 2026-11-13, before any code of these steps, after the user's decision D-36 ("write the
+two analyses that train models before the tag, as runner steps"). v6 §12.2 and §12.5 are rebuilt
+as two steps of the runner, so that the final run produces them with the same gate, logs, records
+and reproducibility as every other step. The design below is mine and is registered before any
+result of either step exists; the user may change it before the tag. No choice here depends on a
+result, and no result of either step decides anything (they are descriptions, like `explain`).
+
+### 21.1 Sources and what is decided
+
+- **Decided, not changed here:** D-08 (the v6 scope, XGB budgets), D-10 (validation is the
+  early-stopping and tuning set), D-13 (the inputs of `model_inputs.json`), D-15 (monotone
+  constraints by exact name), D-22 (op-limited hours), D-32 (the two phases of a final run), D-36.
+- **Sources (read-only):** v6 §12.2, §12.5 (figures 15 and 18) and the surviving
+  `submission_evidence/12_scripts/run_ablation_study.py`; the CV script was lost (R-16), so §12.2
+  is rebuilt from its description.
+- **Reused code, not rewritten:** the five expanding date folds of stage 7 (`selection.common.
+  date_folds`, 3-day gap, used by L-09), the final fit and prediction of the `xgb` step
+  (`xgb_sota.fit_early_stopping`, `fit_fixed`, `predict`), the exact-name constraints
+  (`constraint_map`), the one function that gives each feature a group (`selection.common.group`,
+  also the groups of `explain`, M27), and the one kW metric of the objective and the evaluation
+  (`nrmse_kw`, with `to_kw` for k).
+
+### 21.2 The original project (M37–M44)
+
+| ID | Mistake | Where | Fix | Test | Errata |
+|---|---|---|---|---|---|
+| M37 | The ablation is scored on the test split (the train-only refit predicts `TEST_START`–`TEST_END`), and its `--quick` smoke test too; v6 §12.5 reads its conclusions off the test ("removing clearsky improves indirect performance", "the 7-day window is more informative than the 3-day window"), so the groups are judged on the data that is meant to be held out | `run_ablation_study.py` (`test_mask`, `y_test`) | The step scores validation, with the same hours and metric as every model step; in a final run it forecasts the test window (logged read) and the step `test` scores it in phase 2 (D-32); nothing is decided from either | T-101 | C-70 |
+| M38 | The ablation's "baseline" is a copy of the training code with the defects already found elsewhere: default hyper-parameters when the saved model is missing and `n_estimators` = the saved booster's rounds, which include the 50 of patience (M4, M10); monotone constraints by substring (`'ghi' in name`, M7); `fillna(0)` on every input (M8); a clip at 0 before scoring (M9). The baseline is not the XGB-Opt it is compared with | `load_saved_hparams`, `build_monotone`, `X_train = ….fillna(0)`, `np.clip(…)` | The step reads the run's own record of each fit (searched parameters, seed, rounds, features) and refuses a missing one; the `full` mode is the same fit as the `xgb` step and must reproduce its validation value to 1e-9; constraints by exact name, NaN passed through, no clip | T-101 | C-71 |
+| M39 | Groups are substrings of the column names (`'lag_' in c`, `'clearsky' in c`, `c.startswith('fcst_')`), so "no_all_rolling" and "no_lags_rolling" remove only `rolling_mean_*` and leave the six `rolling_std_*` features in the model, although v6 describes them as removing the rolling group | `is_any_rolling`, `is_lag`, `get_ablation_feats` | The groups are those of the feature contract (`selection.common.group`: one group per feature, an unknown name raises), the same as the SHAP groups; the modes name the groups they remove and the number of features removed | T-101 | C-72 |
+| M40 | The mode `minimal` contradicts its description: v6 says "all groups removed" and "a model with just time encodings achieves ~31.2 %", but the script keeps `rolling_mean_7d_same_tod` + `fcst_dni` + `sun_elevation` (a reanalysis NWP column, F-11); the 31.2 % has no output file | `minimal` in `get_ablation_feats`, v6 §12.5 | `minimal` keeps the time-encoding group only and is defined in the plan; every number comes from a file of the run (M31) | T-101 | C-73 |
+| M41 | Differences below the noise are read as findings: deltas of −0.03 to +0.39 pp are interpreted, while the seed spread of XGB-Opt is up to 0.11 pp (v6 Figure 17); each seed was a separate launch, and no margin rule exists. The project's own rule (D-12, `nwp.check.decide`) is a gain beyond max(0.05 pp, 2 × the pooled seed std) | v6 §12.5 text, `compile_*` | Every delta is per seed against the `full` fit of the same seed; the summary gives the mean, the std over seeds and a verdict by that rule: helpful, neutral or harmful | T-101 | C-74 |
+| M42 | The ablation scores with its own metric: the nRMSE is divided by the train mean of k above 0.01 (not MEAN_DAYTIME_K), the daytime mask is `sun_elevation > 5` at the row's own time (F-02 uses t + 30 min), and the indirect target is scored in k; "baseline ≈ global_metrics" compared two different definitions | `nrmse_pct`, `daylight` | The one kW metric of the objective and the evaluation (`nrmse_kw`, the F-02 mask through the stage-6 `daytime` column) | T-101 | C-75 |
+| M43 | The CV script is lost, and the CV means cannot be reproduced; the indirect CV nRMSE (16.08 %) is about half the test value (29.09 %), and the gap is read as seasonality although the two numbers may not share a definition (hours, normalisation, k or kW). The caption says three horizons, the table has two | v6 §12.2, Figure 18 | One metric on both sides (kW, daytime, F-02), all three horizons, the number of folds and their dates and months written next to every mean; the gap is reported, not explained | T-100 | C-76 |
+| M44 | v6 does not say which rows the CV folds cover (train, train and validation, or up to the test period); if they reach the test period, "held-out test" is not independent of the CV | v6 §12.2 | The folds cover the train rows only (the stage-7 folds, 3-day gap); the comparison is with validation (phase 1) and with the test (phase 2), never inside the folds | T-100 | C-77 |
+
+### 21.3 My own code and documents (X68–X75)
+
+| ID | Problem | Where | Fix | Test |
+|---|---|---|---|---|
+| X68 | `fit_mos` runs the fold loop (fit on the fold's fit rows, predict the held rows) and keeps only the concatenated predictions; a CV needs the same loop with per-fold values. A copy would be a second implementation of the same folds | `xgb_sota.fit_mos` | One generator, `oof_folds`, yields (fold, fit rows, held rows, prediction) and is used by both `fit_mos` and `cv`; `fit_mos` gives the same coefficients as before (T-61, T-62 unchanged) | T-100 |
+| X69 | The held rows of L-09 (`mos_rows`) exclude op-limited hours, while the scoring rule (§14.1) keeps them; a CV that reused `mos_rows` would score other hours than validation and test | `xgb_sota.mos_rows` | `cv` scores the daytime hours with AC truth, op-limited included and warm-up excluded (the rule of `score_rows` without a window); both row counts are recorded | T-100 |
+| X70 | `best_params.json` stores `xgb_params` with the monotone constraints of the full feature list; used for a reduced set it would name features that are not in the matrix | `steps.run_xgb` (`best[name]`) | `ablation` rebuilds the parameters from the searched values (`xgb_params(searched, seed, constraint_map(reduced features))`), never from the stored `xgb_params` | T-101 |
+| X71 | A final-run step that predicts test hours must log the read (X40); `ablation` forecasts the test window in phase 1 | the new step | One `test_access` line per horizon, as in `run_xgb`; `cv` loads train rows only and asserts it | T-101 |
+| X72 | `scale_dev_to_final` looks up `BUDGETS["final"][step]`; `cv` and `ablation` have no budget entry, so the final estimate would use a ratio of 1 instead of 3 (seeds) | `pipeline/runner.py` | Both steps use the `xgb` budget family; the dry run shows their estimate | T-102 |
+| X73 | `promote` and `report` know only the earlier steps: a final run without `cv` and `ablation` would be promoted, and the report would not list their tables | `pipeline/promote.py`, `pipeline/report.py` | `promote` requires both steps and copies their tables to `outputs/06_xgb_sota/analysis/`; the report reads their summaries with the file and its hash (M31) | T-102 |
+| X74 | The runbook's segment commands name steps with `--only`; a final run in segments would skip the new steps without an error | `docs/runbook_final.md` §3 | The segments list them, and §4 of the runbook (the acceptance) checks that every step of `list` completed | T-102 |
+| X75 | Figure S09-13 draws phase 1 from the runner's step order, so adding steps changes its image and its recorded hash | `figures/s09_w5.py` | Rebuilt at the freeze, as every figure that reads the code | T-72 |
+
+### 21.4 Design
+
+**Both steps.** CPU, in `solar`, after `xgb` in the order of the runner; they need the `xgb` step
+of the same run (its `best_params.json`, `xgb_config.json` and tables, checked by hash) and refuse
+without it (M38). Seeds: those of the run's `xgb` record (dev: 42; final: 42, 123, 777). Smoke
+uses the smoke training rows (the last 56 local days of train), as `xgb`.
+
+**`cv` (S-38).** For every target × horizon × seed of the `xgb` record: the five expanding date
+folds of stage 7 over the local days of the train rows; per fold, the model of the record (its
+searched parameters, seed, constraints and the rounds `n_rounds` of its final fit, fixed, no early
+stopping) is fitted on the fold's fit rows and predicts the fold's held rows. Held rows: daytime
+hours with AC truth, op-limited hours included, warm-up excluded (X69). Per fold: nRMSE in kW
+(`nrmse_kw`; the k forecast converted with `to_kw`), the hours, the first and last local day and
+the months. Per target × horizon × seed: the mean and the std over the five folds (ddof 1).
+Outputs: `cv_folds.csv`, `cv_summary.csv` (with the validation value of the same model,
+uncorrected and, for the indirect route, corrected by L-09, read from the `xgb` record) and
+`cv_config.json`. The CV uses the raw model forecast (L-09 is not refitted per fold). No
+validation and no test row is read (`model_table(h, ("train",))`). The phase-2 step `test` adds
+`cv_vs_test.csv` with the test value of the uncorrected forecast. A fold with fewer than 500 held
+hours is a warning. The comparison is reported, not explained, and decides nothing.
+
+**`ablation` (S-41).** For every target × horizon × seed: the modes are `full` (the `xgb`
+step's own fit, repeated), `no_<group>` for each group of the contract that the input has, `no_history`
+(the measured past-day groups together: lags, rolling statistics, the previous-day index, the
+k history) and `minimal` (the time-encoding group only); a mode that removes nothing, or leaves no
+feature, is skipped and the reason is recorded. Each mode is the final fit of the `xgb` step on the
+reduced features: the best trial's searched parameters, the seed, constraints by exact name for
+the features left (X70), early stopping on the validation rows (D-10: every mode, `full` included,
+is tuned on validation the same way, so the scores share that optimism); the score is the nRMSE
+in kW of the raw (uncorrected) forecast on the scoring hours of the validation window, for both
+targets. `full` must equal the `xgb` step's `value_kw` to 1e-9, or the step fails (M38). The delta
+of a mode is its value minus the `full` value of the same seed, in pp. The summary per target ×
+horizon × mode: the mean and the std of the delta over the seeds, the margin
+`max(0.05 pp, 2 × the pooled seed std)` (the pooled std is the root of the mean variance over the
+modes of that target and horizon; with one seed the margin is 0.05 pp and the row says so), and the
+verdict: *helpful* (the mean delta is above the margin: removing the group raises the error),
+*harmful* (below minus the margin) or *neutral*. In a final run each fit also forecasts the test
+window (logged, X71) into `ablation_forecasts_seed<S>.csv`, which nothing scores in phase 1; in
+phase 2 the step `test` scores those forecasts into `ablation_test.csv` and
+`ablation_test_summary.csv` with the same rules.
+
+**Cost.** One mode is one fit with early stopping, about the time of the `xgb` step's final fit.
+Per target and horizon the input has at most seven groups, so at most 10 modes: up to 60 fits per
+seed, 180 in a final run (dev: 60). `cv` is 30 fits per seed. The dry run reports the estimates.
+
+### 21.5 Tests (T-100–T-103)
+
+| ID | Test |
+|---|---|
+| T-100 | `cv`: the folds are the stage-7 folds over train rows; the per-fold value equals an independent fit and score of the same fold; train rows only (a table with validation and test rows loads none); refuses without the `xgb` record or with a changed `best_params.json`; `fit_mos` gives the same coefficients after the refactor (X68); held rows keep op-limited hours (X69) |
+| T-101 | `ablation`: the modes are the contract's groups, each feature in one group, `minimal` is the time encodings only, `no_history` removes the right columns (M39, M40); `full` equals the `xgb` step's value to 1e-9 and a perturbed parameter fails the step (M38); constraints are by exact name for the reduced set (X70); the delta is against the same seed; the verdict follows the rule on constructed deltas, one seed and several (M41); in a final run the test window is forecast, logged and not scored, and the step `test` scores it (M37, X71) |
+| T-102 | Integration: the steps are in the runner order after `xgb`; `--only xgb,cv,ablation` and a segment run work; the final estimate uses the seeds ratio (X72); `promote` refuses a run without them and copies their tables; `report` lists their summaries with file hashes (X73, X74) |
+| T-103 | The rule of D-36 after the tag: a function classifies a path as allowed (figures, `make_*` scripts, notebooks, documents, tests, outputs) or not; a diff between the tag and HEAD that touches another path is reported; the check is active when the tag exists |
+
+### 21.6 Order of the work and acceptance
+
+1. This section, with the errata rows C-70–C-77 and X68–X75 and the run-journal note R9-31,
+   committed before any code.
+2. The code: `oof_folds` (X68), the module `pipeline/analyses.py` with both steps, the
+   registration, the final estimate, `promote`, `report`, the step `test`; the tests T-100–T-103;
+   ruff.
+3. Smoke of the whole sequence, then a dev run `xgb,cv,ablation` (with `select,baselines` first,
+   as the dev run of W5), which must reproduce the `xgb` outputs of `20261112T063719Z_dev` byte
+   for byte.
+4. Review with the skill `forecasting-validity-review`; the figures of the two analyses; OP-62;
+   the run journal; the runbook.
+
+**Acceptance of the steps** (registered now, before any result): smoke and dev complete with no
+test row read; `full` reproduces the `xgb` step's validation value for every target × horizon ×
+seed; every table is complete (5 folds per fit; every mode of every input); no earlier output
+changes. The values of the CV, the ablation and their verdicts are reported and never acted on.

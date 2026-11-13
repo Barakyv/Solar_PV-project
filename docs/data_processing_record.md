@@ -1253,6 +1253,33 @@ restored from the hand-off package (2026-11-12; no number changed).**
   (`tests/contracts/test_entry_points.py`).
 - *Original:* not applicable.
 
+**OP-61 — The reproduction from the raw data in a fresh checkout, and the G-1 audit (W6; no
+stored file changed).**
+- *Why:* gate G-1 asks that the pipeline runs from scratch in a clean environment and that the
+  test split touched no decision (`PROJECT_MASTER.md` §7). The submitted reproduction started from
+  a finished feature table and compared nothing (M32, M33).
+- *Method:* `scripts/reproduce_paper_results.py --dev --with-eda --rerun-selection` clones this
+  repository at its `HEAD` into an empty folder outside it, with the clone's `src` first on
+  `PYTHONPATH` (X55). It is given only the raw files (read in place, verified against their
+  checksums), the GFS point extracts of stage 6b and the private site file (removed at the end).
+  It runs the stages of §19 in order, compares every written file with this checkout's by content
+  (floating-point noise, relative at most `1e-9`, is reported and not failed; D-34), puts each
+  stage back to the reference before the next, and then runs the two development runs of the
+  runner. `scripts/g1_audit.py` measures the look-ahead of the data preparation (X57) and the
+  test-split access.
+- *Result (run journal R9-26–R9-30, `outputs/g1_audit/`):* 19 steps, every one exited 0, in 4 h
+  37 min. Stage 2: 12.5 % of the values differ from the laptop's file by at most `9.7e-14`
+  relative, because the laptop's parser was not correctly rounded (X63); stages 4, 5 and 6 and
+  the GFS tables reproduce within floating-point noise; the feature selection (train part, 31
+  files) and every forecast file of both development runs are identical in bytes or in content.
+  The three decision checks run on the laptop give other numbers on this machine and the same
+  decisions (X66). The look-ahead measures: the clock correction would change the whole-minute
+  shift on 40 % of the days by at most 3 minutes, the cleaning changes 66 of 458,304 source cells
+  (none a scored hour), the polled interpolation is bounded by 0.68 °C at night. No run has read
+  or forecast a test hour (86 step records, 81 forecast files).
+- *Verification:* T-93–T-99, T-72 (S09-34–S09-39); the full suite at the commit to be tagged.
+- *Difference from the original:* the original reproduction started from the finished table.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

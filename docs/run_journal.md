@@ -1881,7 +1881,7 @@ hashes, numbers) and the commit messages are the record:
 
 ### 2026-11-13 · R9-30 · W6: the reproduction finished; the comparison bug (X67) and the residual differences
 
-- **Result:** `reproduction_20261112T202955Z` (commit `c463603`, fresh clone `r3`), 13 steps,
+- **Result:** `reproduction_20261112T202955Z` (commit `c463603`, fresh clone `r3`), 19 steps,
   about 4 h 37 min: checksums, ingest, clock, preprocess, clean, eda, quality, orientation,
   features, decide_k, features_final, gfs, nwp_check, evaluate, fixture, selection (the train part,
   4,550 s), sequence_data, dev_xgb (398 s), dev_neural (10,518 s). Every step exited 0. The
@@ -1900,6 +1900,27 @@ hashes, numbers) and the commit messages are the record:
   belongs to the decision checks; it has to be changed to the explained classes above, once the
   user agrees to that classification. The final reproduction must be rerun at the commit that is
   tagged, because the comparison code changed after this run.
+
+### 2026-11-13 · R9-31 · W6: the user's decisions, the external review, and the plan of `cv` and `ablation`
+
+- **The user's decisions (2026-11-13: "it is clear that the reproduction will not be one to one;
+  the principles and the methodology stay", then "work on your recommendations"):** D-34 (the
+  reproduction is a consistency check; explained differences are listed, no rule is widened), D-35
+  (the centred clock correction is accepted and declared), D-36 (the two analyses that train
+  models are written before the tag, the others after it under a written rule), D-37 (no change
+  of budget, seed or validation rule; the W4 and W5 points are limitations), Q-26 to Q-28 and the
+  confirmation of D-06, D-07 (path corrected), D-14 and D-16. Recorded in `PROJECT_MASTER.md` §3
+  and §16, `docs/deviations.md` and the stage-9 plan §20.7.
+- **External review:** a separate Claude session (`g1-review`, its own worktree and branch
+  `g1-external-review`) started on commit `1cf6610`, with `docs/g1_review_brief.md`; it writes only
+  `docs/g1_review_log.md`. The steps `cv` and `ablation` get a review of the difference later.
+- **Plan:** stage-9 plan §21 (`cv` for S-38, `ablation` for S-41): the original's mistakes M37–M44
+  (an ablation scored on the test, a baseline that is not the XGB-Opt, groups by substring that
+  leave the rolling std features in the model, a `minimal` mode that contradicts its text, deltas
+  below the seed noise read as findings, a private metric, an unreproducible CV and an unknown CV
+  scope), my own X68–X75, the design, the tests T-100–T-103 and the acceptance, all before code.
+  Errata C-70–C-77 and X68–X75.
+- **Also:** OP-61 written (the reproduction and the audit); R9-30 said 13 steps, it was 19 (fixed).
 
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
