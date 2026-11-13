@@ -83,10 +83,11 @@ before T0.
 
 ### 3.3 The test split
 
-`python scripts/g1_audit.py --only test_access` (2026-11-12): the access log
-`outputs/07_evaluation/test_access_log.csv` does not exist and has never been in git; 86 step
-records of 15 runs hold no test access; 81 prediction files hold no hour at or after 2024-10-01,
-the last one being 2024-09-30 23:00 UTC. Every data-based decision used train or validation
+`python scripts/g1_audit.py --only test_access` (2026-11-12, rerun 2026-11-13 after the runs of
+that day, X76): the access log `outputs/07_evaluation/test_access_log.csv` does not exist and has
+never been in git; 133 step records of 19 runs hold no test access; 127 forecast files
+(predictions, uncorrected and ablation forecast files) hold no hour at or after 2024-10-01, the
+last one being 2024-09-30 23:00 UTC. Every data-based decision used train or validation
 (`PROJECT_MASTER.md` §3; stage plans). The raw data of the test period were read for data
 preparation only, never with a model output: the ingest QA (F-14), the clock offsets of the test
 months (D-19), the detection and reconstruction of the polled source, which exists only in the

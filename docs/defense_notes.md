@@ -236,7 +236,33 @@ on the development runs; the report's chapter 11 is rewritten from the final run
   model that produced the forecasts, on its own inputs, and checks that the explanation adds up
   to the forecast."
 
-## 11. The cross-validation and the ablation
+## 11. The test split: one look, after the acceptance
+
+Rebuilt in stage 9 (D-32) and tightened by the external review of gate G-1 (R-G1-01 to R-G1-05,
+`docs/g1_review_log.md`, errata X77-X81).
+
+- **Submitted:** the test split was scored in every run of the reproduction script, and the
+  ablation was scored on it (C-37, C-40, M37); the results and the choices were never separated.
+- **Why it looked right:** a "held-out test" that every script scores looks like a clean
+  evaluation as long as nobody changes a choice after seeing it.
+- **What revealed it:** the January backup (feature selection on the whole table) and the
+  reproduction script, which printed expected values from constants.
+- **Rebuild:** the final run has two phases of one run. Phase 1 trains, forecasts validation and
+  test, and scores validation only; no file of phase 1 holds the test truth and no step computes
+  a number against it. The stage-10 acceptance is written after reading the validation results.
+  Phase 2 is one step, `test`, which scores the files that phase 1 evaluated (the same SHA-256),
+  refuses a step that finished after the acceptance, and logs every read of a test row. Nothing is
+  decided from a test number.
+- **What the external review found in the first version of this protocol:** the neural steps
+  still wrote test scores (a mean bias by horizon) in phase 1, the truth sat in the prediction
+  files, the acceptance was bound to nothing, and the evaluation command could score the test
+  split alone. All were closed before the code was frozen, with regression tests (T-104-T-107).
+- **Likely question:** "How do you know no choice was made on the test split?" **Answer:** "The
+  access log of the evaluation layer does not exist until phase 2, no run before the final one
+  holds a test hour (S09-37), and phase 1 of the final run holds no test truth; the one step that
+  reads it, after the acceptance, is logged."
+
+## 12. The cross-validation and the ablation
 
 Rebuilt in stage 9, W6, as the steps `cv` and `ablation` (`docs/stage9_plan.md` §21, findings
 M37-M44, decision D-36). They train models, so they were written before the code was frozen.

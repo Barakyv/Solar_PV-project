@@ -1,0 +1,2 @@
+target,seed,trial,state,value_kw,best_epoch,best_val_loss,duration_s,epochs_run,gpu_peak_mb,hidden_continuous_size_effective,n_parameters,n_scored,nan_loss,stopped_early,train_loss_at_best,value_kw_D1,value_kw_D2,value_kw_D3,param_hidden_size,param_attention_head_size,param_hidden_continuous_size,param_dropout,param_learning_rate,param_lstm_layers
+direct,42,0,COMPLETE,48.20540335664978,2,0.22892351844049372,2.4,2,1116.4,16,359069,963,False,False,0.26012343168258667,48.483228221454475,47.528635354334924,48.59720301532722,32,3,16,0.13119890406724052,0.00013066739238053285,3

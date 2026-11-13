@@ -1,0 +1,43 @@
+{
+  "decision": "D-31 (docs/stage9_plan.md \u00a719.5)",
+  "window": {
+    "split": "val",
+    "start": "2024-03-14T22:00:00+00:00",
+    "end": "2024-04-11T21:00:00+00:00",
+    "label": "local days 2024-03-15 to 2024-04-11"
+  },
+  "rows": "the daytime scoring hours of the window with AC truth (\u00a714.1), op-limited hours included; never fit rows",
+  "explainer": "shap.TreeExplainer, feature_perturbation='tree_path_dependent', no background; the booster sliced to n_rounds = best iteration + 1",
+  "output": "the booster's raw output in the training unit (k or kW); the kW view phi_kW = b * theo * phi_k for the indirect route (X47)",
+  "groups": "selection.common.group, one group per feature by exact name (M27)",
+  "tolerances": {
+    "additivity_relative": 0.0001,
+    "pred_contribs_relative": 1e-05,
+    "scale": {
+      "k": 1.0,
+      "kW": 3449.0
+    },
+    "kw_view_kw": 0.34490000000000004,
+    "why": "TreeSHAP sums in float32: about 1e-6 of the output scale"
+  },
+  "fanova_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "tpe_startup_trials": 10,
+  "versions": {
+    "shap": "0.51.0",
+    "xgboost": "3.4.2",
+    "optuna": "5.0.0"
+  },
+  "non_causal": "SHAP describes how the fitted booster maps its inputs to its output on these rows (tree-path-dependent masking); it is not a causal effect of a feature on the plant.",
+  "not_explained": "BiLSTM and PatchTST (no attribution in v6; scope rule of \u00a716b)"
+}

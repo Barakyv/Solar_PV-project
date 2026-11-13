@@ -1,0 +1,30 @@
+[worker 11:29:45] patchtst (smoke): targets ['indirect', 'direct'], seeds [42], budget {'max_steps': 20, 'val_check_steps': 10, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+Seed set to 42
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\neuralforecast\tsdataset.py:129: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\torch\csrc\utils\tensor_numpy.cpp:212.)
+  x = torch.from_numpy(x)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\pytorch_lightning\utilities\parsing.py:45: Attribute 'callbacks' removed from hparams because it cannot be pickled. You can suppress this warning by setting `self.save_hyperparameters(ignore=['callbacks'])`.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_steps=20` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+[worker 11:29:51] indirect seed 42 final: 19.8583 % kW, best step 10 of 19, 5.14 s
+Seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\pytorch_lightning\utilities\parsing.py:45: Attribute 'callbacks' removed from hparams because it cannot be pickled. You can suppress this warning by setting `self.save_hyperparameters(ignore=['callbacks'])`.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+`Trainer.fit` stopped: `max_steps=20` reached.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+[worker 11:29:54] direct seed 42 final: 15.9207 % kW, best step 20 of 19, 2.54 s
+[worker 11:29:54] done in 20.8 s, 9 outputs

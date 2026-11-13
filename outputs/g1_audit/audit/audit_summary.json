@@ -4,10 +4,10 @@
   "log_exists": false,
   "log_rows": 0,
   "log_in_git_history": [],
-  "runs": 18,
-  "step_records": 120,
+  "runs": 19,
+  "step_records": 133,
   "steps_with_test_access": [],
-  "prediction_files": 147,
+  "prediction_files": 127,
   "prediction_rows_in_test": 0,
   "test_start": "2024-10-01 00:00:00+00:00",
   "per_run": [
@@ -79,7 +79,7 @@
     "run": "20261111T155739Z_smoke",
     "step_records": 7,
     "test_access_entries": 0,
-    "prediction_files": 12,
+    "prediction_files": 8,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -87,7 +87,7 @@
     "run": "20261111T160241Z_smoke",
     "step_records": 4,
     "test_access_entries": 0,
-    "prediction_files": 7,
+    "prediction_files": 4,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -95,7 +95,7 @@
     "run": "20261111T160714Z_dev",
     "step_records": 10,
     "test_access_entries": 0,
-    "prediction_files": 12,
+    "prediction_files": 8,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-09-30 23:00:00+00:00"
    },
@@ -103,7 +103,7 @@
     "run": "20261112T060949Z_smoke",
     "step_records": 11,
     "test_access_entries": 0,
-    "prediction_files": 14,
+    "prediction_files": 10,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -111,7 +111,7 @@
     "run": "20261112T062618Z_smoke",
     "step_records": 11,
     "test_access_entries": 0,
-    "prediction_files": 14,
+    "prediction_files": 10,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -127,7 +127,7 @@
     "run": "20261112T200502Z_smoke",
     "step_records": 11,
     "test_access_entries": 0,
-    "prediction_files": 14,
+    "prediction_files": 10,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -135,7 +135,7 @@
     "run": "20261113T075016Z_smoke",
     "step_records": 13,
     "test_access_entries": 0,
-    "prediction_files": 15,
+    "prediction_files": 11,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    },
@@ -151,7 +151,15 @@
     "run": "20261113T082502Z_smoke",
     "step_records": 13,
     "test_access_entries": 0,
-    "prediction_files": 15,
+    "prediction_files": 11,
+    "rows_at_or_after_test_start": 0,
+    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
+   },
+   {
+    "run": "20261113T092454Z_smoke",
+    "step_records": 13,
+    "test_access_entries": 0,
+    "prediction_files": 11,
     "rows_at_or_after_test_start": 0,
     "last_prediction_hour": "2024-04-11 20:00:00+00:00"
    }
@@ -326,14 +334,14 @@
   ]
  },
  "smoke_final": {
-  "run": "20261113T082502Z_smoke",
-  "previous": "20261113T075016Z_smoke",
+  "run": "20261113T092454Z_smoke",
+  "previous": "20261113T082502Z_smoke",
   "steps": 13,
   "all_ok": true,
   "commits": [
-   "22f05d2"
+   "541a97d"
   ],
-  "commit": "22f05d2",
+  "commit": "541a97d",
   "clean": true,
   "forecast_files": 40,
   "byte_identical_to_previous": 40,

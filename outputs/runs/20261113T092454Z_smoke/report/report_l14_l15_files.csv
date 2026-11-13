@@ -1,0 +1,10 @@
+step,file
+bilstm,mbe.csv
+bilstm,quantiles_lstm_sota_seed42.csv
+tft96,mbe.csv
+tft96,quantiles_tft_96_seed42.csv
+tft168,mbe.csv
+tft168,quantiles_tft_168_seed42.csv
+tftbase,mbe.csv
+tftbase,quantiles_tft_seed42.csv
+patchtst,mbe.csv
