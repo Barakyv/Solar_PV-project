@@ -235,3 +235,41 @@ on the development runs; the report's chapter 11 is rewritten from the final run
   submitted SHAP explained a model with leaking inputs and 76 features; the rebuild explains the
   model that produced the forecasts, on its own inputs, and checks that the explanation adds up
   to the forecast."
+
+## 11. The cross-validation and the ablation
+
+Rebuilt in stage 9, W6, as the steps `cv` and `ablation` (`docs/stage9_plan.md` §21, findings
+M37-M44, decision D-36). They train models, so they were written before the code was frozen.
+
+- **Submitted:** the ablation refit the XGB-Opt without each feature group and scored the test
+  split (M37); its "baseline" was not the XGB-Opt it was compared with (default parameters,
+  constraints by substring, `fillna(0)`, a clip at 0; M38); the groups were substrings of the
+  column names, so "no rolling statistics" left the six rolling-std features in the model (M39);
+  the mode `minimal` was described as "just time encodings" but kept three other inputs (M40);
+  deltas of -0.03 to +0.39 pp were read as findings although the seed spread is up to 0.11 pp
+  (M41); the metric was its own (M42). The cross-validation script is lost, its folds were not
+  described (M44), and a CV nRMSE of 16.08 % against a test value of 29.09 % was read as
+  seasonality although the two numbers may not share a definition (M43).
+- **Why it looked right:** each table had plausible numbers and a sentence explaining it.
+- **What revealed it:** reading the ablation script against the objective and the evaluation
+  layer, and the requirement that the fit without removal must equal the XGB-Opt.
+- **Rebuild:** validation only (the test window is forecast in the final run and scored in
+  phase 2, never used to decide); the mode `full` is the same fit as the `xgb` step and must
+  reproduce its value to 1e-9 (it did, in 55 of 55 fits of the development run); groups from the
+  feature contract, constraints by exact name, one kW metric; a delta counts only beyond
+  max(0.05 pp, 2 x the pooled seed std), per seed against the same seed's `full`; a CV of five
+  expanding date folds of the train rows with a 3-day gap, the folds' months written next to every
+  mean.
+- **What the rebuild finds (development run, one seed, verdicts provisional):** the fold means
+  are 7.4 to 8.1 % (single folds range from 4.7 to about 11 %) and the validation value is 0.6 to 1.7
+  points below the CV mean in every case: reported, not explained. Removing the GFS forecasts
+  raises the error by 1.0 to 1.5 points, the largest change of any group; a model with the time
+  encodings only is 1.2 to 1.5 points worse than the full one. Removing the clear-sky inputs of the
+  indirect route never improves it by more than 0.001 points (v6 read an improvement off the test).
+- **Figures:** process views S09-40 (the CV) and S09-41 (the ablation); both are XGB only, as in
+  v6, and say so.
+- **IDs:** M37-M44, C-70-C-77, X68-X75.
+- **Likely question:** "Your CV error is half the report's: did the models get better?" **Answer:**
+  "The two numbers do not share a definition: the report's script is lost and its metric differs;
+  the rebuild measures one kW metric on the same hours everywhere and reports the gap to the
+  validation value without explaining it."
