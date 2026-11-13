@@ -1336,7 +1336,7 @@ stored file changed).**
   the previous one, were byte-identical in all 40 forecast files; the reproduction from the raw data at
   the final candidate is in OP-61 and `docs/run_journal.md` R9-35. No final run has been made.
 - *Verification:* T-104 to T-112 (the regression tests fail on the old code: checked for T-104); the full
-  suite at the final candidate (622 passed, 1 skipped); the audit over 22 runs (172 step records, 160
+  suite at the final candidate `d126db8` (637 passed, 1 skipped); the audit over 22 runs (172 step records, 160
   forecast files, no test hour); figure S09-42.
 - *Original:* v6 scored the test split in every run (C-37, C-40); no comparable protocol existed.
 
