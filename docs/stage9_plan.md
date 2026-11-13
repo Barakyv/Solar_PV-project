@@ -1569,6 +1569,15 @@ data-preparation steps as declared, or make them causal), X58 (confirm D-14, D-1
 X59 (the missing analyses: write them before the tag, or after it with a rule), the clean
 environment of §20.5, and the review of §20.6.
 
+*Answers (user, 2026-11-13: "work on your recommendations", after the recommendations of that
+day):* X57 accepted and declared (D-35); X58 confirmed (D-06, D-07 with the corrected path, D-14,
+D-16); X59: the two analyses that train models, S-38 (`cv`) and S-41 (`ablation`), are written
+before the tag as runner steps, and the rest after it under the written rule of D-36; the clean
+environment of §20.5: the existing environments (Q-26); the review: a separate Claude session now
+(Q-28), then a review of the difference for the new steps; the G-1 list of W4 and W5: nothing
+changes, the points are declared as limitations (D-37); the reproduction is a consistency check
+and not a match to the submitted report (D-34).
+
 ### 20.8 Tests (T-93–T-97)
 
 | ID | Test |
