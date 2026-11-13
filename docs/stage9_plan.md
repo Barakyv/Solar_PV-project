@@ -48,6 +48,12 @@ installed or changed.
 without the answers; they decide only the mode of the final run (one sequence or segments, runbook
 §3) and are recorded here when they come.
 
+*IT answer, 2026-11-13 (relayed by the user):* a Horizon session keeps running after a disconnect,
+and the machine is always on. The final run is therefore one sequence (runbook §3, A). Not given:
+an explicit time limit for a disconnected session, and whether `C:` survives a logoff; so the run is
+started in a plain PowerShell window and the connection is only disconnected, never logged off,
+and `--resume` stays the safety net.
+
 What this means for the plan (decided in §5 when the GPU environment is built):
 
 - **PyTorch build.** Pascal (sm_61) with a driver capped at CUDA 12.2: use wheels built for CUDA
@@ -1463,10 +1469,11 @@ a seed or a validation rule is the user's, and is committed before the tag.
 
 ### 20.1 Blocking decisions and sources
 
-- **Q-15 (open).** The college IT has not answered the two questions yet. The user said to start
+- **Q-15 (answered 2026-11-13).** On 2026-11-12 the college IT had not answered the two questions yet. The user said to start
   W6 anyway (2026-11-12: the session stays on all night). The answers decide only the mode of the
   final run (runbook §3 A or B), which is chosen at the handover, after the tag; no checklist item
-  depends on them.
+  depends on them. **Answer (2026-11-13, relayed by the user):** a disconnected session keeps
+  running and the machine is always on: mode A, no logoff.
 - **Decided, not changed here:** D-08, D-10, D-13 with F-29, D-14 with Q-19, D-17, D-30–D-33.
 - **The G-1 list** (`PROJECT_MASTER.md` §1) stays a list for the user; W6 measures nothing new
   for it on validation and decides none of it.

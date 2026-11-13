@@ -5,7 +5,7 @@ Run it only after gate G-1 has passed and the code carries the tag `g1-frozen` (
 in this runbook changes a budget, a seed or a validation decision: the final budgets are those
 of v6 (`pipeline/config.BUDGETS["final"]`, asserted by T-80 and T-84).
 
-## 0. Before W6: questions to the college IT (Q-15, open)
+## 0. Before W6: questions to the college IT (Q-15, answered 2026-11-13)
 
 Ask before the first long run, and record the answers in `docs/stage9_plan.md` §1.1:
 
@@ -16,6 +16,12 @@ Ask before the first long run, and record the answers in `docs/stage9_plan.md` �
    (the Horizon instant-clone agent is installed, §1.1)?
 
 The answers decide between one sequence (§3, A) and segments (§3, B).
+
+**Answer (2026-11-13, relayed by the user):** a disconnected Horizon session keeps running, and the
+machine is always on. The run is therefore one sequence (§3, A). The answer gave no explicit time
+limit for a disconnected session and nothing about `C:` after a logoff: disconnect the connection
+and **never log off** while the run is going. If the run stops for any reason, `--resume <run_id>`
+continues it from the last finished step (§6).
 
 ## 1. Facts
 
@@ -57,7 +63,7 @@ Claude Code session (the run must not depend on an agent session). Set
 
 ## 3. Phase 1: training and validation (stage 10)
 
-**A, one sequence** (if a disconnected session survives at least about 20 h):
+**A, one sequence** (chosen on 2026-11-13: a disconnected session keeps running and the machine is always on):
 
 ```
 python -m solarpv.pipeline run --mode final --to report --keep-going
