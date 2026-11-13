@@ -1947,6 +1947,24 @@ hashes, numbers) and the commit messages are the record:
   (its setup did not finish, no message reached it), and it opened in the main folder and not in
   a worktree. It keeps its task; the user starts it from its row, or asks for a new one.
 
+### 2026-11-13 · R9-33 · W6: the final reproduction, the audit refreshed, the review started again
+
+- **Reproduction at the candidate** (`0addc5b`, a fresh clone `repro_g1/r4`, `--dev --with-eda
+  --rerun-selection`, 19 steps, about 4.7 h): started 10:33 and running while the rest was done;
+  its record is read in the entry that follows.
+- **The audit refreshed (X76):** the test-access part had been run before the three runs of
+  13 November (15 of 18 runs seen) and its glob missed the ablation forecast files. Rerun over all
+  18 runs: 120 step records, 103 prediction files, no test hour; the 3 ablation forecast files
+  checked apart (194,920 rows, all validation, last hour 2024-09-30). S09-34 and S09-37 now refuse
+  an audit older than the runs on disk.
+- **External review:** the first session (`g1-review`) still had no message after a second try (a
+  message does not start a session that never started). A new session, `g1-review2`, was started
+  from the same brief with the user's approval of Q-28 (a separate session, now); it writes only
+  `docs/g1_review_log.md`.
+- **Notebook 08** (`scripts/make_g1_gate_notebook.py`): the gate's process notebook, notes formatted
+  from the audit files, the latest finished reproduction record and the dev run of `cv` and
+  `ablation`; its builder refuses an unfinished record and asserts every claim of its notes.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

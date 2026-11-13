@@ -26,6 +26,8 @@ CLOCK = f"{AUDIT}/lookahead_clock.csv"
 CLOCK_DAYS = f"{AUDIT}/lookahead_clock_days.csv"
 POLLED = f"{AUDIT}/lookahead_polled.csv"
 ACCESS = f"{AUDIT}/test_access.json"
+# the ablation forecast files, which the glob of the audit's test-access part misses (X76)
+ABLATION_CHECK = f"{AUDIT}/ablation_forecasts_test_check.json"
 INCIDENT = "outputs/g1_audit/incident_2026-11-12/regenerated_vs_original_content.json"
 # the reproduction from the raw data that counts for W6 (attempt 3, R9-27, R9-29)
 REPRO = "outputs/g1_audit/reproduction_20261112T202955Z/record.json"
@@ -53,6 +55,17 @@ def _dry_run() -> str:
     logs = sorted((REPO_ROOT / "outputs" / "g1_audit").glob("dry_run_final_*.log"))
     last = logs[-1] if logs else REPO_ROOT / "outputs" / "g1_audit" / "dry_run_final_.log"
     return last.relative_to(REPO_ROOT).as_posix()
+
+
+def _access_covers_disk(acc: dict, ablation: dict) -> bool:
+    """The test-access audit saw every run folder and every ablation forecast file on disk: an
+    audit made before a later run does not count (found on 2026-11-13, X76)."""
+    runs = REPO_ROOT / "outputs" / "runs"
+    on_disk = sorted(p.name for p in runs.iterdir() if p.is_dir())
+    files = sorted(p.relative_to(runs).as_posix()
+                   for p in runs.rglob("ablation_forecasts_seed*.csv"))
+    seen = sorted(f"{r['run']}/{r['file']}" for r in ablation["files"])
+    return on_disk == sorted(r["run"] for r in acc["per_run"]) and files == seen
 
 
 def _code_unchanged_since(commit: str) -> bool:
@@ -84,6 +97,9 @@ def _checklist() -> list[tuple[str, str, str]]:
     other_skips = [s for s in skipped if s not in ALLOWED_SKIP]
     suite_commit = (REPO_ROOT / SUITE_META).read_text(encoding="utf-8").split("HEAD")[-1].split()[0]
     acc = D.jload(ACCESS)
+    ablation = D.jload(ABLATION_CHECK)
+    access_ok = (acc["prediction_rows_in_test"] == 0 and ablation["rows_in_test"] == 0
+                 and not acc["log_exists"] and _access_covers_disk(acc, ablation))
     rec = D.jload(REPRO)
     unexplained = [(s["step"], r["path"]) for s in rec["steps"] for r in s["failing"]
                    if not explained_reason(s["step"], r["path"])]
@@ -114,10 +130,9 @@ def _checklist() -> list[tuple[str, str, str]]:
          f"at {suite_commit}"),
         ("manual leakage audit", done if decided["D-35"] else wait,
          "docs/leakage_audit.md §3; the clock look-ahead accepted (D-35)"),
-        ("test split touched no decision", done if acc["prediction_rows_in_test"] == 0
-         and not acc["log_exists"] else wait,
-         f"{acc['step_records']} step records, {acc['prediction_files']} forecast files, "
-         "0 test hours"),
+        ("test split touched no decision", done if access_ok else wait,
+         f"{acc['runs']} runs, {acc['step_records']} step records, "
+         f"{acc['prediction_files'] + len(ablation['files'])} forecast files, 0 test hours"),
         ("reproduction from scratch", done if repro_ok else wait,
          f"{len(rec['steps'])} steps exit 0; {len(unexplained)} unexplained differences (D-34)"),
         ("external review", done if review_done and not review_open else going,
@@ -141,7 +156,7 @@ def _checklist() -> list[tuple[str, str, str]]:
     "{done} of {n} items have complete evidence, {going} is in progress and {todo} wait for the "
     "tag ({wait} wait for a decision). The full suite: {suite}.",
     "The user approves the tag; then the final run by the runbook.",
-    (SUITE, SUITE_META, SMOKE_FINAL, ACCESS, REPRO, REVIEW_LOG, SCOPE, LEAKAGE))
+    (SUITE, SUITE_META, SMOKE_FINAL, ACCESS, ABLATION_CHECK, REPRO, REVIEW_LOG, SCOPE, LEAKAGE))
 def s09_g1_checklist():
     items = _checklist()
     colours = {"evidence complete": C["green"], "waiting for the user": C["orange"],
@@ -254,8 +269,8 @@ def s09_issuance_windows():
     "{clean_cells} of {clean_total:,} source cells on {clean_days} issuance days, none a scored "
     "hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every "
     "compared cell. The polled interpolation is bounded by {polled_max:.2f} °C on a night hour.",
-    "Declared in docs/deviations.md; whether to accept the centred clock or rerun stages 4–9 with "
-    "a causal one is the user's decision (stage-9 plan §20.7).",
+    "Declared in docs/deviations.md; the user accepted the centred clock and the other two "
+    "(D-35), so stages 4–9 are not rerun with a causal one.",
     (CLOCK, CLOCK_DAYS, CLEAN, CLEAN_CELLS, POLLED))
 def s09_lookahead_prep():
     days = D.csv(CLOCK_DAYS)
@@ -324,21 +339,30 @@ def s09_lookahead_prep():
     "Has any run of the rebuild read or forecast a test hour before the gate?",
     "Every run of the runner so far: the last hour that any of its prediction files holds, "
     "against the start of the test split, with the number of its step records and prediction "
-    "files; the evaluation layer's test-access log and its git history.",
+    "files (the ablation forecast files are counted apart); the evaluation layer's test-access "
+    "log and its git history.",
     "Across {runs} runs, {records} step records hold no test access and {files} prediction files "
-    "hold {test_rows} test hours; the latest forecast hour of any run is {last}, before the test "
-    "split starts on {test_start}. The access log {log_state}.",
+    "and {ablation} ablation forecast files hold {test_rows} test hours; the latest forecast "
+    "hour of any run is {last}, before the test split starts on {test_start}. The access log "
+    "{log_state}.",
     "The test split is read once, by the final run (phase 1 forecasts it, phase 2 scores it, "
     "D-32), and every read is logged.",
-    (ACCESS,))
+    (ACCESS, ABLATION_CHECK))
 def s09_test_never_read():
     acc = D.jload(ACCESS)
+    ablation = D.jload(ABLATION_CHECK)
     runs = pd.DataFrame(acc["per_run"])
     runs["last"] = pd.to_datetime(runs["last_prediction_hour"], utc=True)
     test_start = pd.Timestamp(TEST_START, tz="UTC")
     assert acc["prediction_rows_in_test"] == 0 and not acc["steps_with_test_access"]
+    assert ablation["rows_in_test"] == 0
+    assert _access_covers_disk(acc, ablation), "the audit predates a run: rerun scripts/g1_audit.py"
     assert not acc["log_exists"] and not acc["log_in_git_history"]
     assert (runs["last"] < test_start).all()
+    n_ablation = runs["run"].map(pd.Series([f["run"] for f in ablation["files"]]).value_counts()
+                                 ).fillna(0).astype(int)
+    assert (pd.to_datetime([f["last_hour"] for f in ablation["files"]], utc=True)
+            < test_start).all()
     fig, ax = subplots(height=3.6, width=7.6)
     y = np.arange(len(runs))
     kinds = runs["run"].str.endswith("_smoke")
@@ -355,13 +379,14 @@ def s09_test_never_read():
             fontsize=7, va="top")
     ax.text(pd.Timestamp(VAL_START), len(runs) - 0.5, " validation", color=C["orange"],
             fontsize=7, va="top")
-    ax.set_yticks(y, [f"{r} ({n} files)" for r, n in zip(runs["run"], runs["prediction_files"],
-                                                          strict=True)], fontsize=5.5)
+    ax.set_yticks(y, [f"{r} ({n} files" + (f" + {a} ablation)" if a else ")")
+                      for r, n, a in zip(runs["run"], runs["prediction_files"], n_ablation,
+                                         strict=True)], fontsize=5.5)
     ax.set_xlabel("last forecast hour of the run (UTC)")
     ax.legend(fontsize=6.5, loc="center right")
     facts = {"runs": int(acc["runs"]), "records": int(acc["step_records"]),
-             "files": int(acc["prediction_files"]),
-             "test_rows": int(acc["prediction_rows_in_test"]),
+             "files": int(acc["prediction_files"]), "ablation": len(ablation["files"]),
+             "test_rows": int(acc["prediction_rows_in_test"] + ablation["rows_in_test"]),
              "last": str(runs["last"].max().strftime("%Y-%m-%d %H:%M UTC")),
              "test_start": str(test_start.date()),
              "log_state": "does not exist and was never committed"}
