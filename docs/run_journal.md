@@ -1996,6 +1996,33 @@ hashes, numbers) and the commit messages are the record:
   reproduction from the raw data at the same commit, and a check of the fixes by the reviewer
   session; the figures and the tag wait for them.
 
+### 2026-11-13 · R9-35 · W6: the reproduction at the final candidate, and the figures of the task
+
+- **Reproduction** (`reproduction_20261113T120823Z`, commit `e262fe3`, a fresh clone `repro_g1/r5`,
+  `--dev --with-eda --rerun-selection`): 19 steps, every one exit 0, 4.98 h of step time (14:08 to
+  19:09). The two environments are the existing ones and match the lock files; nothing was installed.
+  Of 442 files listed: 227 identical in bytes, 29 equal tables and 38 equal data files (other
+  bytes), 16 tables that differ only by floating-point noise (relative at most `1e-9`), 81 not
+  compared (logs, databases, run folders), 39 step records, worker files and reports that are
+  listed as expected to differ (hashes, times, paths of another run), 7 run logs without a
+  reference, and 7 failing.
+- **Forecast files:** every forecast file, best-parameter file and result table that the record
+  lists (12 in the XGB development run, with its `cv` and `ablation` steps, and 16 in the neural
+  run) is identical in bytes to the development runs of this checkout. The step records and worker
+  files of a rerun differ in hashes and times (listed, not failing).
+- **The 7 failing files, all explained (D-34):** `decide_k` (`configs/target.yaml`,
+  `d11_criteria.csv`, `l04_training_threshold.csv`) and `nwp_check` (`configs/nwp_decision.yaml`,
+  `value_check.csv`) give other validation numbers on this machine and the same decisions (X66);
+  `report_steps.csv` and `report_warnings.csv` of the neural run differ because the step now emits
+  the `tft168` warning and the row order of a resumed report differs (X45). The script writes
+  `NOT reproduced` for any failing file; by D-34 the check is one of consistency with every difference explained, and no
+  rule was widened.
+- **Notebook 08 and the figures:** `notebooks/08_g1_gate.ipynb` was rebuilt from this record;
+  `python -m solarpv.figures task S09-W6` built S09-34 to S09-42 and `docs/figure_sheets/S09-W6.md`.
+  Every PNG was looked at. Fix: the checklist figure still said "the review of the new steps
+  follows" for the external review; it now reads the completed review.
+- **Next:** the user's approval of the tag; the tag; the final run by `docs/runbook_final.md`.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

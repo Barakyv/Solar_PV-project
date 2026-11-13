@@ -1281,6 +1281,12 @@ stored file changed).**
   or forecast a test hour (86 step records, 81 forecast files).
 - *Verification:* T-93–T-99, T-72 (S09-34–S09-39); the full suite at the commit to be tagged.
 - *Difference from the original:* the original reproduction started from the finished table.
+- *Final reproduction at the candidate (13.11, run journal R9-35,
+  `outputs/g1_audit/reproduction_20261113T120823Z/`):* commit `e262fe3`, 19 steps, every one exit 0,
+  4.98 h. The forecast files of both development runs (the XGB run with `cv` and `ablation`, the
+  neural run) are identical in bytes; the 7 files that fail the comparison are those D-34 explains
+  (`decide_k` 3, `nwp_check` 2, the two report tables of the neural run). The two environments were
+  the existing ones; nothing was installed.
 
 **OP-62 — The steps `cv` (S-38) and `ablation` (S-41) of D-36 (no stored file changed).**
 - *Why:* v6 §12.2 (a 5-fold expanding-window CV against the test) and §12.5 (a feature-group

@@ -147,7 +147,7 @@ def _checklist() -> list[tuple[str, str, str]]:
         ("reproduction from scratch", done if repro_ok else wait,
          f"{len(rec['steps'])} steps exit 0; {len(unexplained)} unexplained differences (D-34)"),
         ("external review", done if review_done and not review_open else going,
-         f"{len(review)} comments, {len(review_open)} open; the review of the new steps follows"),
+         f"{len(review)} comments, {len(review_open)} open; the review is recorded as completed"),
         ("smoke run and dry run", done if smoke_ok else wait,
          f"{smoke['steps']} steps ok at {smoke['commit']}; dry run writes nothing"),
         ("scope register", done if decided["D-36"] else wait,

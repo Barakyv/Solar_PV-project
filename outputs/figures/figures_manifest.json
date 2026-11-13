@@ -1287,6 +1287,33 @@
    "takeaway": "17 runs: 10 smoke and 7 development, no final run. 4.2 h of steps in all, 84 % of them in the neural models; the longest run is 20261111T160714Z_dev (3.2 h). 4 steps failed, in 20261111T155030Z_smoke, and each passed in the next run that ran it. Each run keeps its configuration hash, and every completed step its commit and fingerprint.",
    "git_commit": "acea8ea+dirty"
   },
+  "S09-34": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Gate G-1: the checklist and its evidence",
+   "file": "outputs/figures/stage_09/S09-34_g1_checklist.png",
+   "file_sha256": "e19dcaa9388e9819524735642fca1d661aa3a92f5ea1aefd316436d310e73b73",
+   "inputs": {
+    "outputs/g1_audit/pytest_final/junit.xml": "2a656880c659b6f54f626736058031bafedf00fd67608fa755c7936158be611b",
+    "outputs/g1_audit/pytest_final/meta.txt": "f0273090695a2498dfaeb434256ce014e59f58fdc527df9ff16c974586967624",
+    "outputs/g1_audit/smoke_final.json": "e781843b28534834a6e1c9b90602d23c55e294c4849b433d1b696bcbb9f45ce2",
+    "outputs/g1_audit/audit/test_access.json": "8b908c2882e443f017bc660d38db55b5df0ba3c44b52f591658dbab915af0dbf",
+    "outputs/g1_audit/reproduction_20261113T120823Z/record.json": "907d6b0a8aa9a62dfc4dd274291273a8106c7edc7d6940e31319f1e02402b31b",
+    "docs/g1_review_log.md": "03d4679c1949686682f005ffb1757e485b82e6815d09196a95bc4a504ca8f8bf",
+    "docs/scope_register.md": "4c214d8a29fc24fb0c5cdee20a0653e2d56e85f34a148befdf9a05c5c2e1ee5d",
+    "docs/leakage_audit.md": "1887a0d55241797cb30f795c61c167112910b5e2818232dc95b067033245fa1a"
+   },
+   "facts": {
+    "n": 9,
+    "done": 8,
+    "wait": 0,
+    "todo": 1,
+    "going": 0,
+    "suite": "623 tests: 0 failed, 1 skipped (T-103, from the tag); at 01b441c"
+   },
+   "takeaway": "8 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (0 wait for a decision). The full suite: 623 tests: 0 failed, 1 skipped (T-103, from the tag); at 01b441c.",
+   "git_commit": "acfe3a4+dirty"
+  },
   "S09-35": {
    "stage": "9",
    "kind": "process",
@@ -1303,7 +1330,7 @@
     "upload_margin": 1.0877777777777777
    },
    "takeaway": "No measured input reads an hour that ends after T0, at any horizon: the newest lag is 1, 2, 3 days at D+1, D+2 and D+3, and it ends exactly at T0, as do the rolling windows and the encoders. The GFS run starts 9–16 h before T0 and its last file arrives at least 1.1 h before T0 on every train row. Only deterministic inputs (calendar, clear sky, geometry) and that GFS run describe the forecast days.",
-   "git_commit": "9ee9ac7+dirty"
+   "git_commit": "acfe3a4"
   },
   "S09-36": {
    "stage": "9",
@@ -1327,37 +1354,64 @@
     "polled_max": 0.6796
    },
    "takeaway": "The clock correction is the one look-ahead of size: a causal median would move the shift of 40 % of the days, by at most 3 min. The cleaning changes 66 of 458,304 source cells on 4 issuance days, none a scored hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every compared cell. The polled interpolation is bounded by 0.68 °C on a night hour.",
-   "git_commit": "0addc5b+dirty"
+   "git_commit": "acfe3a4"
   },
   "S09-37": {
    "stage": "9",
    "kind": "process",
    "title": "No run has read the test split",
    "file": "outputs/figures/stage_09/S09-37_test_never_read.png",
-   "file_sha256": "c40cda0e34cbba58ed125df7c0d14508a7698706212d5156c04ff0261e5be408",
+   "file_sha256": "3d0606857d8b15244c962474853f7fbc475de4f7c464e947ae6004416eb91208",
    "inputs": {
-    "outputs/g1_audit/audit/test_access.json": "ef62e9c2388512136a469417df66ebe9d744a5cb9cd2a6db67325ea5e2a5122c",
-    "outputs/g1_audit/audit/ablation_forecasts_test_check.json": "c0b76521db2942aa131833779d7c1221153f8c71c71cf7ce2fe282640149a808"
+    "outputs/g1_audit/audit/test_access.json": "8b908c2882e443f017bc660d38db55b5df0ba3c44b52f591658dbab915af0dbf"
    },
    "facts": {
-    "runs": 18,
-    "records": 120,
-    "files": 103,
-    "ablation": 3,
+    "runs": 22,
+    "records": 172,
+    "files": 160,
     "test_rows": 0,
     "last": "2024-09-30 23:00 UTC",
     "test_start": "2024-10-01",
     "log_state": "does not exist and was never committed"
    },
-   "takeaway": "Across 18 runs, 120 step records hold no test access and 103 prediction files and 3 ablation forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
-   "git_commit": "0addc5b+dirty"
+   "takeaway": "Across 22 runs, 172 step records hold no test access and 160 forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
+   "git_commit": "acfe3a4"
+  },
+  "S09-38": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The pipeline reproduced from the raw data",
+   "file": "outputs/figures/stage_09/S09-38_reproduction.png",
+   "file_sha256": "8f83e6d465cfb170fde5e21407a557926c363e555e9ee8b2bd073485f87d53cd",
+   "inputs": {
+    "outputs/g1_audit/reproduction_20261113T120823Z/record.json": "907d6b0a8aa9a62dfc4dd274291273a8106c7edc7d6940e31319f1e02402b31b"
+   },
+   "facts": {
+    "result": "NOT reproduced",
+    "decisions": 2,
+    "stages": 19,
+    "files": 317,
+    "identical": 227,
+    "content": 67,
+    "noise": 16,
+    "explained": 7,
+    "unexplained": 0,
+    "n_laptop": 5,
+    "n_neural": 2,
+    "max_rel": 3.238051946774443e-12,
+    "models_equal": 6,
+    "models": 6,
+    "ingest_rel": 9.737797865048907e-14
+   },
+   "takeaway": "The script's verdict is NOT reproduced, by its rule that any failing file fails: of 317 compared files, 227 have identical bytes, 67 the same content, 16 differ by floating-point noise only (at most 3e-12 relative), 7 differ for a documented reason and 0 for none. The explained files are the 5 of the decision checks run on the laptop (X66: the 2 decisions they record come out the same) and the 2 reports of the neural development run (X45 and the row order of a resumed report). 6 of 6 models give the same forecasts as the reference runs. The parse of the raw text differs by up to 1e-13 relative (X63).",
+   "git_commit": "acfe3a4"
   },
   "S09-39": {
    "stage": "9",
    "kind": "process",
    "title": "Entry points that run nothing on --help (X62)",
    "file": "outputs/figures/stage_09/S09-39_entry_points.png",
-   "file_sha256": "ace5be8358069dbe7dca605f9a12a8b4a10d576f15c44ec0a2f01f6e1ea02218",
+   "file_sha256": "4d4bd2540cb6ae47624e975fd02a33b40269fe7ca58bedf042d70f3c36d3de00",
    "inputs": {
     "outputs/g1_audit/incident_2026-11-12/regenerated_vs_original_content.json": "e7276e3df74a759d0136503d7f430ab52d7c973a99d40d40a79268b6473ae357"
    },
@@ -1365,14 +1419,14 @@
     "before_bad": 22,
     "before_n": 32,
     "after_bad": 0,
-    "after_n": 34,
+    "after_n": 35,
     "tables": 4,
     "cells": 158300208,
     "writer_old": "pyarrow 25.0.0",
     "writer_new": "pyarrow 26.0.0"
    },
-   "takeaway": "At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 34 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.",
-   "git_commit": "9ee9ac7+dirty"
+   "takeaway": "At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 35 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.",
+   "git_commit": "acfe3a4"
   },
   "S09-40": {
    "stage": "9",
@@ -1398,7 +1452,7 @@
     "gap_hi": 1.680684329175203
    },
    "takeaway": "The fold values range from 4.7 to 11.0 % (mean 7.4–8.1 %, std 2.1–2.6 pp over the five folds); the fits grow from 1,374 to 17,005 rows. The validation value is 0.6–1.7 pp below the CV mean in all six cases. Validation tuned the model, the folds did not, and the early folds train on less: the gap is reported and not explained (M43). One seed.",
-   "git_commit": "acea8ea+dirty"
+   "git_commit": "acfe3a4"
   },
   "S09-41": {
    "stage": "9",
@@ -1423,7 +1477,7 @@
     "harmful": 0
    },
    "takeaway": "Removing the GFS forecasts raises the error by 0.96–1.48 pp in every case and is the largest change of any single group; with only the time encodings the error is 1.2–1.5 pp higher. Of 49 changes, 30 exceed the margin on one seed, 19 do not and 0 are below minus it. With one seed the margin is only the floor, so these verdicts are provisional (M41); the final run adds two seeds and the pooled seed std.",
-   "git_commit": "acea8ea+dirty"
+   "git_commit": "acfe3a4"
   },
   "S09-42": {
    "stage": "9",
@@ -1446,7 +1500,7 @@
     "n_open": 0
    },
    "takeaway": "The review wrote 26 comments: 1 blocking, 7 should fix and 18 notes. All 8 blocking and should-fix comments were fixed in code with a test and an errata row; 10 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.",
-   "git_commit": "e262fe3+dirty"
+   "git_commit": "acfe3a4"
   },
   "C-01": {
    "stage": "correction",
