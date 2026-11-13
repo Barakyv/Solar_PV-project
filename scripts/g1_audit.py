@@ -7,8 +7,8 @@ Read-only on the data and the runs; it writes only into `outputs/g1_audit/audit/
 
 1. test_access: the test-access log of the evaluation layer (absent means no evaluation of the
    test split), its git history, the `test_access` records of every step of every run, and the
-   timestamps of every forecast file of every run (predictions, uncorrected and quantile files,
-   and the ablation forecasts; a smoke or dev file may not hold a test hour).
+   timestamps of every forecast file of every run (predictions, uncorrected and ablation forecast
+   files; a smoke or dev file may not hold a test hour).
 2. lookahead_clean (X57): the stage-5 cleaning has two-sided rules (frozen runs that reach
    daytime, margins, the centred F3 window, state runs). For every issuance time T0 (local
    midnight) the stage-4 minutes of [T0 - 72 h, T0) are cleaned alone (causal: nothing after T0
@@ -74,8 +74,9 @@ def _find_key(obj, key: str, found: list):
 
 # every kind of file of a run that holds forecast hours (a glob of `predictions_*` alone missed the
 # ablation forecasts of the new step, X76)
-FORECAST_FILES = ("predictions_*.csv", "uncorrected_*.csv", "quantiles_*.csv",
-                  "ablation_forecasts_seed*.csv")
+FORECAST_FILES = ("predictions_*.csv", "uncorrected_*.csv", "ablation_forecasts_seed*.csv")
+# the quantile files are not parsed here (D-33): they hold the hours of the predictions file of the
+# same step, which is read
 
 
 def forecast_files(run: Path) -> list[Path]:

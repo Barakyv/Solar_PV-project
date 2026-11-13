@@ -27,8 +27,7 @@ CLOCK_DAYS = f"{AUDIT}/lookahead_clock_days.csv"
 POLLED = f"{AUDIT}/lookahead_polled.csv"
 ACCESS = f"{AUDIT}/test_access.json"
 # the kinds of file that hold forecast hours; the same patterns as scripts/g1_audit.py (T-94)
-FORECAST_FILES = ("predictions_*.csv", "uncorrected_*.csv", "quantiles_*.csv",
-                  "ablation_forecasts_seed*.csv")
+FORECAST_FILES = ("predictions_*.csv", "uncorrected_*.csv", "ablation_forecasts_seed*.csv")
 INCIDENT = "outputs/g1_audit/incident_2026-11-12/regenerated_vs_original_content.json"
 
 
@@ -350,9 +349,9 @@ def s09_lookahead_prep():
     "S09-37", "9", "test_never_read", "No run has read the test split",
     "Has any run of the rebuild read or forecast a test hour before the gate?",
     "Every run of the runner so far: the last hour that any of its forecast files holds "
-    "(predictions, uncorrected and quantile files, and the ablation forecasts), against the start "
-    "of the test split, with the number of its step records and forecast files; the evaluation "
-    "layer's test-access log and its git history.",
+    "(predictions, uncorrected and ablation forecast files), against the start of the test split, "
+    "with the number of its step records and forecast files; the evaluation layer's test-access "
+    "log and its git history.",
     "Across {runs} runs, {records} step records hold no test access and {files} forecast files "
     "hold {test_rows} test hours; the latest forecast hour of any run is {last}, before the test "
     "split starts on {test_start}. The access log {log_state}.",
