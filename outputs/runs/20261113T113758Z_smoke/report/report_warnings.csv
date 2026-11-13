@@ -1,0 +1,57 @@
+step,kind,subject,text,status
+xgb,gap,indirect_D1_seed42,indirect_D1_seed42: validation RMSE 0.194 is 4.6 x the train RMSE 0.04174 at the best iteration,matched
+xgb,edge_space,indirect_D1_seed42,indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,direct_D1_seed42,direct_D1_seed42: validation RMSE 273.8 is 263.6 x the train RMSE 1.039 at the best iteration,matched
+xgb,edge_space,direct_D1_seed42,direct_D1_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,indirect_D2_seed42,indirect_D2_seed42: validation RMSE 0.2146 is 2.7 x the train RMSE 0.07976 at the best iteration,matched
+xgb,edge_space,indirect_D2_seed42,indirect_D2_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,direct_D2_seed42,direct_D2_seed42: validation RMSE 254.2 is 8.6 x the train RMSE 29.42 at the best iteration,matched
+xgb,edge_space,direct_D2_seed42,direct_D2_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,indirect_D3_seed42,indirect_D3_seed42: validation RMSE 0.2147 is 2.7 x the train RMSE 0.08027 at the best iteration,matched
+xgb,edge_space,indirect_D3_seed42,indirect_D3_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,direct_D3_seed42,direct_D3_seed42: validation RMSE 276.3 is 2835.5 x the train RMSE 0.09745 at the best iteration,matched
+xgb,edge_space,direct_D3_seed42,direct_D3_seed42: best trial on the edge of the search space for max_depth = 10,matched
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 4: 78 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 4: 78 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 4: 78 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 4: 78 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 4: 78 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 0: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 1: 81 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 2: 82 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 3: 90 held hours,step log only
+cv,other,cv,cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 4: 78 held hours,step log only
+bilstm,last_epoch,indirect seed 42,bilstm: indirect seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+bilstm,last_epoch,direct seed 42,bilstm: direct seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tft96,last_epoch,indirect seed 42,tft96: indirect seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tft96,edge_space,indirect seed 42,tft96: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23),matched
+tft96,last_epoch,direct seed 42,tft96: direct seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tft96,edge_space,direct seed 42,tft96: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23),matched
+tft168,last_epoch,indirect seed 42,tft168: indirect seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tft168,edge_space,indirect seed 42,tft168: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23),matched
+tft168,last_epoch,direct seed 42,tft168: direct seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tft168,edge_space,direct seed 42,tft168: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23),matched
+tftbase,last_epoch,indirect seed 42,tftbase: indirect seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+tftbase,last_epoch,direct seed 42,tftbase: direct seed 42: best epoch 2 at the last epoch: it may not have converged,matched
+patchtst,first_check,indirect seed 42,patchtst: indirect seed 42: best validation check at the first check,matched
+patchtst,last_step,direct seed 42,patchtst: direct seed 42: best validation check at the last step: it may not have converged,matched
