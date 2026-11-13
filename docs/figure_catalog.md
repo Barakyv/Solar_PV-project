@@ -615,7 +615,7 @@ Figures made earlier by the stage's own producer:
 ### S09-40. Cross-validation of the XGB models on the train rows (S-38)
 
 - **Question:** How much does the error of the XGB models vary between five expanding date folds of the train rows, and how does it compare with their validation value?
-- **Shows:** nRMSE in kW (% of 3,449 kW) of each of the five folds of the stage-7 expanding-window split (3-day gap) for each target and horizon, seed {seed}; the model of the development run refitted on the fold's earlier days with its rounds fixed, scored on the fold's daytime hours with AC truth. Right of each panel: the validation value of the same model (its early-stopping set, raw forecast). XGB only: S-38 is a v6 analysis of XGB-Opt.
+- **Shows:** nRMSE in kW (% of 3,449 kW) of each of the five folds of the stage-7 expanding-window split (3-day gap) for each target and horizon, one seed; the model of the development run refitted on the fold's earlier days with its rounds fixed, scored on the fold's daytime hours with AC truth. Right of each panel: the validation value of the same model (its early-stopping set, raw forecast). XGB only: S-38 is a v6 analysis of XGB-Opt.
 - **Takeaway:** The fold values range from 4.7 to 11.0 % (mean 7.4–8.1 %, std 2.1–2.6 pp over the five folds); the fits grow from 1,374 to 17,005 rows. The validation value is 0.6–1.7 pp below the CV mean in all six cases. Validation tuned the model, the folds did not, and the early folds train on less: the gap is reported and not explained (M43). One seed.
 - **Led to:** The step `cv` repeats this for the three seeds of the final run, and the step `test` adds the test value of the uncorrected forecast (phase 2).
 - **File:** `outputs/figures/stage_09/S09-40_xgb_cv.png`
@@ -623,7 +623,7 @@ Figures made earlier by the stage's own producer:
 ### S09-41. Feature-group ablation of the XGB models (S-41)
 
 - **Question:** How much does the validation error of the XGB models change when one feature group is removed and the model is refitted?
-- **Shows:** For each target and horizon, the change in nRMSE in kW (pp) of the model refitted without one feature group of the contract (and without all measured history, and with only the time encodings), against the full model of the development run, seed {seed}. Bars right of zero: removing the group raises the error (hatched red); the dotted lines are the registered margin of {margin:.2f} pp (with one seed, the floor). XGB only: S-41 is a v6 analysis of XGB-Opt.
+- **Shows:** For each target and horizon, the change in nRMSE in kW (pp) of the model refitted without one feature group of the contract (and without all measured history, and with only the time encodings), against the full model of the development run, one seed. Bars right of zero: removing the group raises the error (hatched red); the dotted lines are the registered margin (with one seed, its floor). XGB only: S-41 is a v6 analysis of XGB-Opt.
 - **Takeaway:** Removing the GFS forecasts raises the error by 0.96–1.48 pp in every case and is the largest change of any single group; with only the time encodings the error is 1.2–1.5 pp higher. Of 49 changes, 30 exceed the margin on one seed, 19 do not and 0 are below minus it. With one seed the margin is only the floor, so these verdicts are provisional (M41); the final run adds two seeds and the pooled seed std.
 - **Led to:** The step `ablation` repeats this for the three seeds of the final run, and the step `test` scores the same fits on the test window in phase 2.
 - **File:** `outputs/figures/stage_09/S09-41_xgb_ablation.png`
@@ -633,7 +633,7 @@ Figures made earlier by the stage's own producer:
 - **Question:** What did the independent review find, how serious was it, and what became of each comment?
 - **Shows:** One row per comment of `docs/g1_review_log.md` (the review of the source against §6 and its fix checks), by severity (colour) and by what became of it (column): a fix in code with a test and an errata row, a test without a code change, a correction of the documents, or an explanation with no change.
 - **Takeaway:** The review wrote 26 comments: 1 blocking, 7 should fix and 18 notes. All 8 blocking and should-fix comments were fixed in code with a test and an errata row; 10 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.
-- **Led to:** The evidence of the gate is repeated at the commit that is tagged (D-36), and the reproduction from the raw data runs once more at it.
+- **Led to:** The reproduction from the raw data, the full suite, the smoke run and the audit were repeated at the final candidate; the tag waits for the user's approval.
 - **File:** `outputs/figures/stage_09/S09-42_external_review.png`
 
 Figures made earlier by the stage's own producer:
