@@ -1,0 +1,22 @@
+[     0.0s] RUN     stage runs/20261113T075016Z_smoke
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:50:19+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261113T075016Z_smoke, mode smoke, steps ['select', 'baselines', 'xgb', 'cv', 'ablation', 'bilstm', 'tft96', 'tft168', 'tftbase', 'patchtst', 'evaluate', 'explain', 'report']
+[     3.3s] NOTE    select: ok in 2.8 s, 8 outputs
+[     4.3s] NOTE    baselines: ok in 0.7 s, 3 outputs
+[    22.7s] NOTE    xgb: ok in 18.0 s, 16 outputs
+[    33.7s] NOTE    cv: ok in 10.6 s, 3 outputs
+[    78.4s] NOTE    ablation: ok in 44.4 s, 5 outputs
+[   128.6s] NOTE    bilstm: ok in 49.0 s, 25 outputs
+[   181.2s] NOTE    tft96: ok in 51.6 s, 27 outputs
+[   231.6s] NOTE    tft168: ok in 49.2 s, 27 outputs
+[   276.4s] NOTE    tftbase: ok in 43.7 s, 23 outputs
+[   317.0s] NOTE    patchtst: ok in 39.5 s, 20 outputs
+[   322.2s] NOTE    evaluate: ok in 4.9 s, 10 outputs
+[   327.0s] NOTE    explain: ok in 4.3 s, 15 outputs
+[   328.1s] NOTE    report: ok in 0.6 s, 16 outputs
+[   328.1s] VALUE   status = ok
+[   328.1s] RUN     warnings: 0
+[   328.1s] RUN     status: ok; duration 328.1s

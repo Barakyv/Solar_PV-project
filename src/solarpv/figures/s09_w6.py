@@ -9,6 +9,7 @@ import subprocess
 import numpy as np
 import pandas as pd
 import pyarrow.dataset as ds
+from matplotlib.lines import Line2D
 from matplotlib.patches import Patch, Rectangle
 
 from solarpv.config.constants import TEST_START, VAL_START
@@ -38,12 +39,30 @@ SERIES = {"s01_inv1_AC_kW": "inverter 1 AC", "s01_inv2_AC_kW": "inverter 2 AC",
 
 # ── S09-34: the checklist of gate G-1 ──────────────────────────────────────
 
-SUITE = "outputs/g1_audit/pytest_final/junit.xml"  # the full suite at the commit to be tagged
-SMOKE_FINAL = "outputs/g1_audit/smoke_final.json"  # the smoke run at that commit (R9-29)
-DRY_RUN = "outputs/g1_audit/dry_run_final_09533a3.log"
+SUITE_DIR = "outputs/g1_audit/pytest_final"  # the full suite at the commit to be tagged
+SUITE = f"{SUITE_DIR}/junit.xml"
+SUITE_META = f"{SUITE_DIR}/meta.txt"  # "start <time> HEAD <commit>"
+SMOKE_FINAL = "outputs/g1_audit/smoke_final.json"  # the smoke run at that commit
 REVIEW_LOG = "docs/g1_review_log.md"
 SCOPE = "docs/scope_register.md"
 LEAKAGE = "docs/leakage_audit.md"
+ALLOWED_SKIP = {"test_after_the_tag_only_allowed_paths_changed"}  # active only from the tag (T-103)
+
+
+def _dry_run() -> str:
+    logs = sorted((REPO_ROOT / "outputs" / "g1_audit").glob("dry_run_final_*.log"))
+    last = logs[-1] if logs else REPO_ROOT / "outputs" / "g1_audit" / "dry_run_final_.log"
+    return last.relative_to(REPO_ROOT).as_posix()
+
+
+def _code_unchanged_since(commit: str) -> bool:
+    """Evidence gathered at `commit` holds for HEAD when only the paths of D-36 changed since:
+    figures, documents, tests, outputs (`checks.after_tag_problems`)."""
+    from solarpv.pipeline import checks
+
+    out = subprocess.run([find_git(), "diff", "--name-only", f"{commit}..HEAD"], cwd=REPO_ROOT,
+                         capture_output=True, text=True)
+    return out.returncode == 0 and not checks.after_tag_problems(out.stdout.split())
 
 
 def _checklist() -> list[tuple[str, str, str]]:
@@ -56,57 +75,79 @@ def _checklist() -> list[tuple[str, str, str]]:
     rows = re.findall(r"^\| (A-\d+) \|.*\| ([^|]*) \|$", reg, re.M)
     open_rows = [a for a, s in rows if "✅" not in s and "מוצהרת כמגבלה" not in s]
     declared = [a for a, s in rows if "מוצהרת כמגבלה" in s]
+    decided = {d: bool(re.search(rf"^\| {d} \|.*הוכרע", master, re.M))
+               for d in ("D-34", "D-35", "D-36", "D-37")}
     suite = ET.parse(REPO_ROOT / SUITE).getroot()
     ts = suite if suite.tag == "testsuite" else suite.find("testsuite")
     n, bad = int(ts.get("tests")), int(ts.get("failures")) + int(ts.get("errors"))
-    skipped = int(ts.get("skipped"))
+    skipped = [c.get("name") for c in ts.iter("testcase") if c.find("skipped") is not None]
+    other_skips = [s for s in skipped if s not in ALLOWED_SKIP]
+    suite_commit = (REPO_ROOT / SUITE_META).read_text(encoding="utf-8").split("HEAD")[-1].split()[0]
     acc = D.jload(ACCESS)
     rec = D.jload(REPRO)
+    unexplained = [(s["step"], r["path"]) for s in rec["steps"] for r in s["failing"]
+                   if not explained_reason(s["step"], r["path"])]
     smoke = D.jload(SMOKE_FINAL)
-    dry_ok = "exit 0" in (REPO_ROOT / DRY_RUN).read_text(encoding="utf-8")
-    review = [line for line in (REPO_ROOT / REVIEW_LOG).read_text(encoding="utf-8").splitlines()
-              if re.match(r"^\| R-G1-\d+", line)]
+    dry = _dry_run()
+    dry_ok = "exit 0" in (REPO_ROOT / dry).read_text(encoding="utf-8")
+    log = (REPO_ROOT / REVIEW_LOG).read_text(encoding="utf-8")
+    review = [[c.strip() for c in line.strip("|").split("|")]
+              for line in log.splitlines() if re.match(r"^\| R-G1-\d+", line)]
+    review_open = [r for r in review if len(r) >= 7 and r[5].lower() != "note" and not r[6]]
+    review_done = bool(re.search(r"^Review completed: \d{4}-\d{2}-\d{2}", log, re.M))
     scope = (REPO_ROOT / SCOPE).read_text(encoding="utf-8")
     x59 = sorted(set(re.findall(r"^\| (S-\d+) \|.*X59", scope, re.M)))
     tag = subprocess.run([find_git(), "tag", "--list", "g1-frozen"], cwd=REPO_ROOT,
                          capture_output=True, text=True).stdout.strip()
-    done, user, todo = "evidence complete", "waiting for the user", "at the tag"
+    done, wait, todo, going = ("evidence complete", "waiting for the user", "at the tag",
+                               "in progress")
+    suite_ok = not bad and not other_skips and _code_unchanged_since(suite_commit)
+    repro_ok = (not unexplained and all(s["exit"] == 0 for s in rec["steps"])
+                and _code_unchanged_since(rec["commit"]) and decided["D-34"])
+    smoke_ok = (smoke["all_ok"] and smoke["clean"] and dry_ok
+                and _code_unchanged_since(smoke["commit"]))
     return [
-        ("assumptions verified or declared", done if not open_rows else user,
+        ("assumptions verified or declared", done if not open_rows else wait,
          f"{len(rows) - len(declared)} verified, {len(declared)} declared ({', '.join(declared)})"),
-        ("full test suite green", done if not bad and not skipped else user,
-         f"{n} passed, {bad} failed, {skipped} skipped"),
-        ("manual leakage audit", user, "docs/leakage_audit.md §3; X57 (the clock) for the user"),
+        ("full test suite green", done if suite_ok else wait,
+         f"{n} tests: {bad} failed, {len(skipped)} skipped (T-103, from the tag); "
+         f"at {suite_commit}"),
+        ("manual leakage audit", done if decided["D-35"] else wait,
+         "docs/leakage_audit.md §3; the clock look-ahead accepted (D-35)"),
         ("test split touched no decision", done if acc["prediction_rows_in_test"] == 0
-         and not acc["log_exists"] else user,
+         and not acc["log_exists"] else wait,
          f"{acc['step_records']} step records, {acc['prediction_files']} forecast files, "
-         f"0 test hours"),
-        ("reproduction from scratch", user if rec.get("result") == "reproduced" else todo,
-         f"{rec.get('result')} in a fresh clone; a new environment is the user's choice"),
-        ("external review", user, f"{len(review)} comments; brief ready, not started"),
-        ("smoke run and dry run", done if smoke["all_ok"] and smoke["clean"] and dry_ok
-         else user, f"{smoke['steps']} steps ok at {smoke['commit']}; dry run writes nothing"),
-        ("scope register", user, f"every row has a producer or X59 ({len(x59)} rows with X59)"),
+         "0 test hours"),
+        ("reproduction from scratch", done if repro_ok else wait,
+         f"{len(rec['steps'])} steps exit 0; {len(unexplained)} unexplained differences (D-34)"),
+        ("external review", done if review_done and not review_open else going,
+         f"{len(review)} comments, {len(review_open)} open; the review of the new steps follows"),
+        ("smoke run and dry run", done if smoke_ok else wait,
+         f"{smoke['steps']} steps ok at {smoke['commit']}; dry run writes nothing"),
+        ("scope register", done if decided["D-36"] else wait,
+         f"every row has a producer or X59 ({len(x59)} rows after the tag, D-36)"),
         ("tag g1-frozen", done if tag else todo, "after the user's approval"),
     ]
 
 
 @register(
     "S09-34", "9", "g1_checklist", "Gate G-1: the checklist and its evidence",
-    "Which items of gate G-1 have their evidence, and which wait for a decision of the user?",
+    "Which items of gate G-1 have their evidence, and which are still open?",
     "The nine items of the gate (PROJECT_MASTER.md §7), each with its state read from its "
     "evidence file (the assumption register, the JUnit file of the full suite, the test-access "
     "audit, the reproduction record, the smoke run, the dry run, the review log, the scope "
-    "register, the git tags).",
-    "{done} of {n} items have complete evidence; {user} wait for a decision of the user "
-    "(stage-9 plan §20.7, Q-24–Q-28) and {todo} for the tag. The full suite: {suite}.",
-    "The user decides the open points; then the tag, and the final run by the runbook.",
-    (SUITE, SMOKE_FINAL, ACCESS, REPRO, DRY_RUN, REVIEW_LOG, SCOPE, LEAKAGE))
+    "register, the git tags). Evidence gathered at an earlier commit counts for HEAD only when "
+    "nothing outside the paths of D-36 changed since.",
+    "{done} of {n} items have complete evidence, {going} is in progress and {todo} wait for the "
+    "tag ({wait} wait for a decision). The full suite: {suite}.",
+    "The user approves the tag; then the final run by the runbook.",
+    (SUITE, SUITE_META, SMOKE_FINAL, ACCESS, REPRO, REVIEW_LOG, SCOPE, LEAKAGE))
 def s09_g1_checklist():
     items = _checklist()
     colours = {"evidence complete": C["green"], "waiting for the user": C["orange"],
-               "at the tag": C["grey"]}
-    marks = {"evidence complete": "✔", "waiting for the user": "?", "at the tag": "…"}
+               "at the tag": C["grey"], "in progress": C["sky"]}
+    marks = {"evidence complete": "✔", "waiting for the user": "?", "at the tag": "…",
+             "in progress": "~"}
     fig, ax = subplots(height=3.6, width=8.4)
     ax.set_axis_off()
     ax.set_xlim(0, 1)
@@ -122,8 +163,8 @@ def s09_g1_checklist():
     states = [s for _, s, _ in items]
     suite = next(e for i, _, e in items if i == "full test suite green")
     facts = {"n": len(items), "done": states.count("evidence complete"),
-             "user": states.count("waiting for the user"), "todo": states.count("at the tag"),
-             "suite": suite}
+             "wait": states.count("waiting for the user"), "todo": states.count("at the tag"),
+             "going": states.count("in progress"), "suite": suite}
     return fig, facts
 
 
@@ -329,14 +370,33 @@ def s09_test_never_read():
 
 # ── S09-38: the reproduction from the raw data ─────────────────────────────
 
+EXPLAINED_CLASS = "explained difference (D-34)"
+UNEXPLAINED_CLASS = "unexplained difference"
 CLASSES = (("identical bytes", C["green"], ""), ("same content, other bytes", C["sky"], "//"),
-           ("floating-point noise", C["yellow"], ".."), ("differs (fails)", C["red"], "xx"),
-           ("listed, not compared", C["light"], ""))
+           ("floating-point noise", C["yellow"], ".."), (EXPLAINED_CLASS, C["orange"], "xx"),
+           (UNEXPLAINED_CLASS, C["red"], "XX"), ("listed, not compared", C["light"], ""))
+# D-34: a difference that follows from a documented fix is explained; nothing else is. A failing
+# file that is not listed here is unexplained, and the figure refuses to be built with one.
+EXPLAINED = (
+    ("decide_k", None, "X66: a decision check run on the laptop; its numbers depend on the "
+                       "machine and its decisions are equal"),
+    ("nwp_check", None, "X66: a decision check run on the laptop; its numbers depend on the "
+                        "machine and its decisions are equal"),
+    ("dev_neural", ("report_steps.csv", "report_warnings.csv"),
+     "X45: the step now emits the tft168 warning; and the row order of a resumed report"),
+)
 
 
-def _class(row: dict, failing: set) -> str:
+def explained_reason(step: str, path: str) -> str | None:
+    for name, files, why in EXPLAINED:
+        if step == name and (files is None or path.rsplit("/", 1)[-1] in files):
+            return why
+    return None
+
+
+def _class(row: dict, step: str, failing: set) -> str:
     if row["path"] in failing:
-        return "differs (fails)"
+        return EXPLAINED_CLASS if explained_reason(step, row["path"]) else UNEXPLAINED_CLASS
     if row["equal"] is True:
         return "identical bytes" if row["kind"] == "bytes" else "same content, other bytes"
     if row["equal"] is False and row.get("float_noise"):
@@ -358,29 +418,35 @@ def _model_style():
     "produce the same outputs at every stage and the same forecasts for every model?",
     "Left: every file each stage wrote in a fresh clone, compared with this checkout's: identical "
     "bytes, the same content in other bytes (a newer parquet writer), floating-point noise "
-    "(numeric cells only, relative difference at most 1e-9, nothing missing on one side), a real "
-    "difference, or listed only (figures, logs, notebooks). Right: the forecast files of the two "
-    "development runs per model, against the reference runs; colour and marker per model.",
-    "{result}: {stages} stages from the checksums to the two development runs; of {files:,} "
+    "(numeric cells only, relative difference at most 1e-9, nothing missing on one side), a "
+    "difference explained by a documented fix (D-34), an unexplained difference, or listed only "
+    "(figures, logs, notebooks). Right: the forecast files of the two development runs per "
+    "model, against the reference runs; colour and marker per model.",
+    "The script's verdict is {result}, by its rule that any failing file fails: of {files:,} "
     "compared files, {identical:,} have identical bytes, {content} the same content, {noise} "
-    "differ by floating-point noise only (at most {max_rel:.1g} relative) and {fail} differ. The "
-    "files that differ are the numbers of the decision checks run on the laptop (X66); the "
-    "{decisions} decisions they record come out the same. {models_equal} of {models} models "
-    "give the same forecasts as the reference runs. The parse of the raw text differs by up to "
-    "{ingest_rel:.1g} relative (X63).",
-    "Evidence of gate G-1 (stage-9 plan §20.5); the final run starts from the same code and "
-    "inputs.",
+    "differ by floating-point noise only (at most {max_rel:.1g} relative), {explained} differ for "
+    "a documented reason and {unexplained} for none. The explained files are the {n_laptop} of "
+    "the decision checks run on the laptop (X66: the {decisions} decisions they record come out "
+    "the same) and the {n_neural} reports of the neural development run (X45 and the row order "
+    "of a resumed report). {models_equal} of {models} models give the same forecasts as the "
+    "reference runs. The parse of the raw text differs by up to {ingest_rel:.1g} relative "
+    "(X63).",
+    "Evidence of gate G-1 (stage-9 plan §20.5, D-34); the final run starts from the same code "
+    "and inputs.",
     (REPRO,))
 def s09_reproduction():
     rec = D.jload(REPRO)
     steps = rec["steps"]
     dev_steps = [s for s in steps if s["step"].startswith("dev_")]
+    unexplained = [(s["step"], r["path"]) for s in steps for r in s["failing"]
+                   if not explained_reason(s["step"], r["path"])]
+    assert not unexplained, f"unexplained differences: {unexplained}"  # D-34
     counts = []
     for s in steps:
         failing = {r["path"] for r in s["failing"]}
         c = {k: 0 for k, _, _ in CLASSES}
         for r in s["compared"]:
-            c[_class(r, failing)] += 1
+            c[_class(r, s["step"], failing)] += 1
         counts.append((s["step"], c))
     fig, axes = subplots(1, 2, height=4.2, width=8.6, gridspec_kw={"width_ratios": [1.5, 1]})
     ax = axes[0]
@@ -411,7 +477,7 @@ def s09_reproduction():
                     or name.endswith(".npz")):
                 continue
             m = per_model.setdefault(STEP_MODEL[parts[1]], {"same": 0, "noise": 0, "differs": 0})
-            k = _class(r, failing)
+            k = _class(r, s["step"], failing)
             m["same" if k in ("identical bytes", "same content, other bytes") else
               "noise" if k == "floating-point noise" else "differs"] += 1
     order = [m for m in ("XGB", "BiLSTM", "TFT-96", "TFT-168", "TFT baseline", "PatchTST",
@@ -424,7 +490,7 @@ def s09_reproduction():
             ax.barh(i, v["noise"], left=v["same"], color=C["yellow"], hatch="..",
                     edgecolor="white")
         if v["differs"]:
-            ax.barh(i, v["differs"], left=v["same"] + v["noise"], color=C["red"], hatch="xx",
+            ax.barh(i, v["differs"], left=v["same"] + v["noise"], color=C["red"], hatch="XX",
                     edgecolor="white")
         ax.plot(v["same"] + v["noise"] + v["differs"], i, fmt[0], color=colour, ms=6,
                 mec="black", mew=0.4)
@@ -438,6 +504,7 @@ def s09_reproduction():
     ingest = next((r.get("max_rel", 0.0) for s in steps if s["step"] == "ingest"
                    for r in s["compared"] if r["path"].endswith("scada_1min_utc.parquet")), 0.0)
     models = [m for m in order if m != "references"]
+    assert all(per_model[m]["differs"] == 0 for m in per_model), per_model  # no forecast differs
     # X66: a failing decision file of a stage run on the laptop: are its decisions the same?
     import yaml
 
@@ -457,20 +524,159 @@ def s09_reproduction():
                     ref["results"][k]["passes"] == new["results"][k]["passes"]
                     for k in ref["results"])
             decisions.append((r["path"], same))
-    assert all(same for _, same in decisions), decisions
-    laptop_checks = {"decide_k", "nwp_check"}  # D-11 / L-04 and D-12, run on the laptop
-    assert all(s["step"] in laptop_checks for s in steps if s["failing"]), \
-        [s["step"] for s in steps if s["failing"]]
-    facts = {"result": "Reproduced" if rec.get("result") == "reproduced" else "Not reproduced",
-             "decisions": len(decisions),
-             "stages": len(steps),
+    assert decisions and all(same for _, same in decisions), decisions
+    in_step = {name: sum(1 for s in steps if s["step"] == name for _ in s["failing"])
+               for name in ("decide_k", "nwp_check", "dev_neural")}
+    facts = {"result": "NOT reproduced" if rec.get("result") != "reproduced" else "reproduced",
+             "decisions": len(decisions), "stages": len(steps),
              "files": sum(total[k] for k in total if k != "listed, not compared"),
              "identical": total["identical bytes"], "content": total["same content, other bytes"],
-             "noise": total["floating-point noise"], "fail": total["differs (fails)"],
+             "noise": total["floating-point noise"], "explained": total[EXPLAINED_CLASS],
+             "unexplained": total[UNEXPLAINED_CLASS],
+             "n_laptop": in_step["decide_k"] + in_step["nwp_check"],
+             "n_neural": in_step["dev_neural"],
              "max_rel": max(rels) if rels else 0.0,
              "models_equal": sum(per_model[m]["differs"] == 0 and per_model[m]["noise"] == 0
                                  for m in models),
              "models": len(models), "ingest_rel": ingest}
+    assert facts["unexplained"] == 0
+    return fig, facts
+
+
+# ── S09-40 and S09-41: the two analyses that train models (D-36) ────────────
+
+W6DEV = D.W6_DEV_RUN
+CV_FOLDS_F, CV_SUMMARY_F = f"{W6DEV}/cv/cv_folds.csv", f"{W6DEV}/cv/cv_summary.csv"
+AB_RESULTS_F, AB_SUMMARY_F = (f"{W6DEV}/ablation/ablation_results.csv",
+                              f"{W6DEV}/ablation/ablation_summary.csv")
+HORIZON_STYLE = {1: ("o", "-"), 2: ("s", "--"), 3: ("^", ":")}  # XGB is black in every figure
+
+
+@register(
+    "S09-40", "9", "xgb_cv", "Cross-validation of the XGB models on the train rows (S-38)",
+    "How much does the error of the XGB models vary between five expanding date folds of the "
+    "train rows, and how does it compare with their validation value?",
+    "nRMSE in kW (% of 3,449 kW) of each of the five folds of the stage-7 expanding-window split "
+    "(3-day gap) for each target and horizon, seed {seed}; the model of the development run "
+    "refitted on the fold's earlier days with its rounds fixed, scored on the fold's daytime hours "
+    "with AC truth. Right of each panel: the validation value of the same model (its "
+    "early-stopping set, raw forecast). XGB only: S-38 is a v6 analysis of XGB-Opt.",
+    "The fold values range from {lo:.1f} to {hi:.1f} % (mean {mean_lo:.1f}–{mean_hi:.1f} %, std "
+    "{std_lo:.1f}–{std_hi:.1f} pp over the five folds); the fits grow from {fit_lo:,} to "
+    "{fit_hi:,} rows. The validation value is {gap_lo:.1f}–{gap_hi:.1f} pp below the CV mean in "
+    "all six cases. Validation tuned the model, the folds did not, and the early folds train on "
+    "less: the gap is reported and not explained (M43). One seed.",
+    "The step `cv` repeats this for the three seeds of the final run, and the step `test` adds "
+    "the test value of the uncorrected forecast (phase 2).",
+    (CV_FOLDS_F, CV_SUMMARY_F))
+def s09_xgb_cv():
+    folds, summary = D.csv(CV_FOLDS_F), D.csv(CV_SUMMARY_F)
+    assert set(folds["seed"]) == {summary["seed"].iloc[0]} and folds["fold"].nunique() == 5
+    assert (pd.to_datetime(folds["last_day"]) < pd.Timestamp(VAL_START)).all()  # train only
+    assert (summary["validation_minus_cv_pp"] < 0).all()
+    fig, axes = subplots(1, 2, height=3.4, width=8.4, sharey=True)
+    for ax, target in zip(axes, ("indirect", "direct"), strict=True):
+        for h in (1, 2, 3):
+            g = folds[(folds["target"] == target) & (folds["horizon"] == h)].sort_values("fold")
+            marker, line = HORIZON_STYLE[h]
+            ax.plot(g["fold"], g["nrmse_kw_pct"], marker=marker, ls=line, color="black",
+                    label=f"D+{h}")
+            v = summary[(summary["target"] == target) & (summary["horizon"] == h)].iloc[0]
+            ax.plot([5.2], [v["validation_uncorrected"]], marker=marker, ls="", color=C["red"],
+                    mec="black", ms=7)
+        first = folds[(folds["target"] == target) & (folds["horizon"] == 1)].sort_values("fold")
+        ax.set_xticks([*first["fold"], 5.2], [f"{i + 1}\n{str(a)[:7]}" for i, a in
+                                              zip(first["fold"], first["first_day"],
+                                                  strict=True)] + ["validation"], fontsize=6.5)
+        ax.set_title(target, fontsize=8)
+        ax.set_xlabel("fold, and the month it starts")
+        ax.set_ylim(0, None)
+    axes[0].set_ylabel("nRMSE in kW (% of 3,449 kW)")
+    handles, labels = axes[0].get_legend_handles_labels()
+    handles.append(Line2D([0], [0], marker="o", ls="", color=C["red"], mec="black", ms=7))
+    fig.legend(handles=handles, labels=[*labels, "validation value of the same model"],
+               loc="outside lower center", ncol=4, fontsize=6.5)
+    ys = folds["nrmse_kw_pct"]
+    facts = {"seed": int(summary["seed"].iloc[0]), "lo": float(ys.min()), "hi": float(ys.max()),
+             "mean_lo": float(summary["cv_mean"].min()), "mean_hi": float(summary["cv_mean"].max()),
+             "std_lo": float(summary["cv_std"].min()), "std_hi": float(summary["cv_std"].max()),
+             "fit_lo": int(folds["fit_rows"].min()), "fit_hi": int(folds["fit_rows"].max()),
+             "gap_lo": float(-summary["validation_minus_cv_pp"].max()),
+             "gap_hi": float(-summary["validation_minus_cv_pp"].min())}
+    return fig, facts
+
+
+GROUP_LABELS = {"nwp_gfs": "GFS forecasts", "clearsky": "clear sky", "other": "geometry, other",
+                "time_encodings": "time encodings", "lag_power": "lags",
+                "rolling_stats": "rolling statistics", "history_other": "previous-day index",
+                "history": "all measured history"}
+VERDICT_STYLE = {"helpful": (C["red"], "//"), "neutral": (C["grey"], ""),
+                 "harmful": (C["blue"], "xx")}  # helpful: removing the group raises the error
+
+
+def _mode_label(mode: str) -> str:
+    if mode == "minimal":
+        return "only time encodings"
+    return "without " + GROUP_LABELS.get(mode.removeprefix("no_"), mode.removeprefix("no_"))
+
+
+@register(
+    "S09-41", "9", "xgb_ablation", "Feature-group ablation of the XGB models (S-41)",
+    "How much does the validation error of the XGB models change when one feature group is "
+    "removed and the model is refitted?",
+    "For each target and horizon, the change in nRMSE in kW (pp) of the model refitted without "
+    "one feature group of the contract (and without all measured history, and with only the "
+    "time encodings), against the full model of the development run, seed {seed}. Bars right of "
+    "zero: removing the group raises the error (hatched red); the dotted lines are the registered "
+    "margin of {margin:.2f} pp (with one seed, the floor). XGB only: S-41 is a v6 analysis of "
+    "XGB-Opt.",
+    "Removing the GFS forecasts raises the error by {nwp_lo:.2f}–{nwp_hi:.2f} pp in every case "
+    "and is the largest change of any single group; with only the time encodings the error is "
+    "{min_lo:.1f}–{min_hi:.1f} pp higher. Of {n_modes} changes, {helpful} exceed the margin on one "
+    "seed, {neutral} do not and {harmful} are below minus it. With one seed the margin is only "
+    "the floor, so these verdicts are provisional (M41); the final run adds two seeds and the "
+    "pooled seed std.",
+    "The step `ablation` repeats this for the three seeds of the final run, and the step `test` "
+    "scores the same fits on the test window in phase 2.",
+    (AB_RESULTS_F, AB_SUMMARY_F))
+def s09_xgb_ablation():
+    summary, res = D.csv(AB_SUMMARY_F), D.csv(AB_RESULTS_F)
+    assert summary["single_seed"].all() and res["seed"].nunique() == 1
+    margin = float(summary["margin_pp"].iloc[0])
+    assert (summary["margin_pp"] == margin).all()
+    singles = summary[~summary["mode"].isin(["minimal", "no_history"])]
+    for (_, _), g in singles.groupby(["target", "horizon"]):  # the largest single group: GFS
+        assert g.loc[g["mean_delta_pp"].idxmax(), "mode"] == "no_nwp_gfs"
+    order = ["no_nwp_gfs", "no_clearsky", "no_other", "no_time_encodings", "no_lag_power",
+             "no_rolling_stats", "no_history_other", "no_history", "minimal"]
+    fig, axes = subplots(2, 3, height=5.4, width=8.8, sharex=True)
+    for i, target in enumerate(("indirect", "direct")):
+        for j, h in enumerate((1, 2, 3)):
+            ax = axes[i][j]
+            g = summary[(summary["target"] == target) & (summary["horizon"] == h)]
+            g = g.set_index("mode").reindex([m for m in order if m in set(g["mode"])])
+            for k, (_, r) in enumerate(g.iterrows()):
+                col, hatch = VERDICT_STYLE[r["verdict"]]
+                ax.barh(-k, r["mean_delta_pp"], color=col, hatch=hatch, edgecolor="white")
+                ax.text(max(r["mean_delta_pp"], 0) + 0.03, -k, f"{r['mean_delta_pp']:+.2f}",
+                        va="center", fontsize=5)
+            ax.set_yticks(-np.arange(len(g)), [_mode_label(m) for m in g.index], fontsize=5.5)
+            for s in (margin, -margin):
+                ax.axvline(s, color="black", ls=":", lw=0.8)
+            ax.axvline(0, color="black", lw=0.6)
+            ax.set_title(f"{target}, D+{h}", fontsize=8)
+            if i == 1:
+                ax.set_xlabel("change in nRMSE (pp)", fontsize=7)
+    handles = [Patch(facecolor=col, hatch=h, edgecolor="white", label=f"{v} (one seed)")
+               for v, (col, h) in VERDICT_STYLE.items()]
+    fig.legend(handles=handles, loc="outside lower center", ncol=3, fontsize=6.5)
+    nwp = summary[summary["mode"] == "no_nwp_gfs"]["mean_delta_pp"]
+    only = summary[summary["mode"] == "minimal"]["mean_delta_pp"]
+    counts = summary["verdict"].value_counts()
+    facts = {"seed": int(res["seed"].iloc[0]), "margin": margin, "nwp_lo": float(nwp.min()),
+             "nwp_hi": float(nwp.max()), "min_lo": float(only.min()), "min_hi": float(only.max()),
+             "n_modes": int(len(summary)), "helpful": int(counts.get("helpful", 0)),
+             "neutral": int(counts.get("neutral", 0)), "harmful": int(counts.get("harmful", 0))}
     return fig, facts
 
 

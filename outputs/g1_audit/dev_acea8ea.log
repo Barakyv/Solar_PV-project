@@ -1,0 +1,606 @@
+﻿mode: dev
+python 3.11.18 on Windows-10-10.0.22000-SP0
+packages: numpy 2.4.6, pandas 3.1.0, pyarrow 26.0.0, scipy 1.17.1, scikit-learn 1.9.1, statsmodels 0.15.0, pvlib 0.16.1, PyYAML 6.0.3, xgboost 3.4.2, optuna 5.0.0, SQLAlchemy 2.1.6, shap 0.51.0, matplotlib 3.11.2, psutil 7.2.2
+absent: torch, lightning, pytorch-forecasting, neuralforecast
+CPUs 8 (XGB_THREADS 8); memory {'total_gb': 64.0, 'available_gb': 43.3}; disk free 205.9 GB
+GPU: GRID P40-24Q, 24576 MiB, driver 538.46
+GPU environment (D-29): C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe
+git: acea8ea; tags on HEAD []; clean tree False
+site: private (true coordinates)
+data: 20 of 20 inputs as recorded
+check passed
+[     0.0s] RUN     stage runs/20261113T075845Z_dev
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:58:48+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261113T075845Z_dev, mode dev, steps ['select', 'baselines', 'xgb', 'cv', 'ablation', 'evaluate', 'explain', 'report']
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/select
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:58:49+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.2s] INPUT   outputs/07_feature_selection/selection_manifest.json sha256=73070f3da08f8dc4
+[     0.2s] INPUT   outputs/07_feature_selection/inner_train_check.csv sha256=c457837a60b2831e
+[     0.2s] INPUT   outputs/07_feature_selection/validation_check.csv sha256=ce350060a1e4d855
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_indirect_D1.json sha256=56c6d26ab2b90afa
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_indirect_D2.json sha256=e00c69fb95f6de8d
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_indirect_D3.json sha256=dc4eab283083195d
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_direct_D1.json sha256=e6ec06473241d71e
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_direct_D2.json sha256=30a9ad2065d9cdef
+[     0.2s] INPUT   outputs/07_feature_selection/final_features_direct_D3.json sha256=3aa261906d0a6fb6
+[     0.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     2.7s] NOTE    select: verified, nothing rerun; model_inputs.json b693622407f2; {'indirect_D1': 31, 'indirect_D2': 28, 'indirect_D3': 32, 'direct_D1': 96, 'direct_D2': 89, 'direct_D3': 82}; stage-7 code changed since 190e4df: ['src/solarpv/selection/run.py']
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/model_inputs.json sha256=b693622407f2246e
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_indirect_D1.json sha256=56c6d26ab2b90afa
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_indirect_D2.json sha256=e00c69fb95f6de8d
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_indirect_D3.json sha256=dc4eab283083195d
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_direct_D1.json sha256=e6ec06473241d71e
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_direct_D2.json sha256=30a9ad2065d9cdef
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/sets/final_features_direct_D3.json sha256=3aa261906d0a6fb6
+[     2.7s] OUTPUT  outputs/runs/20261113T075845Z_dev/.select.tmp/select.json sha256=da7f712fdb6560a9
+[     2.7s] RUN     warnings: 0
+[     2.7s] RUN     status: ok; duration 2.7s
+[     3.3s] NOTE    select: ok in 2.7 s, 8 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/baselines
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:58:51+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.2s] STEP    references on val, the whole val split ...
+[     0.5s] NOTE    val: 5832 hours in the window, 2902 of them daytime; context rows 0
+[     0.5s] STEP    references on val, the whole val split done in 0.3s
+[     1.0s] VALUE   rows_clearsky_k = 34992
+[     1.5s] VALUE   rows_climatology = 34992
+[     2.0s] VALUE   rows_persistence = 34992
+[     2.0s] OUTPUT  outputs/runs/20261113T075845Z_dev/.baselines.tmp/predictions_clearsky_k.csv sha256=00f6fc4c659d3898
+[     2.0s] OUTPUT  outputs/runs/20261113T075845Z_dev/.baselines.tmp/predictions_climatology.csv sha256=a20a5ef563c761d1
+[     2.0s] OUTPUT  outputs/runs/20261113T075845Z_dev/.baselines.tmp/predictions_persistence.csv sha256=7c47464c8495f676
+[     2.0s] RUN     warnings: 0
+[     2.0s] RUN     status: ok; duration 2.0s
+[     5.6s] NOTE    baselines: ok in 2.0 s, 3 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/xgb
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:58:54+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.3s] INPUT   configs/monotone_decision.yaml sha256=141636b887c1d672
+[     0.3s] INPUT   configs/mos_decision.yaml sha256=20d159081fdd8093
+[     0.3s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.8s] NOTE    budget 20 trials, seeds [42], tuning window the whole val split, training rows all of train; MEAN_DAYTIME_K 0.788157; D-15 settings {'indirect': 'A', 'direct': 'A'}; L-09 adopted {'indirect': True, 'direct': False}
+[     1.9s] NOTE    indirect_D1: 31 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[     1.9s] NOTE    indirect_D1: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 6}
+[     1.9s] STEP    indirect_D1_seed42: 20 trial(s) ...
+[     3.4s] NOTE    indirect_D1_seed42 trial 0: 6.9943 % kW, 13.7368 % k, best iteration 21 of 874, 1.25 s
+[     6.1s] NOTE    indirect_D1_seed42 trial 1: 6.9217 % kW, 13.6648 % k, best iteration 278 of 1282, 2.39 s
+[     6.9s] NOTE    indirect_D1_seed42 trial 2: 6.8392 % kW, 13.4741 % k, best iteration 81 of 747, 0.6 s
+[     9.7s] NOTE    indirect_D1_seed42 trial 3: 6.8138 % kW, 13.4653 % k, best iteration 198 of 1021, 2.52 s
+[    10.8s] NOTE    indirect_D1_seed42 trial 4: 6.9888 % kW, 14.1247 % k, best iteration 9 of 317, 0.75 s
+[    12.4s] NOTE    indirect_D1_seed42 trial 5: 6.9214 % kW, 13.5803 % k, best iteration 367 of 419, 1.31 s
+[    12.8s] NOTE    indirect_D1_seed42 trial 6: 7.0970 % kW, 13.9512 % k, best iteration 27 of 1184, 0.19 s
+[    13.9s] NOTE    indirect_D1_seed42 trial 7: 7.0317 % kW, 13.7375 % k, best iteration 358 of 359, 0.76 s
+[    15.5s] NOTE    indirect_D1_seed42 trial 8: 6.8884 % kW, 13.5401 % k, best iteration 256 of 705, 1.33 s
+[    16.7s] NOTE    indirect_D1_seed42 trial 9: 6.9809 % kW, 13.7506 % k, best iteration 24 of 209, 0.9 s
+[    18.0s] NOTE    indirect_D1_seed42 trial 10: 6.9005 % kW, 13.5252 % k, best iteration 112 of 793, 1.06 s
+[    19.0s] NOTE    indirect_D1_seed42 trial 11: 6.8785 % kW, 13.5077 % k, best iteration 88 of 325, 0.69 s
+[    20.4s] NOTE    indirect_D1_seed42 trial 12: 6.9519 % kW, 13.6254 % k, best iteration 259 of 656, 1.06 s
+[    22.5s] NOTE    indirect_D1_seed42 trial 13: 6.8798 % kW, 13.4970 % k, best iteration 177 of 1249, 1.82 s
+[    24.5s] NOTE    indirect_D1_seed42 trial 14: 6.8486 % kW, 13.5111 % k, best iteration 131 of 1027, 1.69 s
+[    26.4s] NOTE    indirect_D1_seed42 trial 15: 6.8747 % kW, 13.5424 % k, best iteration 110 of 980, 1.62 s
+[    28.2s] NOTE    indirect_D1_seed42 trial 16: 6.8183 % kW, 13.4151 % k, best iteration 119 of 586, 1.49 s
+[    29.0s] NOTE    indirect_D1_seed42 trial 17: 6.8010 % kW, 13.4170 % k, best iteration 45 of 604, 0.54 s
+[    34.2s] NOTE    indirect_D1_seed42 trial 18: 6.7922 % kW, 13.4374 % k, best iteration 340 of 699, 4.87 s
+[    36.8s] NOTE    indirect_D1_seed42 trial 19: 6.8205 % kW, 13.4456 % k, best iteration 283 of 607, 2.34 s
+[    41.9s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits ...
+[    57.5s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits done in 15.6s
+[    57.5s] NOTE    indirect_D1_seed42: L-09 a +14.620 kW, b 0.98530 on 7834 out-of-fold hours; tuning window 6.7922 -> 6.6856 % of capacity
+[    57.5s] WARN    indirect_D1_seed42: validation RMSE 0.1004 is 2.7 x the train RMSE 0.03769 at the best iteration
+[    57.5s] WARN    indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10, learning_rate = 0.01031
+[    57.6s] NOTE    indirect_D1_seed42: best trial 18, validation 6.6856 % of capacity (uncorrected 6.7922 %), best iteration 340 of 699
+[    57.6s] STEP    indirect_D1_seed42: 20 trial(s) done in 55.7s
+[    57.6s] NOTE    direct_D1: 96 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[    57.6s] NOTE    direct_D1: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 13}
+[    57.6s] NOTE    direct_D1: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[    57.6s] STEP    direct_D1_seed42: 20 trial(s) ...
+[    60.4s] NOTE    direct_D1_seed42 trial 0: 6.8327 % kW, best iteration 35 of 874, 2.49 s
+[    70.3s] NOTE    direct_D1_seed42 trial 1: 6.7911 % kW, best iteration 420 of 1282, 9.67 s
+[    73.0s] NOTE    direct_D1_seed42 trial 2: 6.8108 % kW, best iteration 104 of 747, 2.45 s
+[    81.8s] NOTE    direct_D1_seed42 trial 3: 6.7681 % kW, best iteration 224 of 1021, 8.56 s
+[    84.5s] NOTE    direct_D1_seed42 trial 4: 6.9253 % kW, best iteration 15 of 317, 2.38 s
+[    89.4s] NOTE    direct_D1_seed42 trial 5: 6.7218 % kW, best iteration 381 of 419, 4.7 s
+[    90.7s] NOTE    direct_D1_seed42 trial 6: 6.7261 % kW, best iteration 11 of 1184, 0.95 s
+[    94.2s] NOTE    direct_D1_seed42 trial 7: 6.7630 % kW, best iteration 357 of 359, 3.25 s
+[    98.4s] NOTE    direct_D1_seed42 trial 8: 6.6731 % kW, best iteration 268 of 705, 4.04 s
+[   101.7s] NOTE    direct_D1_seed42 trial 9: 6.9102 % kW, best iteration 51 of 209, 3.04 s
+[   103.8s] NOTE    direct_D1_seed42 trial 10: 6.7195 % kW, best iteration 41 of 1011, 1.75 s
+[   105.8s] NOTE    direct_D1_seed42 trial 11: 6.6625 % kW, best iteration 38 of 1161, 1.72 s
+[   109.5s] NOTE    direct_D1_seed42 trial 12: 6.6874 % kW, best iteration 214 of 905, 3.44 s
+[   113.0s] NOTE    direct_D1_seed42 trial 13: 6.7145 % kW, best iteration 182 of 866, 3.2 s
+[   114.1s] NOTE    direct_D1_seed42 trial 14: 6.6887 % kW, best iteration 25 of 643, 0.89 s
+[   116.4s] NOTE    direct_D1_seed42 trial 15: 6.7073 % kW, best iteration 99 of 498, 1.97 s
+[   118.0s] NOTE    direct_D1_seed42 trial 16: 6.7133 % kW, best iteration 15 of 1140, 1.35 s
+[   125.5s] NOTE    direct_D1_seed42 trial 17: 6.6638 % kW, best iteration 344 of 1173, 7.19 s
+[   128.3s] NOTE    direct_D1_seed42 trial 18: 6.7102 % kW, best iteration 90 of 1420, 2.49 s
+[   130.4s] NOTE    direct_D1_seed42 trial 19: 6.6562 % kW, best iteration 45 of 1110, 1.85 s
+[   132.3s] WARN    direct_D1_seed42: best trial on the edge of the search space for min_child_weight = 20
+[   132.3s] NOTE    direct_D1_seed42: best trial 19, validation 6.6562 % of capacity, best iteration 45 of 1110
+[   132.3s] STEP    direct_D1_seed42: 20 trial(s) done in 74.7s
+[   132.4s] NOTE    indirect_D2: 28 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[   132.4s] STEP    indirect_D2_seed42: 20 trial(s) ...
+[   133.2s] NOTE    indirect_D2_seed42 trial 0: 7.2669 % kW, 14.4644 % k, best iteration 22 of 874, 0.57 s
+[   135.7s] NOTE    indirect_D2_seed42 trial 1: 7.2931 % kW, 14.4253 % k, best iteration 294 of 1282, 2.25 s
+[   136.6s] NOTE    indirect_D2_seed42 trial 2: 7.2579 % kW, 14.3011 % k, best iteration 78 of 747, 0.61 s
+[   138.9s] NOTE    indirect_D2_seed42 trial 3: 7.2538 % kW, 14.3754 % k, best iteration 148 of 1021, 1.97 s
+[   139.7s] NOTE    indirect_D2_seed42 trial 4: 7.6430 % kW, 15.2191 % k, best iteration 8 of 317, 0.61 s
+[   141.0s] NOTE    indirect_D2_seed42 trial 5: 7.2368 % kW, 14.2314 % k, best iteration 308 of 419, 1.02 s
+[   141.4s] NOTE    indirect_D2_seed42 trial 6: 7.2117 % kW, 14.3178 % k, best iteration 34 of 1184, 0.2 s
+[   142.4s] NOTE    indirect_D2_seed42 trial 7: 7.2504 % kW, 14.2120 % k, best iteration 354 of 359, 0.68 s
+[   143.5s] NOTE    indirect_D2_seed42 trial 8: 7.2091 % kW, 14.2136 % k, best iteration 213 of 705, 0.85 s
+[   144.4s] NOTE    indirect_D2_seed42 trial 9: 7.3673 % kW, 14.7166 % k, best iteration 20 of 209, 0.69 s
+[   145.0s] NOTE    indirect_D2_seed42 trial 10: 7.1802 % kW, 14.0965 % k, best iteration 25 of 1011, 0.33 s
+[   145.7s] NOTE    indirect_D2_seed42 trial 11: 7.1861 % kW, 14.1722 % k, best iteration 21 of 1161, 0.41 s
+[   146.5s] NOTE    indirect_D2_seed42 trial 12: 7.1420 % kW, 14.1717 % k, best iteration 36 of 933, 0.43 s
+[   147.0s] NOTE    indirect_D2_seed42 trial 13: 7.3519 % kW, 14.4477 % k, best iteration 17 of 681, 0.29 s
+[   147.5s] NOTE    indirect_D2_seed42 trial 14: 7.2292 % kW, 14.4308 % k, best iteration 12 of 706, 0.23 s
+[   148.1s] NOTE    indirect_D2_seed42 trial 15: 7.2429 % kW, 14.4163 % k, best iteration 18 of 277, 0.35 s
+[   148.8s] NOTE    indirect_D2_seed42 trial 16: 7.2142 % kW, 14.3030 % k, best iteration 18 of 748, 0.42 s
+[   149.4s] NOTE    indirect_D2_seed42 trial 17: 7.1223 % kW, 14.0736 % k, best iteration 29 of 871, 0.4 s
+[   150.2s] NOTE    indirect_D2_seed42 trial 18: 7.1354 % kW, 14.1704 % k, best iteration 37 of 1551, 0.43 s
+[   150.8s] NOTE    indirect_D2_seed42 trial 19: 7.2498 % kW, 14.2655 % k, best iteration 47 of 1978, 0.33 s
+[   151.2s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits ...
+[   152.0s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits done in 0.8s
+[   152.0s] NOTE    indirect_D2_seed42: L-09 a +18.709 kW, b 0.97221 on 7834 out-of-fold hours; tuning window 7.1223 -> 6.9109 % of capacity
+[   152.0s] NOTE    indirect_D2_seed42: best trial 17, validation 6.9109 % of capacity (uncorrected 7.1223 %), best iteration 29 of 871
+[   152.0s] STEP    indirect_D2_seed42: 20 trial(s) done in 19.6s
+[   152.1s] NOTE    direct_D2: 89 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[   152.1s] NOTE    direct_D2: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 14}
+[   152.1s] NOTE    direct_D2: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[   152.1s] STEP    direct_D2_seed42: 20 trial(s) ...
+[   154.7s] NOTE    direct_D2_seed42 trial 0: 6.9693 % kW, best iteration 29 of 874, 2.38 s
+[   163.2s] NOTE    direct_D2_seed42 trial 1: 7.0229 % kW, best iteration 400 of 1282, 8.23 s
+[   165.5s] NOTE    direct_D2_seed42 trial 2: 6.9218 % kW, best iteration 89 of 747, 2.04 s
+[   172.8s] NOTE    direct_D2_seed42 trial 3: 6.9251 % kW, best iteration 203 of 1021, 7.06 s
+[   175.1s] NOTE    direct_D2_seed42 trial 4: 6.9970 % kW, best iteration 13 of 317, 2.12 s
+[   179.5s] NOTE    direct_D2_seed42 trial 5: 6.9055 % kW, best iteration 353 of 419, 4.13 s
+[   180.5s] NOTE    direct_D2_seed42 trial 6: 7.0400 % kW, best iteration 19 of 1184, 0.71 s
+[   183.7s] NOTE    direct_D2_seed42 trial 7: 6.9440 % kW, best iteration 344 of 359, 2.99 s
+[   187.7s] NOTE    direct_D2_seed42 trial 8: 6.9085 % kW, best iteration 241 of 705, 3.69 s
+[   190.2s] NOTE    direct_D2_seed42 trial 9: 6.9790 % kW, best iteration 33 of 209, 2.27 s
+[   194.2s] NOTE    direct_D2_seed42 trial 10: 6.8113 % kW, best iteration 212 of 213, 3.79 s
+[   197.5s] NOTE    direct_D2_seed42 trial 11: 6.9397 % kW, best iteration 162 of 606, 3.0 s
+[   201.2s] NOTE    direct_D2_seed42 trial 12: 6.9028 % kW, best iteration 141 of 438, 3.45 s
+[   205.2s] NOTE    direct_D2_seed42 trial 13: 6.8734 % kW, best iteration 161 of 405, 3.72 s
+[   208.3s] NOTE    direct_D2_seed42 trial 14: 6.8602 % kW, best iteration 104 of 252, 2.86 s
+[   210.3s] NOTE    direct_D2_seed42 trial 15: 6.9089 % kW, best iteration 58 of 213, 1.73 s
+[   212.9s] NOTE    direct_D2_seed42 trial 16: 6.9721 % kW, best iteration 75 of 286, 2.34 s
+[   214.7s] NOTE    direct_D2_seed42 trial 17: 6.9230 % kW, best iteration 60 of 255, 1.56 s
+[   219.2s] NOTE    direct_D2_seed42 trial 18: 6.9313 % kW, best iteration 223 of 224, 4.21 s
+[   224.3s] NOTE    direct_D2_seed42 trial 19: 6.8993 % kW, best iteration 246 of 788, 4.84 s
+[   228.1s] WARN    direct_D2_seed42: best iteration 212 at the cap of 213 rounds: it may not have converged (M12d)
+[   228.1s] WARN    direct_D2_seed42: best trial on the edge of the search space for n_estimators = 213
+[   228.1s] NOTE    direct_D2_seed42: best trial 10, validation 6.8113 % of capacity, best iteration 212 of 213
+[   228.1s] STEP    direct_D2_seed42: 20 trial(s) done in 76.1s
+[   228.2s] NOTE    indirect_D3: 32 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[   228.2s] NOTE    indirect_D3: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 10}
+[   228.2s] STEP    indirect_D3_seed42: 20 trial(s) ...
+[   229.2s] NOTE    indirect_D3_seed42 trial 0: 6.8195 % kW, 13.8508 % k, best iteration 23 of 874, 0.72 s
+[   231.9s] NOTE    indirect_D3_seed42 trial 1: 6.7344 % kW, 13.7426 % k, best iteration 323 of 1282, 2.41 s
+[   233.0s] NOTE    indirect_D3_seed42 trial 2: 6.6975 % kW, 13.6398 % k, best iteration 95 of 747, 0.92 s
+[   235.8s] NOTE    indirect_D3_seed42 trial 3: 6.6729 % kW, 13.6023 % k, best iteration 197 of 1021, 2.54 s
+[   236.8s] NOTE    indirect_D3_seed42 trial 4: 6.8750 % kW, 14.1807 % k, best iteration 8 of 317, 0.66 s
+[   238.2s] NOTE    indirect_D3_seed42 trial 5: 6.7849 % kW, 13.6938 % k, best iteration 360 of 419, 1.22 s
+[   238.7s] NOTE    indirect_D3_seed42 trial 6: 6.9641 % kW, 13.9179 % k, best iteration 14 of 1184, 0.16 s
+[   239.7s] NOTE    indirect_D3_seed42 trial 7: 6.8929 % kW, 13.7420 % k, best iteration 356 of 359, 0.76 s
+[   241.0s] NOTE    indirect_D3_seed42 trial 8: 6.7379 % kW, 13.6686 % k, best iteration 261 of 705, 1.06 s
+[   242.0s] NOTE    indirect_D3_seed42 trial 9: 6.7432 % kW, 13.8241 % k, best iteration 25 of 209, 0.8 s
+[   243.4s] NOTE    indirect_D3_seed42 trial 10: 6.7301 % kW, 13.6522 % k, best iteration 112 of 793, 1.08 s
+[   244.4s] NOTE    indirect_D3_seed42 trial 11: 6.7650 % kW, 13.6971 % k, best iteration 113 of 325, 0.73 s
+[   245.9s] NOTE    indirect_D3_seed42 trial 12: 6.8102 % kW, 13.7140 % k, best iteration 263 of 656, 1.14 s
+[   248.2s] NOTE    indirect_D3_seed42 trial 13: 6.7562 % kW, 13.7421 % k, best iteration 207 of 1249, 2.06 s
+[   250.7s] NOTE    indirect_D3_seed42 trial 14: 6.6629 % kW, 13.6000 % k, best iteration 210 of 1027, 2.25 s
+[   253.2s] NOTE    indirect_D3_seed42 trial 15: 6.7393 % kW, 13.7133 % k, best iteration 114 of 985, 2.19 s
+[   254.9s] NOTE    indirect_D3_seed42 trial 16: 6.6822 % kW, 13.5607 % k, best iteration 112 of 605, 1.42 s
+[   256.0s] NOTE    indirect_D3_seed42 trial 17: 6.6564 % kW, 13.5058 % k, best iteration 92 of 928, 0.9 s
+[   257.0s] NOTE    indirect_D3_seed42 trial 18: 6.7536 % kW, 13.7672 % k, best iteration 49 of 1213, 0.67 s
+[   263.4s] NOTE    indirect_D3_seed42 trial 19: 6.6896 % kW, 13.6572 % k, best iteration 383 of 1335, 6.21 s
+[   264.3s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits ...
+[   266.6s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits done in 2.3s
+[   266.6s] NOTE    indirect_D3_seed42: L-09 a +28.076 kW, b 0.97913 on 7834 out-of-fold hours; tuning window 6.6564 -> 6.5545 % of capacity
+[   266.7s] NOTE    indirect_D3_seed42: best trial 17, validation 6.5545 % of capacity (uncorrected 6.6564 %), best iteration 92 of 928
+[   266.7s] STEP    indirect_D3_seed42: 20 trial(s) done in 38.5s
+[   266.7s] NOTE    direct_D3: 82 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[   266.7s] NOTE    direct_D3: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 24}
+[   266.7s] NOTE    direct_D3: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[   266.7s] STEP    direct_D3_seed42: 20 trial(s) ...
+[   269.0s] NOTE    direct_D3_seed42 trial 0: 6.6167 % kW, best iteration 31 of 874, 1.99 s
+[   277.3s] NOTE    direct_D3_seed42 trial 1: 6.6102 % kW, best iteration 431 of 1282, 8.05 s
+[   279.6s] NOTE    direct_D3_seed42 trial 2: 6.5314 % kW, best iteration 100 of 747, 2.0 s
+[   287.1s] NOTE    direct_D3_seed42 trial 3: 6.5627 % kW, best iteration 224 of 1021, 7.32 s
+[   289.4s] NOTE    direct_D3_seed42 trial 4: 6.8671 % kW, best iteration 13 of 317, 2.06 s
+[   293.6s] NOTE    direct_D3_seed42 trial 5: 6.5433 % kW, best iteration 413 of 419, 3.98 s
+[   294.6s] NOTE    direct_D3_seed42 trial 6: 6.7099 % kW, best iteration 23 of 1184, 0.71 s
+[   297.6s] NOTE    direct_D3_seed42 trial 7: 6.5572 % kW, best iteration 350 of 359, 2.71 s
+[   301.1s] NOTE    direct_D3_seed42 trial 8: 6.4746 % kW, best iteration 260 of 705, 3.33 s
+[   303.6s] NOTE    direct_D3_seed42 trial 9: 6.6346 % kW, best iteration 40 of 209, 2.23 s
+[   305.3s] NOTE    direct_D3_seed42 trial 10: 6.4261 % kW, best iteration 31 of 1011, 1.39 s
+[   307.3s] NOTE    direct_D3_seed42 trial 11: 6.5459 % kW, best iteration 41 of 1161, 1.76 s
+[   308.6s] NOTE    direct_D3_seed42 trial 12: 6.5753 % kW, best iteration 60 of 839, 1.04 s
+[   313.3s] NOTE    direct_D3_seed42 trial 13: 6.4993 % kW, best iteration 306 of 421, 4.42 s
+[   314.5s] NOTE    direct_D3_seed42 trial 14: 6.6712 % kW, best iteration 19 of 768, 0.91 s
+[   315.7s] NOTE    direct_D3_seed42 trial 15: 6.5265 % kW, best iteration 20 of 618, 0.92 s
+[   317.7s] NOTE    direct_D3_seed42 trial 16: 6.4929 % kW, best iteration 129 of 382, 1.73 s
+[   321.4s] NOTE    direct_D3_seed42 trial 17: 6.4525 % kW, best iteration 257 of 905, 3.42 s
+[   322.8s] NOTE    direct_D3_seed42 trial 18: 6.5490 % kW, best iteration 76 of 1228, 1.16 s
+[   327.5s] NOTE    direct_D3_seed42 trial 19: 6.4718 % kW, best iteration 337 of 752, 4.42 s
+[   329.0s] NOTE    direct_D3_seed42: best trial 10, validation 6.4261 % of capacity, best iteration 31 of 1011
+[   329.0s] STEP    direct_D3_seed42: 20 trial(s) done in 62.3s
+[   329.7s] NOTE    seed spread: one seed per target x horizon, not computed
+[   331.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/predictions_xgb_sota_seed42.csv sha256=5f785062da937920
+[   331.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/uncorrected_xgb_sota_seed42.csv sha256=21ecec8f81de9bc5
+[   331.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/mos_coefficients.csv sha256=08cb8607fb1dc8df
+[   331.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/trials.csv sha256=75819169be12a10e
+[   331.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/learning_curves.csv sha256=57aaccf917f57cdd
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/best_params.json sha256=1aa1e9221d6c64c6
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/xgb_config.json sha256=dd1b18dcc1eb5079
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/figures/learning_curves.png sha256=137809c6e3ad5755
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/figures/optimization_history.png sha256=d65f968e3430af13
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/optuna.db sha256=aebf614f7e5b6dc0
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_direct_D1_seed42.ubj sha256=cc264a41e21e641c
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_direct_D2_seed42.ubj sha256=b1cba2f909fd0192
+[   331.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_direct_D3_seed42.ubj sha256=3c9e0758fa76fb0f
+[   331.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_indirect_D1_seed42.ubj sha256=a863741b3bab6d40
+[   331.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_indirect_D2_seed42.ubj sha256=f24dddc5390cdb99
+[   331.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.xgb.tmp/models/xgb_sota_indirect_D3_seed42.ubj sha256=c5ffa83f784de190
+[   331.5s] RUN     warnings: 5
+[   331.5s] RUN     status: ok; duration 331.5s
+[   337.5s] NOTE    xgb: ok in 331.5 s, 16 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/cv
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:04:26+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/best_params.json sha256=1aa1e9221d6c64c6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/xgb_config.json sha256=dd1b18dcc1eb5079
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.3s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.3s] NOTE    CV of the xgb models on the train rows, seeds [42], five expanding date folds with a 3-day gap, the raw forecast, nRMSE in kW (% of 3,449 kW)
+[     0.4s] STEP    indirect_D1_seed42: five folds ...
+[    15.1s] STEP    indirect_D1_seed42: five folds done in 14.7s
+[    15.1s] NOTE    indirect_D1_seed42: CV 7.410 +- 2.312 % kW over 5 folds; validation (raw) 6.792 %
+[    15.1s] STEP    direct_D1_seed42: five folds ...
+[    18.4s] STEP    direct_D1_seed42: five folds done in 3.3s
+[    18.4s] NOTE    direct_D1_seed42: CV 7.526 +- 2.338 % kW over 5 folds; validation (raw) 6.656 %
+[    18.5s] STEP    indirect_D2_seed42: five folds ...
+[    19.3s] STEP    indirect_D2_seed42: five folds done in 0.8s
+[    19.3s] NOTE    indirect_D2_seed42: CV 7.741 +- 2.379 % kW over 5 folds; validation (raw) 7.122 %
+[    19.3s] STEP    direct_D2_seed42: five folds ...
+[    29.3s] STEP    direct_D2_seed42: five folds done in 10.0s
+[    29.3s] NOTE    direct_D2_seed42: CV 7.688 +- 2.096 % kW over 5 folds; validation (raw) 6.811 %
+[    29.3s] STEP    indirect_D3_seed42: five folds ...
+[    31.7s] STEP    indirect_D3_seed42: five folds done in 2.4s
+[    31.7s] NOTE    indirect_D3_seed42: CV 8.078 +- 2.615 % kW over 5 folds; validation (raw) 6.656 %
+[    31.7s] STEP    direct_D3_seed42: five folds ...
+[    34.1s] STEP    direct_D3_seed42: five folds done in 2.4s
+[    34.1s] NOTE    direct_D3_seed42: CV 8.107 +- 2.497 % kW over 5 folds; validation (raw) 6.426 %
+[    34.1s] OUTPUT  outputs/runs/20261113T075845Z_dev/.cv.tmp/cv_folds.csv sha256=2071e4df925fe76a
+[    34.1s] OUTPUT  outputs/runs/20261113T075845Z_dev/.cv.tmp/cv_summary.csv sha256=b15fb5dddb0a6362
+[    34.1s] OUTPUT  outputs/runs/20261113T075845Z_dev/.cv.tmp/cv_config.json sha256=dd043fd3aa65bb8b
+[    34.1s] RUN     warnings: 0
+[    34.1s] RUN     status: ok; duration 34.1s
+[   372.0s] NOTE    cv: ok in 34.1 s, 3 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/ablation
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:05:00+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/best_params.json sha256=1aa1e9221d6c64c6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/xgb_config.json sha256=dd1b18dcc1eb5079
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.3s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.3s] NOTE    ablation of the xgb models, seeds [42], tuning window the whole val split; modes by feature group; raw forecast in kW; test window forecast: False
+[     0.4s] STEP    indirect_D1_seed42: 9 mode(s) ...
+[    34.5s] NOTE    indirect_D1_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_time_encodings', 'no_lag_power', 'no_history_other', 'no_history', 'minimal']; skipped none
+[    34.5s] STEP    indirect_D1_seed42: 9 mode(s) done in 34.1s
+[    34.5s] STEP    direct_D1_seed42: 10 mode(s) ...
+[    49.2s] NOTE    direct_D1_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_time_encodings', 'no_lag_power', 'no_rolling_stats', 'no_history_other', 'no_history', 'minimal']; skipped none
+[    49.2s] STEP    direct_D1_seed42: 10 mode(s) done in 14.7s
+[    49.3s] STEP    indirect_D2_seed42: 8 mode(s) ...
+[    52.3s] NOTE    indirect_D2_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_lag_power', 'no_rolling_stats', 'no_history_other', 'no_history']; skipped {'minimal': 'no feature left'}
+[    52.3s] STEP    indirect_D2_seed42: 8 mode(s) done in 3.0s
+[    52.3s] STEP    direct_D2_seed42: 10 mode(s) ...
+[    81.8s] NOTE    direct_D2_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_time_encodings', 'no_lag_power', 'no_rolling_stats', 'no_history_other', 'no_history', 'minimal']; skipped none
+[    81.8s] STEP    direct_D2_seed42: 10 mode(s) done in 29.4s
+[    81.8s] STEP    indirect_D3_seed42: 8 mode(s) ...
+[    88.0s] NOTE    indirect_D3_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_lag_power', 'no_rolling_stats', 'no_history_other', 'no_history']; skipped {'minimal': 'no feature left'}
+[    88.0s] STEP    indirect_D3_seed42: 8 mode(s) done in 6.1s
+[    88.0s] STEP    direct_D3_seed42: 10 mode(s) ...
+[    99.3s] NOTE    direct_D3_seed42: modes ['full', 'no_nwp_gfs', 'no_clearsky', 'no_other', 'no_time_encodings', 'no_lag_power', 'no_rolling_stats', 'no_history_other', 'no_history', 'minimal']; skipped none
+[    99.3s] STEP    direct_D3_seed42: 10 mode(s) done in 11.4s
+[   101.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.ablation.tmp/ablation_results.csv sha256=95b57ed65f2dfbb7
+[   101.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.ablation.tmp/ablation_modes.csv sha256=57f3d6e42cccfbff
+[   101.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.ablation.tmp/ablation_summary.csv sha256=20ba6e852a093229
+[   101.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.ablation.tmp/ablation_forecasts_seed42.csv sha256=3d7193681a698190
+[   101.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.ablation.tmp/ablation_config.json sha256=4cc8077fb04c15a7
+[   101.5s] RUN     warnings: 0
+[   101.5s] RUN     status: ok; duration 101.5s
+[   473.9s] NOTE    ablation: ok in 101.5 s, 5 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/evaluate
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:06:42+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_clearsky_k.csv sha256=00f6fc4c659d3898
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_climatology.csv sha256=a20a5ef563c761d1
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_persistence.csv sha256=7c47464c8495f676
+[     0.3s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/predictions_xgb_sota_seed42.csv sha256=5f785062da937920
+[     0.5s] STEP    evaluate val, the whole val split ...
+[     1.5s] NOTE    val: 4 models (clearsky_k, climatology, persistence, xgb_sota); daytime rows per model/target/horizon: 2901
+[     9.2s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/benchmark_summary.csv sha256=eedd2ac0732c03c7
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/dm_tests.csv sha256=1f1966aef8f1a97e
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/seasonal_metrics.csv sha256=53dfee59f3107c73
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/common_mask_summary.csv sha256=4921a98eb59748df
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/benchmark_views.csv sha256=d97f8e2973795f05
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/common_mask_sensitivity.csv sha256=ca64bea6817c5832
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/route_comparison.csv sha256=8c7e346c014162c9
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/seed_variability_summary.csv sha256=d6d2f7c4827387ce
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/dm_tests_kw.csv sha256=a4297f30ab1bfdf6
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/manifest.json sha256=fa2030617effa42b
+[     9.3s] STEP    evaluate val, the whole val split done in 8.8s
+[     9.3s] VALUE   rows_benchmark_val = 24
+[     9.4s] RUN     warnings: 0
+[     9.4s] RUN     status: ok; duration 9.4s
+[   483.6s] NOTE    evaluate: ok in 9.4 s, 10 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/explain
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:06:52+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/best_params.json sha256=1aa1e9221d6c64c6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_direct_D1_seed42.ubj sha256=cc264a41e21e641c
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_direct_D2_seed42.ubj sha256=b1cba2f909fd0192
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_direct_D3_seed42.ubj sha256=3c9e0758fa76fb0f
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_indirect_D1_seed42.ubj sha256=a863741b3bab6d40
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_indirect_D2_seed42.ubj sha256=f24dddc5390cdb99
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/models/xgb_sota_indirect_D3_seed42.ubj sha256=c5ffa83f784de190
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/optuna.db sha256=aebf614f7e5b6dc0
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/predictions_xgb_sota_seed42.csv sha256=5f785062da937920
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/uncorrected_xgb_sota_seed42.csv sha256=21ecec8f81de9bc5
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/xgb_config.json sha256=dd1b18dcc1eb5079
+[     0.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.4s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.4s] STEP    XGB SHAP on the whole val split ...
+[    30.5s] NOTE    indirect_D1_seed42 val: SHAP on 2901 rows, additivity 1.36e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.0104; kW view 2.64e-03 kW on 2901 unclipped rows; top fcst_gfs_k_phys
+[    31.8s] NOTE    direct_D1_seed42 val: SHAP on 2901 rows, additivity 1.35e-03 (kW), pred_contribs 0.00e+00, unsliced booster 199; kW view 1.35e-03 kW on 2901 unclipped rows; top fcst_gfs_poa
+[    32.8s] NOTE    indirect_D2_seed42 val: SHAP on 2901 rows, additivity 3.57e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.114; kW view 9.87e-04 kW on 2901 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    38.2s] NOTE    direct_D2_seed42 val: SHAP on 2901 rows, additivity 2.42e-03 (kW), pred_contribs 0.00e+00, unsliced booster 0.00242; kW view 2.42e-03 kW on 2901 unclipped rows; top fcst_gfs_poa
+[    40.9s] NOTE    indirect_D3_seed42 val: SHAP on 2901 rows, additivity 8.27e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.0563; kW view 1.78e-03 kW on 2901 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    42.0s] NOTE    direct_D3_seed42 val: SHAP on 2901 rows, additivity 9.51e-04 (kW), pred_contribs 0.00e+00, unsliced booster 181; kW view 9.51e-04 kW on 2901 unclipped rows; top fcst_gfs_pv_kw
+[    42.0s] STEP    XGB SHAP on the whole val split done in 40.6s
+[    42.0s] STEP    TFT attention and variable selection (stored W4 outputs) ...
+[    42.0s] STEP    TFT attention and variable selection (stored W4 outputs) done in 0.0s
+[    42.0s] STEP    Optuna hyper-parameter importance (fANOVA, ten seeds) ...
+[    60.8s] STEP    Optuna hyper-parameter importance (fANOVA, ten seeds) done in 18.8s
+[    60.8s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_indirect_D1_seed42_val.npz sha256=46902fbd6f291822
+[    60.8s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_direct_D1_seed42_val.npz sha256=abebff3823d8907c
+[    60.8s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_indirect_D2_seed42_val.npz sha256=6b946302f2f518bd
+[    60.8s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_direct_D2_seed42_val.npz sha256=e1d41d062b87ad74
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_indirect_D3_seed42_val.npz sha256=853fe5322dded0f0
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/shap_values_direct_D3_seed42_val.npz sha256=3bb939aec57358b6
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/xgb_shap_features.csv sha256=117836f49c510304
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/xgb_shap_groups.csv sha256=40a79a23c90f8146
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/xgb_shap_checks.csv sha256=25f84355033650fc
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/xgb/xgb_shap_rank_stability.csv sha256=f0cda28a88071419
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/hparam_importance.csv sha256=1748710b387ded99
+[    60.9s] OUTPUT  outputs/runs/20261113T075845Z_dev/.explain.tmp/explain_config.json sha256=273e0c1956cfbc29
+[    60.9s] RUN     warnings: 0
+[    60.9s] RUN     status: ok; duration 60.9s
+[   545.0s] NOTE    explain: ok in 60.9 s, 12 outputs
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/report
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:07:53+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/model_inputs.json sha256=b693622407f2246e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D1.json sha256=56c6d26ab2b90afa
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D2.json sha256=e00c69fb95f6de8d
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D3.json sha256=dc4eab283083195d
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D1.json sha256=e6ec06473241d71e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D2.json sha256=30a9ad2065d9cdef
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D3.json sha256=3aa261906d0a6fb6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/select.json sha256=da7f712fdb6560a9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/mos_coefficients.csv sha256=08cb8607fb1dc8df
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/trials.csv sha256=75819169be12a10e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/learning_curves.csv sha256=57aaccf917f57cdd
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/best_params.json sha256=1aa1e9221d6c64c6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/xgb_config.json sha256=dd1b18dcc1eb5079
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_folds.csv sha256=2071e4df925fe76a
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_summary.csv sha256=b15fb5dddb0a6362
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_config.json sha256=dd043fd3aa65bb8b
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_results.csv sha256=95b57ed65f2dfbb7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_modes.csv sha256=57f3d6e42cccfbff
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_summary.csv sha256=20ba6e852a093229
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_config.json sha256=4cc8077fb04c15a7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/benchmark_summary.csv sha256=eedd2ac0732c03c7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/benchmark_views.csv sha256=d97f8e2973795f05
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/common_mask_sensitivity.csv sha256=ca64bea6817c5832
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/common_mask_summary.csv sha256=4921a98eb59748df
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/dm_tests.csv sha256=1f1966aef8f1a97e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/dm_tests_kw.csv sha256=a4297f30ab1bfdf6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/route_comparison.csv sha256=8c7e346c014162c9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/seasonal_metrics.csv sha256=53dfee59f3107c73
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/seed_variability_summary.csv sha256=d6d2f7c4827387ce
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/manifest.json sha256=fa2030617effa42b
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_features.csv sha256=117836f49c510304
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_groups.csv sha256=40a79a23c90f8146
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_checks.csv sha256=25f84355033650fc
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_rank_stability.csv sha256=f0cda28a88071419
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/hparam_importance.csv sha256=1748710b387ded99
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/explain_config.json sha256=273e0c1956cfbc29
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_steps.csv sha256=17a5e4e5559e7f5e
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_benchmark_val.csv sha256=96449b752cc22310
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_dm_kw_val.csv sha256=23ea45df4eb3a9a9
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_seed_spread.csv sha256=f98aac05e6366d39
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_training.csv sha256=8cd9c90ce3c89884
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_studies.csv sha256=85a91ff4dd4f42ed
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_warnings.csv sha256=06b2e7275c4c126d
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_g1_points.csv sha256=8deb0ca18cd5d3fb
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_shap_top.csv sha256=6c37e17df79e9ff7
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_shap_groups.csv sha256=849c172c6824f465
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_hparam_top.csv sha256=8b04c97f4aec2bd4
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_cv.csv sha256=b15fb5dddb0a6362
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_ablation.csv sha256=20ba6e852a093229
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_l14_l15_files.csv sha256=512e82349b6224c2
+[     0.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report.json sha256=b8c8b63cdb34b3bc
+[     0.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report.md sha256=7a4b10a129118eef
+[     0.5s] RUN     warnings: 0
+[     0.5s] RUN     status: ok; duration 0.5s
+[   545.8s] NOTE    report: ok in 0.5 s, 16 outputs
+[   545.8s] VALUE   status = ok
+[   545.8s] RUN     warnings: 0
+[   545.8s] RUN     status: ok; duration 545.8s
+
+run 20261113T075845Z_dev (outputs/runs/20261113T075845Z_dev): ok
+  select: ok
+  baselines: ok
+  xgb: ok
+  cv: ok
+  ablation: ok
+  evaluate: ok
+  explain: ok
+  report: ok
+select (D-30): the stage-7 selection verified, nothing rerun; model_inputs.json b693622407f2
+  indirect_D1  05e        31 features
+  indirect_D2  05e        28 features
+  indirect_D3  05e        32 features
+  direct_D1    full pool  96 features
+  direct_D2    full pool  89 features
+  direct_D3    full pool  82 features
+3 reference files, 104,976 rows
+xgb (dev, 20 trial(s), seeds [42]): nRMSE in kW on the tuning window, the whole val split
+  indirect_D1_seed42      6.686 %  best iteration 340 of 699  (L-09; uncorrected 6.792 %)
+  direct_D1_seed42        6.656 %  best iteration 45 of 1110
+  indirect_D2_seed42      6.911 %  best iteration 29 of 871  (L-09; uncorrected 7.122 %)
+  direct_D2_seed42        6.811 %  best iteration 212 of 213
+  indirect_D3_seed42      6.555 %  best iteration 92 of 928  (L-09; uncorrected 6.656 %)
+  direct_D3_seed42        6.426 %  best iteration 31 of 1011
+cv: nRMSE in kW (% of capacity), mean +- std over the five folds, against the validation value of the same model
+  direct   D+1 seed  42: CV   7.53 +-  2.34   validation   6.66
+  direct   D+2 seed  42: CV   7.69 +-  2.10   validation   6.81
+  direct   D+3 seed  42: CV   8.11 +-  2.50   validation   6.43
+  indirect D+1 seed  42: CV   7.41 +-  2.31   validation   6.79
+  indirect D+2 seed  42: CV   7.74 +-  2.38   validation   7.12
+  indirect D+3 seed  42: CV   8.08 +-  2.62   validation   6.66
+ablation (55 fit(s)): delta of nRMSE in kW against the full fit (pp), mean over seeds, with the verdict by the registered margin
+  direct   D+1 minimal             +1.257 pp (margin 0.050) helpful
+  direct   D+1 no_clearsky         +0.090 pp (margin 0.050) helpful
+  direct   D+1 no_history          +0.112 pp (margin 0.050) helpful
+  direct   D+1 no_history_other    -0.021 pp (margin 0.050) neutral
+  direct   D+1 no_lag_power        +0.100 pp (margin 0.050) helpful
+  direct   D+1 no_nwp_gfs          +1.030 pp (margin 0.050) helpful
+  direct   D+1 no_other            +0.049 pp (margin 0.050) neutral
+  direct   D+1 no_rolling_stats    +0.074 pp (margin 0.050) helpful
+  direct   D+1 no_time_encodings   +0.033 pp (margin 0.050) neutral
+  direct   D+2 minimal             +1.207 pp (margin 0.050) helpful
+  direct   D+2 no_clearsky         -0.014 pp (margin 0.050) neutral
+  direct   D+2 no_history          +0.012 pp (margin 0.050) neutral
+  direct   D+2 no_history_other    -0.005 pp (margin 0.050) neutral
+  direct   D+2 no_lag_power        +0.015 pp (margin 0.050) neutral
+  direct   D+2 no_nwp_gfs          +0.961 pp (margin 0.050) helpful
+  direct   D+2 no_other            -0.004 pp (margin 0.050) neutral
+  direct   D+2 no_rolling_stats    -0.000 pp (margin 0.050) neutral
+  direct   D+2 no_time_encodings   -0.020 pp (margin 0.050) neutral
+  direct   D+3 minimal             +1.521 pp (margin 0.050) helpful
+  direct   D+3 no_clearsky         +0.076 pp (margin 0.050) helpful
+  direct   D+3 no_history          +0.185 pp (margin 0.050) helpful
+  direct   D+3 no_history_other    +0.078 pp (margin 0.050) helpful
+  direct   D+3 no_lag_power        +0.155 pp (margin 0.050) helpful
+  direct   D+3 no_nwp_gfs          +1.479 pp (margin 0.050) helpful
+  direct   D+3 no_other            +0.005 pp (margin 0.050) neutral
+  direct   D+3 no_rolling_stats    +0.103 pp (margin 0.050) helpful
+  direct   D+3 no_time_encodings   +0.141 pp (margin 0.050) helpful
+  indirect D+1 minimal             +1.267 pp (margin 0.050) helpful
+  indirect D+1 no_clearsky         -0.001 pp (margin 0.050) neutral
+  indirect D+1 no_history          +0.047 pp (margin 0.050) neutral
+  indirect D+1 no_history_other    +0.013 pp (margin 0.050) neutral
+  indirect D+1 no_lag_power        +0.025 pp (margin 0.050) neutral
+  indirect D+1 no_nwp_gfs          +1.221 pp (margin 0.050) helpful
+  indirect D+1 no_other            +0.010 pp (margin 0.050) neutral
+  indirect D+1 no_time_encodings   -0.003 pp (margin 0.050) neutral
+  indirect D+2 no_clearsky         +0.081 pp (margin 0.050) helpful
+  indirect D+2 no_history          +0.063 pp (margin 0.050) helpful
+  indirect D+2 no_history_other    +0.033 pp (margin 0.050) neutral
+  indirect D+2 no_lag_power        +0.106 pp (margin 0.050) helpful
+  indirect D+2 no_nwp_gfs          +0.979 pp (margin 0.050) helpful
+  indirect D+2 no_other            +0.149 pp (margin 0.050) helpful
+  indirect D+2 no_rolling_stats    +0.174 pp (margin 0.050) helpful
+  indirect D+3 no_clearsky         +0.062 pp (margin 0.050) helpful
+  indirect D+3 no_history          +0.165 pp (margin 0.050) helpful
+  indirect D+3 no_history_other    +0.100 pp (margin 0.050) helpful
+  indirect D+3 no_lag_power        +0.151 pp (margin 0.050) helpful
+  indirect D+3 no_nwp_gfs          +1.341 pp (margin 0.050) helpful
+  indirect D+3 no_other            +0.052 pp (margin 0.050) helpful
+  indirect D+3 no_rolling_stats    +0.038 pp (margin 0.050) neutral
+val, the whole val split: nRMSE in kW (% of capacity), n daytime hours
+  direct   D+1 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  direct   D+1 climatology  seed  -1:   8.04 %  (n = 2901)
+  direct   D+1 persistence  seed  -1:   9.68 %  (n = 2901)
+  direct   D+1 xgb_sota     seed  42:   6.66 %  (n = 2901)
+  direct   D+2 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  direct   D+2 climatology  seed  -1:   8.04 %  (n = 2901)
+  direct   D+2 persistence  seed  -1:  10.82 %  (n = 2901)
+  direct   D+2 xgb_sota     seed  42:   6.81 %  (n = 2901)
+  direct   D+3 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  direct   D+3 climatology  seed  -1:   8.04 %  (n = 2901)
+  direct   D+3 persistence  seed  -1:  10.72 %  (n = 2901)
+  direct   D+3 xgb_sota     seed  42:   6.43 %  (n = 2901)
+  indirect D+1 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  indirect D+1 climatology  seed  -1:   8.06 %  (n = 2901)
+  indirect D+1 persistence  seed  -1:   9.68 %  (n = 2901)
+  indirect D+1 xgb_sota     seed  42:   6.69 %  (n = 2901)
+  indirect D+2 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  indirect D+2 climatology  seed  -1:   8.06 %  (n = 2901)
+  indirect D+2 persistence  seed  -1:  10.84 %  (n = 2901)
+  indirect D+2 xgb_sota     seed  42:   6.91 %  (n = 2901)
+  indirect D+3 clearsky_k   seed  -1:   8.96 %  (n = 2901)
+  indirect D+3 climatology  seed  -1:   8.06 %  (n = 2901)
+  indirect D+3 persistence  seed  -1:  10.76 %  (n = 2901)
+  indirect D+3 xgb_sota     seed  42:   6.55 %  (n = 2901)
+explain (dev, D-31): CPU, nothing trained
+  XGB SHAP: 6 boosters on 17406 rows; additivity <= 1.4e-06 of the output scale; the unsliced booster would be off by up to 199 (training unit, X46)
+  Optuna: 6 studies, 0 inside TPE's random start-up
+report: 7 steps, 5 warnings {'matched': 5}, 10 G-1 facts, 10 source files
+exit 0

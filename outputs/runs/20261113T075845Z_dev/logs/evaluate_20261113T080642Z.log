@@ -1,0 +1,27 @@
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/evaluate
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:06:42+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_clearsky_k.csv sha256=00f6fc4c659d3898
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_climatology.csv sha256=a20a5ef563c761d1
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/baselines/predictions_persistence.csv sha256=7c47464c8495f676
+[     0.3s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/predictions_xgb_sota_seed42.csv sha256=5f785062da937920
+[     0.5s] STEP    evaluate val, the whole val split ...
+[     1.5s] NOTE    val: 4 models (clearsky_k, climatology, persistence, xgb_sota); daytime rows per model/target/horizon: 2901
+[     9.2s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/benchmark_summary.csv sha256=eedd2ac0732c03c7
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/dm_tests.csv sha256=1f1966aef8f1a97e
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/seasonal_metrics.csv sha256=53dfee59f3107c73
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/common_mask_summary.csv sha256=4921a98eb59748df
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/benchmark_views.csv sha256=d97f8e2973795f05
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/common_mask_sensitivity.csv sha256=ca64bea6817c5832
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/route_comparison.csv sha256=8c7e346c014162c9
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/seed_variability_summary.csv sha256=d6d2f7c4827387ce
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/dm_tests_kw.csv sha256=a4297f30ab1bfdf6
+[     9.3s] OUTPUT  outputs/runs/20261113T075845Z_dev/.evaluate.tmp/val/manifest.json sha256=fa2030617effa42b
+[     9.3s] STEP    evaluate val, the whole val split done in 8.8s
+[     9.3s] VALUE   rows_benchmark_val = 24
+[     9.4s] RUN     warnings: 0
+[     9.4s] RUN     status: ok; duration 9.4s

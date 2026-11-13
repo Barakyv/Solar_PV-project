@@ -1,0 +1,13 @@
+step,model,target,horizon,seed,n_complete,n_trials,all_in_startup,param,importance_mean,importance_std,note
+xgb,xgb_sota,indirect,1,42,1,1,True,,,,fewer than 2 complete trials: not computed
+xgb,xgb_sota,direct,1,42,1,1,True,,,,fewer than 2 complete trials: not computed
+xgb,xgb_sota,indirect,2,42,1,1,True,,,,fewer than 2 complete trials: not computed
+xgb,xgb_sota,direct,2,42,1,1,True,,,,fewer than 2 complete trials: not computed
+xgb,xgb_sota,indirect,3,42,1,1,True,,,,fewer than 2 complete trials: not computed
+xgb,xgb_sota,direct,3,42,1,1,True,,,,fewer than 2 complete trials: not computed
+bilstm,lstm_sota,indirect,all,42,1,1,True,,,,fewer than 2 complete trials: not computed
+bilstm,lstm_sota,direct,all,42,1,1,True,,,,fewer than 2 complete trials: not computed
+tft96,tft_96,indirect,all,42,1,1,True,,,,fewer than 2 complete trials: not computed
+tft96,tft_96,direct,all,42,1,1,True,,,,fewer than 2 complete trials: not computed
+tft168,tft_168,indirect,all,42,1,1,True,,,,fewer than 2 complete trials: not computed
+tft168,tft_168,direct,all,42,1,1,True,,,,fewer than 2 complete trials: not computed

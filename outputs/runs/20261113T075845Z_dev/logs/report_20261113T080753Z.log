@@ -1,0 +1,59 @@
+[     0.0s] RUN     stage runs/20261113T075845Z_dev/report
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode dev --only select,baselines,xgb,cv,ablation,evaluate,explain,report
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T08:07:53+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/model_inputs.json sha256=b693622407f2246e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D1.json sha256=56c6d26ab2b90afa
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D2.json sha256=e00c69fb95f6de8d
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_indirect_D3.json sha256=dc4eab283083195d
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D1.json sha256=e6ec06473241d71e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D2.json sha256=30a9ad2065d9cdef
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/sets/final_features_direct_D3.json sha256=3aa261906d0a6fb6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/select/select.json sha256=da7f712fdb6560a9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/mos_coefficients.csv sha256=08cb8607fb1dc8df
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/trials.csv sha256=75819169be12a10e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/learning_curves.csv sha256=57aaccf917f57cdd
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/best_params.json sha256=1aa1e9221d6c64c6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/xgb/xgb_config.json sha256=dd1b18dcc1eb5079
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_folds.csv sha256=2071e4df925fe76a
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_summary.csv sha256=b15fb5dddb0a6362
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/cv/cv_config.json sha256=dd043fd3aa65bb8b
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_results.csv sha256=95b57ed65f2dfbb7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_modes.csv sha256=57f3d6e42cccfbff
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_summary.csv sha256=20ba6e852a093229
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/ablation/ablation_config.json sha256=4cc8077fb04c15a7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/benchmark_summary.csv sha256=eedd2ac0732c03c7
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/benchmark_views.csv sha256=d97f8e2973795f05
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/common_mask_sensitivity.csv sha256=ca64bea6817c5832
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/common_mask_summary.csv sha256=4921a98eb59748df
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/dm_tests.csv sha256=1f1966aef8f1a97e
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/dm_tests_kw.csv sha256=a4297f30ab1bfdf6
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/route_comparison.csv sha256=8c7e346c014162c9
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/seasonal_metrics.csv sha256=53dfee59f3107c73
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/seed_variability_summary.csv sha256=d6d2f7c4827387ce
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/evaluate/val/manifest.json sha256=fa2030617effa42b
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_features.csv sha256=117836f49c510304
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_groups.csv sha256=40a79a23c90f8146
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_checks.csv sha256=25f84355033650fc
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/xgb/xgb_shap_rank_stability.csv sha256=f0cda28a88071419
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/hparam_importance.csv sha256=1748710b387ded99
+[     0.2s] INPUT   outputs/runs/20261113T075845Z_dev/explain/explain_config.json sha256=273e0c1956cfbc29
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_steps.csv sha256=17a5e4e5559e7f5e
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_benchmark_val.csv sha256=96449b752cc22310
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_dm_kw_val.csv sha256=23ea45df4eb3a9a9
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_seed_spread.csv sha256=f98aac05e6366d39
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_training.csv sha256=8cd9c90ce3c89884
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_studies.csv sha256=85a91ff4dd4f42ed
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_warnings.csv sha256=06b2e7275c4c126d
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_g1_points.csv sha256=8deb0ca18cd5d3fb
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_shap_top.csv sha256=6c37e17df79e9ff7
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_shap_groups.csv sha256=849c172c6824f465
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_hparam_top.csv sha256=8b04c97f4aec2bd4
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_cv.csv sha256=b15fb5dddb0a6362
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_ablation.csv sha256=20ba6e852a093229
+[     0.4s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report_l14_l15_files.csv sha256=512e82349b6224c2
+[     0.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report.json sha256=b8c8b63cdb34b3bc
+[     0.5s] OUTPUT  outputs/runs/20261113T075845Z_dev/.report.tmp/report.md sha256=7a4b10a129118eef
+[     0.5s] RUN     warnings: 0
+[     0.5s] RUN     status: ok; duration 0.5s

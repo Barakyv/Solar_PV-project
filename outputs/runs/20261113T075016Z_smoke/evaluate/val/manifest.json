@@ -1,0 +1,1032 @@
+{
+  "inputs": [
+    "outputs/runs/20261113T075016Z_smoke/baselines/predictions_clearsky_k.csv",
+    "outputs/runs/20261113T075016Z_smoke/baselines/predictions_climatology.csv",
+    "outputs/runs/20261113T075016Z_smoke/baselines/predictions_persistence.csv",
+    "outputs/runs/20261113T075016Z_smoke/xgb/predictions_xgb_sota_seed42.csv",
+    "outputs/runs/20261113T075016Z_smoke/bilstm/predictions_lstm_sota_seed42.csv",
+    "outputs/runs/20261113T075016Z_smoke/tft96/predictions_tft_96_seed42.csv",
+    "outputs/runs/20261113T075016Z_smoke/tft168/predictions_tft_168_seed42.csv",
+    "outputs/runs/20261113T075016Z_smoke/tftbase/predictions_tft_seed42.csv",
+    "outputs/runs/20261113T075016Z_smoke/patchtst/predictions_patchtst_seed42.csv"
+  ],
+  "inputs_sha256": {
+    "predictions_clearsky_k.csv": "c3d4f5d603a06aea4a4d9473f745ea230614b94d9339064f173b106f7dfb1200",
+    "predictions_climatology.csv": "276ed1fefa47427bf2adc58345dbc6f48872207086da37267236d8b5efef4eb4",
+    "predictions_persistence.csv": "d8eedb200f086804e41dbc36a598f68fc36473a6a5233c9c54e736851934097a",
+    "predictions_xgb_sota_seed42.csv": "2048d9fb503f3a3f8c8eba0dcb977ffa2966a541fbc5f7c15ea04842f6625f85",
+    "predictions_lstm_sota_seed42.csv": "6108e9898f69089f03c8df88ee433fdf627c10758b6280555ffb407f5b821d4f",
+    "predictions_tft_96_seed42.csv": "7c29d2228654e262e9e6ef63299db34bef649b87f4dc7304d8a178e5b42b5782",
+    "predictions_tft_168_seed42.csv": "88db102569788ebc95a18cc80e8f46371b0b398435fd15e26412dffd086738e7",
+    "predictions_tft_seed42.csv": "37bb4fa9ebd83f21f0119a8ae77b6d8b9449854be4f0b3ddb574a91ec5d6d669",
+    "predictions_patchtst_seed42.csv": "6f0f27e9d3d5007f155dad0826ee1218eecbe25e7f75e2a71383bc98f67608ef"
+  },
+  "git_commit": "acea8ea",
+  "mode": "feature table",
+  "split": "val",
+  "mean_daytime_k": 0.788157,
+  "dm_reference": "xgb_sota",
+  "references": "from the files",
+  "truth": "data/processed/06_features/features_1H_D1.parquet",
+  "truth_sha256": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+  "cliper_rmse": {
+    "indirect_D1": 0.2019180908015612,
+    "indirect_D2": 0.20602946515027137,
+    "indirect_D3": 0.20616804451543488,
+    "direct_D1": 530.7428611141695,
+    "direct_D2": 576.6714297079847,
+    "direct_D3": 568.6343406942815
+  },
+  "site_private": true,
+  "strict": true,
+  "checks": {
+    "alignment": [
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "rows": 671,
+        "max_abs_diff": 0.0,
+        "rows_outside_split": 0,
+        "ok": true
+      }
+    ],
+    "coverage": [
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "clearsky_k",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "climatology",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "lstm_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "patchtst",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "persistence",
+        "seed": -1,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_168",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "tft_96",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "direct",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 1,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 2,
+        "required": 321,
+        "missing": 0
+      },
+      {
+        "model": "xgb_sota",
+        "seed": 42,
+        "target": "indirect",
+        "horizon": 3,
+        "required": 321,
+        "missing": 0
+      }
+    ]
+  },
+  "rows": {
+    "benchmark_summary": 54,
+    "dm_tests": 48,
+    "seasonal_metrics": 54,
+    "common_mask_summary": 54,
+    "benchmark_views": 216,
+    "common_mask_sensitivity": 54,
+    "route_comparison": 54,
+    "seed_variability_summary": 36,
+    "dm_tests_kw": 48
+  },
+  "run_log": "outputs/runs/20261113T075016Z_smoke/logs/evaluate_20261113T075536Z.log"
+}

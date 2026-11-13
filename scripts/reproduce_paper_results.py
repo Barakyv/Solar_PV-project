@@ -29,7 +29,8 @@ What it does:
 - The selection is verified by the runner's `select` (D-30); `--rerun-selection` also reruns its
   train part and compares the sets.
 - Two development runs of the runner, with the invocations of the two reference runs:
-  `select,baselines,xgb,evaluate,explain,report` against `20261112T063719Z_dev`, and
+  `select,baselines,xgb,cv,ablation,evaluate,explain,report` against `20261113T075845Z_dev`
+  (the steps cv and ablation of D-36 included), and
   `select,baselines,bilstm,tft96,tft168,tftbase,patchtst,evaluate,explain,report` against
   `20261111T160714Z_dev`. Smoke and dev never read a test row; nothing here reads one.
 - Both environments are recorded and compared with the locks (M34). Nothing is installed.
@@ -61,9 +62,9 @@ from solarpv.config.provenance import find_git, sha256  # noqa: E402
 RAW = REPO / "Raw data"
 GFS_EXTRACTS = "data/external/gfs_1p00"
 PRIVATE_SITE = "configs/site.private.yaml"
-REFERENCE_RUNS = {"dev_xgb": "outputs/runs/20261112T063719Z_dev",
+REFERENCE_RUNS = {"dev_xgb": "outputs/runs/20261113T075845Z_dev",  # with cv and ablation (D-36)
                   "dev_neural": "outputs/runs/20261111T160714Z_dev"}
-XGB_STEPS = "select,baselines,xgb,evaluate,explain,report"
+XGB_STEPS = "select,baselines,xgb,cv,ablation,evaluate,explain,report"
 NEURAL_STEPS = "select,baselines,bilstm,tft96,tft168,tftbase,patchtst,evaluate,explain,report"
 # JSON / YAML keys whose values change from run to run and say nothing about the result
 VOLATILE_KEYS = {"git_commit", "commit", "run_log", "validation_run_log", "started_utc",

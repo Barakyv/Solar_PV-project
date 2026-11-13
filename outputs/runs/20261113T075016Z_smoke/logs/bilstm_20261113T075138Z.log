@@ -1,0 +1,65 @@
+[     0.0s] RUN     stage runs/20261113T075016Z_smoke/bilstm
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:51:38+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.0s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.0s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.0s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.0s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.0s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    24.8s] NOTE    bilstm (lstm_sota): budget {'trials': 1, 'epochs_trial': 2, 'epochs_final': 2, 'patience': 10, 'seeds': [42]}, seeds [42]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    24.8s] STEP    load the inputs before TEST_START ...
+[    25.3s] STEP    load the inputs before TEST_START done in 0.5s
+[    25.3s] STEP    indirect: build and check the windows ...
+[    25.7s] NOTE    indirect: train 58 origins, val 30 origins; 46 encoder and 30 decoder channels; 72 encoder hours
+[    25.7s] STEP    indirect: build and check the windows done in 0.4s
+[    25.7s] STEP    direct: build and check the windows ...
+[    26.2s] NOTE    direct: train 58 origins, val 30 origins; 63 encoder and 49 decoder channels; 72 encoder hours
+[    26.2s] STEP    direct: build and check the windows done in 0.4s
+[    26.2s] STEP    bilstm: the training worker in solar-gpu ...
+[    26.2s] NOTE    worker: C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe -m solarpv.models.neural_worker C:\Users\204323141\Desktop\solar\outputs\runs\20261113T075016Z_smoke\.bilstm.tmp\job C:\Users\204323141\Desktop\solar\outputs\runs\20261113T075016Z_smoke\.bilstm.tmp\worker
+[    38.4s] NOTE    [worker 09:52:17] bilstm (smoke): targets ['indirect', 'direct'], seeds [42], budget {'trials': 1, 'epochs_trial': 2, 'epochs_final': 2, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+[    44.8s] NOTE    [worker 09:52:23] indirect seed 42 trial0: 49.0112 % kW, best epoch 2 of 2, 1.4 s
+[    45.2s] NOTE    [worker 09:52:23] indirect seed 42 final: 49.0112 % kW, best epoch 2 of 2, 0.09 s
+[    45.6s] NOTE    [worker 09:52:24] direct seed 42 trial0: 41.6969 % kW, best epoch 2 of 2, 0.1 s
+[    46.0s] NOTE    [worker 09:52:24] direct seed 42 final: 41.6969 % kW, best epoch 2 of 2, 0.11 s
+[    46.1s] NOTE    [worker 09:52:24] done in 19.5 s, 11 outputs
+[    48.0s] STEP    bilstm: the training worker in solar-gpu done in 21.8s
+[    48.2s] WARN    bilstm: indirect seed 42: best epoch 2 at the last epoch: it may not have converged
+[    48.2s] WARN    bilstm: direct seed 42: best epoch 2 at the last epoch: it may not have converged
+[    48.2s] NOTE    bilstm: seed spread: one seed per target, not computed
+[    48.8s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/best_params.json sha256=7fbb5615d97d889e
+[    48.8s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/figures/learning_curves.png sha256=78a14bee62506a78
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/figures/optimization_history.png sha256=3ff26e72db6b8cf4
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/job/data_direct.npz sha256=e34c514098b6915a
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/job/data_indirect.npz sha256=44fad2a2d8c8675a
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/job/job.json sha256=26815ab46fdcf348
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/learning_curves.csv sha256=eb295f772108da01
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/lstm_sota_config.json sha256=c62a972980646f1d
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/mbe.csv sha256=18d5ba4e01083f1b
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/predictions_lstm_sota_seed42.csv sha256=6108e9898f69089f
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/quantiles_lstm_sota_seed42.csv sha256=5c9d66f242942dc3
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/trials.csv sha256=e10dfe4719928c9b
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/curves_direct_seed42.csv sha256=f81cbc00272cb2e2
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/curves_indirect_seed42.csv sha256=4ae9527548a0cfb4
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/fit_direct_seed42.json sha256=f7cc82481c76785b
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/fit_indirect_seed42.json sha256=518b2f6048dcb9ce
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/forecast_direct_seed42.npz sha256=3fe54f25a2c68039
+[    48.9s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/forecast_indirect_seed42.npz sha256=d657f14dcf30679c
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/models/lstm_sota_direct_seed42.pt sha256=8ac1e1ac01f51332
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/models/lstm_sota_indirect_seed42.pt sha256=fe905ba60e0ddf7a
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/optuna.db sha256=0a1a95762d7844a6
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/trials_direct_seed42.csv sha256=4ae2540be3df1e68
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/trials_indirect_seed42.csv sha256=479f0888c34b9be4
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker/worker.json sha256=9f87724f9be17e3f
+[    49.0s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.bilstm.tmp/worker_stdout.log sha256=9ca1cf384b26de81
+[    49.0s] RUN     warnings: 2
+[    49.0s] RUN     status: ok; duration 49.0s

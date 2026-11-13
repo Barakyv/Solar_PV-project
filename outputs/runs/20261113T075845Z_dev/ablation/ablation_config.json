@@ -1,0 +1,28 @@
+{
+  "step": "ablation",
+  "mode": "dev",
+  "seeds": [
+    42
+  ],
+  "tuning_window": {
+    "split": "val",
+    "start": "2024-02-01T00:00:00+00:00",
+    "end": "2024-10-01T00:00:00+00:00",
+    "label": "the whole val split"
+  },
+  "windows": [
+    {
+      "split": "val",
+      "start": "2024-02-01T00:00:00+00:00",
+      "end": "2024-10-01T00:00:00+00:00",
+      "label": "the whole val split"
+    }
+  ],
+  "modes": "full, no_<group> for each feature group of the input, no_history (the measured past-day groups) and minimal (the time encodings), by selection.common.group",
+  "fit": "the xgb step's final fit on the features a mode keeps: the searched parameters of the record, the seed, early stopping on the validation rows (D-10), constraints by exact name for the features left",
+  "score": "nRMSE in kW (% of 3,449 kW) of the raw forecast on the scoring hours of the validation window; L-09 is not applied",
+  "delta": "mode minus full of the same target, horizon and seed (pp)",
+  "verdict": "helpful above, harmful below minus max(0.05 pp, 2 x the pooled seed std of the deltas); neutral otherwise",
+  "forecast_rows": "daytime hours of each window; the test window only in a final run (forecast, logged, not scored in phase 1)",
+  "xgb_best_params_sha256": "1aa1e9221d6c64c6f1063ee9fdd8aae1b2ca0ff2f34d6e5a3fef5c0af9639f9b"
+}

@@ -73,10 +73,10 @@ user). `tests/contracts/test_scope_register.py` (T-97) checks that every named p
 | S-35 | 11.4 | PatchTST autoregressive structure | — | PatchTST | 11 | ⬜ no code (X59) |
 | S-36 | 11.5 | Optuna convergence and hyperparameter importance (TFT-96) | 8 | TFT-96 | 10, 11 | ✅ dev (W5, step `explain`: fANOVA over ten seeds, `src/solarpv/pipeline/explain.py`) / ⬜ final |
 | S-37 | 12.1 | Seed variability (each seed scored by evaluate.py, C-10) | 17 | XGB-Opt, BiLSTM-Opt | 10, 11 | ✅ code (`src/solarpv/evaluation/evaluate.py`, `seed_variability_summary.csv`; the report's spread in kW, X42); one seed in dev, three in the final run / ⬜ figure: no code (X59) |
-| S-38 | 12.2 | 5-fold expanding-window CV vs test (script rewritten) | 18 | XGB-Opt | 11 | ⬜ no code (X59; it trains models, so it must exist before the tag or reopen G-1) |
+| S-38 | 12.2 | 5-fold expanding-window CV vs test (script rewritten) | 18 | XGB-Opt | 11 | ✅ dev (W6, step `cv`: `src/solarpv/pipeline/analyses.py`, D-36; the test comparison by the step `test`) / ⬜ final / ⬜ figure: no code (X59) |
 | S-39 | 12.3 | Bias² + variance decomposition | 9 | XGB-Opt, BiLSTM-Opt | 11 | ⬜ no code (X59; from the seed forecasts of the final run) |
 | S-40 | 12.4 | Production quintile analysis | 16 | XGB-Opt | 11 | ⬜ no code (X59; from the prediction files) |
-| S-41 | 12.5 | Feature-group ablation, 3 seeds (leak-free base, C-07) | 15 | XGB-Opt | 11 | ⬜ no code (X59; it trains models, so it must exist before the tag or reopen G-1) |
+| S-41 | 12.5 | Feature-group ablation, 3 seeds (leak-free base, C-07) | 15 | XGB-Opt | 11 | ✅ dev (W6, step `ablation`: `src/solarpv/pipeline/analyses.py`, D-36; the test values by the step `test`) / ⬜ final / ⬜ figure: no code (X59) |
 | S-42 | 13.1–13.6 | Discussion | — | all | 11 | 📝 |
 | S-43 | 14 | Conclusions C1–C8, recommendations, future work | — | all | 11 | 📝 |
 | S-44 | 15 | Academic disclosures D1–D5 (D1 rewritten, F-01c) | — | all | 11 | 📝 |

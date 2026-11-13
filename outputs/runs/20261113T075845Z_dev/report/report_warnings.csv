@@ -1,0 +1,6 @@
+step,kind,subject,text,status
+xgb,gap,indirect_D1_seed42,indirect_D1_seed42: validation RMSE 0.1004 is 2.7 x the train RMSE 0.03769 at the best iteration,matched
+xgb,edge_space,indirect_D1_seed42,"indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10, learning_rate = 0.01031",matched
+xgb,edge_space,direct_D1_seed42,direct_D1_seed42: best trial on the edge of the search space for min_child_weight = 20,matched
+xgb,cap,direct_D2_seed42,direct_D2_seed42: best iteration 212 at the cap of 213 rounds: it may not have converged (M12d),matched
+xgb,edge_space,direct_D2_seed42,direct_D2_seed42: best trial on the edge of the search space for n_estimators = 213,matched

@@ -1,0 +1,7 @@
+target,compare,seed,horizon,n_common,n_a,n_b,spearman
+direct,D+1 vs D+2,42,,89,96,89,0.8853762342526389
+direct,D+1 vs D+3,42,,82,96,82,0.8411641144523896
+direct,D+2 vs D+3,42,,82,89,82,0.8590568234999618
+indirect,D+1 vs D+2,42,,25,31,28,0.8692307692307691
+indirect,D+1 vs D+3,42,,26,31,32,0.8625641025641025
+indirect,D+2 vs D+3,42,,25,28,32,0.8976923076923078

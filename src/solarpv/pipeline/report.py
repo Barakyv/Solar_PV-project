@@ -400,6 +400,8 @@ def markdown(ctx: Context, tables: dict[str, pd.DataFrame], sources: dict[str, s
     if "ablation" in tables:
         lines += ["", "## Feature-group ablation of the xgb models (S-41, delta of nRMSE in kW "
                   "against the full fit, pp)", ""]
+        lines += ["With one seed (`n_seeds` 1) the margin is only the 0.05 pp floor and a "
+                  "verdict is provisional: the seed spread of XGB-Opt is of that size (M41).", ""]
         lines += _md_table(tables["ablation"], ["target", "horizon", "mode", "n_seeds",
                                                 "mean_delta_pp", "std_delta_pp", "margin_pp",
                                                 "verdict"], 3)

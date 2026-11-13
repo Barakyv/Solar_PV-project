@@ -1,0 +1,7 @@
+step,target,horizon,seed,param,importance_mean,importance_std,n_complete,all_in_startup
+xgb,direct,1,42,min_child_weight,0.710184695023118,0.05316723684569763,20,False
+xgb,direct,3,42,learning_rate,0.6791353943830777,0.05869360381356642,20,False
+xgb,indirect,3,42,max_depth,0.38404531968366407,0.04717129417178753,20,False
+xgb,indirect,1,42,learning_rate,0.37364453023746635,0.048580314426894776,20,False
+xgb,indirect,2,42,learning_rate,0.25771199369024156,0.0511735563331081,20,False
+xgb,direct,2,42,colsample_bytree,0.2494684472289888,0.029203579114651816,20,False

@@ -1,0 +1,123 @@
+{
+  "step": "ablation",
+  "run_id": "20261113T075016Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-13T07:50:53.213061+00:00",
+  "commit": "acea8ea",
+  "fingerprint": "364ba3bd921ec79ec4d7df93aaa34d246ad6cc66b1647f6f3dc31c050e76e9bf",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "outputs/runs/20261113T075016Z_smoke/xgb/best_params.json": "98bbb2e802fd90b5f53ec553aca6671e83b1d9026c6019f271179f6ee36ce61d",
+    "outputs/runs/20261113T075016Z_smoke/xgb/xgb_config.json": "08938083f095b9709fdb8ecaf6961f5faa99ee8e48e2b55bb7216bc2355472b6",
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261113T075016Z_smoke/logs/ablation_20261113T075053Z.log",
+  "status": "ok",
+  "folder": "ablation",
+  "finished_utc": "2026-11-13T07:51:37.594872+00:00",
+  "duration_s": 44.4,
+  "outputs": {
+    "ablation_results.csv": "90e875bd36b7efc7cca17e61d54623083f66088e7dcb90571850bf1cc16ecdf8",
+    "ablation_modes.csv": "57f3d6e42cccfbffbfaceb7b240a6bd3c51092675b836b7691ac15ef64a7c304",
+    "ablation_summary.csv": "f9dcdd39227dfb5ac6b25aec3145e1db8294962c05bb75a046313faf2c7c28e4",
+    "ablation_forecasts_seed42.csv": "770d49e7ac50f3b410352ca458423eb1d8a294633d5fbab4d6120614d461cc2e",
+    "ablation_config.json": "a716356d97f1865319864f1b3da8ae1129865ea03779408afef606551b2ec6f1"
+  },
+  "values": {
+    "fits": 55,
+    "test_access": [],
+    "verdicts": {
+      "helpful": 27,
+      "harmful": 17,
+      "neutral": 5
+    }
+  },
+  "notes": {},
+  "summary": [
+    "ablation (55 fit(s)): delta of nRMSE in kW against the full fit (pp), mean over seeds, with the verdict by the registered margin",
+    "  direct   D+1 minimal             +3.857 pp (margin 0.050) helpful",
+    "  direct   D+1 no_clearsky         +0.169 pp (margin 0.050) helpful",
+    "  direct   D+1 no_history          -1.708 pp (margin 0.050) harmful",
+    "  direct   D+1 no_history_other    +0.266 pp (margin 0.050) helpful",
+    "  direct   D+1 no_lag_power        -0.830 pp (margin 0.050) harmful",
+    "  direct   D+1 no_nwp_gfs          +3.268 pp (margin 0.050) helpful",
+    "  direct   D+1 no_other            +0.341 pp (margin 0.050) helpful",
+    "  direct   D+1 no_rolling_stats    +0.471 pp (margin 0.050) helpful",
+    "  direct   D+1 no_time_encodings   -0.159 pp (margin 0.050) harmful",
+    "  direct   D+2 minimal             +4.512 pp (margin 0.050) helpful",
+    "  direct   D+2 no_clearsky         +0.080 pp (margin 0.050) helpful",
+    "  direct   D+2 no_history          +0.239 pp (margin 0.050) helpful",
+    "  direct   D+2 no_history_other    -0.150 pp (margin 0.050) harmful",
+    "  direct   D+2 no_lag_power        -0.015 pp (margin 0.050) neutral",
+    "  direct   D+2 no_nwp_gfs          +4.491 pp (margin 0.050) helpful",
+    "  direct   D+2 no_other            -0.005 pp (margin 0.050) neutral",
+    "  direct   D+2 no_rolling_stats    +0.698 pp (margin 0.050) helpful",
+    "  direct   D+2 no_time_encodings   -0.046 pp (margin 0.050) neutral",
+    "  direct   D+3 minimal             +3.506 pp (margin 0.050) helpful",
+    "  direct   D+3 no_clearsky         -0.056 pp (margin 0.050) harmful",
+    "  direct   D+3 no_history          -0.052 pp (margin 0.050) harmful",
+    "  direct   D+3 no_history_other    -0.134 pp (margin 0.050) harmful",
+    "  direct   D+3 no_lag_power        -0.086 pp (margin 0.050) harmful",
+    "  direct   D+3 no_nwp_gfs          +2.890 pp (margin 0.050) helpful",
+    "  direct   D+3 no_other            -1.004 pp (margin 0.050) harmful",
+    "  direct   D+3 no_rolling_stats    -0.467 pp (margin 0.050) harmful",
+    "  direct   D+3 no_time_encodings   -0.873 pp (margin 0.050) harmful",
+    "  indirect D+1 minimal             +2.369 pp (margin 0.050) helpful",
+    "  indirect D+1 no_clearsky         +0.737 pp (margin 0.050) helpful",
+    "  indirect D+1 no_history          +0.524 pp (margin 0.050) helpful",
+    "  indirect D+1 no_history_other    +0.400 pp (margin 0.050) helpful",
+    "  indirect D+1 no_lag_power        +0.434 pp (margin 0.050) helpful",
+    "  indirect D+1 no_nwp_gfs          +2.606 pp (margin 0.050) helpful",
+    "  indirect D+1 no_other            +0.420 pp (margin 0.050) helpful",
+    "  indirect D+1 no_time_encodings   +0.293 pp (margin 0.050) helpful",
+    "  indirect D+2 no_clearsky         +1.167 pp (margin 0.050) helpful",
+    "  indirect D+2 no_history          -0.074 pp (margin 0.050) harmful",
+    "  indirect D+2 no_history_other    -0.007 pp (margin 0.050) neutral",
+    "  indirect D+2 no_lag_power        +0.308 pp (margin 0.050) helpful",
+    "  indirect D+2 no_nwp_gfs          +1.377 pp (margin 0.050) helpful",
+    "  indirect D+2 no_other            +0.509 pp (margin 0.050) helpful",
+    "  indirect D+2 no_rolling_stats    -0.081 pp (margin 0.050) harmful",
+    "  indirect D+3 no_clearsky         -0.118 pp (margin 0.050) harmful",
+    "  indirect D+3 no_history          -0.106 pp (margin 0.050) harmful",
+    "  indirect D+3 no_history_other    -0.341 pp (margin 0.050) harmful",
+    "  indirect D+3 no_lag_power        +0.050 pp (margin 0.050) neutral",
+    "  indirect D+3 no_nwp_gfs          +1.692 pp (margin 0.050) helpful",
+    "  indirect D+3 no_other            -0.127 pp (margin 0.050) harmful",
+    "  indirect D+3 no_rolling_stats    +0.950 pp (margin 0.050) helpful"
+  ],
+  "warnings": []
+}

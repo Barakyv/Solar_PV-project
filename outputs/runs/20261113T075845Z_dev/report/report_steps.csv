@@ -1,0 +1,8 @@
+step,status,commit,fingerprint,duration_s,budget,n_outputs,n_warnings
+select,ok,acea8ea,c5be4635d8c2,2.7,,8,0
+baselines,ok,acea8ea,9311982949f7,2.0,,3,0
+xgb,ok,acea8ea,f026e3d509b9,331.5,"{""seeds"": [42], ""trials"": 20}",16,5
+cv,ok,acea8ea,7527b1114655,34.1,"{""seeds"": [42], ""trials"": 20}",3,0
+ablation,ok,acea8ea,d3b3c492e059,101.5,"{""seeds"": [42], ""trials"": 20}",5,0
+evaluate,ok,acea8ea,e3a61631c20e,9.4,,10,0
+explain,ok,acea8ea,240711f18dff,60.9,,12,0

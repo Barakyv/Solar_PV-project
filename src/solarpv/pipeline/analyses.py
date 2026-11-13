@@ -395,7 +395,8 @@ def run_ablation(ctx: Context) -> Result:
              "over seeds, with the verdict by the registered margin"]
     for r in summary.sort_values(["target", "horizon", "mode"]).itertuples():
         lines.append(f"  {r.target:<8} D+{r.horizon} {r.mode:<18} {r.mean_delta_pp:+7.3f} pp "
-                     f"(margin {r.margin_pp:.3f}) {r.verdict}")
+                     f"(margin {r.margin_pp:.3f}) {r.verdict}"
+                     + (" [one seed: provisional]" if r.single_seed else ""))
     return Result(outputs, values={"fits": int(len(res)), "test_access": access,
                                    "verdicts": summary["verdict"].value_counts().to_dict()},
                   summary=lines)

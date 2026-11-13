@@ -1,0 +1,34 @@
+{
+  "run_id": "20261113T075845Z_dev",
+  "mode": "dev",
+  "sources": {
+    "evaluate/val/benchmark_summary.csv": "eedd2ac0732c03c79941608387d42eed561c06a9c354273b8e8493c21b19f431",
+    "evaluate/val/dm_tests_kw.csv": "a4297f30ab1bfdf6c8b56093257ee816c9293e16c9e83be5b3aac5a6621918a6",
+    "xgb/best_params.json": "1aa1e9221d6c64c6f1063ee9fdd8aae1b2ca0ff2f34d6e5a3fef5c0af9639f9b",
+    "xgb/learning_curves.csv": "57aaccf917f57cddb50b4f046daad72e3d5fdb4b7a5bc314bc6874bd9a68a68c",
+    "xgb/trials.csv": "75819169be12a10e4bbf1c0dec8128a9bb8c1195f2d80ec00d617ab48d904eb3",
+    "explain/xgb/xgb_shap_features.csv": "117836f49c5103041714319ce99081f24b02929aef0a8555c17a459683d77cdd",
+    "explain/xgb/xgb_shap_groups.csv": "40a79a23c90f81464faab77574448d75e23cafb014dbad00591b663430757f81",
+    "explain/hparam_importance.csv": "1748710b387ded99afcb75e24807c5d4063a575666696c2f147d9daa22ae46ea",
+    "cv/cv_summary.csv": "b15fb5dddb0a6362c12b538339d892dc1a3431964ab7c0699f48bb1d7268ce2e",
+    "ablation/ablation_summary.csv": "20ba6e852a0932296ea7e917da809331a8c56a32fa7ad931520be035e7d0de59"
+  },
+  "problems": [],
+  "steps_missing": [],
+  "tables": {
+    "steps": "report_steps.csv",
+    "benchmark_val": "report_benchmark_val.csv",
+    "dm_kw_val": "report_dm_kw_val.csv",
+    "seed_spread": "report_seed_spread.csv",
+    "training": "report_training.csv",
+    "studies": "report_studies.csv",
+    "warnings": "report_warnings.csv",
+    "g1_points": "report_g1_points.csv",
+    "shap_top": "report_shap_top.csv",
+    "shap_groups": "report_shap_groups.csv",
+    "hparam_top": "report_hparam_top.csv",
+    "cv": "report_cv.csv",
+    "ablation": "report_ablation.csv",
+    "l14_l15_files": "report_l14_l15_files.csv"
+  }
+}

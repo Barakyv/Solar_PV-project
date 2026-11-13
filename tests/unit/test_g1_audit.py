@@ -105,6 +105,27 @@ def test_the_trailing_clock_median_uses_earlier_days_only(A):
     np.testing.assert_allclose(out2.to_numpy()[:30], out.to_numpy()[:30])
 
 
+def test_the_figures_explain_only_what_d34_names_and_trust_evidence_only_while_code_is_unchanged():
+    """D-34: only the laptop's decision checks and the resumed neural report are explained
+    differences; the checklist trusts earlier evidence only while no code path changed since."""
+    from solarpv.figures import s09_w6 as W
+
+    assert W.explained_reason("decide_k", "configs/target.yaml")
+    assert W.explained_reason("nwp_check", "outputs/06b_gfs/value_check.csv")
+    assert W.explained_reason("dev_neural", "<run>/report/report_steps.csv")
+    assert W.explained_reason("dev_neural", "<run>/report/report_warnings.csv")
+    for step, path in (("dev_xgb", "<run>/report/report_steps.csv"),  # X67 fixed this one
+                       ("dev_neural", "<run>/tft96/predictions_tft_96_seed42.csv"),
+                       ("clean", "data/processed/05_clean/scada_1H_clean.parquet"),
+                       ("features", "data/processed/06_features/features_1H_D1.parquet")):
+        assert W.explained_reason(step, path) is None, (step, path)
+    row = {"path": "configs/target.yaml", "equal": None, "kind": "data"}
+    assert W._class(row, "decide_k", {"configs/target.yaml"}) == W.EXPLAINED_CLASS
+    assert W._class(row, "features", {"configs/target.yaml"}) == W.UNEXPLAINED_CLASS
+    assert W._code_unchanged_since("HEAD")
+    assert not W._code_unchanged_since("b2c3f1f")  # the pipeline code changed in W6
+
+
 def test_the_evidence_files_agree_with_the_document():
     folder = OUTPUTS_DIR / "g1_audit" / "audit"
     clean = pd.read_csv(folder / "lookahead_clean.csv").set_index("source")

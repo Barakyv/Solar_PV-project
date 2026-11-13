@@ -41,8 +41,12 @@ def test_the_plan_runs_every_stage_from_the_raw_data(R):
     assert names.index("clean") < names.index("features") < names.index("gfs") \
         < names.index("dev_xgb")
     models = R.XGB_STEPS.split(",") + R.NEURAL_STEPS.split(",")
-    for m in ("xgb", "bilstm", "tft96", "tft168", "tftbase", "patchtst", "baselines", "select"):
+    for m in ("xgb", "bilstm", "tft96", "tft168", "tftbase", "patchtst", "baselines", "select",
+              "cv", "ablation"):  # D-36: the two analyses are part of the reproduction
         assert m in models
+    steps = R.XGB_STEPS.split(",")
+    assert steps.index("xgb") < steps.index("cv") < steps.index("ablation")
+    assert R.REFERENCE_RUNS["dev_xgb"].endswith("20261113T075845Z_dev")
     assert "dev_neural" not in [s.name for s in R.plan({"neural": False})]
     optional = [s.name for s in R.plan({"neural": True, "with_eda": True,
                                         "rerun_selection": True})]

@@ -1,0 +1,69 @@
+[     0.0s] RUN     stage runs/20261113T075016Z_smoke/tft96
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode smoke
+[     0.2s] RUN     git commit: acea8ea
+[     0.2s] RUN     started (UTC): 2026-11-13T07:52:28+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.0s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.0s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.0s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.0s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.0s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    19.3s] NOTE    tft96 (tft_96): budget {'trials': 1, 'epochs': 2, 'patience': 10, 'seeds': [42]}, seeds [42]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    19.3s] STEP    load the inputs before TEST_START ...
+[    19.8s] STEP    load the inputs before TEST_START done in 0.5s
+[    19.8s] STEP    indirect: build and check the windows ...
+[    20.2s] NOTE    indirect: train 58 origins, val 30 origins; 46 encoder and 30 decoder channels; 96 encoder hours
+[    20.2s] STEP    indirect: build and check the windows done in 0.4s
+[    20.2s] STEP    direct: build and check the windows ...
+[    20.7s] NOTE    direct: train 58 origins, val 30 origins; 63 encoder and 49 decoder channels; 96 encoder hours
+[    20.7s] STEP    direct: build and check the windows done in 0.4s
+[    20.7s] STEP    tft96: the training worker in solar-gpu ...
+[    20.7s] NOTE    worker: C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe -m solarpv.models.neural_worker C:\Users\204323141\Desktop\solar\outputs\runs\20261113T075016Z_smoke\.tft96.tmp\job C:\Users\204323141\Desktop\solar\outputs\runs\20261113T075016Z_smoke\.tft96.tmp\worker
+[    33.1s] NOTE    [worker 09:53:01] tft96 (smoke): targets ['indirect', 'direct'], seeds [42], budget {'trials': 1, 'epochs': 2, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+[    39.9s] NOTE    [worker 09:53:08] indirect seed 42 trial0: 18.6704 % kW, best epoch 2 of 2, 3.08 s
+[    42.0s] NOTE    [worker 09:53:10] indirect seed 42 final: 18.6704 % kW, best epoch 2 of 2, 1.56 s
+[    45.1s] NOTE    [worker 09:53:13] direct seed 42 trial0: 48.3783 % kW, best epoch 2 of 2, 2.16 s
+[    48.0s] NOTE    [worker 09:53:16] direct seed 42 final: 48.3783 % kW, best epoch 2 of 2, 2.29 s
+[    48.6s] NOTE    [worker 09:53:17] done in 27.5 s, 11 outputs
+[    50.5s] STEP    tft96: the training worker in solar-gpu done in 29.8s
+[    50.8s] WARN    tft96: indirect seed 42: best epoch 2 at the last epoch: it may not have converged
+[    50.8s] WARN    tft96: indirect seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)
+[    50.8s] WARN    tft96: direct seed 42: best epoch 2 at the last epoch: it may not have converged
+[    50.8s] WARN    tft96: direct seed 42: best trial on the edge of the search space for lstm_layers = 3 (M23)
+[    50.8s] NOTE    tft96: seed spread: one seed per target, not computed
+[    51.4s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/attention_direct_seed42.csv sha256=cacdcf3123b85c1f
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/attention_indirect_seed42.csv sha256=48b36433d17880cc
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/best_params.json sha256=4010cfcd3b29645d
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/figures/learning_curves.png sha256=86ac03d5311a8581
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/figures/optimization_history.png sha256=62134ed28705819e
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/job/data_direct.npz sha256=160d05223c60a551
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/job/data_indirect.npz sha256=820bc3d0d443929e
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/job/job.json sha256=bca09ae054692f76
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/learning_curves.csv sha256=b763b68efc237c7a
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/mbe.csv sha256=e276c5959d42c94a
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/predictions_tft_96_seed42.csv sha256=7c29d2228654e262
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/quantiles_tft_96_seed42.csv sha256=750b4d4b4686ad23
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/tft_96_config.json sha256=7bf3ce59db81df7b
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/trials.csv sha256=b5328b4ca82629e1
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/curves_direct_seed42.csv sha256=c45b936db28afb5c
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/curves_indirect_seed42.csv sha256=f4d32020fb4e59c4
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/fit_direct_seed42.json sha256=3914641486f122f1
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/fit_indirect_seed42.json sha256=41fdc7aac78d6cde
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/forecast_direct_seed42.npz sha256=cdd28637b895fa37
+[    51.5s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/forecast_indirect_seed42.npz sha256=9848426fdc5e9d00
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/models/tft_96_direct_seed42.pt sha256=c30094379fed9cec
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/models/tft_96_indirect_seed42.pt sha256=56d216a6c965c602
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/optuna.db sha256=ef7bb872ce6087a2
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/trials_direct_seed42.csv sha256=13d5263776063218
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/trials_indirect_seed42.csv sha256=126c472d0ec832f1
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker/worker.json sha256=1ac5f640e2dc366d
+[    51.6s] OUTPUT  outputs/runs/20261113T075016Z_smoke/.tft96.tmp/worker_stdout.log sha256=8060de1bd5312378
+[    51.6s] RUN     warnings: 4
+[    51.6s] RUN     status: ok; duration 51.6s
