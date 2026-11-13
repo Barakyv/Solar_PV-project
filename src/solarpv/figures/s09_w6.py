@@ -805,3 +805,106 @@ def s09_entry_points():
              "writer_old": r0["created_by_orig"].replace("parquet-cpp-arrow version ", "pyarrow "),
              "writer_new": r0["created_by_new"].replace("parquet-cpp-arrow version ", "pyarrow ")}
     return fig, facts
+
+
+# ── S09-42: the external review of gate G-1 and what became of each comment ──
+
+SHORT_TITLE = {
+    "R-G1-01": "neural steps score the test split in phase 1",
+    "R-G1-02": "phase 2 runs report before test",
+    "R-G1-03": "the acceptance is bound to nothing",
+    "R-G1-04": "phase 1 files hold the test truth",
+    "R-G1-05": "the evaluation CLI scores the test split",
+    "R-G1-06": "k-hat >= 0 holds in kW only",
+    "R-G1-07": "four copies of the k to kW conversion",
+    "R-G1-08": "stage loaders read test rows, then filter",
+    "R-G1-09": "L-09 text on the validation labels",
+    "R-G1-10": "mode full must equal xgb to 1e-9",
+    "R-G1-11": "'verdict' on the test table",
+    "R-G1-12": "areas the reviewer did not verify",
+    "R-G1-13": "alignment compares nothing on withheld rows",
+    "R-G1-14": "a phase-2 retry scores the test twice",
+    "R-G1-15": "a report older than evaluate passes",
+    "R-G1-16": "promoted files lack the test y_true",
+    "R-G1-17": "wording: no test truth in any file",
+    "R-G1-18": "leftovers of the fixes",
+    "R-G1-19": "promote against the files test scored",
+    "R-G1-20": "a failure after the test scoring",
+    "R-G1-21": "a kill between rename and run.json",
+    "R-G1-22": "time rules refuse a clock set back",
+    "R-G1-23": "data-record entry names the old flag",
+}
+SEVERITY_ORDER = {"blocking": 0, "should fix": 1, "note": 2}
+SEVERITY_COLOUR = {"blocking": "red", "should fix": "orange", "note": "sky"}
+DISPOSITIONS = ("fixed in code, with a test and an errata row", "tested, no code change",
+                "documents corrected", "explained, no change")
+
+
+def _disposition(ref: str) -> str:
+    import re
+
+    if ref.startswith("none"):
+        return DISPOSITIONS[3]
+    has_test, has_errata = bool(re.search(r"\bT-\d+", ref)), bool(re.search(r"\bX\d+", ref))
+    if has_test and has_errata:
+        return DISPOSITIONS[0]
+    return DISPOSITIONS[1] if has_test else DISPOSITIONS[2]
+
+
+def _review_comments() -> list[dict]:
+    import re
+
+    log = (REPO_ROOT / REVIEW_LOG).read_text(encoding="utf-8")
+    rows = [[c.strip() for c in line.strip("|").split("|")]
+            for line in log.splitlines() if re.match(r"^\| R-G1-\d+", line)]
+    assert rows and all(len(r) == 8 and r[5] in SEVERITY_ORDER for r in rows)
+    return [{"id": r[0], "severity": r[5], "answered": bool(r[6]), "disposition":
+             _disposition(r[7])} for r in rows]
+
+
+@register(
+    "S09-42", "9", "external_review", "The external review of gate G-1 and its comments",
+    "What did the independent review find, how serious was it, and what became of each comment?",
+    "One row per comment of `docs/g1_review_log.md` (the review of the source against §6 and its "
+    "fix checks), by severity (colour) and by what became of it (column): a fix in code with a "
+    "test and an errata row, a test without a code change, a correction of the documents, or an "
+    "explanation with no change.",
+    "The review wrote {n} comments: {blocking} blocking, {should} should fix and {notes} notes. "
+    "All {n_serious} blocking and should-fix comments were fixed in code with a test and an "
+    "errata row; {n_docs} comments were answered by correcting the documents, {n_test} by a test "
+    "and {n_expl} by an explanation. {n_open} are unanswered.",
+    "The evidence of the gate is repeated at the commit that is tagged (D-36), and the "
+    "reproduction from the raw data runs once more at it.",
+    (REVIEW_LOG,))
+def s09_external_review():
+    comments = _review_comments()
+    order = sorted(comments, key=lambda c: (SEVERITY_ORDER[c["severity"]], c["id"]))
+    unknown = [c["id"] for c in comments if c["id"] not in SHORT_TITLE]
+    assert not unknown, f"add a short title for {unknown}"
+    fig, ax = subplots(height=6.4, width=7.8)
+    for y, c in enumerate(order):
+        x = DISPOSITIONS.index(c["disposition"])
+        ax.scatter([x], [y], s=70, color=C[SEVERITY_COLOUR[c["severity"]]], edgecolor="black",
+                   zorder=3, hatch=None)
+    ax.set_yticks(range(len(order)), [f"{c['id']}  {SHORT_TITLE[c['id']]}" for c in order],
+                  fontsize=6.5)
+    ax.set_xticks(range(len(DISPOSITIONS)), [d.replace(", with", ",\nwith").replace(", no", ",\nno")
+                                             for d in DISPOSITIONS], fontsize=6.5)
+    ax.set_xlim(-0.5, len(DISPOSITIONS) - 0.5)
+    ax.invert_yaxis()
+    ax.grid(axis="y", alpha=0.3)
+    ax.set_axisbelow(True)
+    ax.legend(handles=[Line2D([0], [0], marker="o", ls="", color=C[SEVERITY_COLOUR[s]],
+                              mec="black", label=s) for s in SEVERITY_ORDER],
+              fontsize=7, loc="lower right", title="severity", title_fontsize=7)
+    serious = [c for c in comments if c["severity"] != "note"]
+    assert all(c["disposition"] == DISPOSITIONS[0] for c in serious)
+    counts = pd.Series([c["disposition"] for c in comments]).value_counts()
+    by_sev = pd.Series([c["severity"] for c in comments]).value_counts()
+    facts = {"n": len(comments), "blocking": int(by_sev.get("blocking", 0)),
+             "should": int(by_sev.get("should fix", 0)), "notes": int(by_sev.get("note", 0)),
+             "n_serious": len(serious), "n_docs": int(counts.get(DISPOSITIONS[2], 0)),
+             "n_test": int(counts.get(DISPOSITIONS[1], 0)),
+             "n_expl": int(counts.get(DISPOSITIONS[3], 0)),
+             "n_open": sum(not c["answered"] for c in comments)}
+    return fig, facts

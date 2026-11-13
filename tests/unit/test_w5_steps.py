@@ -687,8 +687,9 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
     record = read(run5 / "test" / "step.json")
     record["inputs"][next(iter(record["inputs"]))] = "0" * 64
     (run5 / "test" / "step.json").write_text(json.dumps(record), encoding="utf-8")
-    with pytest.raises(promote.PromoteError, match="differ from those the step test scored"):
+    with pytest.raises(promote.PromoteError, match="differ from those the step test scored") as e:
         promote.plan(run5, out, check_tag=False)
+    assert "predictions_" in str(e.value)  # R-G1-24: the message names the file whose hash differs
     run6 = complete_final_run(tmp_path / "later")
     for step, stamp in (("test", "2026-11-14T10:00:00+00:00"),
                         ("xgb", "2026-11-14T10:05:00+00:00")):

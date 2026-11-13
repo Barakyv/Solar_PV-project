@@ -92,8 +92,10 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
     promoted = {f"{records[s]['folder']}/{n}": digest for s in MODEL_STEPS
                 for n, digest in records[s]["outputs"].items() if PRED.match(n)}
     if scored != promoted:
-        raise PromoteError("the prediction files differ from those the step test scored: "
-                           f"{sorted(set(scored) ^ set(promoted))[:3]}")
+        differ = sorted((set(scored) ^ set(promoted))
+                        | {k for k in set(scored) & set(promoted) if scored[k] != promoted[k]})
+        raise PromoteError(f"the prediction files differ from those the step test scored: "
+                           f"{differ[:3]}")
     tested = records["test"].get("finished_utc")
     later = sorted(s for s, r in records.items() if s not in ("report", "test") and tested
                    and r.get("finished_utc") and r["finished_utc"] > tested)

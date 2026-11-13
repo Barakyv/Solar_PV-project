@@ -1831,6 +1831,10 @@ phase 1 holds (R-G1-17) and leftovers (R-G1-18, X88). Tests T-109 and T-110.
 
 The reviewer closed R-G1-13 to R-G1-18 and wrote five more rows, none blocking: one should fix and four notes. `promote` now compares the promoted prediction files with the inputs of the completed `test` and refuses a step that finished after it (R-G1-19, X89, T-111); the benchmark of `test` is written after the SHAP and the analyses (R-G1-20, X90); a step folder that `run.json` did not list is adopted (R-G1-21, X91, T-112); the runbook says the two cases in which a time rule refuses a legitimate run, and the data-record entry is marked superseded (R-G1-22, R-G1-23, X92).
 
+### 22.2d The third fix check (R-G1-24 to R-G1-26)
+
+The reviewer closed R-G1-19 to R-G1-23, wrote three notes and declared the review completed: no blocking or should-fix row is left, and every earlier one (R-G1-01 to R-G1-04, R-G1-14 to R-G1-16, R-G1-19) is closed. The three notes were answered in code and a comment (X93).
+
 ### 22.3 What it changes for the gate
 
 The changes touch code paths of the frozen pipeline (`pipeline/`, `evaluation/`, `scripts/g1_audit.py`)

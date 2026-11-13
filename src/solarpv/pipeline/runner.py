@@ -399,7 +399,8 @@ class Runner:
         listed = run_dir / step / "step.json"
         if step not in state["steps"] and listed.exists():  # R-G1-21
             record = read_json(listed)
-            if record.get("status") == "ok" and record.get("step") == step:
+            if (record.get("status") == "ok" and record.get("step") == step
+                    and record.get("run_id") == run_id and record.get("mode") == mode):
                 # a process killed between the rename of the folder and the write of run.json
                 state["steps"][step] = {k: record[k] for k in ("fingerprint", "commit",
                                                               "finished_utc", "duration_s")}

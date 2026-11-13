@@ -664,7 +664,9 @@ def run_testsplit(ctx: Context) -> Result:
     mean_k = mean_daytime_k()
     out = ctx.out / "test"
     # R-G1-20: what can fail by design (the SHAP additivity checks) and the tables of the analyses
-    # come first, and the benchmark is written last: a failure in them leaves no test benchmark
+    # come first, and the benchmark is written last: a failure in the first leaves no test score;
+    # one in the strict checks of `E.run` leaves the analysis tables (test scores) in the failed
+    # folder, which the runbook says is not read before the retry (R-G1-26)
     outputs: list[Path] = []
     test_access: list[dict] = []
     if "xgb" in ctx.completed:

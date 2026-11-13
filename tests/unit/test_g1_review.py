@@ -240,6 +240,15 @@ def test_a_completed_step_that_run_json_did_not_list_is_adopted_not_run_again(tm
     assert state["steps"]["report"]["status"] == "ok"
     assert not list(run_dir.glob("report.superseded-*"))
     assert "skipped" in read(run_dir / "run.json")["invocations"][-1]["results"]["report"]
+    # R-G1-25: a folder of another run (or mode) is not adopted
+    state = read(run_dir / "run.json")
+    del state["steps"]["report"]
+    (run_dir / "run.json").write_text(json.dumps(state), encoding="utf-8")
+    record = read(run_dir / "report" / "step.json")
+    record["run_id"] = "20200101T000000Z_final"
+    (run_dir / "report" / "step.json").write_text(json.dumps(record), encoding="utf-8")
+    assert r.run("final", ["report"], resume=run_dir.name) == 0
+    assert list(run_dir.glob("report.superseded-*"))  # moved aside and run again, not adopted
 
 
 def test_the_step_test_scores_the_benchmark_after_what_can_fail_by_design(tmp_path, monkeypatch):
