@@ -1,0 +1,143 @@
+{
+  "step": "cv",
+  "run_id": "20261113T111140Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-13T11:12:08.941883+00:00",
+  "commit": "41180a9",
+  "fingerprint": "b9016807b8faf0320efe01ac9721e613dd5e95d089b5eb00cea3d8ac5126afd1",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 1,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "outputs/runs/20261113T111140Z_smoke/xgb/best_params.json": "98bbb2e802fd90b5f53ec553aca6671e83b1d9026c6019f271179f6ee36ce61d",
+    "outputs/runs/20261113T111140Z_smoke/xgb/xgb_config.json": "08938083f095b9709fdb8ecaf6961f5faa99ee8e48e2b55bb7216bc2355472b6",
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261113T111140Z_smoke/logs/cv_20261113T111208Z.log",
+  "status": "ok",
+  "folder": "cv",
+  "finished_utc": "2026-11-13T11:12:20.275547+00:00",
+  "duration_s": 11.3,
+  "outputs": {
+    "cv_folds.csv": "dca37edf3dc367e5cdf62cfe86d85e96add9b06f46fb5de337aac7d913d372f8",
+    "cv_summary.csv": "19f38ed5b56212c3ee47e96be2f85b90a10834c4b403968332d324c59b0e0932",
+    "cv_config.json": "13289da7d4f9dfcddd4dc770db1c8534d0487e2958b708b3a9567d1d0f1e1b94"
+  },
+  "values": {
+    "cv_mean": {
+      "indirect_D1_seed42": 9.90549030357365,
+      "direct_D1_seed42": 10.25385427536067,
+      "indirect_D2_seed42": 10.169194423302145,
+      "direct_D2_seed42": 10.316850539468122,
+      "indirect_D3_seed42": 10.437602317099769,
+      "direct_D3_seed42": 11.898280554358697
+    },
+    "test_access": [],
+    "short_folds": [
+      "indirect_D1_seed42 fold 0: 90 held hours",
+      "indirect_D1_seed42 fold 1: 81 held hours",
+      "indirect_D1_seed42 fold 2: 82 held hours",
+      "indirect_D1_seed42 fold 3: 90 held hours",
+      "indirect_D1_seed42 fold 4: 78 held hours",
+      "direct_D1_seed42 fold 0: 90 held hours",
+      "direct_D1_seed42 fold 1: 81 held hours",
+      "direct_D1_seed42 fold 2: 82 held hours",
+      "direct_D1_seed42 fold 3: 90 held hours",
+      "direct_D1_seed42 fold 4: 78 held hours",
+      "indirect_D2_seed42 fold 0: 90 held hours",
+      "indirect_D2_seed42 fold 1: 81 held hours",
+      "indirect_D2_seed42 fold 2: 82 held hours",
+      "indirect_D2_seed42 fold 3: 90 held hours",
+      "indirect_D2_seed42 fold 4: 78 held hours",
+      "direct_D2_seed42 fold 0: 90 held hours",
+      "direct_D2_seed42 fold 1: 81 held hours",
+      "direct_D2_seed42 fold 2: 82 held hours",
+      "direct_D2_seed42 fold 3: 90 held hours",
+      "direct_D2_seed42 fold 4: 78 held hours",
+      "indirect_D3_seed42 fold 0: 90 held hours",
+      "indirect_D3_seed42 fold 1: 81 held hours",
+      "indirect_D3_seed42 fold 2: 82 held hours",
+      "indirect_D3_seed42 fold 3: 90 held hours",
+      "indirect_D3_seed42 fold 4: 78 held hours",
+      "direct_D3_seed42 fold 0: 90 held hours",
+      "direct_D3_seed42 fold 1: 81 held hours",
+      "direct_D3_seed42 fold 2: 82 held hours",
+      "direct_D3_seed42 fold 3: 90 held hours",
+      "direct_D3_seed42 fold 4: 78 held hours"
+    ]
+  },
+  "notes": {},
+  "summary": [
+    "cv: nRMSE in kW (% of capacity), mean +- std over the five folds, against the validation value of the same model",
+    "  direct   D+1 seed  42: CV  10.25 +-  2.10   validation  12.25",
+    "  direct   D+2 seed  42: CV  10.32 +-  2.14   validation  11.60",
+    "  direct   D+3 seed  42: CV  11.90 +-  2.88   validation  12.60",
+    "  indirect D+1 seed  42: CV   9.91 +-  2.42   validation  10.23",
+    "  indirect D+2 seed  42: CV  10.17 +-  1.90   validation  11.43",
+    "  indirect D+3 seed  42: CV  10.44 +-  2.04   validation  11.27"
+  ],
+  "warnings": [
+    "cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D1_seed42 fold 4: 78 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D1_seed42 fold 4: 78 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D2_seed42 fold 4: 78 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D2_seed42 fold 4: 78 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: indirect_D3_seed42 fold 4: 78 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 0: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 1: 81 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 2: 82 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 3: 90 held hours",
+    "cv: a fold with fewer than 500 held hours: direct_D3_seed42 fold 4: 78 held hours"
+  ]
+}

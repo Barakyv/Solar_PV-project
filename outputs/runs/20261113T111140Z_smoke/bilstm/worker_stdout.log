@@ -1,0 +1,6 @@
+[worker 13:13:39] bilstm (smoke): targets ['indirect', 'direct'], seeds [42], budget {'trials': 1, 'epochs_trial': 2, 'epochs_final': 2, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+[worker 13:13:43] indirect seed 42 trial0: 49.0112 % kW, best epoch 2 of 2, 1.34 s
+[worker 13:13:44] indirect seed 42 final: 49.0112 % kW, best epoch 2 of 2, 0.13 s
+[worker 13:13:44] direct seed 42 trial0: 41.6969 % kW, best epoch 2 of 2, 0.15 s
+[worker 13:13:45] direct seed 42 final: 41.6969 % kW, best epoch 2 of 2, 0.13 s
+[worker 13:13:45] done in 17.9 s, 11 outputs

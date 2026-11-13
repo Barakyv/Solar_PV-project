@@ -3,10 +3,10 @@
  "log_exists": false,
  "log_rows": 0,
  "log_in_git_history": [],
- "runs": 19,
- "step_records": 133,
+ "runs": 20,
+ "step_records": 146,
  "steps_with_test_access": [],
- "prediction_files": 127,
+ "prediction_files": 138,
  "prediction_rows_in_test": 0,
  "test_start": "2024-10-01 00:00:00+00:00",
  "per_run": [
@@ -156,6 +156,14 @@
   },
   {
    "run": "20261113T092454Z_smoke",
+   "step_records": 13,
+   "test_access_entries": 0,
+   "prediction_files": 11,
+   "rows_at_or_after_test_start": 0,
+   "last_prediction_hour": "2024-04-11 20:00:00+00:00"
+  },
+  {
+   "run": "20261113T111140Z_smoke",
    "step_records": 13,
    "test_access_entries": 0,
    "prediction_files": 11,
