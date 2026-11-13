@@ -2076,7 +2076,7 @@ hashes, numbers) and the commit messages are the record:
   run (a bound). So a fit's state is written about once a minute (`SOLARPV_CHECKPOINT_INTERVAL_S`; 0
   writes after every epoch, as the user first asked), and the trial and unit checkpoints, which
   are small, are written every time. **The user's request, "after every epoch", is kept for the
-  epochs that are long enough to be worth it and changed for the short ones; the user is told.**
+  epochs that are long enough to be worth it and changed for the short ones; the user accepted this in chat on 2026-11-13 (D-38).**
 - **The notes (X98).** Retried writes, a warning for a fit checkpoint that cannot be written, cleanup
   and a `.gitignore` rule, an unreadable manifest and a unit without its study, the environment in
   the manifest, warnings and the column `n_resumed`, a tab in an errata row.
