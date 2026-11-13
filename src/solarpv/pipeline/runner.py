@@ -28,6 +28,7 @@ import yaml
 from solarpv.config.paths import OUTPUTS_DIR, REPO_ROOT
 from solarpv.config.provenance import git_commit, sha256
 from solarpv.config.runlog import RunLog
+from solarpv.models import checkpoint as CK
 from solarpv.pipeline import checks
 from solarpv.pipeline.config import (
     BUDGETS,
@@ -41,6 +42,7 @@ from solarpv.pipeline.config import (
 from solarpv.pipeline.steps import IMPLEMENTED, Context, RunnerError
 
 RUNS_DIR = OUTPUTS_DIR / "runs"
+CHECKPOINTS = "checkpoints"  # <run folder>/checkpoints/<step>/ (docs/stage9_plan.md §23)
 # the budget of each model step (one budget per step, X27)
 BUDGET_FAMILY = {"xgb": "xgb", "cv": "xgb", "ablation": "xgb", "bilstm": "bilstm",
                  "tft96": "tft96", "tft168": "tft168", "tftbase": "tftbase",
@@ -426,6 +428,9 @@ class Runner:
             return f"refused ({exc})", []  # the step's state is left as it was
         commit = git_commit()
         fp = fingerprint(step, mode, cfg, commit, inputs)
+        ctx.fingerprint = fp  # §23: the checkpoint of this step is bound to it
+        ctx.checkpoints = run_dir / CHECKPOINTS / step
+        ctx.trust_checkpoints = not commit.endswith("+dirty")
         # D-32, R-G1-14: the test split is scored once; `--force` does not replace a completed
         # step `test` (a phase-2 retry after a failed `report` would otherwise score it again)
         scored_once = step == TEST_STEP and step in completed
@@ -479,6 +484,9 @@ class Runner:
             state["steps"][step] = {"status": "failed", "folder": folder.name,
                                     "error": record["error"]}
             log.warn(f"{step} failed: {record['error']}")
+            if ctx.checkpoints is not None and ctx.checkpoints.exists():
+                log.warn(f"{step}: its checkpoint is kept ({_rel(ctx.checkpoints)}); a --resume "
+                         "continues from it")
             return f"failed ({type(exc).__name__}: {exc})", []
         record.update({
             "status": "ok", "folder": step, "finished_utc": _now().isoformat(),
@@ -492,6 +500,9 @@ class Runner:
         state["steps"][step] = {"status": "ok", "folder": step, "fingerprint": fp,
                                 "commit": commit, "finished_utc": record["finished_utc"],
                                 "duration_s": record["duration_s"]}
+        n_files, megabytes = CK.remove_all(run_dir / CHECKPOINTS, step)  # §23: the step is done
+        if n_files:
+            log.note(f"{step}: its checkpoints were removed ({n_files} files, {megabytes:.0f} MB)")
         log.note(f"{step}: ok in {record['duration_s']} s, {len(result.outputs)} outputs")
         return "ok", result.summary
 
@@ -527,4 +538,9 @@ class Runner:
                          f"{'as recorded' if intact else 'MODIFIED'}")
             else:
                 self.say(f"  {step:<10} {entry['status']} ({entry.get('error', '')})")
+        folder = run_dir / CHECKPOINTS
+        for sub in sorted(folder.iterdir()) if folder.exists() else []:
+            if sub.is_dir() and ".stale-" not in sub.name:
+                for line in CK.describe(sub):
+                    self.say(f"  checkpoint {line}")
         return 1 if bad else 0

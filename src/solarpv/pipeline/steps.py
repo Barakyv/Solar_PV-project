@@ -43,6 +43,7 @@ from solarpv.config.runlog import RunLog
 from solarpv.config.site import load_site
 from solarpv.evaluation import evaluate as E
 from solarpv.evaluation.truth import FEATURES_FILE, load_truth
+from solarpv.models import checkpoint as CK
 from solarpv.models.baselines import reference_predictions
 from solarpv.pipeline import data
 from solarpv.pipeline.config import MODEL_STEPS, REPORT_STEP, TEST_STEP, Window
@@ -70,6 +71,15 @@ class Context:
     command: str = ""
     step: str = ""  # the step this context runs
     allow_test: bool = False  # the invocation flag of the step `test` (D-32)
+    checkpoints: Path | None = None  # §23: <run folder>/checkpoints/<step>/, None: no checkpoints
+    fingerprint: str = ""  # the fingerprint of this try (code commit, configuration, inputs)
+    trust_checkpoints: bool = True  # False on a tree with uncommitted code (+dirty)
+
+
+def checkpoint_identity(ctx: Context) -> dict:
+    """What a checkpoint folder must carry to be used by this try (docs/stage9_plan.md §23.2)."""
+    return {"run_id": ctx.run_id, "step": ctx.step, "mode": ctx.mode,
+            "fingerprint": ctx.fingerprint}
 
 
 @dataclass
@@ -281,6 +291,8 @@ def run_xgb(ctx: Context) -> Result:
     models_dir.mkdir()
     db = ctx.out / "optuna.db"
     storage = optuna.storages.RDBStorage(f"sqlite:///{db.resolve().as_posix()}")
+    store = CK.open_store(ctx.checkpoints, checkpoint_identity(ctx), ctx.trust_checkpoints,
+                          say=ctx.log.note)  # §23: after every trial and every finished unit
     train_text = (f"the last {X.SMOKE_TRAIN_DAYS} local days of train" if ctx.mode == "smoke"
                   else "all of train")
     ctx.log.note(f"budget {n_trials} trials, seeds {seeds}, tuning window {tuning.label}, "
@@ -318,6 +330,17 @@ def run_xgb(ctx: Context) -> Result:
                                  "nan_counts": dict(problem.nan), "nan_counts_predicted": {}}
                 for seed in seeds:
                     name = f"{key}_seed{seed}"
+                    unit = f"xgb_{name}"
+                    lists = {"trials": trial_frames, "curves": curves, "mos": mos_rows,
+                             "pred": predictions[seed], "unc": uncorrected[seed]}
+                    if xgb_unit_restore(store, X, unit, name, seed, key, storage, models_dir,
+                                        lists, best, problems):
+                        continue  # §23: finished by an earlier try
+                    marks = {k: len(v) for k, v in lists.items()}
+                    study_key = f"study_{unit}.pkl"
+                    saved = store.load_pickle(study_key)
+                    if saved is not None:
+                        store.note("study", unit=unit, trials=len(saved["trials"]))
                     with ctx.log.step(f"{name}: {n_trials} trial(s)"):
                         def note(study, trial, name=name):
                             ctx.log.note(
@@ -327,8 +350,10 @@ def run_xgb(ctx: Context) -> Result:
                                 + f", best iteration {trial.user_attrs['best_iteration']} of "
                                 f"{trial.params['n_estimators']}, "
                                 f"{trial.user_attrs['duration_s']} s")
-                        study = X.run_study(problem, seed, n_trials, storage,
-                                            f"{X.MODEL}_{name}", on_trial=note)
+                        study = X.run_study(
+                            problem, seed, n_trials, storage, f"{X.MODEL}_{name}", on_trial=note,
+                            state=saved, callbacks=[CK.study_callback(
+                                store, study_key, f"trial:{unit}")] if store.enabled else None)
                         trials = X.trials_frame(study, target, h, seed)
                         trial_frames.append(trials)
                         done = int((trials["state"] == "COMPLETE").sum())
@@ -419,6 +444,8 @@ def run_xgb(ctx: Context) -> Result:
                                         if mos is not None else "")
                                      + f", best iteration {fit.best_iteration} of "
                                      f"{fit.n_estimators}")
+                        xgb_unit_save(store, unit, marks, lists, best[name],
+                                      problems[key]["nan_counts_predicted"], study, booster_path)
     finally:
         storage.remove_session()
         storage.engine.dispose()  # release the SQLite file before the folder is renamed
@@ -481,7 +508,37 @@ def run_xgb(ctx: Context) -> Result:
                                    "best_uncorrected": {k: v["value_kw"]
                                                         for k, v in best.items()},
                                    "trials": int(len(trials)), "test_access": access},
-                  summary=summary, notes={"seed_spread_pp": spread})
+                  summary=summary, notes={"seed_spread_pp": spread,
+                                          **({"resumed": store.events} if store.events else {})})
+
+
+def xgb_unit_save(store, unit: str, marks: dict, lists: dict, best_entry: dict, nan_pred: dict,
+                  study, booster_path: Path) -> None:
+    """§23: a finished target x horizon x seed: what it appended to the step's accumulators, its
+    record, its study and its booster."""
+    if not store.enabled:
+        return
+    store.save_pickle(f"unit_{unit}.pkl", {
+        **{k: lists[k][marks[k]:] for k in lists}, "best": best_entry, "nan_pred": dict(nan_pred),
+        "study": CK.study_state(study), "booster": Path(booster_path).read_bytes()})
+    CK.fault(f"unit:{unit}")
+
+
+def xgb_unit_restore(store, X, unit: str, name: str, seed: int, key: str, storage,
+                     models_dir: Path, lists: dict, best: dict, problems: dict) -> bool:
+    """§23: put a unit that an earlier try finished back where the step would have put it, and
+    replay its study into this step's `optuna.db`. False when there is none."""
+    saved = store.load_pickle(f"unit_{unit}.pkl")
+    if saved is None:
+        return False
+    CK.replayed_study(storage, f"{X.MODEL}_{name}", seed, saved["study"])
+    for k in lists:
+        lists[k].extend(saved[k])
+    best[name] = saved["best"]
+    problems[key]["nan_counts_predicted"].update(saved["nan_pred"])
+    (models_dir / Path(saved["best"]["booster"]).name).write_bytes(saved["booster"])
+    store.note("unit", unit=unit)
+    return True
 
 
 def xgb_warning_list(name: str, best_iteration: int, n_estimators: int, curve_finite: bool,

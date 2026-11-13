@@ -911,3 +911,114 @@ def s09_external_review():
              "n_expl": int(counts.get(DISPOSITIONS[3], 0)),
              "n_open": sum(not c["answered"] for c in comments)}
     return fig, facts
+
+
+# ── S09-43: checkpoints and resume (D-38, X94, X95) ────────────────────────
+
+RESUME_CHECK = "outputs/g1_audit/resume_check.json"  # scripts/g1_resume_check.py, in solar-gpu
+RESUME_MODELS = {  # model -> (the development run, its step, the unit of the checkpoint)
+    "XGB": (W6DEV, "xgb", "trial"), "BiLSTM": (D.NEURAL_DEV_RUN, "bilstm", "epoch"),
+    "TFT-96": (D.NEURAL_DEV_RUN, "tft96", "epoch"),
+    "TFT-168": (D.NEURAL_DEV_RUN, "tft168", "epoch"),
+    "TFT baseline": (D.NEURAL_DEV_RUN, "tftbase", "epoch"),
+    "PatchTST": (D.NEURAL_DEV_RUN, "patchtst", "fit")}
+GRAIN_FILE = {"trial": "trials.csv", "epoch": "learning_curves.csv", "fit": "best_params.json"}
+RESUME_INPUTS = (RESUME_CHECK, *[f"{run}/{step}/{name}" for run, step, grain in
+                                 RESUME_MODELS.values()
+                                 for name in ("step.json", GRAIN_FILE[grain])])
+
+
+def _grain_seconds(run: str, step: str, grain: str) -> float:
+    """The longest stretch between two checkpoints in the development run of the step."""
+    if grain == "trial":
+        return float(D.csv(f"{run}/{step}/trials.csv")["duration_s"].max())
+    if grain == "epoch":
+        return float(D.csv(f"{run}/{step}/learning_curves.csv")["seconds"].max())
+    best = D.jload(f"{run}/{step}/best_params.json")
+    return float(max(r["final"]["duration_s"] for r in best.values()))
+
+
+@register(
+    "S09-43", "9", "checkpoints", "Checkpoints and resume inside the long steps (D-38)",
+    "How much work can an interruption lose now, and does a fit continued from a checkpoint end "
+    "as the uninterrupted fit does?",
+    "Left, for every model: the seconds of the whole step in its development run (what an "
+    "interruption lost until now: `--resume` started the step again) and the longest stretch "
+    "between two checkpoints in the same run (an epoch; for XGB a trial; for PatchTST a fit, "
+    "which takes minutes); the final run is larger, so the step bars grow and the checkpoint bars "
+    "do not. Right: for the BiLSTM and the TFT with one to three LSTM layers, with and without "
+    "dropout between the layers, the largest weight difference between a fit continued after "
+    "epoch 2 of 5 and the uninterrupted fit, for the first design (every random state restored) "
+    "and the final one; zero is the left edge. The measurements are those of "
+    "`scripts/g1_resume_check.py`, on the synthetic windows of the GPU tests; the other models "
+    "resume at the model level and have no such fit.",
+    "With the development budgets an interruption lost a whole step ({xgb_step:.0f} s of XGB, "
+    "{tft168_step:.1f} h of TFT-168); a checkpoint now bounds the loss to one trial of XGB "
+    "({xgb_grain:.1f} s), one PatchTST fit ({patch_grain:.0f} s) or one epoch (at most "
+    "{epoch_grain:.0f} s, TFT-168). A fit continued from an epoch checkpoint is equal to the "
+    "uninterrupted fit, bit for bit, in {n_equal} of {n} configurations. The first design, with "
+    "every random state restored, failed in the {n_broken} that have dropout between their LSTM "
+    "layers (weights up to {worst:.1e} apart), because cuDNN keeps a dropout state that torch's "
+    "random state does not hold (X95); running the earlier training passes again fixes it, at "
+    "{replay_pct:.0f} % of the seconds of the epochs it replaces on these small windows.",
+    "A worker killed at an epoch, at a trial and at the end of a target x seed continues to the "
+    "result of an uninterrupted worker (T-118); the runbook §7 says how to resume.",
+    RESUME_INPUTS)
+def s09_checkpoints():
+    check = D.jload(RESUME_CHECK)
+    rows = check["configs"]
+    style = _model_style()
+    lost = {m: {"step": float(D.jload(f"{run}/{step}/step.json")["duration_s"]),
+                "grain": _grain_seconds(run, step, grain)}
+            for m, (run, step, grain) in RESUME_MODELS.items()}
+    assert all(v["grain"] < v["step"] for v in lost.values())  # a checkpoint is shorter than a step
+    fig, axes = subplots(1, 2, height=3.9, width=9.2, gridspec_kw={"width_ratios": [1.1, 1]})
+    ax = axes[0]
+    order = list(RESUME_MODELS)
+    for i, m in enumerate(order):
+        colour, fmt = style[m]
+        ax.barh(i - 0.19, lost[m]["step"], height=0.34, color="white", edgecolor=colour,
+                hatch="//", lw=0.9)
+        ax.barh(i + 0.19, lost[m]["grain"], height=0.34, color=colour, edgecolor="black", lw=0.4)
+        ax.plot(lost[m]["grain"], i + 0.19, fmt[0], color=colour, ms=5, mec="black", mew=0.4)
+    ax.set_xscale("log")
+    ax.set_yticks(range(len(order)), order, fontsize=7)
+    ax.invert_yaxis()
+    ax.set_xlabel("seconds an interruption can lose (log scale)")
+    ax = axes[1]
+    for j, r in enumerate(rows):
+        colour = style["BiLSTM" if r["family"] == "bilstm" else "TFT-168"][0]
+        ax.plot(r["first_design"]["max_abs_weight_diff"], j, "D", mfc="white", mec=colour, ms=6,
+                mew=1.4, clip_on=False, zorder=3)
+        ax.plot(r["final"]["max_abs_weight_diff"], j, "o", color=colour, mec="black", ms=5.5,
+                mew=0.5, clip_on=False, zorder=4)
+    ax.set_xscale("symlog", linthresh=1e-8)
+    ax.set_xlim(0, 1e-1)
+    ax.set_yticks(range(len(rows)), [r["name"] for r in rows], fontsize=6.5)
+    ax.invert_yaxis()
+    ax.grid(axis="x", alpha=0.3)
+    ax.set_xlabel("largest weight difference (0 = equal)")
+    fig.legend(handles=[
+        Patch(facecolor="white", edgecolor="0.3", hatch="//", label="until now: the whole step"),
+        Patch(facecolor="0.55", edgecolor="black", lw=0.4,
+              label="now: an epoch (XGB a trial, PatchTST a fit)"),
+        Line2D([0], [0], marker="D", ls="", mfc="white", mec="0.2", mew=1.4,
+               label="first design: random states restored"),
+        Line2D([0], [0], marker="o", ls="", color="0.55", mec="black",
+               label="final: the passes run again")],
+        loc="outside lower center", ncol=2, fontsize=6.5)
+    n = len(rows)
+    broken = [r for r in rows if not r["first_design"]["equal"]]
+    assert all(r["final"]["equal"] for r in rows), "a resumed fit differs from the uninterrupted"
+    assert {r["name"] for r in broken} == {r["name"] for r in rows if r["interlayer_dropout"]}
+    replay = [r["replay_seconds"] / r["seconds_of_the_epochs_done"] for r in rows
+              if r["interlayer_dropout"]]
+    facts = {"xgb_step": lost["XGB"]["step"], "xgb_grain": lost["XGB"]["grain"],
+             "tft168_step": lost["TFT-168"]["step"] / 3600,
+             "patch_grain": lost["PatchTST"]["grain"],
+             "epoch_grain": max(lost[m]["grain"] for m in order if RESUME_MODELS[m][2] == "epoch"),
+             "n": n, "n_equal": sum(r["final"]["equal"] for r in rows), "n_broken": len(broken),
+             "worst": max(r["first_design"]["max_abs_weight_diff"] for r in broken),
+             "replay_pct": 100 * sum(replay) / len(replay)}
+    return fig, facts
+

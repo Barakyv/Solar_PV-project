@@ -109,6 +109,17 @@ def write_arrays(path: Path, arrays: dict[str, np.ndarray]) -> str:
     return sha256_file(path)
 
 
+def arrays_digest(arrays: dict[str, np.ndarray]) -> str:
+    """A digest of the contents of the arrays (names, dtypes, shapes and values), not of the bytes
+    of the zip file that holds them: the file carries a time stamp, the contents do not (§23)."""
+    h = hashlib.sha256()
+    for name in sorted(arrays):
+        a = np.ascontiguousarray(arrays[name])
+        h.update(f"{name}|{a.dtype}|{a.shape}|".encode())
+        h.update(a.reshape(-1).view(np.uint8) if a.size else b"")
+    return h.hexdigest()
+
+
 def read_arrays(path: Path, sha256: str | None = None) -> dict[str, np.ndarray]:
     """The arrays of `path`, after its hash is checked (X25: a changed file is refused)."""
     path = Path(path)

@@ -23,6 +23,7 @@ from pathlib import Path
 
 import numpy as np
 
+from solarpv.models import checkpoint as CK
 from solarpv.models import neural_env
 from solarpv.models.neural_job import (
     FIXED,
@@ -35,6 +36,7 @@ from solarpv.models.neural_job import (
     STEP_MODEL,
     WORKER_FILE,
     JobError,
+    arrays_digest,
     curves_name,
     fit_name,
     forecast_name,
@@ -70,11 +72,45 @@ def _attrs(res) -> dict:
             "n_parameters": res.n_parameters}
 
 
-def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage) -> dict:
-    """BiLSTM-Opt, TFT-96, TFT-168 and the TFT baseline (§18.4)."""
+def unit_files(out: Path, target: str, seed: int, trials: bool, model_file: str) -> dict:
+    """The files of a finished target x seed (§23): relative name -> the file in `out`."""
+    names = [forecast_name(target, seed), fit_name(target, seed), curves_name(target, seed),
+             f"models/{model_file}"]
+    if trials:
+        names.append(trials_name(target, seed))
+    return {n: out / n for n in names}
+
+
+def restore_unit(store, out: Path, unit: str, storage=None, study_name: str | None = None,
+                 seed: int | None = None):
+    """The record of a target x seed that an earlier try finished, with its files copied into
+    `out` (each checked against its hash); the study is replayed into `storage` so that
+    `optuna.db` holds it as in an uninterrupted worker. None when there is no such unit."""
+    record = store.restore_unit(unit, out)
+    if record is None:
+        return None
+    if study_name is not None:
+        state = store.load_pickle(f"study_{unit}.pkl")
+        if state is None:
+            raise JobError(f"{unit}: the finished unit has no study checkpoint")
+        from solarpv.models import checkpoint
+
+        checkpoint.replayed_study(storage, study_name, seed, state)
+    store.note("unit", unit=unit)
+    say(f"{unit}: finished by an earlier try, restored from the checkpoint")
+    return record
+
+
+def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage,
+              store=None) -> dict:
+    """BiLSTM-Opt, TFT-96, TFT-168 and the TFT baseline (§18.4). `store` (§23) holds the
+    checkpoints: after every epoch, every finished trial and every finished target x seed."""
     import torch
 
+    from solarpv.models import checkpoint as CK
     from solarpv.models import lstm_sota, neural_torch, tft_model
+
+    store = store if store is not None else CK.Store(None)
 
     step, family = job["step"], STEP_FAMILY[job["step"]]
     module = lstm_sota if family == "bilstm" else tft_model
@@ -91,23 +127,50 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage) 
     fixed = FIXED[family]
     records = {}
     for seed in job["seeds"]:
+        unit = f"{target}_seed{seed}"
+        study_name = f"{STEP_MODEL[step]}_{target}_seed{seed}"
+        record = restore_unit(store, out, unit, storage,
+                              None if step == "tftbase" else study_name, seed)
+        if record is not None:  # §23: this target x seed was finished by an earlier try
+            records[str(seed)] = record
+            continue
         curves: list[dict] = []
         trial_rows: list[dict] = []
+        fit_key, study_key = f"fit_{unit}.pt", f"study_{unit}.pkl"
+        saved = store.load_pickle(study_key)  # the finished trials, the sampler, their curves
+        if saved is not None:
+            curves.extend(saved["extra"]["curves"])
+            store.note("study", unit=unit, trials=len(saved["trials"]))
 
-        def train_once(params, epochs, patience, label, seed=seed, curves=curves):
+        def train_once(params, epochs, patience, label, seed=seed, curves=curves, unit=unit,
+                       fit_key=fit_key):
             neural_torch.seed_everything(seed)
             model = (module.build_model(params, meta, len(quantiles)) if family == "bilstm"
                      else module.build_model(params, meta)).to(device)
             s = module.train_settings(params, fixed)
+            key = {"label": label, "params": params, "seed": seed, "epochs": epochs,
+                   "patience": patience}
+            resume, ck = None, store.load_torch(fit_key)
+            if ck is not None and ck["key"] == key:  # the fit that was running (§23)
+                resume = ck["state"]
+                curves.extend({"target": target, "seed": seed, "fit": label, **row}
+                              for row in resume["curve"])
+                store.note("fit", unit=unit, fit=label, epoch=resume["epoch"],
+                           finished=resume["done"] or resume["epoch"] >= epochs)
 
             def on_epoch(row):
                 curves.append({"target": target, "seed": seed, "fit": label, **row})
+
+            def on_checkpoint(state):
+                store.save_torch(fit_key, {"key": key, "state": state})
+                CK.fault(f"epoch:{unit}:{label}:{state['epoch']}")
 
             res = neural_torch.fit(model, module.forward, data["train"], data[tune],
                                    epochs=epochs, patience=patience, lr=s["lr"],
                                    batch_size=s["batch_size"], clip=s["clip"],
                                    quantiles=quantiles, seed=seed, objective_fn=obj,
-                                   point_index=point, on_epoch=on_epoch)
+                                   point_index=point, on_epoch=on_epoch, resume=resume,
+                                   on_checkpoint=on_checkpoint if store.enabled else None)
             say(f"{target} seed {seed} {label}: {res.objective_at_best['value_kw']:.4f} % kW, "
                 f"best epoch {res.best_epoch} of {res.epochs_run}, {res.seconds} s")
             return model, res
@@ -130,9 +193,11 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage) 
                     attrs["hidden_continuous_size_effective"] = tft_model.effective_hcs(params)
                 return r.objective_at_best["value_kw"], attrs
 
-            name = f"{STEP_MODEL[step]}_{target}_seed{seed}"
-            study = neural_torch.run_study(space, budget["trials"], seed, storage, name,
-                                           trial_fn)
+            callbacks = ([CK.study_callback(store, study_key, f"trial:{unit}",
+                                            extra=lambda curves=curves: {"curves": list(curves)})]
+                         if store.enabled else None)
+            study = neural_torch.run_study(space, budget["trials"], seed, storage, study_name,
+                                           trial_fn, state=saved, callbacks=callbacks)
             for t in study.trials:
                 trial_rows.append({"target": target, "seed": seed, "trial": t.number,
                                    "state": t.state.name, "value_kw": t.value,
@@ -171,17 +236,28 @@ def run_torch(job: dict, target: str, arrays: dict, out: Path, device, storage) 
                   "final": _attrs(res), "reproduce_diff_pp": reproduce, **extra}
         write_json(out / fit_name(target, seed), record)
         records[str(seed)] = record
+        store.save_unit(unit, unit_files(out, target, seed, bool(trial_rows),
+                                         model_path.name), record)
+        store.drop(fit_key)
+        CK.fault(f"unit:{unit}")
     return records
 
 
-def run_patchtst(job: dict, target: str, arrays: dict, out: Path) -> dict:
+def run_patchtst(job: dict, target: str, arrays: dict, out: Path, store=None) -> dict:
     import torch
 
+    from solarpv.models import checkpoint as CK
     from solarpv.models import patchtst_model
 
+    store = store if store is not None else CK.Store(None)
     meta = job["meta"][target]
     records = {}
     for seed in job["seeds"]:
+        unit = f"{target}_seed{seed}"
+        record = restore_unit(store, out, unit)
+        if record is not None:  # §23: a fit takes minutes, the unit is the target x seed
+            records[str(seed)] = record
+            continue
         t0 = time.perf_counter()
         r = patchtst_model.fit_predict(arrays, job["scopes"], job["budget"], seed)
         values = objective(target, r["forecasts"][f"{job['tune_scope']}_q"][..., 0], arrays,
@@ -208,6 +284,9 @@ def run_patchtst(job: dict, target: str, arrays: dict, out: Path) -> dict:
                   "val_size": r["val_size"], "reproduce_diff_pp": None}
         write_json(out / fit_name(target, seed), record)
         records[str(seed)] = record
+        store.save_unit(unit, unit_files(out, target, seed, False,
+                                         f"patchtst_{target}_seed{seed}.pt"), record)
+        CK.fault(f"unit:{unit}")
     return records
 
 
@@ -238,15 +317,20 @@ def main(argv: list[str] | None = None) -> int:
     say(f"{job['step']} ({job['mode']}): targets {job['targets']}, seeds {job['seeds']}, "
         f"budget {job['budget']}, on {env['gpu']['name']}")
     storage = optuna.storages.RDBStorage(f"sqlite:///{(out / 'optuna.db').as_posix()}")
+    resume = job.get("resume")  # §23: the checkpoint folder and the identity it must carry
+    store = CK.open_store(Path(resume["dir"]) if resume else None,
+                          resume["identity"] if resume else None,
+                          trust=bool(resume["trust"]) if resume else False, say=say)
     records = {}
     try:
         for target in job["targets"]:
             f = job["files"][target]
             arrays = read_arrays(job_dir / f["path"], f["sha256"])
+            store.bind(target, arrays_digest(arrays))
             if STEP_FAMILY[job["step"]] == "patchtst":
-                records[target] = run_patchtst(job, target, arrays, out)
+                records[target] = run_patchtst(job, target, arrays, out, store)
             else:
-                records[target] = run_torch(job, target, arrays, out, device, storage)
+                records[target] = run_torch(job, target, arrays, out, device, storage, store)
     finally:
         storage.remove_session()
         storage.engine.dispose()
@@ -261,7 +345,7 @@ def main(argv: list[str] | None = None) -> int:
         "environment": env, "determinism": determinism,
         "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(started)),
         "duration_s": round(time.time() - started, 1), "records": records,
-        "outputs": outputs, "numpy": np.__version__})
+        "resumed": store.events, "outputs": outputs, "numpy": np.__version__})
     say(f"done in {round(time.time() - started, 1)} s, {len(outputs)} outputs")
     return 0
 

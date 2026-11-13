@@ -17,11 +17,10 @@ Ask before the first long run, and record the answers in `docs/stage9_plan.md` �
 
 The answers decide between one sequence (§3, A) and segments (§3, B).
 
-**Answer (2026-11-13, relayed by the user):** a disconnected Horizon session keeps running, and the
-machine is always on. The run is therefore one sequence (§3, A). The answer gave no explicit time
-limit for a disconnected session and nothing about `C:` after a logoff: disconnect the connection
-and **never log off** while the run is going. If the run stops for any reason, `--resume <run_id>`
-continues it from the last finished step (§6).
+**Answer (2026-11-13, relayed by the user):** a disconnected Horizon session keeps running, there
+is no session time limit, `C:` is not wiped, and the machine is always on. The run is therefore one
+sequence (§3, A). The user also asked that the code can continue after an interruption (a reboot, a
+driver reset, a killed process): the long steps keep checkpoints (D-38, §7).
 
 ## 1. Facts
 
@@ -63,7 +62,7 @@ Claude Code session (the run must not depend on an agent session). Set
 
 ## 3. Phase 1: training and validation (stage 10)
 
-**A, one sequence** (chosen on 2026-11-13: a disconnected session keeps running and the machine is always on):
+**A, one sequence** (chosen on 2026-11-13: a disconnected session keeps running, there is no session limit, and the machine is always on):
 
 ```
 python -m solarpv.pipeline run --mode final --to report --keep-going
@@ -141,9 +140,9 @@ the test split is scored once. Then:
 - Read the step log `outputs/runs/<run_id>/logs/<step>_<stamp>.log` and the `error` of
   `<step>.failed-<stamp>/step.json`. A failed step leaves no file that looks complete (X4).
 - **The environment failed** (out of GPU memory, disk full, a killed process, a logoff): fix the
-  cause outside the code and rerun the step with `--resume <run_id> --only <step>`. The seeds
-  are fixed and the training is deterministic (X32), so the rerun gives the same result; only
-  the time is lost.
+  cause outside the code and run the command again with `--resume <run_id>` (§7): the finished
+  steps are skipped and the failed one continues from its checkpoint. The seeds are fixed and the
+  training is deterministic (X32), so the continued step gives the result of an uninterrupted one.
 - **`report` failed in phase 2** (the step `test` is ok): run `python -m solarpv.pipeline run --mode final --resume <run_id> --only report --force`, without `--allow-test` (R-G1-14). The same
   phase-2 command also works: it skips the completed `test`, scores nothing again and reruns `report`.
 - **The step `test` says the report is older than a step, or that a step finished after the acceptance** (R-G1-15, R-G1-22): this is a refusal and not a defect of the run. After a rerun that gave byte-identical files the report is skipped as up to date and stays older than that step, and a clock set back on the VDI between two steps gives the same message. Run `--only report --force`, read the report, write `stage10_acceptance.md` again, and rerun phase 2.
@@ -159,15 +158,40 @@ the test split is scored once. Then:
   `git restore <file>`, then the step is resumed; for a commit, ask the user how to restore the
   tagged state.
 
-## 7. After a logoff or a disconnect
+## 7. After an interruption: checkpoints (D-38), a logoff, a disconnect
 
-- **Disconnect** (the Horizon client closed): if IT confirms that a disconnected session keeps
-  running, reconnect and check `status <run_id>`.
-- **Logoff or a reset of the VM**: the running step is lost. At the next login: `git status`
-  (clean, at the tag), `python -m solarpv.pipeline check --mode final`, `status <run_id>`, then
-  resume the remaining steps. The interrupted step's `.<step>.tmp` folder is moved aside as
-  `interrupted` and never read.
-- **`C:` was not kept**: restore the run from the latest archive. Verify it first
+**Checkpoints** (`docs/stage9_plan.md` §23). The long steps keep a checkpoint in
+`outputs/runs/<run_id>/checkpoints/<step>/`: the neural steps after every epoch, every finished trial
+and every finished target x seed; `xgb` after every finished trial and every finished target x
+horizon x seed; PatchTST after every finished target x seed (a fit takes about 2 minutes). The steps
+shorter than 15 minutes (`cv`, `ablation`, `evaluate`, `explain`, `report`, `test`) start again.
+After a stopped process:
+
+1. find the run: `python -m solarpv.pipeline status` lists the runs, and `status <run_id>` shows the
+   checkpoints (finished units, fits in flight);
+2. `git status` (clean, at the tag) and `python -m solarpv.pipeline check --mode final`;
+3. run the same command again with the run id (phase 2: its own command, §5):
+
+   ```
+   python -m solarpv.pipeline run --mode final --resume <run_id> --to report --keep-going
+   ```
+
+   The finished steps are skipped. The interrupted step builds its windows again (a few minutes for a
+   neural step) and continues: the log says `checkpoint: restored ...`, the step's record
+   (`step.json`, `notes.resumed`) and the warnings of the report list what was restored;
+4. the continued step gives the forecasts of an uninterrupted one, bit for bit (T-117, T-118,
+   §23.6). The time lost is the unfinished epoch; a model with a multi-layer LSTM with dropout also
+   runs its earlier training passes again (between a seventh and two fifths of the seconds of the epochs already done, S09-43);
+5. a checkpoint of other code, inputs or configuration, and any checkpoint on a tree with
+   uncommitted code, is moved aside (`checkpoints/<step>.stale-<time>`) and not used; in a final run
+   at the tag this does not happen. The folder is deleted when the step succeeds. Never set
+   `SOLARPV_TEST_FAULT`: it stops a process on purpose and is for the tests.
+
+- **Disconnect** (the Horizon client closed): IT confirmed that the session keeps running. Reconnect
+  and check `status <run_id>`; if the process is gone, step 3 above.
+- **Logoff or a reset of the VM**: the running step stops. At the next login: steps 1 to 3 above.
+  The interrupted step's `.<step>.tmp` folder is moved aside as `interrupted` and never read.
+- **`C:` was not kept** (IT: it is not wiped): restore the run from the latest archive. Verify it first
   (`archive --verify <zip>`), unpack it into a new, empty `outputs/runs/<run_id>/` (never over
   an existing copy), check `status <run_id>`, and resume.
 

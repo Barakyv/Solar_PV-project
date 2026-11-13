@@ -1,0 +1,128 @@
+{
+  "epochs": 5,
+  "resumed_after_epoch": 2,
+  "configs": [
+    {
+      "name": "BiLSTM, 1 layer, dropout 0.1",
+      "family": "bilstm",
+      "interlayer_dropout": false,
+      "seconds_of_the_epochs_done": 0.053,
+      "first_design": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.0
+    },
+    {
+      "name": "BiLSTM, 2 layers, no dropout",
+      "family": "bilstm",
+      "interlayer_dropout": false,
+      "seconds_of_the_epochs_done": 0.078,
+      "first_design": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.0
+    },
+    {
+      "name": "BiLSTM, 2 layers, dropout 0.1",
+      "family": "bilstm",
+      "interlayer_dropout": true,
+      "seconds_of_the_epochs_done": 0.068,
+      "first_design": {
+        "max_abs_weight_diff": 0.015306839719414711,
+        "max_abs_train_loss_diff": 0.000410216080175857,
+        "equal": false
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.012421900406479836
+    },
+    {
+      "name": "BiLSTM, 3 layers, dropout 0.3",
+      "family": "bilstm",
+      "interlayer_dropout": true,
+      "seconds_of_the_epochs_done": 0.092,
+      "first_design": {
+        "max_abs_weight_diff": 0.01958414912223816,
+        "max_abs_train_loss_diff": 0.0009133607968723478,
+        "equal": false
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.017147600185126066
+    },
+    {
+      "name": "TFT, 1 LSTM layer, dropout 0.1",
+      "family": "tft",
+      "interlayer_dropout": false,
+      "seconds_of_the_epochs_done": 0.357,
+      "first_design": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.0
+    },
+    {
+      "name": "TFT, 2 LSTM layers, dropout 0.1",
+      "family": "tft",
+      "interlayer_dropout": true,
+      "seconds_of_the_epochs_done": 0.241,
+      "first_design": {
+        "max_abs_weight_diff": 0.008588522672653198,
+        "max_abs_train_loss_diff": 0.0006705224514007568,
+        "equal": false
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.08808360015973449
+    },
+    {
+      "name": "TFT, 3 LSTM layers, dropout 0.3",
+      "family": "tft",
+      "interlayer_dropout": true,
+      "seconds_of_the_epochs_done": 0.297,
+      "first_design": {
+        "max_abs_weight_diff": 0.010968431830406189,
+        "max_abs_train_loss_diff": 0.0008402615785598755,
+        "equal": false
+      },
+      "final": {
+        "max_abs_weight_diff": 0.0,
+        "max_abs_train_loss_diff": 0.0,
+        "equal": true
+      },
+      "replay_seconds": 0.0776991001330316
+    }
+  ],
+  "torch": "2.5.1+cu121",
+  "gpu": "GRID P40-24Q",
+  "note": "synthetic windows of tests/gpu; the weights are float32"
+}

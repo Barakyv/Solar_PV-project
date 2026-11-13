@@ -2023,6 +2023,44 @@ hashes, numbers) and the commit messages are the record:
   follows" for the external review; it now reads the completed review.
 - **Next:** the user's approval of the tag; the tag; the final run by `docs/runbook_final.md`.
 
+### 2026-11-13 · R9-36 · W6: checkpoints and resume inside the long steps (user request, D-38)
+
+- **Request.** The college IT answered Q-15 (a disconnected session keeps running, no session time
+  limit, `C:` not wiped, the machine always on: mode A). The user still asked that the code can
+  continue after an interruption, with a checkpoint after every epoch and every model run. The tag
+  had not been given; the candidate was reopened (stage-9 plan §23, written before the code).
+- **Design (D-38).** `solarpv.models.checkpoint`; `outputs/runs/<run_id>/checkpoints/<step>/`,
+  atomic writes, bound to the fingerprint of the step and to the content digest of the arrays,
+  deleted when the step succeeds. The neural worker saves after every epoch, every finished trial
+  and every finished target x seed; `xgb` after every finished trial and every finished target x
+  horizon x seed; PatchTST after every target x seed. A study is replayed from its finished trials
+  and its pickled sampler. The runner passes the folder and the fingerprint, shows it in `status`,
+  keeps it after a failure, and a step that resumed says so (`notes.resumed`, a warning).
+- **Two findings.** X95: the first design (every random state of torch restored) gave other weights
+  than an uninterrupted fit for a model with a multi-layer LSTM with dropout between the layers;
+  cuDNN keeps a dropout state that torch's random state does not hold, and setting the CUDA
+  generator reseeds it. Measured with three small probes, then fixed by running the same training
+  passes again on the freshly built model and not setting the CUDA generator. X96: `fit` updated
+  Adam's step counters of the state it was given in place (found when the check script resumed twice
+  from one state; a checkpoint file is read afresh, so a run never met it).
+- **Checks.** T-117 (a fit continued after an epoch equals the uninterrupted fit, bit for bit: BiLSTM
+  1 and 2 layers, with and without dropout, TFT 1, 2 and 3 LSTM layers) and T-118 (a worker killed
+  at an epoch of a trial, at a trial boundary, in the final fit of the BiLSTM and TFT-96, in the TFT
+  baseline and at the end of a target x seed, and started again, writes forecasts, trials, curves
+  and records equal to an uninterrupted worker's); T-116 (the xgb step interrupted inside a study,
+  after a unit and inside the second study); T-113 to T-115 and T-119. The check script
+  (`scripts/g1_resume_check.py`, `outputs/g1_audit/resume_check.json`): the final design is equal in
+  7 of 7 configurations, the first design failed in the 4 with dropout between layers (weights up
+  to 2e-2 apart); the replay costs 14 to 37 % of the seconds of the epochs it replaces.
+- **Nothing else changed.** A smoke run on the working tree before the commit (13 steps ok, no
+  checkpoint folder left; the folder was deleted after the comparison, the smoke run at the candidate
+  replaces it) had 27 CSV files byte-identical and 10 worker forecast arrays equal to the previous
+  smoke run's (`20261113T114945Z_smoke`). Figure S09-43.
+- **For the gate.** The code of the worker, the xgb step and the runner changed, so by D-36 the
+  evidence of the earlier candidate no longer counts: the full suite, the smoke run, the dry run,
+  the audit, the reproduction from the raw data and a review of the diff are repeated. The tag and
+  the final run were not started.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

@@ -5,8 +5,8 @@ Optuna studies, models), with the SHA-256 and size of every file in `archive_man
 inside the zip, and the zip's own SHA-256 in `<zip>.sha256` next to it. `--verify <zip>` checks
 every member against the manifest. The zip goes to `outputs/archives/` (ignored by git); copying
 it off the VDI, whose persistence after logoff is unknown (§1.1), is the user's step. Temporary
-folders of interrupted steps are not packed; a file named like the private site file is refused
-(it never belongs in a run folder, T-45).
+folders and checkpoints of interrupted steps are not packed; a file named like the private site
+file is refused (it never belongs in a run folder, T-45).
 """
 
 import hashlib
@@ -35,6 +35,8 @@ def _files(run_dir: Path) -> list[Path]:
             continue
         rel = p.relative_to(run_dir)
         if any(part.startswith(".") and part.endswith(".tmp") for part in rel.parts):
+            continue
+        if rel.parts[0] == "checkpoints":  # §23: the state of an interrupted step, not a result
             continue
         if "site.private" in p.name:
             raise ArchiveError(f"{rel}: the private site file is never archived (T-45)")

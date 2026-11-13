@@ -1340,6 +1340,31 @@ stored file changed).**
   forecast files, no test hour); figure S09-42.
 - *Original:* v6 scored the test split in every run (C-37, C-40); no comparable protocol existed.
 
+**OP-64 — Checkpoints and resume inside the long steps (W6; no stored data file changed).**
+- *Why:* the user asked (13.11) that the code can continue after an interruption, with a checkpoint
+  after every epoch and after every model run, although the college IT answered that a disconnected
+  session keeps running, that there is no session limit and that the disk is not wiped. Until then
+  the unit of `--resume` was the step: an interrupted TFT-168 (3.8 to 7.2 h) started again from its
+  first line.
+- *Method:* `solarpv.models.checkpoint` (docs/stage9_plan.md §23, D-38). A folder
+  `<run folder>/checkpoints/<step>/`, written atomically and bound to the run, the step and its
+  fingerprint (code commit, configuration, SHA-256 of every input; for the neural steps also the
+  content digest of every target's arrays). The neural worker saves after every epoch (model,
+  Adam state, the order generator, the random states, the best epoch's weights, the curve), after
+  every finished trial (the finished trials and the sampler) and after every finished target x
+  seed; PatchTST after every target x seed. The `xgb` step saves after every finished trial and
+  every finished target x horizon x seed. A study is replayed from its finished trials and its
+  pickled sampler. A fit whose model has a multi-layer LSTM with dropout is brought to its
+  checkpoint by running its training passes again (X95). The folder is deleted when the step
+  succeeds; a step that was resumed says so in its record (`notes.resumed`) and its log.
+- *Parameters:* none changed (budgets, seeds, search spaces, the loss, the early stopping and every
+  output are as before, D-37).
+- *Result:* see the run journal R9-36: a fit continued from an epoch, and a worker killed at an
+  epoch, a trial and the end of a target x seed and started again, give the forecasts, trials,
+  curves and records of an uninterrupted one (bit for bit); the same for the xgb step.
+- *Verification:* T-113 to T-119 (the GPU tests run in `solar-gpu`, T-117 and T-118).
+- *Original:* none: the original project had no resume at all (M3, M5).
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

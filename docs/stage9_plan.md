@@ -1852,3 +1852,131 @@ suite, the smoke and dry runs, the test-access audit and the reproduction from t
 repeated at the new candidate before the tag. The reproduction that was running on the earlier
 candidate was stopped at its eleventh step (the first ten and `features_final` had passed, with the
 three known decision-check differences, D-34).
+
+## 23. W6, checkpoints and resume inside the long steps (2026-11-13, user request, D-38)
+
+*Written before the code.* The user's answer from the college IT (Q-15): a disconnected session
+keeps running, there is no session time limit, `C:` is not wiped, and the machine is always on. The
+user still asked that the code can **continue after an interruption**, with a checkpoint after every
+epoch and after every model run, so that a run restarts from where it stopped (13.11).
+
+### 23.1 What exists, and what is missing
+
+`--resume <run_id>` skips the steps that finished and runs the others again from their first line
+(§3, `Runner._step`: a `.<step>.tmp` left by an interrupted try is moved aside, never continued). The
+unit of resume is the step. The longest step is TFT-168 (about 3.8 h, up to 7.2 h; §19.8), so one
+interruption (a reboot, a driver reset, an out-of-memory error, a power cut, a process killed by
+mistake) costs up to 7 h of a run that is expected to take 8.8 h. The Optuna database of a step is
+written inside the step folder, which is moved aside with it, and no weights are saved before the
+end of a fit.
+
+### 23.2 The design (D-38)
+
+| Step | Checkpoint after | What is stored | Resumes from |
+|---|---|---|---|
+| `bilstm`, `tft96`, `tft168`, `tftbase` | every epoch of a fit | model, Adam state, the order generator, every random state, the best epoch's weights, the curve so far | the next epoch of the same fit |
+| the same | every finished fit (a trial or the final fit) | the study: the finished trials and the sampler (its random state) | the next trial, with the parameters the sampler would have drawn |
+| the same | every finished target x seed | the forecast, the model, the curves, the trials and the record, each with its SHA-256 | the next target x seed |
+| `patchtst` | every finished target x seed (a fit takes about 2 minutes: no epoch checkpoint) | as above | the next target x seed |
+| `xgb` | every finished trial, and every finished target x horizon x seed | the study as above; the unit's trials, curves, record, MOS row, prediction frames and booster | the next trial, or the next unit |
+
+Rules:
+
+1. **Where.** `<run folder>/checkpoints/<step>/`, not inside the step's temporary folder, so that a
+   resume finds it after the temporary folder was moved aside. Every write is atomic (a temporary
+   file, `fsync`, `os.replace`); a file that exists is complete.
+2. **Bound to its step.** `manifest.json` holds the run id, the step, the mode and the fingerprint of
+   the step (its code commit, configuration and the SHA-256 of every input), and for the neural steps
+   the SHA-256 of the contents of every target's arrays. A checkpoint of another fingerprint is moved
+   aside (`checkpoints/<step>.stale-<time>`) and the step starts again, with a warning; it is never
+   used. A tree with uncommitted code (`+dirty`) never reads a checkpoint (as it never skips a
+   completed step).
+3. **The study is replayed, not edited.** Optuna's database is rebuilt in the new step folder from
+   the finished trials (`Study.add_trials`) and the pickled sampler, so the parameters of the next
+   trial are those of an uninterrupted run, a trial that was running when the process died is
+   simply run again, and `optuna.db` of the step holds one study per target and seed as before.
+4. **Deleted when the step succeeds** (its outputs are in the step folder); kept after a failure,
+   which a `--resume` continues. `status` shows what a checkpoint holds; `archive` does not pack it.
+5. **Provenance.** The step's record (`step.json`, `notes.resumed`) and its log list every unit and
+   fit that was restored, with the epoch it continued from. A step that was resumed is not marked
+   as a clean run, although its forecasts are equal to an uninterrupted run's (§23.6).
+6. **Nothing else changes.** Budgets, seeds, search spaces, the loss, the early stopping and every
+   output stay as they are (D-37); with no interruption the outputs are byte-identical to the
+   earlier ones (checked by the smoke run and the tests).
+
+Not covered: `cv` and `ablation` (about 7 minutes together), `evaluate`, `explain`, `report`,
+`test`: a step that is shorter than 15 minutes is run again from its start.
+
+### 23.3 Self-review
+
+**The original project.** It had no resume at all: a run that stopped was started again (M3, M5). So
+there is nothing to correct there; the rebuild must not add a second way to produce a different
+number than the uninterrupted one.
+
+**My earlier code.** (a) The unit of resume was the step, which is the whole risk of a 4-7 h step
+(X94). (b) The step's Optuna database lives in the temporary folder and is lost with it. (c) A
+resumed `report` must not read a half-written file: every checkpoint write is atomic. (d) The final
+fit of a TFT trial is a retrain of the best trial: it is its own fit with its own label and
+checkpoint.
+
+**The new risks, and what answers each**
+
+| Risk | Answer |
+|---|---|
+| A checkpoint of other code or inputs is used | bound to the fingerprint of the step and to the content of the arrays; `+dirty` never reads one; a stale one is moved aside |
+| A resumed fit differs from an uninterrupted one (hidden random state, e.g. the cuDNN dropout state; Adam state; the order generator) | every random state of Python, NumPy and torch (CPU and CUDA) is stored; the first design failed for a multi-layer LSTM with dropout (X95); the claim is tested on the GPU for the BiLSTM and the TFT (1 to 3 layers, with dropout) by continuing a fit and by killing the worker at an epoch, a trial and a unit boundary and comparing the results bit for bit (T-117, T-118, §23.6) |
+| The sampler's random state is lost, so later trials differ | the sampler is pickled after every finished trial, and a replay test compares the parameters of every trial with an uninterrupted study (T-114) |
+| A trial that was running leaves a failed trial in the study | only finished trials are replayed |
+| A half-written checkpoint | atomic writes; a file that fails to load is deleted and the fit starts again, with a warning |
+| The checkpoint holds the test split | only in a final run, and only the model's forecasts of the test window (phase 1 holds no test truth, D-32); the audit reads no checkpoint |
+| Disk | a neural checkpoint is below 100 MB per fit; deleted after the step; the runbook keeps the 20 GB rule |
+| A fault-injection hook is a way to break production | the hook reads `SOLARPV_TEST_FAULT`, which only the tests set; with the variable unset it does nothing |
+| The final gate (X38) sees a modified tracked file | the checkpoints are new untracked files under the run folder, like the step folders |
+
+### 23.4 Tests
+
+| ID | What it checks |
+|---|---|
+| T-113 | The store: atomic writes leave no partial file; a manifest of another identity is moved aside; `trust=False` never reads; a unit with a changed file is discarded; units restore with their hashes |
+| T-114 | A study replayed from its finished trials and its pickled sampler draws the same parameters as an uninterrupted study, also when a trial was running at the interruption |
+| T-115 | The runner passes the checkpoint folder and the fingerprint to the step, deletes the folder after a success, keeps it after a failure and a refusal, `status` describes it, and `archive` does not pack it |
+| T-116 | The xgb step interrupted after a unit and during a study continues, and its predictions, trials, curves and boosters equal an uninterrupted step's |
+| T-117 | On the GPU, `fit` stopped after epoch e and continued gives the same weights and curve as an uninterrupted fit, for the BiLSTM and the TFT |
+| T-118 | On the GPU, the worker killed at an epoch, at a trial and at a unit boundary, and started again, writes forecast files equal in bytes to an uninterrupted worker's, and says what it restored |
+| T-119 | The neural step of the runner on the stub worker passes the resume identity in the job and records `notes.resumed` |
+
+### 23.5 What it changes for the gate
+
+The code of the training worker, the xgb step and the runner changes, so by D-36 the evidence of the
+earlier candidate no longer counts: the full suite, the smoke and dry runs, the test-access audit
+and the reproduction from the raw data are repeated at the new candidate, and the reviewer session
+reads the diff. The development outputs must not change: the smoke run is compared byte by byte
+with the previous one. The tag waits for all of it.
+
+### 23.6 What the checks found (T-117, T-118, 2026-11-13)
+
+- **A first design was wrong (X95).** Restoring every random state of torch is not enough for a
+  model with a multi-layer LSTM with dropout between its layers: cuDNN keeps a dropout state that
+  torch's random state does not hold, seeded from the CUDA generator at the first training pass
+  after the generator is set. A fit continued from epoch 2 of 5 gave other weights than the
+  uninterrupted fit (BiLSTM, 2 layers, dropout 0.1), while the same model with one layer or without
+  dropout was equal. It was measured, not assumed: two fits in one process are equal; a new module
+  is equal to the first call of the old one; a module whose generator is set again is not.
+- **The fix.** A freshly built model runs the same training passes again (the same batch sizes in
+  the same order, on the initial weights: the state advances with the shapes only) and the CUDA
+  generator is not set afterwards; it has advanced exactly as it did (the head's dropout). Then the
+  continued fit is equal, bit for bit, to the uninterrupted one: BiLSTM with 1, 2 layers and with
+  dropout 0, TFT with 1, 2 and 3 LSTM layers (T-117, scripts/g1_resume_check.py, S09-43). The
+  cost of a resume is these passes: 14 to 37 % of the seconds of the epochs they replace on the
+  synthetic windows of the GPU tests, and only for such models.
+- **At the worker.** A worker killed at an epoch of a trial, at a trial boundary, in the final fit
+  (BiLSTM, TFT-96), in the TFT baseline, and at the end of a target x seed (two seeds), started
+  again on the same checkpoint folder, wrote forecasts, trials, curves and records equal to an
+  uninterrupted worker's; a checkpoint of another fingerprint was moved aside and not used (T-118).
+- **The xgb step** interrupted inside a study, after a unit and inside the second study continued to
+  predictions, trials, curves, records and boosters equal to an uninterrupted step's (T-116).
+- **What it does not cover.** The steps shorter than 15 minutes; `cv` and `ablation` start again;
+  PatchTST resumes at the target x seed (a fit takes about 2 minutes). A hardware change between
+  the interruption and the resume (another GPU, another driver) is not checked: the equality was
+  measured on one machine.
+

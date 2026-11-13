@@ -361,16 +361,20 @@ def edge_params(params: dict, fraction: float = EDGE_FRACTION) -> list[str]:
 
 
 def run_study(problem: Problem, seed: int, n_trials: int, storage, study_name: str,
-              on_trial=None):
+              on_trial=None, state: dict | None = None, callbacks=None):
     """Optuna TPE with TPESampler(seed=seed); every trial uses random_state=seed (M12c). The
     value is the nRMSE in kW of §14.1; the k-unit value, the best iteration and the rounds are
-    trial attributes. An exception in a trial stops the study (no silent failure)."""
+    trial attributes. An exception in a trial stops the study (no silent failure).
+
+    `state` (§23) is the finished trials and the sampler of an interrupted study: they are
+    replayed into `storage` and the study runs the trials that are left. `callbacks` run after
+    every finished trial, after `on_trial`."""
     import optuna
 
+    from solarpv.models import checkpoint
+
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    sampler = optuna.samplers.TPESampler(seed=int(seed))
-    study = optuna.create_study(storage=storage, sampler=sampler, study_name=study_name,
-                                direction="minimize")
+    study = checkpoint.replayed_study(storage, study_name, seed, state)
 
     def objective(trial) -> float:
         params = suggest(trial)
@@ -385,8 +389,10 @@ def run_study(problem: Problem, seed: int, n_trials: int, storage, study_name: s
             trial.set_user_attr(k, v)
         return values["value_kw"]
 
-    callbacks = [on_trial] if on_trial is not None else None
-    study.optimize(objective, n_trials=int(n_trials), callbacks=callbacks)
+    chain = ([on_trial] if on_trial is not None else []) + list(callbacks or [])
+    left = int(n_trials) - (len(state["trials"]) if state else 0)
+    if left > 0:
+        study.optimize(objective, n_trials=left, callbacks=chain or None)
     return study
 
 

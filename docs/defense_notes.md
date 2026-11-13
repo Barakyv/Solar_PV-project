@@ -299,3 +299,23 @@ M37-M44, decision D-36). They train models, so they were written before the code
   "The two numbers do not share a definition: the report's script is lost and its metric differs;
   the rebuild measures one kW metric on the same hours everywhere and reports the gap to the
   validation value without explaining it."
+
+## 13. A run that can be continued after an interruption
+
+Added in stage 9, W6, at the user's request (`docs/stage9_plan.md` §23, decision D-38, findings X94
+to X96). The submitted project had no resume at all (M3): a run that stopped was started again.
+
+- **Rebuild:** the long steps keep a checkpoint after every epoch of a fit, every finished trial and
+  every finished model; a step that was interrupted continues from where it stopped, and says so in
+  its record. Budgets, seeds, rules and outputs are unchanged; with no interruption the outputs are
+  byte-identical to those of the code without checkpoints (the smoke run, 27 CSV files and 10
+  forecast arrays).
+- **The claim, and how it was checked:** a continued fit equals the uninterrupted fit bit for bit.
+  A first design that restored every random state of torch failed for a model with dropout between
+  its LSTM layers (weights up to 2e-2 apart), because cuDNN keeps a dropout state that torch's
+  random state does not hold (X95); it is brought to the right state by running the same training
+  passes again. Verified by killing a worker at an epoch, at a trial and at the end of a model and
+  comparing forecasts, trials, curves and records with an uninterrupted worker (T-117, T-118, figure
+  S09-43).
+- **Limits:** the steps shorter than 15 minutes start again; the equality was measured on one
+  machine and one driver; a resumed step carries a note in its record and a warning in the report.

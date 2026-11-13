@@ -293,6 +293,9 @@ def build_job(ctx: Context, step: str, job_dir: Path, seeds: list[int], budget: 
            "quantiles": list(J.QUANTILES[family]), "scopes": ["train", *[w.split for w in
                                                                          ctx.windows]],
            "tune_scope": "val", "mean_k": float(mean_k), "meta": meta, "files": files}
+    if ctx.checkpoints is not None:  # §23: where the worker keeps its checkpoints, and for whom
+        job["resume"] = {"dir": str(ctx.checkpoints), "trust": ctx.trust_checkpoints,
+                         "identity": steps.checkpoint_identity(ctx)}
     J.write_json(job_dir / J.JOB_FILE, job)
     report["scaler_rows"] = scaler.rows
     report["test_access"] = [report_access] if with_test else []
@@ -490,6 +493,11 @@ def run_neural(ctx: Context, step: str) -> Result:
     with ctx.log.step(f"{step}: the training worker in solar-gpu"):
         call_worker(ctx, job_dir, out_dir)
     worker = verify_worker(out_dir, job)
+    resumed = worker.get("resumed") or []
+    if resumed:  # §23: a try that continued from a checkpoint says so in its record
+        ctx.log.warn(f"{step}: this try continued from a checkpoint ({len(resumed)} restores: "
+                     + "; ".join(", ".join(f"{k} {v}" for k, v in e.items()) for e in resumed)
+                     + ")")
     quantiles = J.QUANTILES[family]
     iq = quantiles.index(J.POINT_QUANTILE)
     horizons = [int(h) for h in ctx.config["horizons"]]
@@ -600,4 +608,5 @@ def run_neural(ctx: Context, step: str) -> Result:
                        f"D+2 {f['value_kw_D2']:.3f}, D+3 {f['value_kw_D3']:.3f})")
     return Result(sorted(set(outputs)), values={"best": values,
                                                 "test_access": report["test_access"]},
-                  summary=summary, notes={"seed_spread_pp": spread, "warnings": len(warnings)})
+                  summary=summary, notes={"seed_spread_pp": spread, "warnings": len(warnings),
+                                          **({"resumed": resumed} if resumed else {})})

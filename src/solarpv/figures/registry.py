@@ -93,12 +93,12 @@ WORK_ITEMS = {
                 "S09-20", "S09-21", "S09-22", "S09-23", "S09-24", "C-10")),
         "W6": ("Gate G-1: the audit, the reproduction and the guards",
                ("S09-34", "S09-35", "S09-36", "S09-37", "S09-38", "S09-39", "S09-40",
-                "S09-41", "S09-42")),
+                "S09-41", "S09-42", "S09-43")),
     },
 }
 TASK_PLANS = {"S09-W1": "docs/stage9_plan.md §10", "S09-W2": "docs/stage9_plan.md §13–§16",
               "S09-W3": "docs/stage9_plan.md §17", "S09-W4": "docs/stage9_plan.md §18",
-              "S09-W5": "docs/stage9_plan.md §19", "S09-W6": "docs/stage9_plan.md §20–§22"}
+              "S09-W5": "docs/stage9_plan.md §19", "S09-W6": "docs/stage9_plan.md §20–§23"}
 CORRECTION_TASK = "corrections"
 
 

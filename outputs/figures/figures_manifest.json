@@ -1502,6 +1502,42 @@
    "takeaway": "The review wrote 26 comments: 1 blocking, 7 should fix and 18 notes. All 8 blocking and should-fix comments were fixed in code with a test and an errata row; 10 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.",
    "git_commit": "076f810"
   },
+  "S09-43": {
+   "stage": "9",
+   "kind": "process",
+   "title": "Checkpoints and resume inside the long steps (D-38)",
+   "file": "outputs/figures/stage_09/S09-43_checkpoints.png",
+   "file_sha256": "99321fee9f6272473d8dea8b7aaa097915c2798c367c547778ce34031498c439",
+   "inputs": {
+    "outputs/g1_audit/resume_check.json": "b2883b83670a26d51ee2b2865ffd893a481c06fabf3ca94101c9cfb876a4488e",
+    "outputs/runs/20261113T075845Z_dev/xgb/step.json": "90e2aa245c6f3cf8c47a9112e56f0389b2e5f9a3bbcae6611e4db1be9c8b407c",
+    "outputs/runs/20261113T075845Z_dev/xgb/trials.csv": "75819169be12a10e4bbf1c0dec8128a9bb8c1195f2d80ec00d617ab48d904eb3",
+    "outputs/runs/20261111T160714Z_dev/bilstm/step.json": "bb9c51496819f6ffb3cb191308598b934d3ad0196afa7e8fceb94b3ce01060bb",
+    "outputs/runs/20261111T160714Z_dev/bilstm/learning_curves.csv": "1415c17fcabdba495b13563d51ed3f5c6194ef73923fd635a94fbf3fd02f8cfa",
+    "outputs/runs/20261111T160714Z_dev/tft96/step.json": "5a85b03b50b8bbb33377e0bb35e0761f5512ad0c09aebb53c7aea02c76b591ef",
+    "outputs/runs/20261111T160714Z_dev/tft96/learning_curves.csv": "7f22e48182aa409a52417d4244b7e1813e855a886a9428e1be40212dc9bb975c",
+    "outputs/runs/20261111T160714Z_dev/tft168/step.json": "2aa9c29f0f6c01ffbec9ff394e9bbcf937647bec03296f0cd4c265cb8c2bbd68",
+    "outputs/runs/20261111T160714Z_dev/tft168/learning_curves.csv": "4eb235060b47d742e546840b48b3f913770deb803aec071f92b26c14abe139f7",
+    "outputs/runs/20261111T160714Z_dev/tftbase/step.json": "1790c7c72fe73712b736adbb839e8bee8ad889bf1f26ece0086e47c3f04758e9",
+    "outputs/runs/20261111T160714Z_dev/tftbase/learning_curves.csv": "4a0b785221dc3e1f5284e5a3b6ec505a601450f506a2173408840d3112f22e69",
+    "outputs/runs/20261111T160714Z_dev/patchtst/step.json": "141c51f01cf4f4c7216373c2eaa975bf92f7621f8a2f0d7f346264ee13e34ab0",
+    "outputs/runs/20261111T160714Z_dev/patchtst/best_params.json": "a9f41f10356860e070b339863a28283b970b0118681f54fb4d07a7be60c9584d"
+   },
+   "facts": {
+    "xgb_step": 331.5,
+    "xgb_grain": 9.67,
+    "tft168_step": 1.4391111111111112,
+    "patch_grain": 375.5,
+    "epoch_grain": 10.209,
+    "n": 7,
+    "n_equal": 7,
+    "n_broken": 4,
+    "worst": 0.01958414912223816,
+    "replay_pct": 24.904180327951103
+   },
+   "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or one epoch (at most 10 s, TFT-168). A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.0e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 25 % of the seconds of the epochs it replaces on these small windows.",
+   "git_commit": "aae0a29+dirty"
+  },
   "C-01": {
    "stage": "correction",
    "kind": "correction",

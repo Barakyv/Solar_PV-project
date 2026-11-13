@@ -177,6 +177,7 @@ figures, says what each one shows or what it led to, or checks that a figure is 
 | S09-40 | 9 | Cross-validation of the XGB models on the train rows (S-38) | W6 dev run `cv/cv_folds.csv`, `cv_summary.csv` |
 | S09-41 | 9 | Feature-group ablation of the XGB models (S-41) | W6 dev run `ablation/ablation_results.csv`, `ablation_summary.csv` |
 | S09-42 | 9 | The external review of gate G-1 and its comments | `docs/g1_review_log.md` |
+| S09-43 | 9 | Checkpoints and resume inside the long steps (D-38) | `outputs/g1_audit/resume_check.json`, the development runs' step records, trials, learning curves |
 | S08-04 | 8 | The secondary views of the evaluation (look-back) | stage-8 `benchmark_views.csv` |
 | C-01 | correction | Daily profile read as UTC and as local time | stage-6 table (train), shifted |
 | C-02 | correction | Zero-output daytime hours by label hour | submission forecasts |
@@ -249,6 +250,7 @@ computation or a decision, for the user.
 | 2026-11-12 | S09-W4 (redone after W5) | stages 0–8; S09-W1, S09-W2, S09-W3 and S09-W5; every model-level figure against rule 9 | W4: S09-25–S09-30; W2: S09-31, S09-32; W1: S09-33; W3: S09-06 redrawn with all five encoders; stage 8: S08-04; S09-02 redrawn in XGB's colour | explanations of the BiLSTM and PatchTST (no such output; new computation and a change of D-31, the user's decision); seed spread (one seed in the dev runs; the final run has three); intervals of XGB and PatchTST (point forecasts only); test-split figures (stage 10, after G-1); stages 3 and 3b keep their producer figures (complete, listed in the catalog) |
 | 2026-11-12 | S09-W6 | stages 0–8 and S09-W1–S09-W5 against the W6 outputs (the audit files, the reproduction record, the runs); every model-level figure against rule 9 | W6: S09-34–S09-41 (S09-38 per model for all six and the references; S09-40 and S09-41 XGB only, as in v6); W1: S09-33 redrawn with the W6 smoke runs and the dev run of the new steps | the per-day data of the look-ahead in stage-4 and stage-5 figures (the audit is drawn once, under W6, where it was measured); a figure of the reproduction's environment (the record lists it; a table fits better); test-split figures (stage 10) |
 | 2026-11-13 | S09-W6 (redone after the external review and the final reproduction) | S09-34–S09-41 against the completed review, the new candidate and the reproduction at `e262fe3`; every figure of the task looked at again | W6: S09-42 (the external review: 26 comments, their severity and what each led to); S09-34 and S09-38 read the final record; S09-37 reads the audit over 22 runs; the checklist text of S09-34 reads the completed review | none beyond the row of 2026-11-12 (the per-day look-ahead data stays in the audit; a figure of the environments; test-split figures, stage 10) |
+| 2026-11-13 | S09-W6 (reopened: checkpoints, D-38) | every model-level figure against rule 9; the earlier W6 figures against the new candidate's evidence | W6: S09-43 (the work an interruption can lose, for all six models; a continued fit against the uninterrupted fit for the BiLSTM and the TFT, the two families with an epoch checkpoint); S09-34, S09-37 and S09-38 are rebuilt from the evidence of the new candidate | the continued fit of XGB and PatchTST has no figure of its own (the xgb step resumes at a trial and a unit, T-116, with no fit to continue; PatchTST resumes at the model level); a real-data measurement of the replay cost (the figure uses the synthetic windows of the GPU tests); test-split figures (stage 10) |
 
 ## 8. Coverage of the models (rule 9)
 
@@ -267,5 +269,7 @@ computation or a decision, for the user.
 | Smoke runs and time | yes | yes | yes | yes | yes | yes | S09-33, S09-07, S09-18 |
 | Intervals | point only | yes | yes | yes | yes | point only | S09-29 |
 | Reproduced from the raw data | yes | yes | yes | yes | yes | yes | S09-38 |
+| Checkpoints: the work an interruption can lose | yes (a trial) | yes (an epoch) | yes (an epoch) | yes (an epoch) | yes (an epoch) | yes (a fit) | S09-43 |
+| Checkpoints: a continued fit equals the uninterrupted fit | the study is replayed (T-116) | yes | yes | yes | yes | no mid-fit checkpoint | S09-43 |
 | Cross-validation and ablation (S-38, S-41) | yes | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | S09-40, S09-41 |
 | Explanation | SHAP | none (D-31) | attention, selection weights | attention, selection weights | attention, selection weights | none (D-31) | S09-14, S09-15, S09-21, S09-22; S09-11, S09-16, S09-23 |
