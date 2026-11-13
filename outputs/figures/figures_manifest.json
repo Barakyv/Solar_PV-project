@@ -1425,6 +1425,29 @@
    "takeaway": "Removing the GFS forecasts raises the error by 0.96–1.48 pp in every case and is the largest change of any single group; with only the time encodings the error is 1.2–1.5 pp higher. Of 49 changes, 30 exceed the margin on one seed, 19 do not and 0 are below minus it. With one seed the margin is only the floor, so these verdicts are provisional (M41); the final run adds two seeds and the pooled seed std.",
    "git_commit": "acea8ea+dirty"
   },
+  "S09-42": {
+   "stage": "9",
+   "kind": "process",
+   "title": "The external review of gate G-1 and its comments",
+   "file": "outputs/figures/stage_09/S09-42_external_review.png",
+   "file_sha256": "94cf1b05ebb8c888c1263476a7d47de059400b3aedbeb112d5aa587e2a5fd610",
+   "inputs": {
+    "docs/g1_review_log.md": "03d4679c1949686682f005ffb1757e485b82e6815d09196a95bc4a504ca8f8bf"
+   },
+   "facts": {
+    "n": 26,
+    "blocking": 1,
+    "should": 7,
+    "notes": 18,
+    "n_serious": 8,
+    "n_docs": 10,
+    "n_test": 1,
+    "n_expl": 2,
+    "n_open": 0
+   },
+   "takeaway": "The review wrote 26 comments: 1 blocking, 7 should fix and 18 notes. All 8 blocking and should-fix comments were fixed in code with a test and an errata row; 10 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.",
+   "git_commit": "e262fe3+dirty"
+  },
   "C-01": {
    "stage": "correction",
    "kind": "correction",

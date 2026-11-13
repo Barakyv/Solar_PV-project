@@ -1307,6 +1307,33 @@ stored file changed).**
 - *Original:* v6 §12.2 (CV 16.08 % against test 29.09 %) and §12.5 (deltas on the test) are
   withdrawn (C-70–C-77); the rebuild's values are not comparable.
 
+**OP-63 — The code changes after the external review of gate G-1 (W6; no stored data file changed).**
+- *Why:* an independent reviewer read the source against the specification of §6 and, with three fix
+  checks, wrote 26 comments (1 blocking, 7 should fix, 18 notes; `docs/g1_review_log.md`). The blocking
+  one: every neural step of a final run scored the test split in phase 1, before the stage-10 acceptance
+  existed (D-32). The should-fix rows: phase 1 wrote the test truth into the run folder; the phase-2
+  command ran `report` before `test` (and a forced `report` failed on its own moved-aside folder); the
+  acceptance bound to nothing; a retry of phase 2 scored the test split twice; a report older than a
+  step it reports on passed; the promoted prediction files had a blank test `y_true`; `promote` did not
+  compare what it promotes with what `test` scored (X77-X93).
+- *Method:* `y_true` of the test rows is blank in the prediction files of phase 1 and the packed test
+  arrays of a neural job hold zeros and NaN (`evaluation.evaluate.withhold_test_truth`); the neural
+  steps score train and validation only; `--allow-test` runs `test` and `report` only, `test` first;
+  `test` compares the SHA-256 of the files it scores with the inputs of the run's `evaluate`, refuses a
+  step finished after the acceptance or a report older than a step, is never replaced by `--force`,
+  writes `truth_test.csv`, and writes its benchmark after the SHAP and the analyses; `promote` fills the
+  test `y_true` from `truth_test.csv` and refuses files that differ from those `test` scored; an unlisted
+  completed step folder of the same run is adopted; the evaluation command line scores validation only;
+  the alignment table has `compared_rows`. The audit script reads every kind of forecast file.
+- *Parameters:* none changed (budgets, seeds, rules of the models and of the evaluation are as before).
+- *Result:* no development output changed: four smoke runs at successive candidates, each compared with
+  the previous one, were byte-identical in all 40 forecast files; the reproduction from the raw data at
+  the final candidate is in OP-61 and `docs/run_journal.md` R9-35. No final run has been made.
+- *Verification:* T-104 to T-112 (the regression tests fail on the old code: checked for T-104); the full
+  suite at the final candidate (622 passed, 1 skipped); the audit over 22 runs (172 step records, 160
+  forecast files, no test hour); figure S09-42.
+- *Original:* v6 scored the test split in every run (C-37, C-40); no comparable protocol existed.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

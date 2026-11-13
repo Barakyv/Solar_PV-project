@@ -833,6 +833,9 @@ SHORT_TITLE = {
     "R-G1-21": "a kill between rename and run.json",
     "R-G1-22": "time rules refuse a clock set back",
     "R-G1-23": "data-record entry names the old flag",
+    "R-G1-24": "promote refusal names no file",
+    "R-G1-25": "an adopted folder of another run",
+    "R-G1-26": "what a failure in test leaves behind",
 }
 SEVERITY_ORDER = {"blocking": 0, "should fix": 1, "note": 2}
 SEVERITY_COLOUR = {"blocking": "red", "should fix": "orange", "note": "sky"}
