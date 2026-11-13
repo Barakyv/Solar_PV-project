@@ -126,6 +126,7 @@ STEP_ORDER = tuple(s.name for s in STEPS)
 SPEC = {s.name: s for s in STEPS}
 MODEL_STEPS = ("baselines", "xgb", "bilstm", "tft96", "tft168", "tftbase", "patchtst")
 TEST_STEP = "test"
+REPORT_STEP = "report"
 
 
 @dataclass(frozen=True)

@@ -162,6 +162,16 @@ def attach_truth(preds: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
     return out.dropna(subset=["y_true"])
 
 
+def withhold_test_truth(frame: pd.DataFrame) -> pd.DataFrame:
+    """D-32, R-G1-04: phase 1 of a final run forecasts the test window but holds no test truth.
+    The `y_true` of a test row is blank in the file; the step `test` takes the truth from the
+    feature table (`attach_truth`), where the read is logged. Alignment is checked on the
+    validation rows, which the same writer produced."""
+    out = frame.copy()
+    out.loc[out["split"] == "test", "y_true"] = np.nan
+    return out
+
+
 def check_coverage(preds: pd.DataFrame, truth: pd.DataFrame, split: str) -> pd.DataFrame:
     """Daytime hours of the split with truth that each model/seed/target/horizon misses."""
     rows = []
@@ -616,9 +626,8 @@ def main(argv: list[str] | None = None) -> int:
                                      allow_abbrev=False)  # X62: `--allow` is not `--allow-test`
     parser.add_argument("--fixture", action="store_true",
                         help="evaluate the surviving old LSTM predictions (test T-15)")
-    parser.add_argument("--split", choices=["val", "test"], default="val")
-    parser.add_argument("--allow-test", action="store_true",
-                        help="required for --split test (final evaluation only)")
+    # R-G1-05: the test split is scored by the step `test` of a final run (D-32), never from here
+    parser.add_argument("--split", choices=["val"], default="val")
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--no-ci", action="store_true", help="skip bootstrap CIs (faster)")
     parser.add_argument("--predictions", type=Path, nargs="*", default=[],
@@ -640,10 +649,10 @@ def main(argv: list[str] | None = None) -> int:
                      "file(s); references computed from the truth table")
             log.inputs([FEATURES_FILE, *files])
             with log.step("load truth"):  # validation: no test row is read (X17)
-                truth = load_truth(exclude_splits=("test",) if args.split == "val" else ())
+                truth = load_truth(exclude_splits=("test",))
             with log.step("evaluate"):
                 tables = run(files, out, mean_k, truth=truth, split=args.split,
-                             allow_test=args.allow_test, ci=not args.no_ci, log=log,
+                             allow_test=False, ci=not args.no_ci, log=log,
                              command=command.strip())
             for name, t in tables.items():
                 log.value(f"rows_{name}", len(t))

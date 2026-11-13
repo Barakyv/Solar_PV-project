@@ -25,6 +25,7 @@ import pandas as pd
 
 from solarpv.config.constants import AC_CAPACITY_KW, DATA_END_UTC, DATA_START_UTC, TEST_START
 from solarpv.config.paths import REPO_ROOT
+from solarpv.evaluation.evaluate import withhold_test_truth
 from solarpv.evaluation.units import to_kw
 from solarpv.models import neural_job as J
 from solarpv.models import sequence_data as SD
@@ -186,7 +187,7 @@ def pack(ds: SD.SequenceDataset, key: str, sources: SD.Sources) -> dict:
     exists = ds.dec_exists
     truth = np.where(exists, f["site_total_AC_kW"].to_numpy(float)[pos], np.nan)
     day = exists & f["daytime"].astype(bool).to_numpy()[pos]
-    return {
+    arrays = {
         f"{key}_enc_x": ds.enc_x, f"{key}_dec_x": ds.dec_x, f"{key}_y": ds.y,
         f"{key}_loss_mask": ds.loss_mask, f"{key}_dec_exists": exists,
         f"{key}_dec_keep": ds.dec_keep, f"{key}_dec_horizon": ds.dec_horizon,
@@ -195,6 +196,13 @@ def pack(ds: SD.SequenceDataset, key: str, sources: SD.Sources) -> dict:
         f"{key}_truth_kw": truth,
         f"{key}_k_true": np.where(exists, f["target_k"].to_numpy(float)[pos], np.nan),
     }
+    if key == "test":  # D-32, R-G1-04: phase 1 forecasts the test window and holds no test truth
+        arrays.update({f"{key}_y": np.zeros_like(ds.y),
+                       f"{key}_loss_mask": np.zeros_like(ds.loss_mask),
+                       f"{key}_score_mask": np.zeros_like(arrays[f"{key}_score_mask"]),
+                       f"{key}_truth_kw": np.full_like(truth, np.nan),
+                       f"{key}_k_true": np.full_like(arrays[f"{key}_k_true"], np.nan)})
+    return arrays
 
 
 def patchtst_series(sources: SD.Sources, target: str, train: SD.SequenceDataset,
@@ -499,10 +507,12 @@ def run_neural(ctx: Context, step: str) -> Result:
                 if q.shape != (ds.dec_keep.shape[0], J.MAX_STEPS, len(quantiles)):
                     raise RunnerError(f"{name}: {key} forecast of shape {q.shape}")
                 point = q[..., iq].astype(float)
-                mbe += mbe_rows(target, seed, key, point, arrays[target], scale)
+                if key != "test":  # D-32, R-G1-01: phase 1 scores train and validation only
+                    mbe += mbe_rows(target, seed, key, point, arrays[target], scale)
                 if key == "train":
                     continue
-                frame = SD.predictions_frame(ds, point, model_name=model_name, seed=seed)
+                frame = withhold_test_truth(  # D-32, R-G1-04
+                    SD.predictions_frame(ds, point, model_name=model_name, seed=seed))
                 frames.append(frame[frame["horizon"].isin(horizons)])
                 if len(quantiles) > 1:
                     sel = ds.dec_keep

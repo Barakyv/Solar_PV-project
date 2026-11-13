@@ -300,6 +300,10 @@ def test_final_two_phases_score_test_only_in_the_step_test(tmp_path, monkeypatch
     assert not (run_dir / "evaluate" / "test").exists()  # D-32: validation only
     refs = pd.read_csv(run_dir / "baselines" / "predictions_persistence.csv")
     assert set(refs["split"]) == {"val", "test"}  # forecast, not scored
+    # R-G1-04: phase 1 holds no test truth, only the forecast of the test hours
+    assert refs.loc[refs["split"] == "test", "y_true"].isna().all()
+    assert refs.loc[refs["split"] == "test", "y_pred"].notna().any()
+    assert refs.loc[refs["split"] == "val", "y_true"].notna().any()
     r2 = make_runner(tmp_path)
     assert r2.run("final", ["test"], resume=run_dir.name, allow_test=True) == 1  # X51
     assert "acceptance" in read(run_dir / "run.json")["steps"]["test"]["error"]
@@ -358,7 +362,9 @@ def test_the_warnings_are_recomputed_from_the_records():
     assert {x["kind"] for x in w} == {"nan", "first_epoch", "last_epoch", "gap", "edge_space",
                                       "reproduce"}
     texts = [x["text"] for x in w]
-    ctx = SimpleNamespace(completed={"bilstm": {"warnings": texts + ["bilstm: something else"]}})
+    ctx = SimpleNamespace(step="report", completed={
+        "bilstm": {"warnings": texts + ["bilstm: something else"]},
+        "report": {"warnings": ["report: an earlier report"]}})  # a rerun skips its own (R-G1-02)
     m = report.match_warnings(ctx, [{**x, "step": "bilstm"} for x in w],
                               pd.DataFrame(columns=["above_rule"]))
     assert (m["status"] == "matched").sum() == len(w)
@@ -647,6 +653,18 @@ def test_promote_copies_a_complete_final_run_only(tmp_path):
     (run2 / "run.json").write_text(json.dumps(state), encoding="utf-8")
     with pytest.raises(promote.PromoteError, match="not complete"):
         promote.plan(run2, out, check_tag=False)
+    # R-G1-02: the report of the finished run must come after the step test
+    for first, second, ok in (("test", "report", True), ("report", "test", False)):
+        run4 = complete_final_run(tmp_path / f"order_{first}")
+        for n, step in enumerate((first, second)):
+            record = read(run4 / step / "step.json")
+            record["finished_utc"] = f"2026-11-14T10:0{n}:00+00:00"
+            (run4 / step / "step.json").write_text(json.dumps(record), encoding="utf-8")
+        if ok:
+            promote.plan(run4, out, check_tag=False)
+        else:
+            with pytest.raises(promote.PromoteError, match="report was written before"):
+                promote.plan(run4, out, check_tag=False)
     for step in ("cv", "ablation"):  # D-36: a final run without them is not the v6 scope
         run3 = complete_final_run(tmp_path / f"no_{step}")
         state = read(run3 / "run.json")

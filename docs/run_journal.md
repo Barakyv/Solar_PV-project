@@ -1965,6 +1965,34 @@ hashes, numbers) and the commit messages are the record:
   from the audit files, the latest finished reproduction record and the dev run of `cv` and
   `ablation`; its builder refuses an unfinished record and asserts every claim of its notes.
 
+### 2026-11-13 · R9-34 · W6: the external review, its answers and the new candidate
+
+- **The review** (`g1-review2`, stage-9 plan §22): 12 rows, 1 blocking, 3 should fix, 8 notes. The
+  first reviewer session never started (Git was not found on its PATH). Every row was verified in
+  the code before it was answered.
+- **Stopped:** the reproduction that was running on `0addc5b` (it had passed 11 of 19 steps),
+  because the review demands code changes and a reproduction at an earlier commit cannot count for
+  the tag (D-36). Its partial record is kept apart (`outputs/g1_audit/reproduction_0addc5b_stopped`).
+  The private site file of its clone was removed.
+- **Blocking, R-G1-01 (X77):** every neural step of a final run wrote `mbe` rows for the test
+  scope, computed against the test truth, in phase 1. Fixed, with a test that fails on the old
+  code.
+- **Should fix (X78–X80):** phase 1 held the test truth in its files (`y_true`, the job arrays);
+  the phase-2 command ran `report` before `test`; the acceptance was bound to nothing. While
+  testing the phase-2 command a bug of my own showed: a forced rerun of `report` failed on its own
+  moved-aside folder, so the runbook's command would have stopped at its first step (X79). The
+  command is unchanged; the order, the report's inputs, `promote`, the acceptance binding and the
+  files' truth are fixed (T-104–T-106).
+- **Notes:** the evaluation CLI no longer scores the test split (X81, T-107); `test_label` for the
+  ablation on the test (X82); the L-09 sentence made exact (X83); `k̂ ≥ 0` documented as a kW
+  property (R-G1-06); the conversion copies tested against `units.to_kw` (T-108); the runbook
+  tells how to read a failure of `full` (R-G1-10).
+- **The audit script (X76)** now reads every kind of forecast file (147 files of 18 runs, no test
+  hour), with a test; its stand-alone check file was removed.
+- **Next:** the full suite, smoke and dry run at the new candidate, the audit over the new runs, the
+  reproduction from the raw data at the same commit, and a check of the fixes by the reviewer
+  session; the figures and the tag wait for them.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

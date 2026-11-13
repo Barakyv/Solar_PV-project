@@ -352,6 +352,9 @@ def test_the_test_window_is_forecast_logged_and_scored_only_in_phase_2(analysis_
     assert row["value_kw"] == pytest.approx(np.sqrt(np.mean(err ** 2)) / 3449.0 * 100.0)
     assert (test["horizon"] == 1).all() and (test["n_test_hours"] > 0).all()
     assert {p.name for p in outputs} == {"ablation_test.csv", "ablation_test_summary.csv"}
+    summary = pd.read_csv(ctx2.out / "analyses" / "ablation_test_summary.csv")
+    # R-G1-11: on the test split the label describes and decides nothing, so it is no `verdict`
+    assert "test_label" in summary.columns and "verdict" not in summary.columns
     with pytest.raises(steps.RunnerError, match="only in the step test of a final run"):
         analyses.phase2_tables(make_ctx(analysis_run, "test", tmp_path / "p3"), windows[1])
 

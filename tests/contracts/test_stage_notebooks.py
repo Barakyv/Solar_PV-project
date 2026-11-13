@@ -12,7 +12,8 @@ from solarpv.config.paths import REPO_ROOT
 from solarpv.config.provenance import text_sha256
 
 NOTEBOOKS = ["00b_original_backup_review", "01_data_ingest", "03_preprocessing", "04_cleaning",
-             "04c_nwp_gfs", "05_feature_selection", "06_models", "07_evaluation"]
+             "04c_nwp_gfs", "05_feature_selection", "06_models", "07_evaluation",
+             "08_g1_gate"]
 
 
 @pytest.mark.parametrize("name", NOTEBOOKS)

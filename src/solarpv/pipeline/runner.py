@@ -29,7 +29,15 @@ from solarpv.config.paths import OUTPUTS_DIR, REPO_ROOT
 from solarpv.config.provenance import git_commit, sha256
 from solarpv.config.runlog import RunLog
 from solarpv.pipeline import checks
-from solarpv.pipeline.config import BUDGETS, SPEC, STEP_ORDER, TEST_STEP, Window, resolve
+from solarpv.pipeline.config import (
+    BUDGETS,
+    REPORT_STEP,
+    SPEC,
+    STEP_ORDER,
+    TEST_STEP,
+    Window,
+    resolve,
+)
 from solarpv.pipeline.steps import IMPLEMENTED, Context, RunnerError
 
 RUNS_DIR = OUTPUTS_DIR / "runs"
@@ -72,7 +80,9 @@ def read_json(path: Path) -> dict:
 def select_steps(only: list[str] | None = None, from_: str | None = None,
                  to: str | None = None, order: tuple[str, ...] = STEP_ORDER) -> list[str]:
     """The steps to run, in the canonical order. `only` and `from_`/`to` exclude each other.
-    The step `test` (the second phase of a final run, D-32) runs only when it is named."""
+    The step `test` (the second phase of a final run, D-32) runs only when it is named. Named
+    together with `report` it runs first, so that the report written by that invocation holds the
+    test tables (R-G1-02); the report of phase 1 must exist, and `test` checks it."""
     if only and (from_ or to):
         raise ValueError("use either --only or --from/--to")
     named = list(only or []) + [s for s in (from_, to) if s]
@@ -80,24 +90,33 @@ def select_steps(only: list[str] | None = None, from_: str | None = None,
     if unknown:
         raise ValueError(f"unknown step(s) {unknown}; the steps are {list(order)}")
     if only:
-        return [s for s in order if s in set(only)]
-    first = order.index(from_) if from_ else 0
-    last = order.index(to) if to else len(order) - 1
-    if first > last:
-        raise ValueError(f"--from {from_} comes after --to {to}")
-    chosen = list(order[first:last + 1])
-    if TEST_STEP not in (from_, to):
-        chosen = [s for s in chosen if s != TEST_STEP]
+        chosen = [s for s in order if s in set(only)]
+    else:
+        first = order.index(from_) if from_ else 0
+        last = order.index(to) if to else len(order) - 1
+        if first > last:
+            raise ValueError(f"--from {from_} comes after --to {to}")
+        chosen = list(order[first:last + 1])
+        if TEST_STEP not in (from_, to):
+            chosen = [s for s in chosen if s != TEST_STEP]
+    if TEST_STEP in chosen and REPORT_STEP in chosen:
+        chosen.remove(TEST_STEP)
+        chosen.insert(chosen.index(REPORT_STEP), TEST_STEP)
     return chosen
 
 
 def check_test_flag(mode: str, steps: list[str], allow_test: bool) -> None:
-    """D-32: --allow-test is the flag of the step `test`, which runs only in final mode."""
+    """D-32: --allow-test is the flag of the step `test`, which runs only in final mode. An
+    invocation that carries it runs `test` and `report` only (R-G1-03): a model step is never
+    rerun in the invocation that scores the test split."""
     if TEST_STEP in steps and (mode != "final" or not allow_test):
         raise ValueError("the step test runs only in a final run, with --allow-test (D-32)")
     if allow_test and TEST_STEP not in steps:
         raise ValueError("--allow-test is the flag of the step test: name it with --only test "
                          "(D-32); the other steps never score the test split")
+    other = [s for s in steps if s not in (TEST_STEP, REPORT_STEP)]
+    if allow_test and other:
+        raise ValueError(f"--allow-test runs only the steps test and report (D-32), not {other}")
 
 
 def check_implemented(steps: list[str], implemented=IMPLEMENTED) -> None:

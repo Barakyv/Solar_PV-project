@@ -64,6 +64,11 @@ def plan(run_dir: Path, out_root: Path = OUTPUTS_DIR, check_tag: bool = True
     if missing:
         raise PromoteError(f"the run is not complete: {missing} (D-32: test after the "
                            "stage-10 acceptance)")
+    done = {s: records[s].get("finished_utc") for s in ("test", "report")}
+    if all(done.values()) and done["report"] < done["test"]:  # R-G1-02
+        raise PromoteError("the report was written before the step test finished: rerun it "
+                           "(--only test,report --force --allow-test) so that it holds the test "
+                           "tables")
     commits = {r["commit"] for r in records.values()}
     if len(commits) != 1 or any(c.endswith("+dirty") for c in commits):
         raise PromoteError(f"the steps ran at {sorted(commits)}: one clean commit is required")

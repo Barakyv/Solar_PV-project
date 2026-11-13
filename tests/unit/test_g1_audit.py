@@ -126,6 +126,31 @@ def test_the_figures_explain_only_what_d34_names_and_trust_evidence_only_while_c
     assert not W._code_unchanged_since("b2c3f1f")  # the pipeline code changed in W6
 
 
+def test_the_test_access_audit_reads_every_kind_of_forecast_file(A, tmp_path, monkeypatch):
+    """X76: the audit globbed `predictions_*.csv` only and never saw the ablation forecasts of
+    the new step; a test hour in any kind of forecast file is counted, in a moved-aside folder
+    it is not."""
+    from solarpv.figures import s09_w6 as W
+
+    assert tuple(W.FORECAST_FILES) == tuple(A.FORECAST_FILES)
+    run = tmp_path / "runs" / "20260101T000000Z_dev"
+    (run / "xgb").mkdir(parents=True)
+    (run / "ablation").mkdir()
+    (run / ".xgb.tmp").mkdir()
+    header = "timestamp,y_pred\n"
+    val, test = "2024-09-30 23:00:00+00:00", "2024-10-01 00:00:00+00:00"
+    (run / "xgb" / "predictions_xgb_sota_seed42.csv").write_text(header + f"{val},1\n")
+    (run / "xgb" / "uncorrected_xgb_sota_seed42.csv").write_text(header + f"{val},1\n")
+    (run / "ablation" / "ablation_forecasts_seed42.csv").write_text(
+        header + f"{val},1\n{test},2\n")
+    (run / ".xgb.tmp" / "predictions_old.csv").write_text(header + f"{test},3\n")
+    monkeypatch.setattr(A, "OUTPUTS_DIR", tmp_path)
+    monkeypatch.setattr(A, "OUT", tmp_path / "audit")
+    facts = A.test_access()
+    assert facts["prediction_files"] == 3 and facts["prediction_rows_in_test"] == 1
+    assert facts["per_run"][0]["last_prediction_hour"].startswith("2024-10-01 00:00")
+
+
 def test_the_evidence_files_agree_with_the_document():
     folder = OUTPUTS_DIR / "g1_audit" / "audit"
     clean = pd.read_csv(folder / "lookahead_clean.csv").set_index("source")

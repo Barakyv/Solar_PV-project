@@ -90,8 +90,11 @@ def test_select_steps():
     assert select_steps(None, "explain") == ["explain", "report"]
     # the second phase of a final run (D-32) runs only when it is named
     assert select_steps() == [s for s in STEP_ORDER if s != "test"]
-    assert select_steps(["test", "report"]) == ["report", "test"]
-    assert select_steps(None, "report", "test") == ["report", "test"]
+    # R-G1-02: named together, `test` runs first, so that the report written by the invocation
+    # holds the test tables
+    assert select_steps(["test", "report"]) == ["test", "report"]
+    assert select_steps(None, "report", "test") == ["test", "report"]
+    assert select_steps(["test"]) == ["test"] and select_steps(["report"]) == ["report"]
     for bad in ({"only": ["nope"]}, {"only": ["xgb"], "from_": "xgb"},
                 {"from_": "evaluate", "to": "baselines"}):
         with pytest.raises(ValueError):

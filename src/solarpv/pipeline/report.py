@@ -57,6 +57,8 @@ def report_inputs(ctx: Context) -> list[Path]:
         raise RunnerError("report needs at least one completed step in this run")
     paths = []
     for step, rec in ctx.completed.items():
+        if step == ctx.step:  # a forced rerun moves its own earlier folder aside (R-G1-02)
+            continue
         for name in rec["outputs"]:
             if name.endswith((".csv", ".json")) and not name.startswith(("predictions_",
                                                                          "uncorrected_",
@@ -205,6 +207,8 @@ def match_warnings(ctx: Context, recomputed: list[dict], spread: pd.DataFrame) -
     rows, seen = [], set()
     by_text = {(w["step"], w["text"]): w for w in recomputed}
     for step, rec in ctx.completed.items():
+        if step == ctx.step:  # the warnings of an earlier report are recomputed by this one
+            continue
         for text in rec.get("warnings") or []:
             w = by_text.get((step, text))
             if w is not None:

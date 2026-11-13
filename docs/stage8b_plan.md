@@ -73,7 +73,7 @@ split being evaluated:
 ### 3.1 Split guard
 
 - `--split val` is the default.
-- `--split test` requires `--allow-test`. Each such run appends a line to
+- (Superseded by D-32 and R-G1-05: the CLI scores `--split val` only; the test split is scored by the step `test` of a final run.) `--split test` required `--allow-test`. Each such run appends a line to
   `outputs/07_evaluation/test_access_log.csv` (time, commit, command, input files) and writes a
   warning to its run log.
 - This is the record G-1 asks for ("the test touched no decision; a log of the files read").

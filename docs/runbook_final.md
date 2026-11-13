@@ -110,8 +110,15 @@ python -m solarpv.pipeline run --mode final --resume <run_id> --only test,report
 
 `test` scores the test split with the evaluation layer and computes the XGB SHAP files of §6.10
 on the test window; every read of a test row is appended to
-`outputs/07_evaluation/test_access_log.csv` (X40). `--force` reruns `report` with the test
-tables (the phase-1 report is moved aside and kept). Then:
+`outputs/07_evaluation/test_access_log.csv` (X40). The runner runs `test` first and `report`
+second (R-G1-02), and `--force` reruns `report` with the test tables (the phase-1 report is moved
+aside and kept). `--allow-test` runs only these two steps. Before it scores anything, `test`
+checks that the prediction files are those that `evaluate` scored on validation (same SHA-256)
+and that no other step finished after `stage10_acceptance.md` was written: **write the acceptance
+last, after the final phase-1 step and after reading the report**, and if any step is rerun
+afterwards, read the report again and rewrite it (R-G1-03). Phase 1 holds no test truth in any
+file (R-G1-04): the `y_true` of the test rows is blank until the step `test` takes the truth from
+the feature table. Then:
 
 1. `python -m solarpv.pipeline promote <run_id>`: copies the run to the §6.10 paths
    (`outputs/06_<model>/`) and writes `outputs/06_promoted.json`; it refuses an incomplete,
@@ -129,7 +136,10 @@ tables (the phase-1 report is moved aside and kept). Then:
   are fixed and the training is deterministic (X32), so the rerun gives the same result; only
   the time is lost.
 - **The code failed** (an exception from a rule or a bug): stop. No code edit during a final run.
-  Record it and reopen G-1 (§4).
+  Record it and reopen G-1 (§4). An exception of the step `ablation` that says the mode `full`
+  does not reproduce the `xgb` step (R-G1-10) is rerun once with `--resume <run_id> --only
+  ablation`; if it fails again it is a code failure; if it passes, write the first failure to
+  the run journal as non-determinism.
 - **The gate refused a step** (`refused (final gate: ...)`): something was committed or a tracked
   file (code or document) was edited during the run. `git status` names the file. Do not rewrite
   history; an uncommitted edit of a document can be saved outside the repository and undone with

@@ -26,11 +26,24 @@ CLOCK = f"{AUDIT}/lookahead_clock.csv"
 CLOCK_DAYS = f"{AUDIT}/lookahead_clock_days.csv"
 POLLED = f"{AUDIT}/lookahead_polled.csv"
 ACCESS = f"{AUDIT}/test_access.json"
-# the ablation forecast files, which the glob of the audit's test-access part misses (X76)
-ABLATION_CHECK = f"{AUDIT}/ablation_forecasts_test_check.json"
+# the kinds of file that hold forecast hours; the same patterns as scripts/g1_audit.py (T-94)
+FORECAST_FILES = ("predictions_*.csv", "uncorrected_*.csv", "quantiles_*.csv",
+                  "ablation_forecasts_seed*.csv")
 INCIDENT = "outputs/g1_audit/incident_2026-11-12/regenerated_vs_original_content.json"
-# the reproduction from the raw data that counts for W6 (attempt 3, R9-27, R9-29)
-REPRO = "outputs/g1_audit/reproduction_20261112T202955Z/record.json"
+
+
+def _latest_reproduction() -> str:
+    """The record of the latest finished reproduction from the raw data: a running one has written
+    its record step by step and has no `result` yet."""
+    import json
+
+    found = [p for p in sorted((REPO_ROOT / "outputs" / "g1_audit").glob(
+        "reproduction_2026*/record.json"))
+        if json.loads(p.read_text(encoding="utf-8")).get("result")]
+    return found[-1].relative_to(REPO_ROOT).as_posix()
+
+
+REPRO = _latest_reproduction()
 STEP_MODEL = {"baselines": "references", "xgb": "XGB", "bilstm": "BiLSTM", "tft96": "TFT-96",
               "tft168": "TFT-168", "tftbase": "TFT baseline", "patchtst": "PatchTST"}
 BEFORE_X62 = "b2c3f1f"  # the commit W6 started from (R9-25)
@@ -57,15 +70,15 @@ def _dry_run() -> str:
     return last.relative_to(REPO_ROOT).as_posix()
 
 
-def _access_covers_disk(acc: dict, ablation: dict) -> bool:
-    """The test-access audit saw every run folder and every ablation forecast file on disk: an
-    audit made before a later run does not count (found on 2026-11-13, X76)."""
+def _access_covers_disk(acc: dict) -> bool:
+    """The test-access audit saw every run folder and every forecast file on disk: an audit made
+    before a later run does not count (found on 2026-11-13, X76)."""
     runs = REPO_ROOT / "outputs" / "runs"
     on_disk = sorted(p.name for p in runs.iterdir() if p.is_dir())
-    files = sorted(p.relative_to(runs).as_posix()
-                   for p in runs.rglob("ablation_forecasts_seed*.csv"))
-    seen = sorted(f"{r['run']}/{r['file']}" for r in ablation["files"])
-    return on_disk == sorted(r["run"] for r in acc["per_run"]) and files == seen
+    files = sum(1 for run in runs.iterdir() if run.is_dir()
+                for pattern in FORECAST_FILES for f in run.rglob(pattern)
+                if not any(part.startswith(".") for part in f.relative_to(run).parts))
+    return on_disk == sorted(r["run"] for r in acc["per_run"]) and files == acc["prediction_files"]
 
 
 def _code_unchanged_since(commit: str) -> bool:
@@ -97,9 +110,8 @@ def _checklist() -> list[tuple[str, str, str]]:
     other_skips = [s for s in skipped if s not in ALLOWED_SKIP]
     suite_commit = (REPO_ROOT / SUITE_META).read_text(encoding="utf-8").split("HEAD")[-1].split()[0]
     acc = D.jload(ACCESS)
-    ablation = D.jload(ABLATION_CHECK)
-    access_ok = (acc["prediction_rows_in_test"] == 0 and ablation["rows_in_test"] == 0
-                 and not acc["log_exists"] and _access_covers_disk(acc, ablation))
+    access_ok = (acc["prediction_rows_in_test"] == 0 and not acc["log_exists"]
+                 and _access_covers_disk(acc))
     rec = D.jload(REPRO)
     unexplained = [(s["step"], r["path"]) for s in rec["steps"] for r in s["failing"]
                    if not explained_reason(s["step"], r["path"])]
@@ -132,7 +144,7 @@ def _checklist() -> list[tuple[str, str, str]]:
          "docs/leakage_audit.md §3; the clock look-ahead accepted (D-35)"),
         ("test split touched no decision", done if access_ok else wait,
          f"{acc['runs']} runs, {acc['step_records']} step records, "
-         f"{acc['prediction_files'] + len(ablation['files'])} forecast files, 0 test hours"),
+         f"{acc['prediction_files']} forecast files, 0 test hours"),
         ("reproduction from scratch", done if repro_ok else wait,
          f"{len(rec['steps'])} steps exit 0; {len(unexplained)} unexplained differences (D-34)"),
         ("external review", done if review_done and not review_open else going,
@@ -156,7 +168,7 @@ def _checklist() -> list[tuple[str, str, str]]:
     "{done} of {n} items have complete evidence, {going} is in progress and {todo} wait for the "
     "tag ({wait} wait for a decision). The full suite: {suite}.",
     "The user approves the tag; then the final run by the runbook.",
-    (SUITE, SUITE_META, SMOKE_FINAL, ACCESS, ABLATION_CHECK, REPRO, REVIEW_LOG, SCOPE, LEAKAGE))
+    (SUITE, SUITE_META, SMOKE_FINAL, ACCESS, REPRO, REVIEW_LOG, SCOPE, LEAKAGE))
 def s09_g1_checklist():
     items = _checklist()
     colours = {"evidence complete": C["green"], "waiting for the user": C["orange"],
@@ -337,32 +349,25 @@ def s09_lookahead_prep():
 @register(
     "S09-37", "9", "test_never_read", "No run has read the test split",
     "Has any run of the rebuild read or forecast a test hour before the gate?",
-    "Every run of the runner so far: the last hour that any of its prediction files holds, "
-    "against the start of the test split, with the number of its step records and prediction "
-    "files (the ablation forecast files are counted apart); the evaluation layer's test-access "
-    "log and its git history.",
-    "Across {runs} runs, {records} step records hold no test access and {files} prediction files "
-    "and {ablation} ablation forecast files hold {test_rows} test hours; the latest forecast "
-    "hour of any run is {last}, before the test split starts on {test_start}. The access log "
-    "{log_state}.",
+    "Every run of the runner so far: the last hour that any of its forecast files holds "
+    "(predictions, uncorrected and quantile files, and the ablation forecasts), against the start "
+    "of the test split, with the number of its step records and forecast files; the evaluation "
+    "layer's test-access log and its git history.",
+    "Across {runs} runs, {records} step records hold no test access and {files} forecast files "
+    "hold {test_rows} test hours; the latest forecast hour of any run is {last}, before the test "
+    "split starts on {test_start}. The access log {log_state}.",
     "The test split is read once, by the final run (phase 1 forecasts it, phase 2 scores it, "
     "D-32), and every read is logged.",
-    (ACCESS, ABLATION_CHECK))
+    (ACCESS,))
 def s09_test_never_read():
     acc = D.jload(ACCESS)
-    ablation = D.jload(ABLATION_CHECK)
     runs = pd.DataFrame(acc["per_run"])
     runs["last"] = pd.to_datetime(runs["last_prediction_hour"], utc=True)
     test_start = pd.Timestamp(TEST_START, tz="UTC")
     assert acc["prediction_rows_in_test"] == 0 and not acc["steps_with_test_access"]
-    assert ablation["rows_in_test"] == 0
-    assert _access_covers_disk(acc, ablation), "the audit predates a run: rerun scripts/g1_audit.py"
+    assert _access_covers_disk(acc), "the audit predates a run: rerun scripts/g1_audit.py"
     assert not acc["log_exists"] and not acc["log_in_git_history"]
     assert (runs["last"] < test_start).all()
-    n_ablation = runs["run"].map(pd.Series([f["run"] for f in ablation["files"]]).value_counts()
-                                 ).fillna(0).astype(int)
-    assert (pd.to_datetime([f["last_hour"] for f in ablation["files"]], utc=True)
-            < test_start).all()
     fig, ax = subplots(height=3.6, width=7.6)
     y = np.arange(len(runs))
     kinds = runs["run"].str.endswith("_smoke")
@@ -379,14 +384,13 @@ def s09_test_never_read():
             fontsize=7, va="top")
     ax.text(pd.Timestamp(VAL_START), len(runs) - 0.5, " validation", color=C["orange"],
             fontsize=7, va="top")
-    ax.set_yticks(y, [f"{r} ({n} files" + (f" + {a} ablation)" if a else ")")
-                      for r, n, a in zip(runs["run"], runs["prediction_files"], n_ablation,
-                                         strict=True)], fontsize=5.5)
+    ax.set_yticks(y, [f"{r} ({n} files)" for r, n in zip(runs["run"], runs["prediction_files"],
+                                                          strict=True)], fontsize=5.5)
     ax.set_xlabel("last forecast hour of the run (UTC)")
     ax.legend(fontsize=6.5, loc="center right")
     facts = {"runs": int(acc["runs"]), "records": int(acc["step_records"]),
-             "files": int(acc["prediction_files"]), "ablation": len(ablation["files"]),
-             "test_rows": int(acc["prediction_rows_in_test"] + ablation["rows_in_test"]),
+             "files": int(acc["prediction_files"]),
+             "test_rows": int(acc["prediction_rows_in_test"]),
              "last": str(runs["last"].max().strftime("%Y-%m-%d %H:%M UTC")),
              "test_start": str(test_start.date()),
              "log_state": "does not exist and was never committed"}

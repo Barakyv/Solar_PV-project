@@ -566,10 +566,10 @@ Figures made earlier by the stage's own producer:
 
 ### S09-34. Gate G-1: the checklist and its evidence
 
-- **Question:** Which items of gate G-1 have their evidence, and which wait for a decision of the user?
-- **Shows:** The nine items of the gate (PROJECT_MASTER.md §7), each with its state read from its evidence file (the assumption register, the JUnit file of the full suite, the test-access audit, the reproduction record, the smoke run, the dry run, the review log, the scope register, the git tags).
+- **Question:** Which items of gate G-1 have their evidence, and which are still open?
+- **Shows:** The nine items of the gate (PROJECT_MASTER.md §7), each with its state read from its evidence file (the assumption register, the JUnit file of the full suite, the test-access audit, the reproduction record, the smoke run, the dry run, the review log, the scope register, the git tags). Evidence gathered at an earlier commit counts for HEAD only when nothing outside the paths of D-36 changed since.
 - **Takeaway:** (not built yet)
-- **Led to:** The user decides the open points; then the tag, and the final run by the runbook.
+- **Led to:** The user approves the tag; then the final run by the runbook.
 - **File:** `stage_09/S09-34_g1_checklist.png`
 
 ### S09-35. When the information of each input is known
@@ -585,23 +585,23 @@ Figures made earlier by the stage's own producer:
 - **Question:** Do the clock correction, the polled reconstruction and the cleaning use data after T0, and how much does it change?
 - **Shows:** Left: whole-minute clock shift of each day as applied (a centred median of daily estimates) against a trailing median of the earlier days only, as days per absolute difference. Middle: source cells of the 48 hours before T0 that change when the cleaning also sees the next day, per series, over every issuance day. Right: the bound on the last source hour's mean from the polled interpolation (test period only).
 - **Takeaway:** The clock correction is the one look-ahead of size: a causal median would move the shift of 40 % of the days, by at most 3 min. The cleaning changes 66 of 458,304 source cells on 4 issuance days, none a scored hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every compared cell. The polled interpolation is bounded by 0.68 °C on a night hour.
-- **Led to:** Declared in docs/deviations.md; whether to accept the centred clock or rerun stages 4–9 with a causal one is the user's decision (stage-9 plan §20.7).
+- **Led to:** Declared in docs/deviations.md; the user accepted the centred clock and the other two (D-35), so stages 4–9 are not rerun with a causal one.
 - **File:** `outputs/figures/stage_09/S09-36_lookahead_prep.png`
 
 ### S09-37. No run has read the test split
 
 - **Question:** Has any run of the rebuild read or forecast a test hour before the gate?
-- **Shows:** Every run of the runner so far: the last hour that any of its prediction files holds, against the start of the test split, with the number of its step records and prediction files; the evaluation layer's test-access log and its git history.
-- **Takeaway:** Across 15 runs, 86 step records hold no test access and 81 prediction files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.
+- **Shows:** Every run of the runner so far: the last hour that any of its prediction files holds, against the start of the test split, with the number of its step records and prediction files (the ablation forecast files are counted apart); the evaluation layer's test-access log and its git history.
+- **Takeaway:** Across 18 runs, 120 step records hold no test access and 103 prediction files and 3 ablation forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.
 - **Led to:** The test split is read once, by the final run (phase 1 forecasts it, phase 2 scores it, D-32), and every read is logged.
 - **File:** `outputs/figures/stage_09/S09-37_test_never_read.png`
 
 ### S09-38. The pipeline reproduced from the raw data
 
 - **Question:** Does a fresh checkout, given only the raw data, the GFS point extracts and the site file, produce the same outputs at every stage and the same forecasts for every model?
-- **Shows:** Left: every file each stage wrote in a fresh clone, compared with this checkout's: identical bytes, the same content in other bytes (a newer parquet writer), floating-point noise (numeric cells only, relative difference at most 1e-9, nothing missing on one side), a real difference, or listed only (figures, logs, notebooks). Right: the forecast files of the two development runs per model, against the reference runs; colour and marker per model.
+- **Shows:** Left: every file each stage wrote in a fresh clone, compared with this checkout's: identical bytes, the same content in other bytes (a newer parquet writer), floating-point noise (numeric cells only, relative difference at most 1e-9, nothing missing on one side), a difference explained by a documented fix (D-34), an unexplained difference, or listed only (figures, logs, notebooks). Right: the forecast files of the two development runs per model, against the reference runs; colour and marker per model.
 - **Takeaway:** (not built yet)
-- **Led to:** Evidence of gate G-1 (stage-9 plan §20.5); the final run starts from the same code and inputs.
+- **Led to:** Evidence of gate G-1 (stage-9 plan §20.5, D-34); the final run starts from the same code and inputs.
 - **File:** `stage_09/S09-38_reproduction.png`
 
 ### S09-39. Entry points that run nothing on --help (X62)

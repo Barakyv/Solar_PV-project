@@ -1327,28 +1327,30 @@
     "polled_max": 0.6796
    },
    "takeaway": "The clock correction is the one look-ahead of size: a causal median would move the shift of 40 % of the days, by at most 3 min. The cleaning changes 66 of 458,304 source cells on 4 issuance days, none a scored hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every compared cell. The polled interpolation is bounded by 0.68 °C on a night hour.",
-   "git_commit": "9ee9ac7+dirty"
+   "git_commit": "0addc5b+dirty"
   },
   "S09-37": {
    "stage": "9",
    "kind": "process",
    "title": "No run has read the test split",
    "file": "outputs/figures/stage_09/S09-37_test_never_read.png",
-   "file_sha256": "1e16c20f9114acea1d2d280b72ba12ba554e4a221d2ff88e734a0c670ae59b0d",
+   "file_sha256": "c40cda0e34cbba58ed125df7c0d14508a7698706212d5156c04ff0261e5be408",
    "inputs": {
-    "outputs/g1_audit/audit/test_access.json": "59d1ac25ba937716296cd67aad542198c581e163a0a1c934550e5b4db08df34f"
+    "outputs/g1_audit/audit/test_access.json": "ef62e9c2388512136a469417df66ebe9d744a5cb9cd2a6db67325ea5e2a5122c",
+    "outputs/g1_audit/audit/ablation_forecasts_test_check.json": "c0b76521db2942aa131833779d7c1221153f8c71c71cf7ce2fe282640149a808"
    },
    "facts": {
-    "runs": 15,
-    "records": 86,
-    "files": 81,
+    "runs": 18,
+    "records": 120,
+    "files": 103,
+    "ablation": 3,
     "test_rows": 0,
     "last": "2024-09-30 23:00 UTC",
     "test_start": "2024-10-01",
     "log_state": "does not exist and was never committed"
    },
-   "takeaway": "Across 15 runs, 86 step records hold no test access and 81 prediction files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
-   "git_commit": "9ee9ac7+dirty"
+   "takeaway": "Across 18 runs, 120 step records hold no test access and 103 prediction files and 3 ablation forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
+   "git_commit": "0addc5b+dirty"
   },
   "S09-39": {
    "stage": "9",

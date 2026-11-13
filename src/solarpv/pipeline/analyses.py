@@ -488,5 +488,8 @@ def phase2_tables(ctx: Context, window: Window) -> tuple[list[Path], list[dict]]
                          "value_kw": value, "n_test_hours": n})
         res = add_deltas(pd.DataFrame(rows))
         outputs.append(steps._write_csv(res, out / "ablation_test.csv"))
-        outputs.append(steps._write_csv(ablation_summary(res), out / "ablation_test_summary.csv"))
+        # R-G1-11: on the test split the label describes, it decides nothing: not named `verdict`
+        outputs.append(steps._write_csv(
+            ablation_summary(res).rename(columns={"verdict": "test_label"}),
+            out / "ablation_test_summary.csv"))
     return outputs, access

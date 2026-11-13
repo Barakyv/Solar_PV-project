@@ -6,7 +6,7 @@
  "runs": 18,
  "step_records": 120,
  "steps_with_test_access": [],
- "prediction_files": 103,
+ "prediction_files": 147,
  "prediction_rows_in_test": 0,
  "test_start": "2024-10-01 00:00:00+00:00",
  "per_run": [
@@ -46,7 +46,7 @@
    "run": "20261107T132101Z_smoke",
    "step_records": 3,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 5,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -54,7 +54,7 @@
    "run": "20261107T132142Z_dev",
    "step_records": 3,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 5,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-09-30 23:00:00+00:00"
   },
@@ -62,7 +62,7 @@
    "run": "20261107T135938Z_dev",
    "step_records": 3,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 5,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-09-30 23:00:00+00:00"
   },
@@ -78,7 +78,7 @@
    "run": "20261111T155739Z_smoke",
    "step_records": 7,
    "test_access_entries": 0,
-   "prediction_files": 8,
+   "prediction_files": 12,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -86,7 +86,7 @@
    "run": "20261111T160241Z_smoke",
    "step_records": 4,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 7,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -94,7 +94,7 @@
    "run": "20261111T160714Z_dev",
    "step_records": 10,
    "test_access_entries": 0,
-   "prediction_files": 8,
+   "prediction_files": 12,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-09-30 23:00:00+00:00"
   },
@@ -102,7 +102,7 @@
    "run": "20261112T060949Z_smoke",
    "step_records": 11,
    "test_access_entries": 0,
-   "prediction_files": 9,
+   "prediction_files": 14,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -110,7 +110,7 @@
    "run": "20261112T062618Z_smoke",
    "step_records": 11,
    "test_access_entries": 0,
-   "prediction_files": 9,
+   "prediction_files": 14,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -118,7 +118,7 @@
    "run": "20261112T063719Z_dev",
    "step_records": 6,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 5,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-09-30 23:00:00+00:00"
   },
@@ -126,7 +126,7 @@
    "run": "20261112T200502Z_smoke",
    "step_records": 11,
    "test_access_entries": 0,
-   "prediction_files": 9,
+   "prediction_files": 14,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -134,7 +134,7 @@
    "run": "20261113T075016Z_smoke",
    "step_records": 13,
    "test_access_entries": 0,
-   "prediction_files": 9,
+   "prediction_files": 15,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   },
@@ -142,7 +142,7 @@
    "run": "20261113T075845Z_dev",
    "step_records": 8,
    "test_access_entries": 0,
-   "prediction_files": 4,
+   "prediction_files": 6,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-09-30 23:00:00+00:00"
   },
@@ -150,7 +150,7 @@
    "run": "20261113T082502Z_smoke",
    "step_records": 13,
    "test_access_entries": 0,
-   "prediction_files": 9,
+   "prediction_files": 15,
    "rows_at_or_after_test_start": 0,
    "last_prediction_hour": "2024-04-11 20:00:00+00:00"
   }

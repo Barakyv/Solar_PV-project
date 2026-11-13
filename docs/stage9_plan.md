@@ -1771,3 +1771,55 @@ Every point of the acceptance holds. Code at `acea8ea` (clean), tests T-100–T-
 - **Found while testing:** the first final-mode replay in the tests refused its own check, because
   the ablation took the training rows from the step's mode instead of from the `xgb` record it
   repeats; both steps now read it from the record (`smoke_rows`).
+
+
+## 22. W6, the external review of gate G-1 and its answers (2026-11-13, R9-34)
+
+A separate Claude session (`g1-review2`, opened from `docs/g1_review_brief.md`; the first one never
+started because Git was not found on its PATH) read the source of `main` against `PROJECT_MASTER.md`
+§6 and wrote 12 rows into `docs/g1_review_log.md`: 1 blocking, 3 should fix and 8 notes, with the
+coverage of the eight checks and what it could not verify (R-G1-12). It also reviewed the steps
+`cv` and `ablation` (rows R-G1-10 and R-G1-11), which is the review of the difference that Q-28
+asked for. The author verified each row in the code before answering.
+
+### 22.1 What the review found and what was done
+
+| Row | Finding | Answer | Errata, test |
+|---|---|---|---|
+| R-G1-01 (blocking) | every neural step of a final run scored the test split in phase 1 (`mbe.csv` rows `scope = test`) | `mbe_rows` for train and validation only | X77, T-104 |
+| R-G1-02 | `--only test,report --force` ran `report` before `test` (the canonical order), so the kept report had no test table; found by its test: a forced `report` also failed on its own moved-aside folder | `test` runs before `report` when both are named; `report` skips its own earlier record; `promote` refuses a report older than `test` | X79, T-105 |
+| R-G1-03 | the acceptance file was bound to nothing; `--only xgb,test --allow-test` passed the flag check | `--allow-test` runs `test` and `report` only; `test` compares the hashes of the files it scores with those `evaluate` scored and refuses a step finished after the acceptance | X80, T-106 |
+| R-G1-04 | phase 1 wrote the test truth into the run folder (`y_true` of test rows, the packed arrays of the neural job) | `y_true` blank on test rows; the packed test arrays hold zeros and NaN | X78, T-104 |
+| R-G1-05 | the evaluation CLI could score the test split on any files | `--split` accepts `val` only | X81, T-107 |
+| R-G1-06 | `k̂ ≥ 0` holds in kW only; the k-unit metrics score the raw `k̂` | documented in §6.5 | none |
+| R-G1-07 | four closed-stage copies of `to_kw` | T-108: they agree with `units.to_kw` on a grid | T-108 |
+| R-G1-08 | closed-stage loaders read the whole table and filter afterwards | recorded; the filter comes first if a stage is rerun | none |
+| R-G1-09 | text said L-09 does not depend on the validation labels | corrected (A-14, `docs/leakage_audit.md` row 13) | X83 |
+| R-G1-10 | `full` must reproduce the `xgb` value or the step raises | kept; the runbook says how to read a failure | none |
+| R-G1-11 | `verdict` on the test table | `test_label` | X82 |
+| R-G1-12 | what the reviewer did not verify | coverage by the author written into the log | none |
+
+D-32 is made exact (the decision of the user, 12 November, is unchanged): phase 1 forecasts the
+test window and scores validation only, **and holds no test truth in any file**; phase 2 is the
+step `test`, bound to the files that `evaluate` scored and to an acceptance written after them.
+
+### 22.2 Tests (T-104–T-108)
+
+| ID | Test |
+|---|---|
+| T-104 | A final-mode neural step on the synthetic tables writes `mbe` rows for train and validation only, a prediction file with the test forecast and no test truth, and job arrays with no test truth; the xgb step and the references write no test `y_true`; `withhold_test_truth` changes only the test rows |
+| T-105 | `select_steps` puts `test` before `report`; phase 2 on the synthetic tables ends with a report that holds the test benchmark; `promote` refuses a report written before the step `test` |
+| T-106 | `--allow-test` refuses any step but `test` and `report`; the step `test` refuses prediction files that `evaluate` did not score, and a step that finished after the acceptance |
+| T-107 | The evaluation CLI accepts neither `--split test` nor `--allow-test` |
+| T-108 | `features.target.to_kw`, `selection.common.to_kw` and the inline expression of the closed stages equal `units.to_kw` on a grid with negative k and k above the capacity |
+
+### 22.3 What it changes for the gate
+
+The changes touch code paths of the frozen pipeline (`pipeline/`, `evaluation/`, `scripts/g1_audit.py`)
+that only a final run executes, so no development output changes; the dev and smoke outputs of the
+`xgb`, `cv` and `ablation` steps stay byte-identical (checked by the new smoke and dev runs). By the
+evidence rule of D-36 the evidence of the earlier candidate (`22f05d2`) no longer counts: the full
+suite, the smoke and dry runs, the test-access audit and the reproduction from the raw data are
+repeated at the new candidate before the tag. The reproduction that was running on the earlier
+candidate was stopped at its eleventh step (the first ten and `features_final` had passed, with the
+three known decision-check differences, D-34).

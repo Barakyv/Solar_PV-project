@@ -25,6 +25,7 @@ Rules (the self-reviews of §10 and §13):
 import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -44,7 +45,7 @@ from solarpv.evaluation import evaluate as E
 from solarpv.evaluation.truth import FEATURES_FILE, load_truth
 from solarpv.models.baselines import reference_predictions
 from solarpv.pipeline import data
-from solarpv.pipeline.config import MODEL_STEPS, Window
+from solarpv.pipeline.config import MODEL_STEPS, REPORT_STEP, TEST_STEP, Window
 
 
 class RunnerError(RuntimeError):
@@ -190,7 +191,7 @@ def run_baselines(ctx: Context) -> Result:
                          f"in the window, {int(day.sum())} of them daytime; context rows "
                          f"{int((truth['split'] == window.split + '_context').sum())}")
             frames.append(refs)
-    refs = pd.concat(frames, ignore_index=True)
+    refs = E.withhold_test_truth(pd.concat(frames, ignore_index=True))  # D-32, R-G1-04
     outputs = []
     for model, g in refs.groupby("model", sort=True):
         path = ctx.out / f"predictions_{model}.csv"
@@ -399,12 +400,12 @@ def run_xgb(ctx: Context) -> Result:
                             if counts:
                                 problems[key]["nan_counts_predicted"][w.split] = counts
                             raw = X.predict(fit.booster, Xw, fit.n_rounds)
-                            frame = pd.DataFrame({
+                            frame = E.withhold_test_truth(pd.DataFrame({  # D-32, R-G1-04
                                 "timestamp": table.index[rows],
                                 "y_true": table.loc[rows, X.TARGET_COLUMN[target]].to_numpy(),
                                 "y_pred": raw,
                                 "target": target, "horizon": h, "model": X.MODEL,
-                                "seed": seed, "split": w.split})
+                                "seed": seed, "split": w.split}))
                             if mos is not None:
                                 uncorrected[seed].append(frame)
                                 frame = frame.assign(y_pred=X.apply_mos(
@@ -605,6 +606,31 @@ def testsplit_inputs(ctx: Context) -> list[Path]:
             *analyses.phase2_inputs(ctx)]
 
 
+def check_acceptance_binding(ctx: Context, acceptance: Path, files: list[Path]) -> None:
+    """R-G1-03: the stage-10 acceptance judged the files that the run's `evaluate` scored on
+    validation. The step `test` scores exactly those (same SHA-256), and no step other than
+    `report` and `test` finished after the acceptance was written; otherwise a model could have
+    been rerun after the acceptance and its test forecasts never evaluated or read."""
+    evaluated = {f"{Path(k).parent.name}/{Path(k).name}": v
+                 for k, v in ctx.completed["evaluate"]["inputs"].items()
+                 if Path(k).name.startswith("predictions_")}
+    scored = {f"{p.parent.name}/{p.name}": sha256(p) for p in files}
+    if scored != evaluated:
+        names = sorted(set(scored) ^ set(evaluated)
+                       | {k for k in set(scored) & set(evaluated) if scored[k] != evaluated[k]})
+        raise RunnerError(f"the step test would score prediction files that the run's evaluate "
+                          f"did not score on validation: {names}; rerun evaluate and the report, "
+                          "read them, and write the acceptance again (R-G1-03)")
+    accepted = datetime.fromtimestamp(acceptance.stat().st_mtime, UTC)
+    later = sorted(s for s, rec in ctx.completed.items()
+                   if s not in (TEST_STEP, REPORT_STEP) and rec.get("finished_utc")
+                   and datetime.fromisoformat(rec["finished_utc"]) > accepted)
+    if later:
+        raise RunnerError(f"{later} finished after the stage-10 acceptance was written: the "
+                          "acceptance judged an earlier state; read the report and write it "
+                          "again (R-G1-03)")
+
+
 def run_testsplit(ctx: Context) -> Result:
     """The test split scored by the evaluation layer, and the XGB SHAP on the test window
     (§6.10, D-31). Only in a final run, with --allow-test, after the run's `evaluate` and
@@ -624,6 +650,7 @@ def run_testsplit(ctx: Context) -> Result:
                           "(docs/runbook_final.md)")
     (window,) = [w for w in ctx.windows if w.split == "test"]
     files, missing = prediction_files(ctx)
+    check_acceptance_binding(ctx, acceptance, files)
     mean_k = mean_daytime_k()
     out = ctx.out / "test"
     with ctx.log.step(f"evaluate test, {window.label}"):
