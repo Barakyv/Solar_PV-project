@@ -158,8 +158,13 @@ def test_a_resume_on_another_environment_is_recorded_and_warned(tmp_path):
     other = CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
     other.environment({"gpu": "A100", "torch": "2.5.1"})
     assert [e["kind"] for e in other.events] == ["environment_differs"]
-    assert other.events[0]["was"]["gpu"] == "P40" and other.events[0]["now"]["gpu"] == "A100"
+    assert other.events[0]["made_on"][0]["gpu"] == "P40" and other.events[0]["now"]["gpu"] == "A100"
     assert warnings and "not claimed to equal" in warnings[0]
+    # R-G1-36: a third try on the new stack still says that part of the folder is from the old one
+    third = CK.open_store(tmp_path / "ck", IDENTITY, say=notes.append, warn=warnings.append)
+    third.environment({"gpu": "A100", "torch": "2.5.1"})
+    assert [e["kind"] for e in third.events] == ["environment_differs"]
+    assert third.events[0]["made_on"] == [{"gpu": "P40", "torch": "2.5.1"}]
 
 
 def test_the_warnings_of_a_store_go_to_the_warn_callback(tmp_path):

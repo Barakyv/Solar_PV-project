@@ -104,7 +104,7 @@ class Store:
         self.identity = dict(identity or {})
         self.say = say
         self.warn = warn if warn is not None else say  # a folder that is not used, a damaged file
-        self.env: dict | None = None  # the software and the GPU of the try that made the folder
+        self.envs: list[dict] = []  # every software and GPU that wrote into the folder (R-G1-36)
         self.enabled = self.root is not None
         self.events: list[dict] = []  # what this try restored (the provenance of §23.2 rule 5)
         self.stale: Path | None = None
@@ -130,7 +130,7 @@ class Store:
                     reason = "the tree has uncommitted code, which a resume does not trust"
                 else:
                     self.data = dict(old.get("data", {}))
-                    self.env = old.get("environment")
+                    self.envs = list(old.get("environments") or [])
                     self.events = []
             if reason is not None:
                 self.stale = self.root.with_name(f"{self.root.name}.stale-{_stamp()}")
@@ -153,7 +153,7 @@ class Store:
     def _write_manifest(self) -> None:
         write_atomic(self.root / MANIFEST, lambda f: f.write(_json_bytes({
             "version": VERSION, "identity": self.identity, "data": self.data,
-            "environment": self.env,
+            "environments": self.envs,
             "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})))
 
     def bind(self, name: str, digest: str) -> None:
@@ -177,14 +177,14 @@ class Store:
         (A-20, R-G1-31): the difference is a warning and an event of the step's record."""
         if not self.enabled:
             return
-        if self.env is not None and self.env != info:
-            event = {"kind": "environment_differs", "was": self.env, "now": info}
-            self.events.append(event)
-            self.warn(f"checkpoint: the environment differs from the one that made the folder "
-                      f"(was {self.env}, now {info}); the continued step is valid, and not "
-                      "claimed to equal an uninterrupted one")
-        if self.env != info:
-            self.env = info
+        others = [e for e in self.envs if e != info]
+        if others:  # in every try that finds more than one: the step that completes says it
+            self.events.append({"kind": "environment_differs", "made_on": others, "now": info})
+            self.warn(f"checkpoint: part of the folder was made on another environment "
+                      f"({others}; now {info}); the continued step is valid, and not claimed "
+                      "to equal an uninterrupted one")
+        if info not in self.envs:
+            self.envs.append(info)
             self._write_manifest()
 
     def note(self, kind: str, **fields) -> None:

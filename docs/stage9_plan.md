@@ -1874,7 +1874,7 @@ end of a fit.
 
 | Step | Checkpoint after | What is stored | Resumes from |
 |---|---|---|---|
-| `bilstm`, `tft96`, `tft168`, `tftbase` | an epoch of a fit, at most every 60 s (R-G1-33: every epoch of a TFT, whose epochs take 4 to 10 s; a BiLSTM epoch takes 0.4 s and its state 0.44 s to write, so it writes about every 150 epochs, and its trials are covered by the study checkpoint) | model, Adam state, the order generator, every random state, the best epoch's weights, the curve so far | the next epoch of the same fit |
+| `bilstm`, `tft96`, `tft168`, `tftbase` | an epoch of a fit, at most every 60 s (R-G1-33: at the end of an epoch once at least 60 s passed since the last write: a TFT epoch takes 4 to 10 s, so about every 6th to 15th epoch; a BiLSTM epoch takes 0.4 s and its state 0.44 s to write, so about every 150th, and its trials are covered by the study checkpoint) | model, Adam state, the order generator, every random state, the best epoch's weights, the curve so far | the next epoch of the same fit |
 | the same | every finished fit (a trial or the final fit) | the study: the finished trials and the sampler (its random state) | the next trial, with the parameters the sampler would have drawn |
 | the same | every finished target x seed | the forecast, the model, the curves, the trials and the record, each with its SHA-256 | the next target x seed |
 | `patchtst` | every finished target x seed (a fit takes about 2 minutes: no epoch checkpoint) | as above | the next target x seed |

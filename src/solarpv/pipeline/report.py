@@ -364,7 +364,7 @@ def markdown(ctx: Context, tables: dict[str, pd.DataFrame], sources: dict[str, s
              "numbers (D-10): validation chose the hyper-parameters and the stopping round.", "",
              "## Steps", ""]
     lines += _md_table(tables["steps"], ["step", "status", "commit", "duration_s",
-                                         "n_warnings"], 1)
+                                         "n_warnings", "n_resumed"], 1)
     for split in ("val", "test"):
         key = f"benchmark_{split}"
         if key in tables:
