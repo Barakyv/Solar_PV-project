@@ -1,0 +1,41 @@
+{
+  "run_id": "20261112T200502Z_smoke",
+  "mode": "smoke",
+  "sources": {
+    "evaluate/val/benchmark_summary.csv": "9fcb7e56d81965a57a8978e436f13458052a1b887cc6b3a328b48dbb46ae3da2",
+    "evaluate/val/dm_tests_kw.csv": "83eb713ceb1da8b3cee370a262c4787ec017eb2e3f1409ed41b4da204771fc89",
+    "xgb/best_params.json": "98bbb2e802fd90b5f53ec553aca6671e83b1d9026c6019f271179f6ee36ce61d",
+    "xgb/learning_curves.csv": "1971fa2fff9929a90d646f4302e1eb73fc3eec92c844efb6ae14ca1482425b3a",
+    "xgb/trials.csv": "94e0436327d06987dd2d53b6a410f6c13fe3008009fecc580afbf37e78d3eecb",
+    "bilstm/best_params.json": "05e30fe688ab83939bc51827f2e18fe507325bf398383a19ff7285c5ac86d40a",
+    "tft96/best_params.json": "de4a6e45d995a1860cd94f2e1a48c4c0665e74b215e5d32693bfd8b2d30635b3",
+    "tft168/best_params.json": "dc141a4e1eca54016444370f74380248611289fb7450d1228ac9701575afdc54",
+    "tftbase/best_params.json": "a519bdda2261bcee0a3b077be43a91cc9a7a79858e8d4915f204ff877f0e7bd5",
+    "patchtst/best_params.json": "f45bec2a55a61904b98d0ee511a55ff0463fffbea15359019f652e4321e4438a",
+    "bilstm/mbe.csv": "18d5ba4e01083f1b9a9afcb64c48f821554d1c49627986855613940a9e8c48b9",
+    "tft96/mbe.csv": "e276c5959d42c94a8350833d9805a34af8974b998925916000e9c399a25f7daa",
+    "tft168/mbe.csv": "06c9309b1cf2892f6f9862117276a3e053f5cff526b8b3d4607bd2839fbf7c2f",
+    "tftbase/mbe.csv": "a7567466007fa7e6f4a587f925896a60f56f32d51e1505f0ef040051f81890f6",
+    "patchtst/mbe.csv": "45b80b024db1cc79877e04c3a72278d598c8a7359dd4ba4e58cdb796868562ea",
+    "explain/xgb/xgb_shap_features.csv": "6ec516ec48624d01bcb420a4fdb9e9f1e77e5cf4cf6a019cacef14a96c216713",
+    "explain/xgb/xgb_shap_groups.csv": "da27c2a9d4acccd056f7006a6c61cfdb3722e50be5393b05aebf8a227fbc1da4",
+    "explain/tft/tft_attention_summary.csv": "d62988eab15662c450b9feb7e53b9663be22ba858d078f079e1f0c6792659faa",
+    "explain/hparam_importance.csv": "c8218883994ad74a397e1e10b803c420910c23c231830fb87b242d5bb826927a"
+  },
+  "problems": [],
+  "steps_missing": [],
+  "tables": {
+    "steps": "report_steps.csv",
+    "benchmark_val": "report_benchmark_val.csv",
+    "dm_kw_val": "report_dm_kw_val.csv",
+    "seed_spread": "report_seed_spread.csv",
+    "training": "report_training.csv",
+    "studies": "report_studies.csv",
+    "warnings": "report_warnings.csv",
+    "g1_points": "report_g1_points.csv",
+    "shap_top": "report_shap_top.csv",
+    "shap_groups": "report_shap_groups.csv",
+    "tft_attention": "report_tft_attention.csv",
+    "l14_l15_files": "report_l14_l15_files.csv"
+  }
+}

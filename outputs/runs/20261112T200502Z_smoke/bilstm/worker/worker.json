@@ -1,0 +1,158 @@
+{
+  "step": "bilstm",
+  "job_sha256": "8ea528d7a86ee2fe448f4f89000c81bfb995684e0876cd7ff1402fdbf2bf2a9d",
+  "solarpv_file": "C:\\Users\\204323141\\Desktop\\solar\\src\\solarpv\\__init__.py",
+  "environment": {
+    "python": "3.11.18",
+    "executable": "C:\\Users\\204323141\\miniforge3\\envs\\solar-gpu\\python.exe",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "versions": {
+      "torch": "2.5.1+cu121",
+      "pytorch-forecasting": "1.7.0",
+      "neuralforecast": "3.1.7",
+      "lightning": "2.6.6",
+      "pytorch-lightning": "2.6.6",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "scipy": "1.17.1",
+      "scikit-learn": "1.9.1",
+      "optuna": "5.0.0"
+    },
+    "errors": [],
+    "cuda_runtime": "12.1",
+    "cudnn": 90100,
+    "arch_list": [
+      "sm_50",
+      "sm_60",
+      "sm_61",
+      "sm_70",
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90"
+    ],
+    "cuda_available": true,
+    "gpu": {
+      "name": "GRID P40-24Q",
+      "capability": "6.1",
+      "memory_gb": 24.0,
+      "device_count": 1
+    }
+  },
+  "determinism": {
+    "use_deterministic_algorithms": true,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false,
+    "tf32": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "precision": "float32",
+    "data_loader_workers": 0
+  },
+  "started_utc": "2026-11-12T20:05:47Z",
+  "duration_s": 18.6,
+  "records": {
+    "indirect": {
+      "42": {
+        "target": "indirect",
+        "seed": 42,
+        "params": {
+          "hidden": 128,
+          "n_layers": 2,
+          "dropout": 0.06240745617697461,
+          "lr": 0.00020511104188433984,
+          "batch_size": 64
+        },
+        "fixed": {
+          "grad_clip_norm": 1.0,
+          "optimizer": "Adam"
+        },
+        "quantiles": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "study": {
+          "best_trial": 0,
+          "best_value_kw": 49.01123543293941,
+          "n_trials": 1
+        },
+        "final": {
+          "value_kw": 49.01123543293941,
+          "n_scored": 963,
+          "value_kw_D1": 49.011167687233694,
+          "value_kw_D2": 49.01126930575715,
+          "value_kw_D3": 49.01126930575715,
+          "value_k": 106.91931602143447,
+          "best_epoch": 2,
+          "epochs_run": 2,
+          "best_val_loss": 0.3839293836441881,
+          "train_loss_at_best": 0.3685961663722992,
+          "stopped_early": false,
+          "nan_loss": false,
+          "duration_s": 0.13,
+          "gpu_peak_mb": 237.9,
+          "n_parameters": 855683
+        },
+        "reproduce_diff_pp": null
+      }
+    },
+    "direct": {
+      "42": {
+        "target": "direct",
+        "seed": 42,
+        "params": {
+          "hidden": 128,
+          "n_layers": 2,
+          "dropout": 0.06240745617697461,
+          "lr": 0.00020511104188433984,
+          "batch_size": 64
+        },
+        "fixed": {
+          "grad_clip_norm": 1.0,
+          "optimizer": "Adam"
+        },
+        "quantiles": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "study": {
+          "best_trial": 0,
+          "best_value_kw": 41.69688614554782,
+          "n_trials": 1
+        },
+        "final": {
+          "value_kw": 41.69688614554782,
+          "n_scored": 963,
+          "value_kw_D1": 41.59200531097478,
+          "value_kw_D2": 41.69772834226237,
+          "value_kw_D3": 41.80066372692027,
+          "best_epoch": 2,
+          "epochs_run": 2,
+          "best_val_loss": 0.11468467672872552,
+          "train_loss_at_best": 0.09722239524126053,
+          "stopped_early": false,
+          "nan_loss": false,
+          "duration_s": 0.11,
+          "gpu_peak_mb": 240.4,
+          "n_parameters": 882819
+        },
+        "reproduce_diff_pp": null
+      }
+    }
+  },
+  "outputs": {
+    "curves_direct_seed42.csv": "1fd6abbc925223b04373368a44223dd32c3a60b75fc519b5e57aaa8e8c849dc5",
+    "curves_indirect_seed42.csv": "a4668d90863c8f255a3b1c2398e58e014a1cd33d2cdb2bf6a5894da038596377",
+    "fit_direct_seed42.json": "f7cc82481c76785bb720c6ecb9c0298feba90f71f8184b6d2b3ac441480c00e5",
+    "fit_indirect_seed42.json": "a1611cb89d46eca41d8259d2fbcd9189fe2227d384199875db9a7a3f62a85f72",
+    "forecast_direct_seed42.npz": "3fe54f25a2c680392b0b14246ccbf7970b68dcbd103dc249be4b2b2916d85104",
+    "forecast_indirect_seed42.npz": "d657f14dcf30679c3014cfd1b0b753c677f8d3641fe3ddc478dc2dc5c4e26b76",
+    "models/lstm_sota_direct_seed42.pt": "8ac1e1ac01f51332cfe0194e3b886416f9e9efd2a6f913a0141b7a8902c900d6",
+    "models/lstm_sota_indirect_seed42.pt": "fe905ba60e0ddf7a2250a3e9c7a34a148dc9bb27ddf2a1f89cf0c4a6af7e0d11",
+    "optuna.db": "bb86de0a0b5970280947c9948dcfd434c1be8e32d37a577f367249dc35181b7b",
+    "trials_direct_seed42.csv": "6269108a9ef9427b309f5e47c64bb15ec1420ced5660cc687de25fb34dab29b4",
+    "trials_indirect_seed42.csv": "0edd146e212a9c5a428c65c3e82b349f7e0b0eccc81d20e4d3c189a71ae6fc30"
+  },
+  "numpy": "2.4.6"
+}

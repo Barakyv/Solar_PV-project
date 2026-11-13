@@ -1,0 +1,102 @@
+{
+  "step": "tftbase",
+  "run_id": "20261112T200502Z_smoke",
+  "mode": "smoke",
+  "started_utc": "2026-11-12T20:07:49.758841+00:00",
+  "commit": "5214bbc",
+  "fingerprint": "4772cc43704759456c0361a1d2fb8de626aba42b12b649a6edeb9640e12590c8",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-03-14T22:00:00+00:00",
+        "end": "2024-04-11T21:00:00+00:00",
+        "label": "local days 2024-03-15 to 2024-04-11"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": false,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 0,
+      "epochs": 2,
+      "patience": 10,
+      "seeds": [
+        42
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261112T200502Z_smoke/logs/tftbase_20261112T200749Z.log",
+  "status": "ok",
+  "folder": "tftbase",
+  "finished_utc": "2026-11-12T20:08:32.019326+00:00",
+  "duration_s": 42.3,
+  "outputs": {
+    "attention_direct_seed42.csv": "ce4ffa15086b3405ac2c7c8cc2ddc11e468eb508d703b8be019540c4908ed9d5",
+    "attention_indirect_seed42.csv": "8aaa5d93b34e16797d2feb77f5b5bbd9e45f4e0dfcb6cad632c88a8be2c369ed",
+    "best_params.json": "a519bdda2261bcee0a3b077be43a91cc9a7a79858e8d4915f204ff877f0e7bd5",
+    "figures/learning_curves.png": "db41b1927beb6b715dac3ebe61974f8d3a08c48b6e911a071c6b5dd811dbc5fc",
+    "job/data_direct.npz": "42d2077eb3b76f65a21e489203d3f6eeaecb01200c55e6f35f8353215a360ebb",
+    "job/data_indirect.npz": "12f8fa0564fa76fd2040bbb8dde8f73d2eb77bbec595baef16cfb23e48dc481f",
+    "job/job.json": "83bd13de47129576145287ae115c3bd8a3c90736d16a88a49b0a3cedac38da65",
+    "learning_curves.csv": "b95cf9035810e136626155c07e229523c8359d1765764f35ac6cc7c1d98ac8a4",
+    "mbe.csv": "a7567466007fa7e6f4a587f925896a60f56f32d51e1505f0ef040051f81890f6",
+    "predictions_tft_seed42.csv": "37bb4fa9ebd83f21f0119a8ae77b6d8b9449854be4f0b3ddb574a91ec5d6d669",
+    "quantiles_tft_seed42.csv": "b8728cdf4e3a3cc81a4d90334f7946a838d66659d7d6ffab59743cdd992612e9",
+    "tft_config.json": "aae3e29147c0e581564233536677263f5a94f82a0a80849f52840276f2e10e62",
+    "worker/curves_direct_seed42.csv": "37e735f85933f5e70d4047e4d9b7420bdbbc52fe5bf7a56e0b441afb224b1e88",
+    "worker/curves_indirect_seed42.csv": "bfa23f8e1c794d85db76a9673295afb59aa1ac37e7f9facececc5a081f349290",
+    "worker/fit_direct_seed42.json": "d5cbfef3f44fe16fc1d3ae98909175f912be8550623c7b9281a90ea59fc1fc25",
+    "worker/fit_indirect_seed42.json": "b88d28a148829827a734cd2a61af5f55722f80ddbc7029f56893929b7af28876",
+    "worker/forecast_direct_seed42.npz": "1aa0c27c130f00ea42e34c4446ed41bd379a416dd6ba79eb516b3b42421a1288",
+    "worker/forecast_indirect_seed42.npz": "9b9d521fa66998438a9b6fecd24bfb1d38588308e81dc87a2769aebd452897e3",
+    "worker/models/tft_direct_seed42.pt": "da71e57b291999269b3de06a24b635b55670ced81073eb2d45687f6c5fd27236",
+    "worker/models/tft_indirect_seed42.pt": "6986538738e15ac1578d9ca21a854941a0c940f71d1f5129c58ffca48d991c29",
+    "worker/optuna.db": "767d478c5d69a433496c7631050cdb0740734969694fe557482f51561a7dd6be",
+    "worker/worker.json": "85dbb6e6e67c83fbe52879d7e7dcfa0c333b5435ff8ecf1e1fda7422a408e0f1",
+    "worker_stdout.log": "fa95921d8e1f97f0c24ad9da651a3564cd23a204daea95bd63eca797812441c0"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 13.90130485825296,
+      "direct_seed42": 26.214985483746737
+    },
+    "test_access": []
+  },
+  "notes": {
+    "seed_spread_pp": {},
+    "warnings": 2
+  },
+  "summary": [
+    "tftbase (smoke, seeds [42]): nRMSE in kW on the tuning window, local days 2024-03-15 to 2024-04-11",
+    "  indirect_seed42        13.901 %  (D+1 13.878, D+2 13.955, D+3 13.871)",
+    "  direct_seed42          26.215 %  (D+1 26.539, D+2 26.481, D+3 25.616)"
+  ],
+  "warnings": [
+    "tftbase: indirect seed 42: best epoch 2 at the last epoch: it may not have converged",
+    "tftbase: direct seed 42: best epoch 2 at the last epoch: it may not have converged"
+  ]
+}

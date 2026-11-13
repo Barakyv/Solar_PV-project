@@ -1,0 +1,11 @@
+step,status,commit,fingerprint,duration_s,budget,n_outputs,n_warnings
+select,ok,5214bbc,cc6954815f40,2.8,,8,0
+baselines,ok,5214bbc,be416466ca08,0.7,,3,0
+xgb,ok,5214bbc,7fcd259f59ad,17.8,"{""seeds"": [42], ""trials"": 1}",16,12
+bilstm,ok,5214bbc,94fb99927e96,39.6,"{""epochs_final"": 2, ""epochs_trial"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",25,2
+tft96,ok,5214bbc,54f731afab81,48.9,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4
+tft168,ok,5214bbc,40ec6c3d3f98,48.1,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 1}",27,4
+tftbase,ok,5214bbc,4772cc437047,42.3,"{""epochs"": 2, ""patience"": 10, ""seeds"": [42], ""trials"": 0}",23,2
+patchtst,ok,5214bbc+dirty,632d1a2d6c59,41.1,"{""max_steps"": 20, ""patience"": 10, ""seeds"": [42], ""val_check_steps"": 10}",20,2
+evaluate,ok,5214bbc+dirty,ab7d7ca43d94,5.2,,10,0
+explain,ok,5214bbc+dirty,2e41dd49da3d,4.5,,15,0

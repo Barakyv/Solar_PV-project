@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "step": "patchtst",
+  "model": "patchtst",
+  "family": "patchtst",
+  "mode": "smoke",
+  "run_id": "20261112T200502Z_smoke",
+  "targets": [
+    "indirect",
+    "direct"
+  ],
+  "seeds": [
+    42
+  ],
+  "budget": {
+    "max_steps": 20,
+    "val_check_steps": 10,
+    "patience": 10,
+    "seeds": [
+      42
+    ]
+  },
+  "fixed": {
+    "bilstm": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "tft": {
+      "batch_size": 64,
+      "grad_clip_norm": 0.1,
+      "optimizer": "Adam"
+    },
+    "tftbase": {
+      "hidden_size": 64,
+      "dropout": 0.1,
+      "attention_head_size": 4,
+      "hidden_continuous_size": 8,
+      "lstm_layers": 1,
+      "learning_rate": 0.001
+    },
+    "patchtst": {
+      "input_size": 168,
+      "h": 73,
+      "patch_len": 16,
+      "stride": 8,
+      "scaler_type": "identity",
+      "revin": true
+    }
+  },
+  "search_space": null,
+  "quantiles": [
+    0.5
+  ],
+  "scopes": [
+    "train",
+    "val"
+  ],
+  "tune_scope": "val",
+  "mean_k": 0.788157,
+  "meta": {
+    "indirect": {
+      "enc_channels": [
+        "target_k"
+      ],
+      "dec_channels": [],
+      "n_unknown": 0,
+      "encoder_hours": 168,
+      "target_scale": 1.0
+    },
+    "direct": {
+      "enc_channels": [
+        "site_total_AC_kW"
+      ],
+      "dec_channels": [],
+      "n_unknown": 0,
+      "encoder_hours": 168,
+      "target_scale": 3449.0
+    }
+  },
+  "files": {
+    "indirect": {
+      "path": "data_indirect.npz",
+      "sha256": "66877991d1aab1f6bdc2ceae3e0bdbabc5cdfcff2faccf618b366d7df6e243c3"
+    },
+    "direct": {
+      "path": "data_direct.npz",
+      "sha256": "38c7702f0239432bae4f0f5476590676c000828df2c608360dfe5ccd54df9056"
+    }
+  }
+}
