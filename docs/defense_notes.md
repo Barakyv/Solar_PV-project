@@ -353,3 +353,32 @@ Figures S10-02 to S10-06; `docs/run_journal.md` R9-39; OP-65.
   both views and compare each test number only with the validation number of the same view."
 - **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's
   decision, 14.11).
+
+## 15. Stage 11, part A: the analyses of the submitted report, redone from the frozen final run
+
+Figures S11-01 to S11-17; `docs/run_journal.md` R11-01; OP-66; errata C-78 to C-84.
+
+- **Submitted:** production quintiles binned by the observed power, with edges from the test sample, read as
+  inverter downtime and as underestimation of the peaks (12.4); a bias² and variance table with no
+  definition (12.3); the error by hour and season for "the top four models" (9.2); a "consistent advantage"
+  of the 96-hour encoder from gaps of about one point (11.3); PatchTST as a lower bound within about one point
+  of XGB (11.4).
+- **Rebuild:** every analysis is computed from the saved forecasts of the final run, checked against the run's
+  own report tables, with a control or a paired test where the original read a pattern or a gap.
+- **Quintiles:** Binned by the observed power the lowest bin has a mean error of +263 kW and the highest -98 kW on test (direct route): a positive then negative pattern. Binned by the forecast it is +4 and +162 kW: the signs are the opposite at both ends. The control forecast, unbiased by construction on validation, gives +263 and -170 kW in the same observed bins on test, so binning by the outcome produces the first pattern without any conditional bias in the model. In the lowest observed bin 14% of the test hours are operation-limited against 2% on validation.
+- **Bias:** Bias² is below 1.6% of the squared error for the six models on validation and below 3.6% on test, except PatchTST (8.0% on test). Every model has a positive mean error on all hours, +52 to +125 kW on test; on the hours of normal operation it is -11 to +12 kW for XGB, BiLSTM and the three TFTs, so nearly all of their positive mean error is made on the 186 operation-limited hours; PatchTST keeps +64 kW in normal operation. The variance between seeds is at most 1.8% of the squared error.
+- **Hour and season:** The largest cell of each model is in the local hour(s) 11, and the largest cell of the figure is Fall at 11:00 (24.0 per cent of the capacity, PatchTST). Averaged over the seasons, the XGB error changes by 17.3 points between the hours of the day, and the six models differ by at most 3.1 points within an hour: the shape over the day is shared by the models. For XGB in the autumn at 11:00 the error is 22.9 per cent on all hours and 4.4 in normal operation; 18% of those hours are operation-limited (S11-17). In normal operation the largest cell of each model is in the local hour(s) 10, 11, and the largest cell is Winter at 11:00 (14.6 per cent, PatchTST). For XGB in the autumn at 11:00 the error falls from 22.9 per cent on all hours to 4.4 in normal operation: the autumn peak of S11-05 is mostly the operation-limited hours.
+- **Encoder length:** On validation the difference is between -0.02 and +0.10 pp, and no cell is significant. On test it is between -0.27 and +0.33 pp, with the sign negative for the indirect route in 3 of 3 horizons and positive for the direct route in 3 of 3; the number of significant cells is 1 of 12. A consistent advantage of the shorter window is not found: the sign depends on the route.
+- **PatchTST:** PatchTST is worse than XGB by 1.36 to 2.31 pp, significantly in 12 of 12 cells. Against climatology the gap is +0.05 to +1.26 pp, significant in 8 of 12 cells, all of them in the worse direction. A gap of this size does not support the reading of PatchTST as a lower bound within about one point of XGB.
+- **Likely question:** "Is the XGB biased high on the test split?" **Answer:** "Its mean error is near zero in
+  normal operation; the positive mean error is made on the operation-limited hours (S11-11), which the weather
+  and the history do not describe (D-22). We report both views."
+- **Likely question:** "Is the W-shaped error profile of the quintile analysis real?" **Answer:** "A forecast that
+  is unbiased by construction shows the same pattern when the hours are binned by the observed power
+  (S11-12); binned by the forecast, which is known at issuance, the pattern is different. We do not read the
+  binned-by-outcome profile as physics."
+- **Likely question:** "Does a longer TFT encoder help?" **Answer:** "No consistent difference: the sign depends
+  on the route and on the period, one cell of twelve is significant, and each model was tuned separately with
+  one seed (S11-09)."
+- **Open:** the dust-day split of L-20 needs a definition (Q-29); the options `--xgb-only` and `--skip-train` of
+  the reproduction script need a decision (Q-30).

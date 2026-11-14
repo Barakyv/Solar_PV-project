@@ -1,0 +1,42 @@
+source,model,target,split,nRMSE_mean_pct
+"this rebuild (D+1, hourly, GFS, one plant)",clearsky_k,direct,test,29.8845417
+"this rebuild (D+1, hourly, GFS, one plant)",clearsky_k,direct,val,20.4461571
+"this rebuild (D+1, hourly, GFS, one plant)",clearsky_k,indirect,test,29.8845417
+"this rebuild (D+1, hourly, GFS, one plant)",clearsky_k,indirect,val,20.4461571
+"this rebuild (D+1, hourly, GFS, one plant)",climatology,direct,test,29.1052791
+"this rebuild (D+1, hourly, GFS, one plant)",climatology,direct,val,18.3513665
+"this rebuild (D+1, hourly, GFS, one plant)",climatology,indirect,test,28.7652181
+"this rebuild (D+1, hourly, GFS, one plant)",climatology,indirect,val,18.400193
+"this rebuild (D+1, hourly, GFS, one plant)",lstm_sota,direct,test,26.5395211
+"this rebuild (D+1, hourly, GFS, one plant)",lstm_sota,direct,val,15.1355676
+"this rebuild (D+1, hourly, GFS, one plant)",lstm_sota,indirect,test,26.9906394
+"this rebuild (D+1, hourly, GFS, one plant)",lstm_sota,indirect,val,15.9621875
+"this rebuild (D+1, hourly, GFS, one plant)",patchtst,direct,test,29.6308194
+"this rebuild (D+1, hourly, GFS, one plant)",patchtst,direct,val,18.4627351
+"this rebuild (D+1, hourly, GFS, one plant)",patchtst,indirect,test,31.2426662
+"this rebuild (D+1, hourly, GFS, one plant)",patchtst,indirect,val,20.0062198
+"this rebuild (D+1, hourly, GFS, one plant)",persistence,direct,test,36.5210036
+"this rebuild (D+1, hourly, GFS, one plant)",persistence,direct,val,22.0815016
+"this rebuild (D+1, hourly, GFS, one plant)",persistence,indirect,test,36.5239969
+"this rebuild (D+1, hourly, GFS, one plant)",persistence,indirect,val,22.0978107
+"this rebuild (D+1, hourly, GFS, one plant)",tft,direct,test,26.5673556
+"this rebuild (D+1, hourly, GFS, one plant)",tft,direct,val,15.6847604
+"this rebuild (D+1, hourly, GFS, one plant)",tft,indirect,test,26.4929924
+"this rebuild (D+1, hourly, GFS, one plant)",tft,indirect,val,15.5962026
+"this rebuild (D+1, hourly, GFS, one plant)",tft_168,direct,test,26.5207718
+"this rebuild (D+1, hourly, GFS, one plant)",tft_168,direct,val,15.4178084
+"this rebuild (D+1, hourly, GFS, one plant)",tft_168,indirect,test,26.0556312
+"this rebuild (D+1, hourly, GFS, one plant)",tft_168,indirect,val,15.5688655
+"this rebuild (D+1, hourly, GFS, one plant)",tft_96,direct,test,25.8568145
+"this rebuild (D+1, hourly, GFS, one plant)",tft_96,direct,val,15.1913384
+"this rebuild (D+1, hourly, GFS, one plant)",tft_96,indirect,test,26.6136384
+"this rebuild (D+1, hourly, GFS, one plant)",tft_96,indirect,val,15.3913936
+"this rebuild (D+1, hourly, GFS, one plant)",xgb_sota,direct,test,26.1431186
+"this rebuild (D+1, hourly, GFS, one plant)",xgb_sota,direct,val,15.1162078
+"this rebuild (D+1, hourly, GFS, one plant)",xgb_sota,indirect,test,26.2256447
+"this rebuild (D+1, hourly, GFS, one plant)",xgb_sota,indirect,val,15.1195988
+"C1 (2-day persistence, mean of 7 Hungarian plants)",literature,,test year,81.6
+C1 (physical model chain),literature,,test year,48.7
+"C1 (best tuned models (RNN, Pyraformer))",literature,,test year,42.7
+"C1 (worst tuned models (XGBoost, LightGBM))",literature,,test year,43.5
+"C2 (best workflow, ensemble NWP with power bias correction)",literature,,test year,37.4

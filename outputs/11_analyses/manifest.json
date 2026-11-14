@@ -1,0 +1,52 @@
+{
+  "run": "outputs/runs/20261114T083930Z_final",
+  "git_commit": "a92756b+dirty",
+  "inputs_sha256": {
+    "outputs/runs/20261114T083930Z_final/baselines/predictions_clearsky_k.csv": "a1bdb7ed42a0242718979f7c05982e6ad8919126c7a2f61dbf645c45b6197f1d",
+    "outputs/runs/20261114T083930Z_final/baselines/predictions_climatology.csv": "ed6c096afee6d4d1e6473562b05cb4de83799d95f8f61e3246b2d16c7bc43d56",
+    "outputs/runs/20261114T083930Z_final/baselines/predictions_persistence.csv": "59fee4f8b7a32a448141a520c758a52ced0a78dba98aaf7e8f1225924b2277a8",
+    "outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed42.csv": "135092ccb432a411d5a0f323c1e2d1cf8fd82c2f941726e4788659fb1c5fca64",
+    "outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed123.csv": "d8df3ffd4fd5234e6e5c26f84b012185aaef0467844e0127e5f962ad6f672f0a",
+    "outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed777.csv": "1f7abaf9a9b1230dba9a879d6b93521e728bd8b7632b2378990293d6bf6f78b8",
+    "outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed42.csv": "476094f163ae470aa691518442331f0dd602bc23bf909658f2f9c96af6b4d873",
+    "outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed123.csv": "32fa02bb20c86d0f57ad5754921b60257cbfa415b764b2d28cedcfb6bd54b5ff",
+    "outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed777.csv": "9b37475dd3399df5a25cf340869de1ff4aa2900097c085328f4a1885cddc967e",
+    "outputs/runs/20261114T083930Z_final/tft96/predictions_tft_96_seed42.csv": "254cd711c5865a924b656a8b72905a906dc9d965505639ce01342349f865af62",
+    "outputs/runs/20261114T083930Z_final/tft168/predictions_tft_168_seed42.csv": "e8c7887f1736bffd3282272a0421e164c24ff29cb27f1ebafbf94a3345fdf8a2",
+    "outputs/runs/20261114T083930Z_final/tftbase/predictions_tft_seed42.csv": "24d3b99b38dbdd75a25fc87d51c63215a1920df19f2d3ab5766d33e632ae32d9",
+    "outputs/runs/20261114T083930Z_final/patchtst/predictions_patchtst_seed42.csv": "837fca71eb3fd4cfb035bdefd19276dfa8b8a754457136ccdfb9931f7a834476"
+  },
+  "max_abs_diff_vs_report_nRMSE_kW_pct": 4.993161066835228e-07,
+  "max_rel_identity_error_bias2_plus_variance": 4.0112548984285693e-16,
+  "rows": {
+    "metrics_kw": 312,
+    "decomposition": 312,
+    "decomposition_seeds": 48,
+    "quintiles": 1560,
+    "quintile_control": 60,
+    "hour_season": 8964,
+    "seasonal_kw": 378,
+    "encoder_length": 12,
+    "patchtst_gap": 24,
+    "benchmark_ci_kw": 156,
+    "scatter_hist": 7679,
+    "horizon_robustness": 36,
+    "literature_alignment": 41
+  },
+  "outputs_sha256": {
+    "outputs/11_analyses/metrics_kw.csv": "009508e96cfc21fc0129f5c07d7f449de7d70aded605fe846b98d10198d7c8e5",
+    "outputs/11_analyses/decomposition.csv": "648ff7986347840e21a1cd4cbe9c072e6ce624ed71a92bc702f0936cf50cbd59",
+    "outputs/11_analyses/decomposition_seeds.csv": "98b7084b50a1c256216bc4c68a453b8e67cbcab7ce4a95f180d479c0cd5f266b",
+    "outputs/11_analyses/quintiles.csv": "a00bab0883c5aa84ec8d49c7a14dff28c189b7a3fb919fd6881fef47b3351e3a",
+    "outputs/11_analyses/quintile_control.csv": "ca6e1f4e82c638ec528c33d9eaa80abc1e44d1906a35ab1ad9f96742b1146093",
+    "outputs/11_analyses/hour_season.csv": "e899aae531da6dbd228a325cbc6c8f05954978425eb6f9975bfc14d50f1f8f79",
+    "outputs/11_analyses/seasonal_kw.csv": "a750d62f82bab961d4df72043572ac6d374a0d9d0a66d187ae8bb820726b3258",
+    "outputs/11_analyses/encoder_length.csv": "a41239be510358bfe50542ff03e9f7ab6230acfa3da5a12f679089f41bbdc152",
+    "outputs/11_analyses/patchtst_gap.csv": "03250446ab6435a3fe83e0d5a5e10dca1ed9791cc5ed695f3067807c23f1056a",
+    "outputs/11_analyses/benchmark_ci_kw.csv": "422273348b100b34782ee48cce712cdec56d1d54e2821d667cfee36c2cfa8dbb",
+    "outputs/11_analyses/scatter_hist.csv": "83a69e357595b4a0e63b596c2a04ef2da6a69600b4a06fda819d6ab17b1c1af4",
+    "outputs/11_analyses/horizon_robustness.csv": "874eb64ee78df17074ca592f7dbd749524be7b0e441c446138dc27c72b5d5e56",
+    "outputs/11_analyses/literature_alignment.csv": "4255ac6c89a6db1c359eb7ed7fa3bd5fe5218fa97c3a61b4207307360e19c43e"
+  },
+  "min_hours_per_cell_masked": 20
+}

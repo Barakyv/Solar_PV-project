@@ -57,6 +57,15 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-72 | Figure book: every registered figure built and unchanged, inputs unchanged since the build, takeaways re-render from their facts, catalog current, every completed stage has process figures, process figures do not read the submission (except the evaluation-code check), every correction figure is used in the defense notes | `contracts/test_figures.py` | ✅ figures (2026-11-11) |
 | T-92 | Ordered quantiles (D-33, X53): rows in order unchanged, crossed rows sorted, the point forecast and other columns untouched, sorting never raises the quantile loss (row by row, for every truth value), columns ordered by level, coverage counted, a frame without quantiles refused. Contract: every reader of quantile files or columns imports the sorting module (the writer keeps the raw output, the report only lists names; a planted reader is caught); on the development run the written point is the 0.5 head, sorting keeps it and never raises the loss | `unit/test_quantiles.py`, `contracts/test_quantile_use.py` | ✅ stage 9 (2026-11-12) |
 | T-37 | Scope register: every v6 figure (1–25) and numbered section has exactly one row; the six v6 models stay in D-08 | `contracts/test_scope_register.py` | ✅ (2026-10-25) |
+| T-169 | Stage 11, part A: MSE = ME² + Var(e) and the seed split are exact | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-170 | Quintile edges come from validation only (the test hours never move them) and the bins partition the rows | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-171 | Binning by the outcome produces the pattern of M45 for a forecast that has no conditional bias | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-172 | Local hour and season follow the local clock across the DST change | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-173 | The tables of `outputs/11_analyses/` equal their manifest, the inputs equal the step records and the nRMSE equals the run's report | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-174 | The analyses never run the step `test` or pass `--allow-test` | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-175 | The literature numbers are those of `docs/literature_review.md` | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-176 | Every read of the test rows by the analyses is in the access log | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-177 | The G-1 checklist figure does not count a final run as an unaudited run, and still fails for any other run the audit did not see (X106) | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.
 

@@ -9,7 +9,7 @@ submitted project, used in docs/defense_notes.md).
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-STAGES = ("0", "1", "2", "3", "3b", "4", "5", "6", "6b", "7", "8", "9", "10", "correction")
+STAGES = ("0", "1", "2", "3", "3b", "4", "5", "6", "6b", "7", "8", "9", "10", "11", "correction")
 STAGE_NAMES = {
     "0": "Raw data intake", "1": "Infrastructure, splits and leakage contract",
     "2": "Ingestion and the UTC time base", "3": "Exploratory analysis",
@@ -17,6 +17,7 @@ STAGE_NAMES = {
     "5": "Cleaning", "6": "Target and features", "6b": "Weather forecasts (GFS)",
     "7": "Feature selection", "8": "Evaluation layer", "9": "Light models and the runner",
     "10": "The final run (all models)",
+    "11": "Evaluation and reporting from the frozen final run",
     "correction": "Corrections of the submitted project (defense notes)",
 }
 
@@ -96,10 +97,17 @@ WORK_ITEMS = {
                ("S09-34", "S09-35", "S09-36", "S09-37", "S09-38", "S09-39", "S09-40",
                 "S09-41", "S09-42", "S09-43")),
     },
+    "11": {
+        "A": ("Tables and figures from the frozen final run",
+              ("S11-01", "S11-02", "S11-03", "S11-04", "S11-05", "S11-06", "S11-07", "S11-08",
+               "S11-09", "S11-10", "S11-11", "S11-12", "S11-13", "S11-14", "S11-15", "S11-16",
+               "S11-17")),
+    },
 }
 TASK_PLANS = {"S09-W1": "docs/stage9_plan.md §10", "S09-W2": "docs/stage9_plan.md §13–§16",
               "S09-W3": "docs/stage9_plan.md §17", "S09-W4": "docs/stage9_plan.md §18",
-              "S09-W5": "docs/stage9_plan.md §19", "S09-W6": "docs/stage9_plan.md §20–§23"}
+              "S09-W5": "docs/stage9_plan.md §19", "S09-W6": "docs/stage9_plan.md §20–§23",
+              "S11-A": "docs/stage11_plan.md"}
 CORRECTION_TASK = "corrections"
 
 
@@ -156,6 +164,7 @@ def load_all() -> list[FigureSpec]:
         s09_w5,
         s09_w6,
         s10_final,
+        s11_part_a,
     )
     order = {s: i for i, s in enumerate(STAGES)}
     ids = [f.id for f in REGISTRY]

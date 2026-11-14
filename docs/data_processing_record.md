@@ -1408,6 +1408,28 @@ stored file changed).**
 - *Original:* the original scored the test split in every run; its test numbers are not comparable
   (C-37, C-40).
 
+**OP-66 — Stage 11, part A: the analyses of the submitted report, computed from the frozen final run (no
+stored data file changed).**
+- *Why:* PROJECT_MASTER §7, stage 11: the tables and figures of chapters 7–12 that need no training (S-22–S-41).
+- *Method:* `python -m solarpv.figures.analyses11` reads the prediction files of the run
+  `20261114T083930Z_final` (each checked against the SHA-256 of its step record) and the stage-6 truth table,
+  scores every daytime hour in kW against the actual AC (the indirect forecast through `to_kw`), and writes
+  13 tables to `outputs/11_analyses/`: the metrics in two views (all hours and normal operation, D-22), the
+  decomposition MSE = ME² + Var(e) and the split between the seeds, production quintiles (edges fixed on the
+  validation hours, two binnings, a control), the error by season and by local hour, the paired tests TFT-168
+  against TFT-96 and PatchTST against XGB and climatology, the benchmark with bootstrap intervals in kW, the
+  scatter counts, the horizon table and the literature alignment.
+- *Parameters:* none tuned. Intervals: circular block bootstrap (block 24 h, 1,000 repetitions, seed 42, as
+  in the evaluation layer); paired tests: Diebold-Mariano with HLN and Newey-West 24, Bonferroni over the six
+  cells of a split; cells of the hour × season table with fewer than 20 hours are masked.
+- *Result:* the tables of `outputs/11_analyses/` (SHA-256 in `manifest.json`), 17 figures S11-01 to S11-17 and
+  the notebook `09_stage11_part_a.ipynb`. Findings: F-30, M45–M50 (C-78–C-84) and X100–X106.
+- *Verification:* the nRMSE in kW equals the run's report tables (largest difference 5.0e-07 pp); the
+  identity MSE = ME² + Var(e) holds; every read of a test row is in `outputs/07_evaluation/test_access_log.csv`;
+  T-169 to T-177.
+- *Original:* the submitted report computed these analyses with scripts that were lost (X59) and with the
+  definitions criticised in M45–M50.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

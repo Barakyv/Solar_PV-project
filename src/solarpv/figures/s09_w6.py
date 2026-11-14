@@ -72,10 +72,13 @@ def _dry_run() -> str:
 
 def _access_covers_disk(acc: dict) -> bool:
     """The test-access audit saw every run folder and every forecast file on disk: an audit made
-    before a later run does not count (found on 2026-11-13, X76)."""
+    before a later run does not count (found on 2026-11-13, X76). A final run (a folder ending in
+    `_final`) is made after the gate and reads the test window by design (D-32); its reads are in
+    the test access log, and the audit of the gate does not have to cover it (X106)."""
     runs = REPO_ROOT / "outputs" / "runs"
-    on_disk = sorted(p.name for p in runs.iterdir() if p.is_dir())
-    files = sum(1 for run in runs.iterdir() if run.is_dir()
+    gate = [p for p in runs.iterdir() if p.is_dir() and not p.name.endswith("_final")]
+    on_disk = sorted(p.name for p in gate)
+    files = sum(1 for run in gate
                 for pattern in FORECAST_FILES for f in run.rglob(pattern)
                 if not any(part.startswith(".") for part in f.relative_to(run).parts))
     return on_disk == sorted(r["run"] for r in acc["per_run"]) and files == acc["prediction_files"]

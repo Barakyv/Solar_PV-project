@@ -238,6 +238,8 @@ development run `20261113T075845Z_dev`; both are XGB only, as in v6, and say so.
 asserts that every failing file of the reproduction is one that D-34 explains, and S09-34 trusts
 earlier evidence only while no code path changed since (D-36).
 
+*Added 2026-11-14 (stage 11, part A):* S11-01–S11-17 (modules `solarpv.figures.analyses11`, which writes the tables of `outputs/11_analyses/`, and `solarpv.figures.s11_part_a`) draw the analyses of the submitted report that need no training, from the frozen final run: the benchmark with intervals, the horizon, the forecast against the observed power, the seasons, the local hour by season in all hours and in normal operation, the routes, SHAP, the TFT attention, the encoder length, the TFT-96 search, bias² and variance, the production quintiles with a control, the ablation, PatchTST against XGB, the literature on one normalisation and the model table of the final run. Reading them found F-30 and five takeaway drafts that the data contradicted (X105): every such claim is now computed and asserted in its builder.
+
 ## 7. Look-back log (rule 8)
 
 One row per look-back. *At the end of* is the task that ran it; *Reviewed* the earlier tasks and
@@ -253,6 +255,7 @@ computation or a decision, for the user.
 | 2026-11-13 | S09-W6 (reopened: checkpoints, D-38) | every model-level figure against rule 9; the earlier W6 figures against the new candidate's evidence | W6: S09-43 (the work an interruption can lose, for all six models; a continued fit against the uninterrupted fit for the BiLSTM and the TFT, the two families with an epoch checkpoint); S09-34, S09-37 and S09-38 are rebuilt from the evidence of the new candidate | the continued fit of XGB and PatchTST has no figure of its own (the xgb step resumes at a trial and a unit, T-116, with no fit to continue; PatchTST resumes at the model level); a real-data measurement of the replay cost (the figure uses the synthetic windows of the GPU tests); test-split figures (stage 10) |
 | 2026-11-14 | S09-W6 (closing: the reproduction at `ac63bb0`, the full suite) | S09-34–S09-43 against the final candidate's evidence (record, suite, GPU suite, review of 38 comments); every model-level figure against rule 9 | W6: S09-38 redrawn from the record at `ac63bb0`, the explained files counted by cause (laptop decision checks, report tables, the peak of the GPU memory of the TFT models, X99) with every model's forecast files still equal; notebook 08 shows the probe of X99; S09-34 and S09-42 read the final suite and all 38 review rows | a figure of the probe of X99 (eight numbers, in the notebook as a table); the replay cost on real data (needs a new run); test-split figures (stage 10) |
 | 2026-11-14 | S10 | stages 0–9 and every task S09-W1–S09-W6 against the outputs of the final run (report tables, the step `test`, the views); every model-level figure against rule 9 | S10-01–S10-06 (all six models and the three references in one layout and one style; the one-seed models named in S10-05) | the earlier model-level figures of stage 9 (S09-25–S09-32) redrawn from the final run instead of the development runs (stage 11, with the report: it replaces numbers of the dev runs); example days, error by season, quantile intervals and the TFT attention on test (they need the test predictions in the figure book's layout: stage 11); the XGB SHAP on test (stage 11); the hyper-parameter importance of the final studies (the final fANOVA is in `explain`, drawn in stage 11) |
+| 2026-11-14 | S11-A | stages 0–10 and every task S09-W1–S09-W6 and S10 against the frozen final run (the report tables, the step `test`, the new tables of `outputs/11_analyses/`); every model-level figure against rule 9 | S11-01–S11-17: the six models and the three references in one layout and one style where the model has the output (S11-07 XGB only, S11-08 the TFTs only, S11-10 TFT-96 only, S11-12 and S11-13 XGB only as in v6; the tables of S11-12 hold every model) | the dust-day split (Q-29: the project holds no aerosol record); S10-04 for validation (the grid is in `report_dm_kw_val.csv`); the radar of v6 figure 14 (C-84); the development-run figures S09-25–S09-32 redrawn from the final run (example days and quantile intervals need the test forecasts in the figure book's layout); the interval coverage of the quantile models (L-14); the XGB and BiLSTM hyper-parameter importance (the numbers are in the report); `reproduce_paper_results.py --xgb-only` and `--skip-train` (Q-30) |
 
 ## 8. Coverage of the models (rule 9)
 
@@ -281,3 +284,14 @@ computation or a decision, for the user.
 | Final run: significance against XGB on test | reference | yes | yes | yes | yes | yes | S10-04 |
 | Final run: seed spread | three seeds | three seeds | one seed | one seed | one seed | one seed | S10-05 |
 | Final run: CV, validation and test | yes | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | S10-06 |
+| Final run: benchmark in kW with intervals | yes | yes | yes | yes | yes | yes | S11-01 |
+| Final run: horizon | yes | yes | yes | yes | yes | yes | S11-02 |
+| Final run: forecast against observed | yes | yes | yes | yes | yes | yes | S11-03 |
+| Final run: seasons, local hour by season (all hours and normal operation) | yes | yes | yes | yes | yes | yes | S11-04, S11-05, S11-17 |
+| Final run: the two routes | yes | yes | yes | yes | yes | yes | S11-06 |
+| Final run: explanations | SHAP (S11-07) | none (D-31) | attention (S11-08) | attention (S11-08) | attention (S11-08) | none (D-31) | S11-07, S11-08 |
+| Final run: encoder length, PatchTST gap | — | — | yes | yes | — | yes | S11-09, S11-14 |
+| Final run: search and hyper-parameter importance | the report table | the report table | S11-10 | the report table | fixed settings | fixed settings | S11-10 (TFT-96 only, as in v6) |
+| Final run: bias² and variance | yes | yes | yes | yes | yes | yes | S11-11 |
+| Final run: production quintiles, ablation | yes (S11-12, S11-13) | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | not in the v6 scope | S11-12, S11-13 (the quintile table holds every model) |
+| Final run: literature on one normalisation, model table | yes | yes | yes | yes | yes | yes | S11-15, S11-16 |

@@ -13,7 +13,7 @@ from matplotlib.patches import Rectangle
 
 from solarpv.figures import _data as D
 from solarpv.figures.registry import register
-from solarpv.figures.s07_s09 import REF_NAMES, REF_STYLE
+from solarpv.figures.s07_s09 import REF_STYLE
 from solarpv.figures.s09_models import MODEL_STYLE, MODELS, NAMES
 from solarpv.figures.style import C, subplots
 from solarpv.pipeline.report import SEED_SPREAD_WARN_PP
@@ -117,7 +117,7 @@ def s10_test_scores():
     lo_ = b.groupby(["model", "target", "horizon"])["nRMSE_kW_pct"].min()
     hi_ = b.groupby(["model", "target", "horizon"])["nRMSE_kW_pct"].max()
     fig, axes = subplots(1, 2, width=7.6, height=3.5, sharey=True)
-    for ax, t in zip(axes, ("indirect", "direct")):
+    for ax, t in zip(axes, ("indirect", "direct"), strict=False):
         for m in ALL:
             col, fmt = STYLE[m]
             xs = [1, 2, 3]
@@ -186,7 +186,7 @@ def s10_val_test_views():
     cols = [C["light"], C["sky"], C["grey"], C["blue"]]
     fig, ax = subplots(height=3.6, width=7.6)
     w = 0.2
-    for k, ((name, vals), col) in enumerate(zip(series.items(), cols)):
+    for k, ((name, vals), col) in enumerate(zip(series.items(), cols, strict=False)):
         xs = np.arange(len(ALL)) + (k - 1.5) * w
         ax.bar(xs, [vals[m] for m in ALL], w, color=col, edgecolor="black", lw=0.4, label=name)
     ax.set_xticks(range(len(ALL)), [LABEL[m] for m in ALL], rotation=30, ha="right", fontsize=7)
