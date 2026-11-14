@@ -1292,10 +1292,10 @@
    "kind": "process",
    "title": "Gate G-1: the checklist and its evidence",
    "file": "outputs/figures/stage_09/S09-34_g1_checklist.png",
-   "file_sha256": "37c7048311c254ced72692034bfbe574da8bcb8a72a5f59a37c6a2c00694581e",
+   "file_sha256": "a76261cdc9b262cdaad63bc2556ed106f80eec4ce930e81e283047885e2b668b",
    "inputs": {
-    "outputs/g1_audit/pytest_final/junit.xml": "9b64edded177cbec8dcd5ccad4750e7f9b745be58c7275dfda6e3816c836baed",
-    "outputs/g1_audit/pytest_final/meta.txt": "6cf0cc14f927056039ab78db84f16f3e9b081002f98315dc7ea3aeb0015b83c7",
+    "outputs/g1_audit/pytest_final/junit.xml": "2e81a3bbd7ab228d98d5b87ac6347ce22ecf6b10d11e2f489e5a410e8a0b8b56",
+    "outputs/g1_audit/pytest_final/meta.txt": "989c26352d66754309f64fcafd6f43433a0b7f686f370da83ff0ed42515fa2ec",
     "outputs/g1_audit/smoke_final.json": "38b57683526f0bf6328d92e9f5173b7de4d8e4771165b063b5f1733598e42e5c",
     "outputs/g1_audit/audit/test_access.json": "b9829dab234ae6f5ff850ae72ba066ddc9cd6f0a449234ec1bddff58d25cb9ce",
     "outputs/g1_audit/reproduction_20261113T202349Z/record.json": "49879c1ee6a7d391cd7ee099fffc40f8fe95f0f53e71fc34bce77a23e6b57466",
@@ -1305,14 +1305,14 @@
    },
    "facts": {
     "n": 9,
-    "done": 7,
-    "wait": 1,
+    "done": 8,
+    "wait": 0,
     "todo": 1,
     "going": 0,
-    "suite": "638 tests: 0 failed, 1 skipped (T-103, from the tag); at d126db8"
+    "suite": "670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c"
    },
-   "takeaway": "7 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (1 wait for a decision). The full suite: 638 tests: 0 failed, 1 skipped (T-103, from the tag); at d126db8.",
-   "git_commit": "14e7256+dirty"
+   "takeaway": "8 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (0 wait for a decision). The full suite: 670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c.",
+   "git_commit": "6de1b2c"
   },
   "S09-35": {
    "stage": "9",
@@ -1330,7 +1330,7 @@
     "upload_margin": 1.0877777777777777
    },
    "takeaway": "No measured input reads an hour that ends after T0, at any horizon: the newest lag is 1, 2, 3 days at D+1, D+2 and D+3, and it ends exactly at T0, as do the rolling windows and the encoders. The GFS run starts 9–16 h before T0 and its last file arrives at least 1.1 h before T0 on every train row. Only deterministic inputs (calendar, clear sky, geometry) and that GFS run describe the forecast days.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-36": {
    "stage": "9",
@@ -1354,7 +1354,7 @@
     "polled_max": 0.6796
    },
    "takeaway": "The clock correction is the one look-ahead of size: a causal median would move the shift of 40 % of the days, by at most 3 min. The cleaning changes 66 of 458,304 source cells on 4 issuance days, none a scored hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every compared cell. The polled interpolation is bounded by 0.68 °C on a night hour.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-37": {
    "stage": "9",
@@ -1375,7 +1375,7 @@
     "log_state": "does not exist and was never committed"
    },
    "takeaway": "Across 23 runs, 185 step records hold no test access and 171 forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-38": {
    "stage": "9",
@@ -1406,7 +1406,7 @@
     "ingest_rel": 9.737797865048907e-14
    },
    "takeaway": "The script's verdict is NOT reproduced, by its rule that any failing file fails: of 312 compared files, 227 have identical bytes, 52 the same content, 16 differ by floating-point noise only (at most 3e-12 relative), 17 differ for a documented reason and 0 for none. The explained files are the 5 of the decision checks run on the laptop (X66: the 2 decisions they record come out the same), the 3 report tables of the development runs (X45, the row order of a resumed report, and the column n_resumed of D-38) and the 9 learning-curve and trial tables of the TFT models in which only the column gpu_peak_mb differs, by at most 7e-05 relative (X99: the peak of the GPU memory depends on the timing of Python's garbage collector, not on the computation). 6 of 6 models give the same forecasts as the reference runs. The parse of the raw text differs by up to 1e-13 relative (X63).",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-39": {
    "stage": "9",
@@ -1428,7 +1428,7 @@
     "writer_new": "pyarrow 26.0.0"
    },
    "takeaway": "At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 36 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-40": {
    "stage": "9",
@@ -1454,7 +1454,7 @@
     "gap_hi": 1.680684329175203
    },
    "takeaway": "The fold values range from 4.7 to 11.0 % (mean 7.4–8.1 %, std 2.1–2.6 pp over the five folds); the fits grow from 1,374 to 17,005 rows. The validation value is 0.6–1.7 pp below the CV mean in all six cases. Validation tuned the model, the folds did not, and the early folds train on less: the gap is reported and not explained (M43). One seed.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-41": {
    "stage": "9",
@@ -1479,7 +1479,7 @@
     "harmful": 0
    },
    "takeaway": "Removing the GFS forecasts raises the error by 0.96–1.48 pp in every case and is the largest change of any single group; with only the time encodings the error is 1.2–1.5 pp higher. Of 49 changes, 30 exceed the margin on one seed, 19 do not and 0 are below minus it. With one seed the margin is only the floor, so these verdicts are provisional (M41); the final run adds two seeds and the pooled seed std.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-42": {
    "stage": "9",
@@ -1502,7 +1502,7 @@
     "n_open": 0
    },
    "takeaway": "The review wrote 38 comments: 1 blocking, 8 should fix and 29 notes. All 9 blocking and should-fix comments were fixed in code with a test and an errata row; 13 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "S09-43": {
    "stage": "9",
@@ -1538,7 +1538,7 @@
     "replay_pct": 27.03117377192345
    },
    "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or, for the other models, at most 70 s of epochs. A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.3e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 27 % of the seconds of the epochs it replaces on these small windows.",
-   "git_commit": "14e7256+dirty"
+   "git_commit": "6de1b2c"
   },
   "C-01": {
    "stage": "correction",

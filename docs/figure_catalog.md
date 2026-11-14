@@ -568,7 +568,7 @@ Figures made earlier by the stage's own producer:
 
 - **Question:** Which items of gate G-1 have their evidence, and which are still open?
 - **Shows:** The nine items of the gate (PROJECT_MASTER.md §7), each with its state read from its evidence file (the assumption register, the JUnit file of the full suite, the test-access audit, the reproduction record, the smoke run, the dry run, the review log, the scope register, the git tags). Evidence gathered at an earlier commit counts for HEAD only when nothing outside the paths of D-36 changed since.
-- **Takeaway:** 7 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (1 wait for a decision). The full suite: 638 tests: 0 failed, 1 skipped (T-103, from the tag); at d126db8.
+- **Takeaway:** 8 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (0 wait for a decision). The full suite: 670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c.
 - **Led to:** The user approves the tag; then the final run by the runbook.
 - **File:** `outputs/figures/stage_09/S09-34_g1_checklist.png`
 
