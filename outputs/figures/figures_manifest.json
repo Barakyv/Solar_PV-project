@@ -1312,7 +1312,7 @@
     "suite": "670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c"
    },
    "takeaway": "9 of 9 items have complete evidence, 0 is in progress and 0 wait for the tag (0 wait for a decision). The full suite: 670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c.",
-   "git_commit": "a5167f0+dirty"
+   "git_commit": "ee4c08b"
   },
   "S09-35": {
    "stage": "9",
@@ -2089,7 +2089,7 @@
     "n_quoted": 11
    },
    "takeaway": "The 156 registered numbers of the report are read from 40 files: 68 from the tables and explanations of the final run, 37 from the tables of the analyses of part A, 40 from the data stages and constants, and 11 are quotations of the submitted report or of the project documents. Every row names the script that formats it; a test fails when a number of the text has no row.",
-   "git_commit": "a5167f0+dirty"
+   "git_commit": "ee4c08b"
   },
   "S11-19": {
    "stage": "11",
@@ -2112,7 +2112,7 @@
     "n_test_scored": 1
    },
    "takeaway": "The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 156 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37).",
-   "git_commit": "a5167f0+dirty"
+   "git_commit": "ee4c08b"
   },
   "C-01": {
    "stage": "correction",
@@ -2341,7 +2341,7 @@
     "clim_sig": 1
    },
    "takeaway": "Of the eight conclusions, 1 is reproduced, 2 are replaced by a different statement and 5 are not supported. The route (C2) is nominally the other way in 16 of 18 pairs on validation and 11 of 18 on test; the encoder (C5) has 1 of 12 cells significant; PatchTST (C4) is 1.36 to 2.31 pp behind XGB in kW (the submitted report stated 1.2 pp, in the units of the target, F-06); the climatology margin (C7) is significant in 1 cell of 6.",
-   "git_commit": "a5167f0+dirty"
+   "git_commit": "ee4c08b"
   },
   "C-12": {
    "stage": "correction",
@@ -2362,7 +2362,7 @@
     "changed": 3
    },
    "takeaway": "The submitted report found the indirect route better by 1.66 to 2.10 pp. In the rebuild the difference is -0.37 to -0.00 pp on validation and -0.35 to +0.11 pp on test, with the sign of 3 of the 6 bars changing between the two periods: the advantage is not reproduced, and neither route is declared better.",
-   "git_commit": "a5167f0+dirty"
+   "git_commit": "ee4c08b"
   }
  }
 }
