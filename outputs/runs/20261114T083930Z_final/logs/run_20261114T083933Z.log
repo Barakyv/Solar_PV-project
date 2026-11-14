@@ -1,0 +1,15 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --only select,baselines,xgb,cv,ablation
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T08:39:33+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261114T083930Z_final, mode final, steps ['select', 'baselines', 'xgb', 'cv', 'ablation']
+[     5.3s] NOTE    select: ok in 4.1 s, 8 outputs
+[    10.6s] NOTE    baselines: ok in 4.5 s, 3 outputs
+[  3226.1s] NOTE    xgb: its checkpoints were removed (37 files, 69 MB)
+[  3226.1s] NOTE    xgb: ok in 3214.3 s, 32 outputs
+[  3348.1s] NOTE    cv: ok in 121.1 s, 3 outputs
+[  3738.1s] NOTE    ablation: ok in 389.0 s, 7 outputs
+[  3738.1s] VALUE   status = ok
+[  3738.1s] RUN     warnings: 0
+[  3738.1s] RUN     status: ok; duration 3738.1s

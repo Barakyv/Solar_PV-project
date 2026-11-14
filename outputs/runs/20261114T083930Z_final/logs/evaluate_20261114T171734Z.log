@@ -1,0 +1,36 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/evaluate
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only tftbase,patchtst,evaluate,explain,report
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T17:17:34+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_clearsky_k.csv sha256=a1bdb7ed42a02427
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_climatology.csv sha256=ed6c096afee6d4d1
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_persistence.csv sha256=59fee4f8b7a32a44
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed123.csv sha256=d8df3ffd4fd5234e
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed42.csv sha256=135092ccb432a411
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed777.csv sha256=1f7abaf9a9b1230d
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed123.csv sha256=32fa02bb20c86d0f
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed42.csv sha256=476094f163ae470a
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed777.csv sha256=9b37475dd3399df5
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/tft96/predictions_tft_96_seed42.csv sha256=254cd711c5865a92
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/tft168/predictions_tft_168_seed42.csv sha256=e8c7887f1736bffd
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/tftbase/predictions_tft_seed42.csv sha256=24d3b99b38dbdd75
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/patchtst/predictions_patchtst_seed42.csv sha256=837fca71eb3fd4cf
+[     0.7s] STEP    evaluate val, the whole val split ...
+[     6.3s] NOTE    val: 9 models (clearsky_k, climatology, lstm_sota, patchtst, persistence, tft, tft_168, tft_96, xgb_sota); daytime rows per model/target/horizon: 2901
+[    28.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/benchmark_summary.csv sha256=857d40bd24c6beb9
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/dm_tests.csv sha256=e9311f0106a9720e
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/seasonal_metrics.csv sha256=53795b8c001ab208
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/common_mask_summary.csv sha256=0d48b91ba760d11c
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/benchmark_views.csv sha256=9aedd9acac34a978
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/common_mask_sensitivity.csv sha256=9a8b867a40c986d3
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/route_comparison.csv sha256=7ab7cae45661235b
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/seed_variability_summary.csv sha256=b59ddb4295f81cf6
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/dm_tests_kw.csv sha256=6868f74376b1dccf
+[    28.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.evaluate.tmp/val/manifest.json sha256=3e4c68cdcfabc046
+[    28.3s] STEP    evaluate val, the whole val split done in 27.6s
+[    28.3s] VALUE   rows_benchmark_val = 78
+[    28.3s] RUN     warnings: 0
+[    28.3s] RUN     status: ok; duration 28.3s

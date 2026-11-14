@@ -1,0 +1,508 @@
+{
+  "step": "tft96",
+  "model": "tft_96",
+  "family": "tft",
+  "mode": "final",
+  "budget": {
+    "trials": 20,
+    "epochs": 100,
+    "patience": 10,
+    "seeds": [
+      42
+    ]
+  },
+  "seeds": [
+    42
+  ],
+  "windows": [
+    {
+      "split": "val",
+      "start": "2024-02-01T00:00:00+00:00",
+      "end": "2024-10-01T00:00:00+00:00",
+      "label": "the whole val split"
+    },
+    {
+      "split": "test",
+      "start": "2024-10-01T00:00:00+00:00",
+      "end": "2025-06-01T00:00:00+00:00",
+      "label": "the whole test split"
+    }
+  ],
+  "encoder_hours": 96,
+  "quantiles": [
+    0.02,
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    0.9,
+    0.98
+  ],
+  "point_forecast": "quantile 0.5",
+  "search_space": {
+    "hidden_size": {
+      "type": "categorical",
+      "choices": [
+        16,
+        32,
+        64
+      ]
+    },
+    "attention_head_size": {
+      "type": "int",
+      "low": 1,
+      "high": 4,
+      "log": false
+    },
+    "hidden_continuous_size": {
+      "type": "int",
+      "low": 8,
+      "high": 64,
+      "log": false
+    },
+    "dropout": {
+      "type": "float",
+      "low": 0.1,
+      "high": 0.3,
+      "log": false
+    },
+    "learning_rate": {
+      "type": "float",
+      "low": 0.0001,
+      "high": 0.01,
+      "log": true
+    },
+    "lstm_layers": {
+      "type": "int",
+      "low": 1,
+      "high": 3,
+      "log": false
+    }
+  },
+  "fixed": {
+    "bilstm": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "tft": {
+      "batch_size": 64,
+      "grad_clip_norm": 0.1,
+      "optimizer": "Adam"
+    },
+    "tftbase": {
+      "hidden_size": 64,
+      "dropout": 0.1,
+      "attention_head_size": 4,
+      "hidden_continuous_size": 8,
+      "lstm_layers": 1,
+      "learning_rate": 0.001
+    },
+    "patchtst": {
+      "input_size": 168,
+      "h": 73,
+      "patch_len": 16,
+      "stride": 8,
+      "scaler_type": "identity",
+      "revin": true
+    }
+  },
+  "objective": "daytime nRMSE in kW (% of 3,449 kW) of the point forecast on the daytime steps of the tuning window with AC truth, op-limited hours included, pooled over the three horizons; indirect through units.to_kw (docs/stage9_plan.md \u00a714.1, \u00a718.4)",
+  "early_stopping": "the training loss on the loss-mask steps of the tuning window; the weights of the best epoch (PatchTST: validation check) restored",
+  "loss": "a mean over the steps of the W3 loss mask only (X31)",
+  "normalisers": "none fitted in the libraries: inputs scaled by the W3 scaler (train hours), targets in model units; TFT identity output transformer, PatchTST scaler_type identity with RevIN (X29)",
+  "missing_known_inputs": {
+    "indirect": {
+      "fcst_gfs_kt_poa_ma3@D1": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "fcst_gfs_kt_poa_ma3@D2": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "fcst_gfs_kt_poa_ma3@D3": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D1": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D2": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D3": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      }
+    },
+    "direct": {
+      "airmass": {
+        "test": 2789,
+        "train": 9730,
+        "val": 2469
+      },
+      "fcst_gfs_kt_poa_ma3@D1": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "fcst_gfs_kt_poa_ma3@D2": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "fcst_gfs_kt_poa_ma3@D3": {
+        "test": 1,
+        "train": 0,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D1": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D2": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      },
+      "irradiance_clear_index_prevday@D3": {
+        "test": 0,
+        "train": 48,
+        "val": 0
+      }
+    }
+  },
+  "datasets": {
+    "indirect/train": {
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 9575,
+        "D2": 9575,
+        "D3": 9575
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 192,
+        "decoder": 72
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "train after the warm-up"
+    },
+    "indirect/val": {
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2825,
+        "D2": 2825,
+        "D3": 2825
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 0
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the whole val split"
+    },
+    "indirect/test": {
+      "n_origins": 245,
+      "first_t0": "2024-09-28T21:00:00+00:00",
+      "last_t0": "2025-05-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 239,
+        "73": 3
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5829,
+        "D2": 5829,
+        "D3": 5829
+      },
+      "loss_steps_per_horizon": {
+        "D1": 2539,
+        "D2": 2539,
+        "D3": 2539
+      },
+      "scope_hours": 5829,
+      "encoder_channels": 46,
+      "decoder_channels": 30,
+      "known_input_nan_values": {
+        "encoder": 0,
+        "decoder": 3
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 726,
+          "25": 3
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the whole test split"
+    },
+    "direct/train": {
+      "n_origins": 872,
+      "first_t0": "2021-09-12T21:00:00+00:00",
+      "last_t0": "2024-01-31T22:00:00+00:00",
+      "decoder_steps": {
+        "71": 6,
+        "72": 857,
+        "73": 9
+      },
+      "kept_steps_per_horizon": {
+        "D1": 20859,
+        "D2": 20859,
+        "D3": 20859
+      },
+      "loss_steps_per_horizon": {
+        "D1": 20393,
+        "D2": 20393,
+        "D3": 20393
+      },
+      "scope_hours": 20859,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 38962,
+        "decoder": 29097
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 6,
+          "24": 2595,
+          "25": 9
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "train after the warm-up"
+    },
+    "direct/val": {
+      "n_origins": 246,
+      "first_t0": "2024-01-29T22:00:00+00:00",
+      "last_t0": "2024-09-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 243
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5832,
+        "D2": 5832,
+        "D3": 5832
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5685,
+        "D2": 5685,
+        "D3": 5685
+      },
+      "scope_hours": 5832,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 10026,
+        "decoder": 7449
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 729
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the whole val split"
+    },
+    "direct/test": {
+      "n_origins": 245,
+      "first_t0": "2024-09-28T21:00:00+00:00",
+      "last_t0": "2025-05-30T21:00:00+00:00",
+      "decoder_steps": {
+        "71": 3,
+        "72": 239,
+        "73": 3
+      },
+      "kept_steps_per_horizon": {
+        "D1": 5829,
+        "D2": 5829,
+        "D3": 5829
+      },
+      "loss_steps_per_horizon": {
+        "D1": 5633,
+        "D2": 5633,
+        "D3": 5633
+      },
+      "scope_hours": 5829,
+      "encoder_channels": 63,
+      "decoder_channels": 49,
+      "known_input_nan_values": {
+        "encoder": 11276,
+        "decoder": 8412
+      },
+      "checks": {
+        "encoder_ends_at_t0": true,
+        "no_step_at_or_after_limit": true,
+        "no_time_at_or_after_test_start": true,
+        "horizon_is_local_day": true,
+        "issuance_utc_is_t0": true,
+        "blocks_are_local_days": true,
+        "block_lengths": {
+          "23": 3,
+          "24": 726,
+          "25": 3
+        },
+        "every_scope_hour_once_per_horizon": true,
+        "loss_rows_are_fit_rows": true,
+        "loss_only_on_kept_steps": true
+      },
+      "scope": "the whole test split"
+    }
+  },
+  "scaler_rows": 20859,
+  "seed_spread_pp": {},
+  "warnings": [
+    "direct seed 42: best trial on the edge of the search space for hidden_size = 64, lstm_layers = 1 (M23)"
+  ],
+  "gpu_environment": {
+    "python": "3.11.18",
+    "executable": "C:\\Users\\204323141\\miniforge3\\envs\\solar-gpu\\python.exe",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "versions": {
+      "torch": "2.5.1+cu121",
+      "pytorch-forecasting": "1.7.0",
+      "neuralforecast": "3.1.7",
+      "lightning": "2.6.6",
+      "pytorch-lightning": "2.6.6",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "scipy": "1.17.1",
+      "scikit-learn": "1.9.1",
+      "optuna": "5.0.0"
+    },
+    "errors": [],
+    "cuda_runtime": "12.1",
+    "cudnn": 90100,
+    "arch_list": [
+      "sm_50",
+      "sm_60",
+      "sm_61",
+      "sm_70",
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90"
+    ],
+    "cuda_available": true,
+    "gpu": {
+      "name": "GRID P40-24Q",
+      "capability": "6.1",
+      "memory_gb": 24.0,
+      "device_count": 1
+    }
+  },
+  "determinism": {
+    "use_deterministic_algorithms": true,
+    "cudnn_deterministic": true,
+    "cudnn_benchmark": false,
+    "tf32": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "precision": "float32",
+    "data_loader_workers": 0
+  },
+  "worker_duration_s": 8668.8,
+  "job_files": {
+    "indirect": {
+      "path": "data_indirect.npz",
+      "sha256": "3579a4fe6ef248094b9e1ae928a634a021ad8f299da11e3fe609a3e86067743e"
+    },
+    "direct": {
+      "path": "data_direct.npz",
+      "sha256": "a2843ab5b4bd9bbd9495328c784c8282be87de267bfde1922f72e25151626ae0"
+    }
+  }
+}

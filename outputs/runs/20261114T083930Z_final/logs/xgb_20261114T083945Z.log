@@ -1,0 +1,1247 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/xgb
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --only select,baselines,xgb,cv,ablation
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T08:39:45+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.4s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.4s] INPUT   configs/monotone_decision.yaml sha256=141636b887c1d672
+[     0.4s] INPUT   configs/mos_decision.yaml sha256=20d159081fdd8093
+[     0.4s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     5.1s] NOTE    budget 60 trials, seeds [42, 123, 777], tuning window the whole val split, training rows all of train; MEAN_DAYTIME_K 0.788157; D-15 settings {'indirect': 'A', 'direct': 'A'}; L-09 adopted {'indirect': True, 'direct': False}
+[     5.3s] WARN    TEST ROWS READ (forecast the test window of D+1 (features), 5829 rows); recorded in test_access_log.csv
+[     5.4s] NOTE    indirect_D1: 31 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[     5.4s] NOTE    indirect_D1: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 6}
+[     5.4s] STEP    indirect_D1_seed42: 60 trial(s) ...
+[     7.1s] NOTE    indirect_D1_seed42 trial 0: 6.9943 % kW, 13.7368 % k, best iteration 21 of 874, 1.39 s
+[     9.7s] NOTE    indirect_D1_seed42 trial 1: 6.9217 % kW, 13.6648 % k, best iteration 278 of 1282, 2.37 s
+[    10.6s] NOTE    indirect_D1_seed42 trial 2: 6.8392 % kW, 13.4741 % k, best iteration 81 of 747, 0.6 s
+[    13.4s] NOTE    indirect_D1_seed42 trial 3: 6.8138 % kW, 13.4653 % k, best iteration 198 of 1021, 2.52 s
+[    14.4s] NOTE    indirect_D1_seed42 trial 4: 6.9888 % kW, 14.1247 % k, best iteration 9 of 317, 0.74 s
+[    15.9s] NOTE    indirect_D1_seed42 trial 5: 6.9214 % kW, 13.5803 % k, best iteration 367 of 419, 1.33 s
+[    16.4s] NOTE    indirect_D1_seed42 trial 6: 7.0970 % kW, 13.9512 % k, best iteration 27 of 1184, 0.19 s
+[    17.5s] NOTE    indirect_D1_seed42 trial 7: 7.0317 % kW, 13.7375 % k, best iteration 358 of 359, 0.85 s
+[    18.8s] NOTE    indirect_D1_seed42 trial 8: 6.8884 % kW, 13.5401 % k, best iteration 256 of 705, 1.1 s
+[    19.9s] NOTE    indirect_D1_seed42 trial 9: 6.9809 % kW, 13.7506 % k, best iteration 24 of 209, 0.84 s
+[    21.4s] NOTE    indirect_D1_seed42 trial 10: 6.9005 % kW, 13.5252 % k, best iteration 112 of 793, 1.13 s
+[    22.3s] NOTE    indirect_D1_seed42 trial 11: 6.8785 % kW, 13.5077 % k, best iteration 88 of 325, 0.65 s
+[    23.7s] NOTE    indirect_D1_seed42 trial 12: 6.9519 % kW, 13.6254 % k, best iteration 259 of 656, 1.05 s
+[    25.9s] NOTE    indirect_D1_seed42 trial 13: 6.8798 % kW, 13.4970 % k, best iteration 177 of 1249, 1.9 s
+[    28.0s] NOTE    indirect_D1_seed42 trial 14: 6.8486 % kW, 13.5111 % k, best iteration 131 of 1027, 1.83 s
+[    30.1s] NOTE    indirect_D1_seed42 trial 15: 6.8747 % kW, 13.5424 % k, best iteration 110 of 980, 1.8 s
+[    32.4s] NOTE    indirect_D1_seed42 trial 16: 6.8183 % kW, 13.4151 % k, best iteration 119 of 586, 1.87 s
+[    33.3s] NOTE    indirect_D1_seed42 trial 17: 6.8010 % kW, 13.4170 % k, best iteration 45 of 604, 0.58 s
+[    38.7s] NOTE    indirect_D1_seed42 trial 18: 6.7922 % kW, 13.4374 % k, best iteration 340 of 699, 5.06 s
+[    41.5s] NOTE    indirect_D1_seed42 trial 19: 6.8205 % kW, 13.4456 % k, best iteration 283 of 607, 2.5 s
+[    42.5s] NOTE    indirect_D1_seed42 trial 20: 6.9420 % kW, 13.5921 % k, best iteration 19 of 720, 0.64 s
+[    46.2s] NOTE    indirect_D1_seed42 trial 21: 6.8513 % kW, 13.5089 % k, best iteration 254 of 937, 3.46 s
+[    49.7s] NOTE    indirect_D1_seed42 trial 22: 6.8221 % kW, 13.4019 % k, best iteration 360 of 630, 3.18 s
+[    53.1s] NOTE    indirect_D1_seed42 trial 23: 6.7726 % kW, 13.3741 % k, best iteration 220 of 1064, 3.1 s
+[    55.2s] NOTE    indirect_D1_seed42 trial 24: 6.8380 % kW, 13.4295 % k, best iteration 194 of 509, 1.8 s
+[    58.9s] NOTE    indirect_D1_seed42 trial 25: 6.8310 % kW, 13.5335 % k, best iteration 212 of 1048, 3.39 s
+[    60.4s] NOTE    indirect_D1_seed42 trial 26: 6.8751 % kW, 13.5516 % k, best iteration 75 of 1056, 1.16 s
+[    62.1s] NOTE    indirect_D1_seed42 trial 27: 6.8501 % kW, 13.4643 % k, best iteration 203 of 525, 1.44 s
+[    65.7s] NOTE    indirect_D1_seed42 trial 28: 6.7962 % kW, 13.3811 % k, best iteration 336 of 1196, 3.28 s
+[    67.9s] NOTE    indirect_D1_seed42 trial 29: 6.8771 % kW, 13.5820 % k, best iteration 184 of 894, 1.9 s
+[    70.8s] NOTE    indirect_D1_seed42 trial 30: 6.8354 % kW, 13.5065 % k, best iteration 204 of 805, 2.56 s
+[    74.7s] NOTE    indirect_D1_seed42 trial 31: 6.7850 % kW, 13.4313 % k, best iteration 231 of 1489, 3.58 s
+[    77.1s] NOTE    indirect_D1_seed42 trial 32: 6.8551 % kW, 13.4255 % k, best iteration 437 of 947, 2.09 s
+[    79.6s] NOTE    indirect_D1_seed42 trial 33: 6.8622 % kW, 13.4853 % k, best iteration 204 of 1523, 2.15 s
+[    83.3s] NOTE    indirect_D1_seed42 trial 34: 6.7925 % kW, 13.3614 % k, best iteration 366 of 1137, 3.4 s
+[    85.3s] NOTE    indirect_D1_seed42 trial 35: 6.8627 % kW, 13.4501 % k, best iteration 297 of 1007, 1.7 s
+[    90.0s] NOTE    indirect_D1_seed42 trial 36: 6.8073 % kW, 13.4373 % k, best iteration 292 of 370, 4.41 s
+[    93.0s] NOTE    indirect_D1_seed42 trial 37: 6.8375 % kW, 13.3960 % k, best iteration 281 of 1519, 2.74 s
+[    95.8s] NOTE    indirect_D1_seed42 trial 38: 6.8295 % kW, 13.4846 % k, best iteration 177 of 912, 2.46 s
+[    99.4s] NOTE    indirect_D1_seed42 trial 39: 6.7793 % kW, 13.3667 % k, best iteration 269 of 930, 3.33 s
+[   104.2s] NOTE    indirect_D1_seed42 trial 40: 6.7896 % kW, 13.4336 % k, best iteration 274 of 1106, 4.43 s
+[   106.6s] NOTE    indirect_D1_seed42 trial 41: 6.8364 % kW, 13.4036 % k, best iteration 338 of 746, 2.14 s
+[   109.1s] NOTE    indirect_D1_seed42 trial 42: 6.8233 % kW, 13.3839 % k, best iteration 200 of 1120, 2.16 s
+[   112.6s] NOTE    indirect_D1_seed42 trial 43: 6.8374 % kW, 13.5117 % k, best iteration 274 of 672, 3.13 s
+[   116.1s] NOTE    indirect_D1_seed42 trial 44: 6.8443 % kW, 13.5315 % k, best iteration 290 of 954, 3.19 s
+[   120.3s] NOTE    indirect_D1_seed42 trial 45: 6.8343 % kW, 13.4629 % k, best iteration 274 of 781, 3.84 s
+[   124.2s] NOTE    indirect_D1_seed42 trial 46: 6.7911 % kW, 13.3563 % k, best iteration 271 of 510, 3.57 s
+[   126.5s] NOTE    indirect_D1_seed42 trial 47: 6.8008 % kW, 13.3997 % k, best iteration 190 of 322, 2.02 s
+[   130.9s] NOTE    indirect_D1_seed42 trial 48: 6.8014 % kW, 13.4650 % k, best iteration 328 of 1283, 4.08 s
+[   132.9s] NOTE    indirect_D1_seed42 trial 49: 6.8725 % kW, 13.4683 % k, best iteration 133 of 1257, 1.77 s
+[   135.9s] NOTE    indirect_D1_seed42 trial 50: 6.8108 % kW, 13.4103 % k, best iteration 191 of 1100, 2.67 s
+[   141.6s] NOTE    indirect_D1_seed42 trial 51: 6.8164 % kW, 13.3998 % k, best iteration 395 of 690, 5.33 s
+[   145.6s] NOTE    indirect_D1_seed42 trial 52: 6.8238 % kW, 13.4692 % k, best iteration 279 of 632, 3.68 s
+[   148.6s] NOTE    indirect_D1_seed42 trial 53: 6.8088 % kW, 13.4032 % k, best iteration 212 of 648, 2.64 s
+[   151.0s] NOTE    indirect_D1_seed42 trial 54: 6.8458 % kW, 13.4121 % k, best iteration 212 of 1048, 2.05 s
+[   153.7s] NOTE    indirect_D1_seed42 trial 55: 6.8294 % kW, 13.4621 % k, best iteration 223 of 768, 2.41 s
+[   158.0s] NOTE    indirect_D1_seed42 trial 56: 6.8362 % kW, 13.4520 % k, best iteration 312 of 751, 3.92 s
+[   163.6s] NOTE    indirect_D1_seed42 trial 57: 6.8114 % kW, 13.4899 % k, best iteration 351 of 406, 5.19 s
+[   166.5s] NOTE    indirect_D1_seed42 trial 58: 6.7913 % kW, 13.3742 % k, best iteration 210 of 983, 2.59 s
+[   169.4s] NOTE    indirect_D1_seed42 trial 59: 6.8364 % kW, 13.4093 % k, best iteration 159 of 1153, 2.44 s
+[   172.5s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits ...
+[   180.9s] STEP    indirect_D1_seed42: L-09 correction, out-of-fold fits done in 8.4s
+[   181.0s] NOTE    indirect_D1_seed42: L-09 a +11.458 kW, b 0.98471 on 7834 out-of-fold hours; tuning window 6.7726 -> 6.6438 % of capacity
+[   181.0s] WARN    indirect_D1_seed42: validation RMSE 0.1001 is 2.6 x the train RMSE 0.03901 at the best iteration
+[   181.0s] WARN    indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10
+[   181.0s] NOTE    indirect_D1_seed42: best trial 23, validation 6.6438 % of capacity (uncorrected 6.7726 %), best iteration 220 of 1064
+[   181.1s] STEP    indirect_D1_seed42: 60 trial(s) done in 175.7s
+[   181.1s] STEP    indirect_D1_seed123: 60 trial(s) ...
+[   182.6s] NOTE    indirect_D1_seed123 trial 0: 6.9394 % kW, 13.5294 % k, best iteration 375 of 1454, 1.02 s
+[   183.5s] NOTE    indirect_D1_seed123 trial 1: 6.9099 % kW, 13.6527 % k, best iteration 134 of 1066, 0.6 s
+[   184.4s] NOTE    indirect_D1_seed123 trial 2: 6.8922 % kW, 13.6288 % k, best iteration 179 of 528, 0.48 s
+[   185.2s] NOTE    indirect_D1_seed123 trial 3: 6.9222 % kW, 13.5913 % k, best iteration 152 of 1501, 0.47 s
+[   186.1s] NOTE    indirect_D1_seed123 trial 4: 6.9057 % kW, 13.5703 % k, best iteration 161 of 975, 0.64 s
+[   187.2s] NOTE    indirect_D1_seed123 trial 5: 6.9488 % kW, 13.6735 % k, best iteration 390 of 1323, 0.79 s
+[   188.6s] NOTE    indirect_D1_seed123 trial 6: 6.8958 % kW, 13.5996 % k, best iteration 230 of 1135, 1.08 s
+[   189.2s] NOTE    indirect_D1_seed123 trial 7: 6.9536 % kW, 13.7179 % k, best iteration 14 of 951, 0.32 s
+[   189.8s] NOTE    indirect_D1_seed123 trial 8: 6.9889 % kW, 13.7713 % k, best iteration 75 of 1717, 0.25 s
+[   192.6s] NOTE    indirect_D1_seed123 trial 9: 6.8984 % kW, 13.5777 % k, best iteration 389 of 1329, 2.55 s
+[   193.3s] NOTE    indirect_D1_seed123 trial 10: 6.9955 % kW, 13.7255 % k, best iteration 136 of 352, 0.36 s
+[   194.8s] NOTE    indirect_D1_seed123 trial 11: 6.8847 % kW, 13.5858 % k, best iteration 231 of 890, 1.28 s
+[   196.1s] NOTE    indirect_D1_seed123 trial 12: 6.9527 % kW, 13.6423 % k, best iteration 296 of 306, 0.9 s
+[   197.6s] NOTE    indirect_D1_seed123 trial 13: 6.9469 % kW, 13.6423 % k, best iteration 320 of 403, 1.22 s
+[   199.3s] NOTE    indirect_D1_seed123 trial 14: 6.8899 % kW, 13.6099 % k, best iteration 246 of 1133, 1.43 s
+[   200.5s] NOTE    indirect_D1_seed123 trial 15: 6.9324 % kW, 13.6856 % k, best iteration 129 of 1168, 0.89 s
+[   202.1s] NOTE    indirect_D1_seed123 trial 16: 6.9174 % kW, 13.6855 % k, best iteration 222 of 404, 1.31 s
+[   203.6s] NOTE    indirect_D1_seed123 trial 17: 6.9575 % kW, 13.7203 % k, best iteration 400 of 881, 1.16 s
+[   205.7s] NOTE    indirect_D1_seed123 trial 18: 6.8925 % kW, 13.5936 % k, best iteration 302 of 757, 1.77 s
+[   207.7s] NOTE    indirect_D1_seed123 trial 19: 6.8969 % kW, 13.6666 % k, best iteration 357 of 751, 1.73 s
+[   209.4s] NOTE    indirect_D1_seed123 trial 20: 6.9296 % kW, 13.6982 % k, best iteration 182 of 1125, 1.39 s
+[   211.5s] NOTE    indirect_D1_seed123 trial 21: 6.9026 % kW, 13.6554 % k, best iteration 91 of 1180, 1.79 s
+[   213.0s] NOTE    indirect_D1_seed123 trial 22: 6.9619 % kW, 13.7005 % k, best iteration 452 of 456, 1.1 s
+[   215.5s] NOTE    indirect_D1_seed123 trial 23: 6.8475 % kW, 13.6014 % k, best iteration 216 of 702, 2.12 s
+[   217.5s] NOTE    indirect_D1_seed123 trial 24: 6.9162 % kW, 13.6561 % k, best iteration 304 of 990, 1.66 s
+[   219.8s] NOTE    indirect_D1_seed123 trial 25: 6.8510 % kW, 13.4563 % k, best iteration 299 of 781, 1.98 s
+[   221.7s] NOTE    indirect_D1_seed123 trial 26: 6.8847 % kW, 13.7127 % k, best iteration 116 of 847, 1.56 s
+[   223.9s] NOTE    indirect_D1_seed123 trial 27: 6.9481 % kW, 13.5839 % k, best iteration 486 of 979, 1.84 s
+[   226.7s] NOTE    indirect_D1_seed123 trial 28: 6.8873 % kW, 13.5073 % k, best iteration 441 of 634, 2.38 s
+[   229.2s] NOTE    indirect_D1_seed123 trial 29: 6.8646 % kW, 13.5639 % k, best iteration 266 of 765, 2.22 s
+[   232.6s] NOTE    indirect_D1_seed123 trial 30: 6.8331 % kW, 13.4670 % k, best iteration 375 of 850, 3.1 s
+[   235.5s] NOTE    indirect_D1_seed123 trial 31: 6.8568 % kW, 13.4660 % k, best iteration 395 of 913, 2.54 s
+[   237.4s] NOTE    indirect_D1_seed123 trial 32: 6.8692 % kW, 13.4839 % k, best iteration 256 of 552, 1.62 s
+[   239.1s] NOTE    indirect_D1_seed123 trial 33: 6.8458 % kW, 13.4465 % k, best iteration 164 of 794, 1.32 s
+[   240.9s] NOTE    indirect_D1_seed123 trial 34: 6.9003 % kW, 13.5683 % k, best iteration 245 of 888, 1.56 s
+[   243.6s] NOTE    indirect_D1_seed123 trial 35: 6.9243 % kW, 13.5596 % k, best iteration 449 of 1055, 2.32 s
+[   246.2s] NOTE    indirect_D1_seed123 trial 36: 6.8426 % kW, 13.4332 % k, best iteration 211 of 713, 2.23 s
+[   249.4s] NOTE    indirect_D1_seed123 trial 37: 6.8169 % kW, 13.4196 % k, best iteration 221 of 862, 2.82 s
+[   251.2s] NOTE    indirect_D1_seed123 trial 38: 6.8900 % kW, 13.4910 % k, best iteration 206 of 737, 1.49 s
+[   253.9s] NOTE    indirect_D1_seed123 trial 39: 6.8239 % kW, 13.5633 % k, best iteration 139 of 857, 2.37 s
+[   256.8s] NOTE    indirect_D1_seed123 trial 40: 6.8816 % kW, 13.6652 % k, best iteration 163 of 606, 2.54 s
+[   259.1s] NOTE    indirect_D1_seed123 trial 41: 6.8829 % kW, 13.4717 % k, best iteration 176 of 861, 1.96 s
+[   263.7s] NOTE    indirect_D1_seed123 trial 42: 6.7947 % kW, 13.3869 % k, best iteration 275 of 829, 4.21 s
+[   266.5s] NOTE    indirect_D1_seed123 trial 43: 6.8456 % kW, 13.6258 % k, best iteration 197 of 954, 2.49 s
+[   268.7s] NOTE    indirect_D1_seed123 trial 44: 6.8421 % kW, 13.4250 % k, best iteration 261 of 718, 1.87 s
+[   273.0s] NOTE    indirect_D1_seed123 trial 45: 6.9029 % kW, 13.5321 % k, best iteration 441 of 1139, 3.92 s
+[   274.8s] NOTE    indirect_D1_seed123 trial 46: 6.8575 % kW, 13.4641 % k, best iteration 234 of 593, 1.51 s
+[   278.4s] NOTE    indirect_D1_seed123 trial 47: 6.8342 % kW, 13.4255 % k, best iteration 267 of 895, 3.23 s
+[   280.4s] NOTE    indirect_D1_seed123 trial 48: 6.9017 % kW, 13.5449 % k, best iteration 212 of 866, 1.57 s
+[   285.5s] NOTE    indirect_D1_seed123 trial 49: 6.8419 % kW, 13.5720 % k, best iteration 284 of 943, 4.69 s
+[   289.3s] NOTE    indirect_D1_seed123 trial 50: 6.7720 % kW, 13.4400 % k, best iteration 192 of 826, 3.47 s
+[   292.2s] NOTE    indirect_D1_seed123 trial 51: 6.8313 % kW, 13.4275 % k, best iteration 193 of 998, 2.59 s
+[   296.5s] NOTE    indirect_D1_seed123 trial 52: 6.7941 % kW, 13.4239 % k, best iteration 274 of 1042, 3.83 s
+[   301.0s] NOTE    indirect_D1_seed123 trial 53: 6.8609 % kW, 13.6322 % k, best iteration 225 of 865, 4.17 s
+[   303.9s] NOTE    indirect_D1_seed123 trial 54: 6.8826 % kW, 13.6055 % k, best iteration 134 of 1124, 2.59 s
+[   307.8s] NOTE    indirect_D1_seed123 trial 55: 6.8176 % kW, 13.4467 % k, best iteration 262 of 776, 3.5 s
+[   311.0s] NOTE    indirect_D1_seed123 trial 56: 6.8555 % kW, 13.5021 % k, best iteration 190 of 682, 2.82 s
+[   317.2s] NOTE    indirect_D1_seed123 trial 57: 6.7877 % kW, 13.4511 % k, best iteration 387 of 768, 5.9 s
+[   321.8s] NOTE    indirect_D1_seed123 trial 58: 6.8273 % kW, 13.4405 % k, best iteration 294 of 684, 4.23 s
+[   325.7s] NOTE    indirect_D1_seed123 trial 59: 6.8393 % kW, 13.4428 % k, best iteration 256 of 1053, 3.52 s
+[   329.3s] STEP    indirect_D1_seed123: L-09 correction, out-of-fold fits ...
+[   338.6s] STEP    indirect_D1_seed123: L-09 correction, out-of-fold fits done in 9.4s
+[   338.6s] NOTE    indirect_D1_seed123: L-09 a +18.731 kW, b 0.97599 on 7834 out-of-fold hours; tuning window 6.7720 -> 6.5885 % of capacity
+[   338.6s] WARN    indirect_D1_seed123: validation RMSE 0.1001 is 2.7 x the train RMSE 0.0374 at the best iteration
+[   338.7s] WARN    indirect_D1_seed123: best trial on the edge of the search space for max_depth = 10, min_child_weight = 1
+[   338.7s] NOTE    indirect_D1_seed123: best trial 50, validation 6.5885 % of capacity (uncorrected 6.7720 %), best iteration 192 of 826
+[   338.8s] STEP    indirect_D1_seed123: 60 trial(s) done in 157.7s
+[   338.8s] STEP    indirect_D1_seed777: 60 trial(s) ...
+[   340.3s] NOTE    indirect_D1_seed777 trial 0: 6.9330 % kW, 13.6308 % k, best iteration 392 of 474, 1.1 s
+[   342.9s] NOTE    indirect_D1_seed777 trial 1: 6.8731 % kW, 13.4344 % k, best iteration 621 of 684, 2.14 s
+[   344.1s] NOTE    indirect_D1_seed777 trial 2: 6.8592 % kW, 13.4596 % k, best iteration 138 of 1427, 0.83 s
+[   344.9s] NOTE    indirect_D1_seed777 trial 3: 6.9264 % kW, 13.6008 % k, best iteration 39 of 1300, 0.48 s
+[   345.6s] NOTE    indirect_D1_seed777 trial 4: 6.8687 % kW, 13.5418 % k, best iteration 59 of 1133, 0.41 s
+[   346.3s] NOTE    indirect_D1_seed777 trial 5: 6.9599 % kW, 13.6287 % k, best iteration 29 of 732, 0.37 s
+[   348.6s] NOTE    indirect_D1_seed777 trial 6: 6.8083 % kW, 13.4108 % k, best iteration 242 of 1050, 1.97 s
+[   351.2s] NOTE    indirect_D1_seed777 trial 7: 6.8353 % kW, 13.4695 % k, best iteration 207 of 947, 2.27 s
+[   351.9s] NOTE    indirect_D1_seed777 trial 8: 6.8555 % kW, 13.5971 % k, best iteration 25 of 374, 0.38 s
+[   353.7s] NOTE    indirect_D1_seed777 trial 9: 6.8114 % kW, 13.4230 % k, best iteration 106 of 369, 1.54 s
+[   355.1s] NOTE    indirect_D1_seed777 trial 10: 6.9382 % kW, 13.6269 % k, best iteration 280 of 1257, 1.05 s
+[   356.7s] NOTE    indirect_D1_seed777 trial 11: 6.8239 % kW, 13.4523 % k, best iteration 98 of 756, 1.31 s
+[   358.0s] NOTE    indirect_D1_seed777 trial 12: 6.8690 % kW, 13.4900 % k, best iteration 71 of 737, 0.9 s
+[   359.8s] NOTE    indirect_D1_seed777 trial 13: 6.8502 % kW, 13.4904 % k, best iteration 106 of 551, 1.27 s
+[   361.5s] NOTE    indirect_D1_seed777 trial 14: 6.8544 % kW, 13.4675 % k, best iteration 147 of 1391, 1.36 s
+[   363.1s] NOTE    indirect_D1_seed777 trial 15: 6.8372 % kW, 13.4524 % k, best iteration 123 of 323, 1.19 s
+[   366.0s] NOTE    indirect_D1_seed777 trial 16: 6.8091 % kW, 13.4058 % k, best iteration 288 of 797, 2.56 s
+[   367.8s] NOTE    indirect_D1_seed777 trial 17: 6.8197 % kW, 13.4631 % k, best iteration 157 of 800, 1.43 s
+[   371.8s] NOTE    indirect_D1_seed777 trial 18: 6.8473 % kW, 13.5590 % k, best iteration 198 of 1141, 3.73 s
+[   373.9s] NOTE    indirect_D1_seed777 trial 19: 6.8238 % kW, 13.4503 % k, best iteration 207 of 930, 1.83 s
+[   376.5s] NOTE    indirect_D1_seed777 trial 20: 6.8801 % kW, 13.5555 % k, best iteration 337 of 1062, 2.23 s
+[   378.1s] NOTE    indirect_D1_seed777 trial 21: 6.8707 % kW, 13.6149 % k, best iteration 213 of 943, 1.11 s
+[   381.0s] NOTE    indirect_D1_seed777 trial 22: 6.8509 % kW, 13.4592 % k, best iteration 323 of 548, 2.49 s
+[   384.0s] NOTE    indirect_D1_seed777 trial 23: 6.8383 % kW, 13.4698 % k, best iteration 213 of 924, 2.51 s
+[   386.4s] NOTE    indirect_D1_seed777 trial 24: 6.7798 % kW, 13.3424 % k, best iteration 189 of 799, 1.87 s
+[   388.8s] NOTE    indirect_D1_seed777 trial 25: 6.8462 % kW, 13.4072 % k, best iteration 367 of 664, 2.01 s
+[   391.1s] NOTE    indirect_D1_seed777 trial 26: 6.8012 % kW, 13.3750 % k, best iteration 160 of 1068, 1.95 s
+[   393.2s] NOTE    indirect_D1_seed777 trial 27: 6.8250 % kW, 13.4601 % k, best iteration 118 of 955, 1.79 s
+[   396.1s] NOTE    indirect_D1_seed777 trial 28: 6.8069 % kW, 13.3683 % k, best iteration 210 of 849, 2.59 s
+[   399.5s] NOTE    indirect_D1_seed777 trial 29: 6.7555 % kW, 13.3456 % k, best iteration 234 of 1140, 2.96 s
+[   402.6s] NOTE    indirect_D1_seed777 trial 30: 6.7763 % kW, 13.4267 % k, best iteration 212 of 1202, 2.82 s
+[   404.8s] NOTE    indirect_D1_seed777 trial 31: 6.8301 % kW, 13.4327 % k, best iteration 200 of 1361, 1.87 s
+[   408.0s] NOTE    indirect_D1_seed777 trial 32: 6.8024 % kW, 13.4168 % k, best iteration 232 of 1176, 2.83 s
+[   409.6s] NOTE    indirect_D1_seed777 trial 33: 6.8417 % kW, 13.4583 % k, best iteration 113 of 1142, 1.37 s
+[   412.6s] NOTE    indirect_D1_seed777 trial 34: 6.8017 % kW, 13.3817 % k, best iteration 237 of 1264, 2.65 s
+[   415.2s] NOTE    indirect_D1_seed777 trial 35: 6.8205 % kW, 13.4868 % k, best iteration 134 of 1442, 2.2 s
+[   417.1s] NOTE    indirect_D1_seed777 trial 36: 6.7831 % kW, 13.4018 % k, best iteration 166 of 1161, 1.53 s
+[   418.6s] NOTE    indirect_D1_seed777 trial 37: 6.8644 % kW, 13.4945 % k, best iteration 106 of 1153, 1.19 s
+[   420.9s] NOTE    indirect_D1_seed777 trial 38: 6.8313 % kW, 13.4356 % k, best iteration 245 of 1119, 1.97 s
+[   423.9s] NOTE    indirect_D1_seed777 trial 39: 6.7857 % kW, 13.3818 % k, best iteration 221 of 1251, 2.66 s
+[   426.1s] NOTE    indirect_D1_seed777 trial 40: 6.8014 % kW, 13.3821 % k, best iteration 209 of 1020, 1.84 s
+[   427.8s] NOTE    indirect_D1_seed777 trial 41: 6.7808 % kW, 13.3783 % k, best iteration 125 of 1384, 1.42 s
+[   429.7s] NOTE    indirect_D1_seed777 trial 42: 6.8293 % kW, 13.3894 % k, best iteration 120 of 1465, 1.52 s
+[   432.3s] NOTE    indirect_D1_seed777 trial 43: 6.8183 % kW, 13.4097 % k, best iteration 223 of 760, 2.19 s
+[   436.2s] NOTE    indirect_D1_seed777 trial 44: 6.7930 % kW, 13.4075 % k, best iteration 229 of 1485, 3.62 s
+[   438.4s] NOTE    indirect_D1_seed777 trial 45: 6.7935 % kW, 13.3959 % k, best iteration 130 of 872, 1.8 s
+[   440.2s] NOTE    indirect_D1_seed777 trial 46: 6.8403 % kW, 13.4147 % k, best iteration 161 of 1008, 1.5 s
+[   442.7s] NOTE    indirect_D1_seed777 trial 47: 6.8017 % kW, 13.3854 % k, best iteration 167 of 1096, 2.14 s
+[   444.7s] NOTE    indirect_D1_seed777 trial 48: 6.8126 % kW, 13.3590 % k, best iteration 160 of 1172, 1.65 s
+[   446.8s] NOTE    indirect_D1_seed777 trial 49: 6.8331 % kW, 13.4361 % k, best iteration 124 of 1289, 1.8 s
+[   448.9s] NOTE    indirect_D1_seed777 trial 50: 6.8192 % kW, 13.4308 % k, best iteration 165 of 1195, 1.72 s
+[   450.9s] NOTE    indirect_D1_seed777 trial 51: 6.8403 % kW, 13.4258 % k, best iteration 156 of 1081, 1.61 s
+[   454.1s] NOTE    indirect_D1_seed777 trial 52: 6.7587 % kW, 13.3139 % k, best iteration 215 of 826, 2.81 s
+[   457.7s] NOTE    indirect_D1_seed777 trial 53: 6.8123 % kW, 13.3727 % k, best iteration 242 of 991, 3.29 s
+[   460.1s] NOTE    indirect_D1_seed777 trial 54: 6.7887 % kW, 13.3790 % k, best iteration 235 of 1233, 1.98 s
+[   461.5s] NOTE    indirect_D1_seed777 trial 55: 6.8584 % kW, 13.4610 % k, best iteration 106 of 992, 1.07 s
+[   464.3s] NOTE    indirect_D1_seed777 trial 56: 6.8021 % kW, 13.3609 % k, best iteration 189 of 881, 2.36 s
+[   466.7s] NOTE    indirect_D1_seed777 trial 57: 6.8105 % kW, 13.3753 % k, best iteration 182 of 1106, 2.04 s
+[   468.7s] NOTE    indirect_D1_seed777 trial 58: 6.8373 % kW, 13.3967 % k, best iteration 96 of 1251, 1.63 s
+[   471.2s] NOTE    indirect_D1_seed777 trial 59: 6.8120 % kW, 13.4147 % k, best iteration 148 of 1225, 2.23 s
+[   474.2s] STEP    indirect_D1_seed777: L-09 correction, out-of-fold fits ...
+[   482.2s] STEP    indirect_D1_seed777: L-09 correction, out-of-fold fits done in 8.0s
+[   482.2s] NOTE    indirect_D1_seed777: L-09 a +11.623 kW, b 0.98598 on 7834 out-of-fold hours; tuning window 6.7555 -> 6.6426 % of capacity
+[   482.2s] WARN    indirect_D1_seed777: validation RMSE 0.09944 is 2.7 x the train RMSE 0.03698 at the best iteration
+[   482.2s] WARN    indirect_D1_seed777: best trial on the edge of the search space for max_depth = 10, colsample_bytree = 0.503
+[   482.3s] NOTE    indirect_D1_seed777: best trial 29, validation 6.6426 % of capacity (uncorrected 6.7555 %), best iteration 234 of 1140
+[   482.3s] STEP    indirect_D1_seed777: 60 trial(s) done in 143.5s
+[   482.4s] NOTE    direct_D1: 96 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[   482.4s] NOTE    direct_D1: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 13}
+[   482.4s] NOTE    direct_D1: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[   482.4s] STEP    direct_D1_seed42: 60 trial(s) ...
+[   485.3s] NOTE    direct_D1_seed42 trial 0: 6.8327 % kW, best iteration 35 of 874, 2.58 s
+[   494.9s] NOTE    direct_D1_seed42 trial 1: 6.7911 % kW, best iteration 420 of 1282, 9.28 s
+[   497.6s] NOTE    direct_D1_seed42 trial 2: 6.8108 % kW, best iteration 104 of 747, 2.41 s
+[   506.3s] NOTE    direct_D1_seed42 trial 3: 6.7681 % kW, best iteration 224 of 1021, 8.32 s
+[   509.0s] NOTE    direct_D1_seed42 trial 4: 6.9253 % kW, best iteration 15 of 317, 2.45 s
+[   514.0s] NOTE    direct_D1_seed42 trial 5: 6.7218 % kW, best iteration 381 of 419, 4.71 s
+[   515.1s] NOTE    direct_D1_seed42 trial 6: 6.7261 % kW, best iteration 11 of 1184, 0.74 s
+[   518.6s] NOTE    direct_D1_seed42 trial 7: 6.7630 % kW, best iteration 357 of 359, 3.25 s
+[   523.0s] NOTE    direct_D1_seed42 trial 8: 6.6731 % kW, best iteration 268 of 705, 4.08 s
+[   526.3s] NOTE    direct_D1_seed42 trial 9: 6.9102 % kW, best iteration 51 of 209, 2.95 s
+[   528.4s] NOTE    direct_D1_seed42 trial 10: 6.7195 % kW, best iteration 41 of 1011, 1.8 s
+[   530.5s] NOTE    direct_D1_seed42 trial 11: 6.6625 % kW, best iteration 38 of 1161, 1.75 s
+[   534.3s] NOTE    direct_D1_seed42 trial 12: 6.6874 % kW, best iteration 214 of 905, 3.49 s
+[   537.7s] NOTE    direct_D1_seed42 trial 13: 6.7145 % kW, best iteration 182 of 866, 3.05 s
+[   538.9s] NOTE    direct_D1_seed42 trial 14: 6.6887 % kW, best iteration 25 of 643, 0.88 s
+[   541.2s] NOTE    direct_D1_seed42 trial 15: 6.7073 % kW, best iteration 99 of 498, 1.96 s
+[   542.9s] NOTE    direct_D1_seed42 trial 16: 6.7133 % kW, best iteration 15 of 1140, 1.38 s
+[   549.7s] NOTE    direct_D1_seed42 trial 17: 6.6638 % kW, best iteration 344 of 1173, 6.45 s
+[   552.5s] NOTE    direct_D1_seed42 trial 18: 6.7102 % kW, best iteration 90 of 1420, 2.5 s
+[   554.8s] NOTE    direct_D1_seed42 trial 19: 6.6562 % kW, best iteration 45 of 1110, 1.9 s
+[   557.1s] NOTE    direct_D1_seed42 trial 20: 6.7761 % kW, best iteration 48 of 930, 2.05 s
+[   562.3s] NOTE    direct_D1_seed42 trial 21: 6.7323 % kW, best iteration 175 of 1319, 4.85 s
+[   567.5s] NOTE    direct_D1_seed42 trial 22: 6.6497 % kW, best iteration 265 of 993, 4.88 s
+[   571.1s] NOTE    direct_D1_seed42 trial 23: 6.7665 % kW, best iteration 111 of 1384, 3.31 s
+[   572.6s] NOTE    direct_D1_seed42 trial 24: 6.7638 % kW, best iteration 17 of 1093, 1.16 s
+[   575.0s] NOTE    direct_D1_seed42 trial 25: 6.7476 % kW, best iteration 57 of 1429, 2.1 s
+[   577.6s] NOTE    direct_D1_seed42 trial 26: 6.7624 % kW, best iteration 52 of 855, 2.26 s
+[   579.7s] NOTE    direct_D1_seed42 trial 27: 6.7254 % kW, best iteration 49 of 1187, 1.82 s
+[   583.0s] NOTE    direct_D1_seed42 trial 28: 6.7097 % kW, best iteration 85 of 983, 2.94 s
+[   585.0s] NOTE    direct_D1_seed42 trial 29: 6.7602 % kW, best iteration 35 of 1184, 1.71 s
+[   593.0s] NOTE    direct_D1_seed42 trial 30: 6.6598 % kW, best iteration 381 of 1302, 7.69 s
+[   595.1s] NOTE    direct_D1_seed42 trial 31: 6.7222 % kW, best iteration 50 of 1081, 1.73 s
+[   602.5s] NOTE    direct_D1_seed42 trial 32: 6.6545 % kW, best iteration 351 of 889, 7.09 s
+[   609.4s] NOTE    direct_D1_seed42 trial 33: 6.6366 % kW, best iteration 311 of 946, 6.62 s
+[   617.9s] NOTE    direct_D1_seed42 trial 34: 6.6690 % kW, best iteration 430 of 910, 8.14 s
+[   622.4s] NOTE    direct_D1_seed42 trial 35: 6.6594 % kW, best iteration 227 of 681, 4.22 s
+[   626.4s] NOTE    direct_D1_seed42 trial 36: 6.6926 % kW, best iteration 126 of 1027, 3.68 s
+[   634.6s] NOTE    direct_D1_seed42 trial 37: 6.7040 % kW, best iteration 316 of 1172, 7.88 s
+[   641.8s] NOTE    direct_D1_seed42 trial 38: 6.6683 % kW, best iteration 311 of 1131, 6.85 s
+[   647.2s] NOTE    direct_D1_seed42 trial 39: 6.6512 % kW, best iteration 229 of 997, 5.16 s
+[   653.1s] NOTE    direct_D1_seed42 trial 40: 6.6566 % kW, best iteration 253 of 894, 5.54 s
+[   658.1s] NOTE    direct_D1_seed42 trial 41: 6.6663 % kW, best iteration 295 of 743, 4.61 s
+[   665.2s] NOTE    direct_D1_seed42 trial 42: 6.6662 % kW, best iteration 403 of 1269, 6.86 s
+[   670.8s] NOTE    direct_D1_seed42 trial 43: 6.6298 % kW, best iteration 303 of 1264, 5.28 s
+[   677.5s] NOTE    direct_D1_seed42 trial 44: 6.6841 % kW, best iteration 364 of 884, 6.31 s
+[   683.0s] NOTE    direct_D1_seed42 trial 45: 6.6503 % kW, best iteration 298 of 1068, 5.19 s
+[   687.6s] NOTE    direct_D1_seed42 trial 46: 6.6540 % kW, best iteration 241 of 1137, 4.31 s
+[   694.3s] NOTE    direct_D1_seed42 trial 47: 6.6584 % kW, best iteration 302 of 1105, 6.36 s
+[   701.5s] NOTE    direct_D1_seed42 trial 48: 6.6328 % kW, best iteration 341 of 1219, 6.82 s
+[   707.6s] NOTE    direct_D1_seed42 trial 49: 6.6380 % kW, best iteration 341 of 1428, 5.77 s
+[   716.5s] NOTE    direct_D1_seed42 trial 50: 6.6675 % kW, best iteration 423 of 1483, 8.61 s
+[   722.2s] NOTE    direct_D1_seed42 trial 51: 6.6656 % kW, best iteration 313 of 1122, 5.38 s
+[   729.4s] NOTE    direct_D1_seed42 trial 52: 6.6599 % kW, best iteration 344 of 1266, 6.85 s
+[   735.7s] NOTE    direct_D1_seed42 trial 53: 6.6624 % kW, best iteration 327 of 1165, 5.94 s
+[   742.3s] NOTE    direct_D1_seed42 trial 54: 6.6442 % kW, best iteration 380 of 922, 6.35 s
+[   747.6s] NOTE    direct_D1_seed42 trial 55: 6.6284 % kW, best iteration 280 of 1355, 4.99 s
+[   754.4s] NOTE    direct_D1_seed42 trial 56: 6.6416 % kW, best iteration 381 of 1347, 6.41 s
+[   759.9s] NOTE    direct_D1_seed42 trial 57: 6.6669 % kW, best iteration 366 of 1479, 5.21 s
+[   766.3s] NOTE    direct_D1_seed42 trial 58: 6.6481 % kW, best iteration 303 of 1182, 6.04 s
+[   771.2s] NOTE    direct_D1_seed42 trial 59: 6.6901 % kW, best iteration 309 of 1281, 4.56 s
+[   776.3s] WARN    direct_D1_seed42: best trial on the edge of the search space for reg_lambda = 1.24e-08
+[   776.3s] NOTE    direct_D1_seed42: best trial 55, validation 6.6284 % of capacity, best iteration 280 of 1355
+[   776.4s] STEP    direct_D1_seed42: 60 trial(s) done in 294.0s
+[   776.4s] STEP    direct_D1_seed123: 60 trial(s) ...
+[   779.5s] NOTE    direct_D1_seed123 trial 0: 6.7763 % kW, best iteration 201 of 1454, 2.69 s
+[   782.2s] NOTE    direct_D1_seed123 trial 1: 6.7888 % kW, best iteration 143 of 1066, 2.39 s
+[   783.7s] NOTE    direct_D1_seed123 trial 2: 6.7981 % kW, best iteration 68 of 528, 1.24 s
+[   785.8s] NOTE    direct_D1_seed123 trial 3: 6.7372 % kW, best iteration 121 of 1501, 1.83 s
+[   787.9s] NOTE    direct_D1_seed123 trial 4: 6.7020 % kW, best iteration 96 of 975, 1.75 s
+[   790.8s] NOTE    direct_D1_seed123 trial 5: 6.8507 % kW, best iteration 265 of 1323, 2.63 s
+[   796.0s] NOTE    direct_D1_seed123 trial 6: 6.7212 % kW, best iteration 290 of 1135, 4.9 s
+[   797.5s] NOTE    direct_D1_seed123 trial 7: 6.8971 % kW, best iteration 20 of 951, 1.28 s
+[   798.8s] NOTE    direct_D1_seed123 trial 8: 6.8348 % kW, best iteration 58 of 1717, 0.97 s
+[   807.6s] NOTE    direct_D1_seed123 trial 9: 6.7929 % kW, best iteration 434 of 1329, 8.59 s
+[   812.0s] NOTE    direct_D1_seed123 trial 10: 6.7104 % kW, best iteration 330 of 582, 4.06 s
+[   814.1s] NOTE    direct_D1_seed123 trial 11: 6.7183 % kW, best iteration 146 of 545, 1.79 s
+[   818.5s] NOTE    direct_D1_seed123 trial 12: 6.7251 % kW, best iteration 294 of 498, 4.07 s
+[   824.3s] NOTE    direct_D1_seed123 trial 13: 6.7005 % kW, best iteration 313 of 843, 5.53 s
+[   828.7s] NOTE    direct_D1_seed123 trial 14: 6.6610 % kW, best iteration 189 of 632, 4.05 s
+[   834.1s] NOTE    direct_D1_seed123 trial 15: 6.6813 % kW, best iteration 285 of 694, 5.11 s
+[   836.8s] NOTE    direct_D1_seed123 trial 16: 6.5984 % kW, best iteration 204 of 205, 2.45 s
+[   841.3s] NOTE    direct_D1_seed123 trial 17: 6.7083 % kW, best iteration 315 of 328, 4.18 s
+[   844.1s] NOTE    direct_D1_seed123 trial 18: 6.7068 % kW, best iteration 292 of 293, 2.43 s
+[   848.0s] NOTE    direct_D1_seed123 trial 19: 6.7178 % kW, best iteration 124 of 325, 3.67 s
+[   851.0s] NOTE    direct_D1_seed123 trial 20: 6.7296 % kW, best iteration 214 of 285, 2.65 s
+[   854.8s] NOTE    direct_D1_seed123 trial 21: 6.6945 % kW, best iteration 185 of 540, 3.43 s
+[   860.4s] NOTE    direct_D1_seed123 trial 22: 6.6829 % kW, best iteration 332 of 526, 5.34 s
+[   866.3s] NOTE    direct_D1_seed123 trial 23: 6.6975 % kW, best iteration 420 of 901, 5.57 s
+[   872.7s] NOTE    direct_D1_seed123 trial 24: 6.6637 % kW, best iteration 307 of 600, 6.1 s
+[   879.0s] NOTE    direct_D1_seed123 trial 25: 6.6964 % kW, best iteration 299 of 505, 5.93 s
+[   882.8s] NOTE    direct_D1_seed123 trial 26: 6.6585 % kW, best iteration 150 of 729, 3.43 s
+[   885.5s] NOTE    direct_D1_seed123 trial 27: 6.6641 % kW, best iteration 89 of 436, 2.38 s
+[   889.8s] NOTE    direct_D1_seed123 trial 28: 6.6459 % kW, best iteration 220 of 888, 3.96 s
+[   895.1s] NOTE    direct_D1_seed123 trial 29: 6.6617 % kW, best iteration 223 of 978, 5.02 s
+[   899.0s] NOTE    direct_D1_seed123 trial 30: 6.6783 % kW, best iteration 193 of 1200, 3.56 s
+[   903.7s] NOTE    direct_D1_seed123 trial 31: 6.7097 % kW, best iteration 205 of 716, 4.35 s
+[   907.0s] NOTE    direct_D1_seed123 trial 32: 6.7399 % kW, best iteration 118 of 698, 3.01 s
+[   912.3s] NOTE    direct_D1_seed123 trial 33: 6.6757 % kW, best iteration 252 of 881, 4.89 s
+[   915.4s] NOTE    direct_D1_seed123 trial 34: 6.6745 % kW, best iteration 140 of 771, 2.85 s
+[   922.1s] NOTE    direct_D1_seed123 trial 35: 6.6867 % kW, best iteration 347 of 679, 6.35 s
+[   926.0s] NOTE    direct_D1_seed123 trial 36: 6.6442 % kW, best iteration 191 of 786, 3.49 s
+[   930.6s] NOTE    direct_D1_seed123 trial 37: 6.6572 % kW, best iteration 196 of 930, 4.3 s
+[   936.5s] NOTE    direct_D1_seed123 trial 38: 6.6730 % kW, best iteration 296 of 962, 5.61 s
+[   940.8s] NOTE    direct_D1_seed123 trial 39: 6.7229 % kW, best iteration 148 of 923, 3.96 s
+[   945.8s] NOTE    direct_D1_seed123 trial 40: 6.7056 % kW, best iteration 213 of 671, 4.64 s
+[   954.3s] NOTE    direct_D1_seed123 trial 41: 6.6721 % kW, best iteration 366 of 904, 8.21 s
+[   957.9s] NOTE    direct_D1_seed123 trial 42: 6.6329 % kW, best iteration 144 of 722, 3.2 s
+[   961.3s] NOTE    direct_D1_seed123 trial 43: 6.6998 % kW, best iteration 149 of 1014, 3.04 s
+[   964.9s] NOTE    direct_D1_seed123 trial 44: 6.6377 % kW, best iteration 157 of 712, 3.1 s
+[   967.6s] NOTE    direct_D1_seed123 trial 45: 6.6606 % kW, best iteration 88 of 656, 2.38 s
+[   971.3s] NOTE    direct_D1_seed123 trial 46: 6.6939 % kW, best iteration 259 of 658, 3.39 s
+[   975.2s] NOTE    direct_D1_seed123 trial 47: 6.6842 % kW, best iteration 193 of 355, 3.6 s
+[   979.2s] NOTE    direct_D1_seed123 trial 48: 6.7042 % kW, best iteration 170 of 790, 3.65 s
+[   983.4s] NOTE    direct_D1_seed123 trial 49: 6.6701 % kW, best iteration 193 of 491, 3.93 s
+[   988.5s] NOTE    direct_D1_seed123 trial 50: 6.6735 % kW, best iteration 222 of 583, 4.71 s
+[   992.4s] NOTE    direct_D1_seed123 trial 51: 6.6733 % kW, best iteration 166 of 849, 3.59 s
+[   995.1s] NOTE    direct_D1_seed123 trial 52: 6.6293 % kW, best iteration 96 of 937, 2.38 s
+[   997.9s] NOTE    direct_D1_seed123 trial 53: 6.6597 % kW, best iteration 116 of 854, 2.52 s
+[  1001.6s] NOTE    direct_D1_seed123 trial 54: 6.6764 % kW, best iteration 160 of 811, 3.38 s
+[  1004.6s] NOTE    direct_D1_seed123 trial 55: 6.6951 % kW, best iteration 161 of 883, 2.71 s
+[  1007.6s] NOTE    direct_D1_seed123 trial 56: 6.6475 % kW, best iteration 140 of 640, 2.73 s
+[  1010.6s] NOTE    direct_D1_seed123 trial 57: 6.6522 % kW, best iteration 126 of 900, 2.6 s
+[  1014.1s] NOTE    direct_D1_seed123 trial 58: 6.6890 % kW, best iteration 145 of 851, 3.25 s
+[  1018.4s] NOTE    direct_D1_seed123 trial 59: 6.6554 % kW, best iteration 223 of 702, 3.98 s
+[  1020.9s] WARN    direct_D1_seed123: best iteration 204 at the cap of 205 rounds: it may not have converged (M12d)
+[  1020.9s] WARN    direct_D1_seed123: best trial on the edge of the search space for n_estimators = 205
+[  1021.0s] NOTE    direct_D1_seed123: best trial 16, validation 6.5984 % of capacity, best iteration 204 of 205
+[  1021.0s] STEP    direct_D1_seed123: 60 trial(s) done in 244.6s
+[  1021.0s] STEP    direct_D1_seed777: 60 trial(s) ...
+[  1025.6s] NOTE    direct_D1_seed777 trial 0: 6.7662 % kW, best iteration 382 of 474, 4.24 s
+[  1031.8s] NOTE    direct_D1_seed777 trial 1: 6.6816 % kW, best iteration 314 of 684, 5.87 s
+[  1035.4s] NOTE    direct_D1_seed777 trial 2: 6.7896 % kW, best iteration 183 of 1427, 3.35 s
+[  1037.9s] NOTE    direct_D1_seed777 trial 3: 6.7908 % kW, best iteration 74 of 1300, 2.26 s
+[  1039.9s] NOTE    direct_D1_seed777 trial 4: 6.6873 % kW, best iteration 63 of 1133, 1.63 s
+[  1041.5s] NOTE    direct_D1_seed777 trial 5: 6.8058 % kW, best iteration 31 of 732, 1.36 s
+[  1049.2s] NOTE    direct_D1_seed777 trial 6: 6.7405 % kW, best iteration 307 of 1050, 7.43 s
+[  1059.4s] NOTE    direct_D1_seed777 trial 7: 6.7579 % kW, best iteration 349 of 947, 9.8 s
+[  1061.1s] NOTE    direct_D1_seed777 trial 8: 6.8693 % kW, best iteration 24 of 374, 1.46 s
+[  1066.3s] NOTE    direct_D1_seed777 trial 9: 6.7431 % kW, best iteration 140 of 369, 4.9 s
+[  1069.6s] NOTE    direct_D1_seed777 trial 10: 6.7575 % kW, best iteration 97 of 350, 2.97 s
+[  1075.6s] NOTE    direct_D1_seed777 trial 11: 6.6923 % kW, best iteration 329 of 1038, 5.7 s
+[  1079.4s] NOTE    direct_D1_seed777 trial 12: 6.7091 % kW, best iteration 173 of 639, 3.54 s
+[  1084.2s] NOTE    direct_D1_seed777 trial 13: 6.7017 % kW, best iteration 237 of 1099, 4.46 s
+[  1085.8s] NOTE    direct_D1_seed777 trial 14: 6.6438 % kW, best iteration 50 of 738, 1.31 s
+[  1089.4s] NOTE    direct_D1_seed777 trial 15: 6.7230 % kW, best iteration 177 of 666, 3.25 s
+[  1091.3s] NOTE    direct_D1_seed777 trial 16: 6.6576 % kW, best iteration 50 of 590, 1.67 s
+[  1092.9s] NOTE    direct_D1_seed777 trial 17: 6.7332 % kW, best iteration 55 of 572, 1.31 s
+[  1094.3s] NOTE    direct_D1_seed777 trial 18: 6.7132 % kW, best iteration 37 of 485, 1.06 s
+[  1095.6s] NOTE    direct_D1_seed777 trial 19: 6.8558 % kW, best iteration 14 of 1155, 0.93 s
+[  1097.3s] NOTE    direct_D1_seed777 trial 20: 6.6709 % kW, best iteration 37 of 616, 1.35 s
+[  1098.7s] NOTE    direct_D1_seed777 trial 21: 6.7144 % kW, best iteration 23 of 752, 1.12 s
+[  1100.8s] NOTE    direct_D1_seed777 trial 22: 6.7843 % kW, best iteration 46 of 632, 1.73 s
+[  1102.3s] NOTE    direct_D1_seed777 trial 23: 6.7329 % kW, best iteration 49 of 794, 1.24 s
+[  1104.5s] NOTE    direct_D1_seed777 trial 24: 6.8025 % kW, best iteration 99 of 698, 1.81 s
+[  1106.7s] NOTE    direct_D1_seed777 trial 25: 6.6486 % kW, best iteration 82 of 515, 1.88 s
+[  1109.4s] NOTE    direct_D1_seed777 trial 26: 6.6671 % kW, best iteration 72 of 827, 2.36 s
+[  1111.5s] NOTE    direct_D1_seed777 trial 27: 6.6560 % kW, best iteration 71 of 602, 1.76 s
+[  1113.4s] NOTE    direct_D1_seed777 trial 28: 6.7338 % kW, best iteration 82 of 349, 1.59 s
+[  1115.6s] NOTE    direct_D1_seed777 trial 29: 6.7033 % kW, best iteration 73 of 244, 1.91 s
+[  1118.8s] NOTE    direct_D1_seed777 trial 30: 6.7598 % kW, best iteration 140 of 273, 2.91 s
+[  1121.7s] NOTE    direct_D1_seed777 trial 31: 6.7867 % kW, best iteration 139 of 459, 2.57 s
+[  1124.5s] NOTE    direct_D1_seed777 trial 32: 6.7186 % kW, best iteration 138 of 720, 2.49 s
+[  1126.3s] NOTE    direct_D1_seed777 trial 33: 6.7372 % kW, best iteration 38 of 518, 1.41 s
+[  1129.6s] NOTE    direct_D1_seed777 trial 34: 6.6891 % kW, best iteration 140 of 789, 3.0 s
+[  1131.2s] NOTE    direct_D1_seed777 trial 35: 6.7124 % kW, best iteration 40 of 647, 1.36 s
+[  1132.9s] NOTE    direct_D1_seed777 trial 36: 6.6869 % kW, best iteration 57 of 589, 1.32 s
+[  1134.9s] NOTE    direct_D1_seed777 trial 37: 6.7565 % kW, best iteration 55 of 280, 1.73 s
+[  1137.3s] NOTE    direct_D1_seed777 trial 38: 6.6800 % kW, best iteration 57 of 412, 2.06 s
+[  1139.9s] NOTE    direct_D1_seed777 trial 39: 6.7585 % kW, best iteration 118 of 624, 2.28 s
+[  1142.1s] NOTE    direct_D1_seed777 trial 40: 6.7229 % kW, best iteration 94 of 351, 1.95 s
+[  1144.4s] NOTE    direct_D1_seed777 trial 41: 6.7260 % kW, best iteration 72 of 573, 1.96 s
+[  1146.7s] NOTE    direct_D1_seed777 trial 42: 6.6877 % kW, best iteration 56 of 798, 1.94 s
+[  1148.9s] NOTE    direct_D1_seed777 trial 43: 6.7765 % kW, best iteration 66 of 361, 1.91 s
+[  1150.8s] NOTE    direct_D1_seed777 trial 44: 6.7792 % kW, best iteration 64 of 580, 1.59 s
+[  1152.9s] NOTE    direct_D1_seed777 trial 45: 6.7190 % kW, best iteration 49 of 844, 1.77 s
+[  1155.1s] NOTE    direct_D1_seed777 trial 46: 6.6596 % kW, best iteration 66 of 639, 1.9 s
+[  1157.6s] NOTE    direct_D1_seed777 trial 47: 6.7668 % kW, best iteration 79 of 730, 2.12 s
+[  1159.2s] NOTE    direct_D1_seed777 trial 48: 6.7311 % kW, best iteration 56 of 322, 1.36 s
+[  1161.3s] NOTE    direct_D1_seed777 trial 49: 6.7437 % kW, best iteration 68 of 368, 1.74 s
+[  1163.5s] NOTE    direct_D1_seed777 trial 50: 6.7422 % kW, best iteration 98 of 544, 1.81 s
+[  1165.6s] NOTE    direct_D1_seed777 trial 51: 6.7864 % kW, best iteration 53 of 708, 1.7 s
+[  1167.8s] NOTE    direct_D1_seed777 trial 52: 6.7284 % kW, best iteration 81 of 557, 1.9 s
+[  1170.1s] NOTE    direct_D1_seed777 trial 53: 6.7024 % kW, best iteration 86 of 394, 1.93 s
+[  1172.7s] NOTE    direct_D1_seed777 trial 54: 6.7491 % kW, best iteration 130 of 384, 2.12 s
+[  1175.0s] NOTE    direct_D1_seed777 trial 55: 6.6771 % kW, best iteration 74 of 479, 2.07 s
+[  1177.6s] NOTE    direct_D1_seed777 trial 56: 6.7296 % kW, best iteration 85 of 575, 2.23 s
+[  1179.6s] NOTE    direct_D1_seed777 trial 57: 6.7044 % kW, best iteration 49 of 650, 1.69 s
+[  1181.7s] NOTE    direct_D1_seed777 trial 58: 6.6473 % kW, best iteration 56 of 487, 1.72 s
+[  1183.9s] NOTE    direct_D1_seed777 trial 59: 6.6525 % kW, best iteration 55 of 573, 1.88 s
+[  1185.4s] NOTE    direct_D1_seed777: best trial 14, validation 6.6438 % of capacity, best iteration 50 of 738
+[  1185.4s] STEP    direct_D1_seed777: 60 trial(s) done in 164.4s
+[  1185.7s] WARN    TEST ROWS READ (forecast the test window of D+2 (features), 5829 rows); recorded in test_access_log.csv
+[  1185.7s] NOTE    indirect_D2: 28 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[  1185.7s] STEP    indirect_D2_seed42: 60 trial(s) ...
+[  1186.6s] NOTE    indirect_D2_seed42 trial 0: 7.2669 % kW, 14.4644 % k, best iteration 22 of 874, 0.61 s
+[  1189.1s] NOTE    indirect_D2_seed42 trial 1: 7.2931 % kW, 14.4253 % k, best iteration 294 of 1282, 2.14 s
+[  1190.0s] NOTE    indirect_D2_seed42 trial 2: 7.2579 % kW, 14.3011 % k, best iteration 78 of 747, 0.6 s
+[  1192.3s] NOTE    indirect_D2_seed42 trial 3: 7.2538 % kW, 14.3754 % k, best iteration 148 of 1021, 1.96 s
+[  1193.3s] NOTE    indirect_D2_seed42 trial 4: 7.6430 % kW, 15.2191 % k, best iteration 8 of 317, 0.73 s
+[  1194.6s] NOTE    indirect_D2_seed42 trial 5: 7.2368 % kW, 14.2314 % k, best iteration 308 of 419, 0.96 s
+[  1195.0s] NOTE    indirect_D2_seed42 trial 6: 7.2117 % kW, 14.3178 % k, best iteration 34 of 1184, 0.18 s
+[  1196.1s] NOTE    indirect_D2_seed42 trial 7: 7.2504 % kW, 14.2120 % k, best iteration 354 of 359, 0.75 s
+[  1197.4s] NOTE    indirect_D2_seed42 trial 8: 7.2091 % kW, 14.2136 % k, best iteration 213 of 705, 0.94 s
+[  1198.4s] NOTE    indirect_D2_seed42 trial 9: 7.3673 % kW, 14.7166 % k, best iteration 20 of 209, 0.69 s
+[  1199.1s] NOTE    indirect_D2_seed42 trial 10: 7.1802 % kW, 14.0965 % k, best iteration 25 of 1011, 0.34 s
+[  1199.9s] NOTE    indirect_D2_seed42 trial 11: 7.1861 % kW, 14.1722 % k, best iteration 21 of 1161, 0.43 s
+[  1200.7s] NOTE    indirect_D2_seed42 trial 12: 7.1420 % kW, 14.1717 % k, best iteration 36 of 933, 0.47 s
+[  1201.4s] NOTE    indirect_D2_seed42 trial 13: 7.3519 % kW, 14.4477 % k, best iteration 17 of 681, 0.34 s
+[  1201.9s] NOTE    indirect_D2_seed42 trial 14: 7.2292 % kW, 14.4308 % k, best iteration 12 of 706, 0.22 s
+[  1202.6s] NOTE    indirect_D2_seed42 trial 15: 7.2429 % kW, 14.4163 % k, best iteration 18 of 277, 0.34 s
+[  1203.4s] NOTE    indirect_D2_seed42 trial 16: 7.2142 % kW, 14.3030 % k, best iteration 18 of 748, 0.4 s
+[  1204.1s] NOTE    indirect_D2_seed42 trial 17: 7.1223 % kW, 14.0736 % k, best iteration 29 of 871, 0.38 s
+[  1204.9s] NOTE    indirect_D2_seed42 trial 18: 7.1354 % kW, 14.1704 % k, best iteration 37 of 1551, 0.52 s
+[  1205.6s] NOTE    indirect_D2_seed42 trial 19: 7.2498 % kW, 14.2655 % k, best iteration 47 of 1978, 0.31 s
+[  1206.4s] NOTE    indirect_D2_seed42 trial 20: 7.1062 % kW, 14.1859 % k, best iteration 34 of 1131, 0.48 s
+[  1207.3s] NOTE    indirect_D2_seed42 trial 21: 7.1405 % kW, 14.2329 % k, best iteration 38 of 1619, 0.52 s
+[  1208.2s] NOTE    indirect_D2_seed42 trial 22: 7.0883 % kW, 14.1677 % k, best iteration 44 of 1630, 0.61 s
+[  1209.1s] NOTE    indirect_D2_seed42 trial 23: 7.0959 % kW, 14.1534 % k, best iteration 50 of 1439, 0.52 s
+[  1210.0s] NOTE    indirect_D2_seed42 trial 24: 7.1648 % kW, 14.2376 % k, best iteration 40 of 1459, 0.61 s
+[  1210.7s] NOTE    indirect_D2_seed42 trial 25: 7.1669 % kW, 14.2074 % k, best iteration 48 of 1010, 0.4 s
+[  1211.5s] NOTE    indirect_D2_seed42 trial 26: 7.1313 % kW, 14.1865 % k, best iteration 17 of 1114, 0.41 s
+[  1212.5s] NOTE    indirect_D2_seed42 trial 27: 7.1586 % kW, 14.1762 % k, best iteration 75 of 1683, 0.71 s
+[  1213.6s] NOTE    indirect_D2_seed42 trial 28: 7.1582 % kW, 14.2187 % k, best iteration 52 of 1332, 0.73 s
+[  1214.4s] NOTE    indirect_D2_seed42 trial 29: 7.1392 % kW, 14.1712 % k, best iteration 60 of 1460, 0.45 s
+[  1215.1s] NOTE    indirect_D2_seed42 trial 30: 7.1821 % kW, 14.2487 % k, best iteration 35 of 977, 0.41 s
+[  1216.0s] NOTE    indirect_D2_seed42 trial 31: 7.2622 % kW, 14.3490 % k, best iteration 24 of 1828, 0.48 s
+[  1216.8s] NOTE    indirect_D2_seed42 trial 32: 7.1668 % kW, 14.2458 % k, best iteration 45 of 1216, 0.46 s
+[  1218.0s] NOTE    indirect_D2_seed42 trial 33: 7.1885 % kW, 14.1960 % k, best iteration 92 of 1324, 0.75 s
+[  1218.8s] NOTE    indirect_D2_seed42 trial 34: 7.1265 % kW, 14.2234 % k, best iteration 46 of 1137, 0.45 s
+[  1219.7s] NOTE    indirect_D2_seed42 trial 35: 7.1455 % kW, 14.2042 % k, best iteration 44 of 807, 0.6 s
+[  1220.8s] NOTE    indirect_D2_seed42 trial 36: 7.1253 % kW, 14.0601 % k, best iteration 59 of 1677, 0.66 s
+[  1221.8s] NOTE    indirect_D2_seed42 trial 37: 7.1790 % kW, 14.2139 % k, best iteration 60 of 1518, 0.72 s
+[  1222.6s] NOTE    indirect_D2_seed42 trial 38: 7.1397 % kW, 14.0969 % k, best iteration 19 of 1431, 0.43 s
+[  1223.8s] NOTE    indirect_D2_seed42 trial 39: 7.1827 % kW, 14.2273 % k, best iteration 80 of 1249, 0.91 s
+[  1224.7s] NOTE    indirect_D2_seed42 trial 40: 7.2419 % kW, 14.3938 % k, best iteration 22 of 1351, 0.47 s
+[  1225.5s] NOTE    indirect_D2_seed42 trial 41: 7.2189 % kW, 14.3220 % k, best iteration 27 of 1683, 0.51 s
+[  1226.3s] NOTE    indirect_D2_seed42 trial 42: 7.1309 % kW, 14.2030 % k, best iteration 44 of 1704, 0.48 s
+[  1227.4s] NOTE    indirect_D2_seed42 trial 43: 7.1190 % kW, 14.2314 % k, best iteration 59 of 1452, 0.74 s
+[  1228.4s] NOTE    indirect_D2_seed42 trial 44: 7.1634 % kW, 14.2115 % k, best iteration 73 of 1344, 0.68 s
+[  1229.3s] NOTE    indirect_D2_seed42 trial 45: 7.1297 % kW, 14.1918 % k, best iteration 31 of 1571, 0.58 s
+[  1230.3s] NOTE    indirect_D2_seed42 trial 46: 7.1993 % kW, 14.2526 % k, best iteration 21 of 761, 0.52 s
+[  1231.1s] NOTE    indirect_D2_seed42 trial 47: 7.1926 % kW, 14.2014 % k, best iteration 25 of 1156, 0.46 s
+[  1232.0s] NOTE    indirect_D2_seed42 trial 48: 7.0964 % kW, 14.1367 % k, best iteration 41 of 1523, 0.45 s
+[  1232.9s] NOTE    indirect_D2_seed42 trial 49: 7.1627 % kW, 14.2433 % k, best iteration 28 of 1051, 0.51 s
+[  1233.6s] NOTE    indirect_D2_seed42 trial 50: 7.2140 % kW, 14.3441 % k, best iteration 19 of 1360, 0.35 s
+[  1234.4s] NOTE    indirect_D2_seed42 trial 51: 7.1607 % kW, 14.2400 % k, best iteration 32 of 1532, 0.54 s
+[  1235.4s] NOTE    indirect_D2_seed42 trial 52: 7.1092 % kW, 14.1243 % k, best iteration 64 of 1497, 0.65 s
+[  1236.2s] NOTE    indirect_D2_seed42 trial 53: 7.1355 % kW, 14.1947 % k, best iteration 39 of 1549, 0.51 s
+[  1237.0s] NOTE    indirect_D2_seed42 trial 54: 7.1135 % kW, 14.1261 % k, best iteration 35 of 1225, 0.43 s
+[  1237.8s] NOTE    indirect_D2_seed42 trial 55: 7.1623 % kW, 14.2105 % k, best iteration 40 of 1350, 0.5 s
+[  1238.8s] NOTE    indirect_D2_seed42 trial 56: 7.1394 % kW, 14.1677 % k, best iteration 44 of 1660, 0.69 s
+[  1239.8s] NOTE    indirect_D2_seed42 trial 57: 7.1204 % kW, 14.1533 % k, best iteration 51 of 1422, 0.61 s
+[  1240.7s] NOTE    indirect_D2_seed42 trial 58: 7.2164 % kW, 14.2869 % k, best iteration 44 of 1566, 0.57 s
+[  1241.6s] NOTE    indirect_D2_seed42 trial 59: 7.1736 % kW, 14.2241 % k, best iteration 22 of 1256, 0.51 s
+[  1242.3s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits ...
+[  1243.4s] STEP    indirect_D2_seed42: L-09 correction, out-of-fold fits done in 1.1s
+[  1243.4s] NOTE    indirect_D2_seed42: L-09 a +25.877 kW, b 0.96961 on 7834 out-of-fold hours; tuning window 7.0883 -> 6.8880 % of capacity
+[  1243.4s] WARN    indirect_D2_seed42: best trial on the edge of the search space for max_depth = 10
+[  1243.4s] NOTE    indirect_D2_seed42: best trial 22, validation 6.8880 % of capacity (uncorrected 7.0883 %), best iteration 44 of 1630
+[  1243.5s] STEP    indirect_D2_seed42: 60 trial(s) done in 57.8s
+[  1243.5s] STEP    indirect_D2_seed123: 60 trial(s) ...
+[  1245.2s] NOTE    indirect_D2_seed123 trial 0: 7.2107 % kW, 14.1394 % k, best iteration 545 of 1454, 1.36 s
+[  1246.0s] NOTE    indirect_D2_seed123 trial 1: 7.2994 % kW, 14.3478 % k, best iteration 119 of 1066, 0.53 s
+[  1246.6s] NOTE    indirect_D2_seed123 trial 2: 7.2547 % kW, 14.2626 % k, best iteration 106 of 528, 0.31 s
+[  1247.3s] NOTE    indirect_D2_seed123 trial 3: 7.2847 % kW, 14.3306 % k, best iteration 120 of 1501, 0.4 s
+[  1248.1s] NOTE    indirect_D2_seed123 trial 4: 7.1982 % kW, 14.1203 % k, best iteration 115 of 975, 0.46 s
+[  1248.9s] NOTE    indirect_D2_seed123 trial 5: 7.2328 % kW, 14.2705 % k, best iteration 216 of 1323, 0.5 s
+[  1250.3s] NOTE    indirect_D2_seed123 trial 6: 7.2445 % kW, 14.2549 % k, best iteration 252 of 1135, 1.16 s
+[  1250.9s] NOTE    indirect_D2_seed123 trial 7: 7.4984 % kW, 14.7045 % k, best iteration 8 of 951, 0.27 s
+[  1251.4s] NOTE    indirect_D2_seed123 trial 8: 7.2121 % kW, 14.1826 % k, best iteration 69 of 1717, 0.21 s
+[  1253.5s] NOTE    indirect_D2_seed123 trial 9: 7.2368 % kW, 14.2801 % k, best iteration 245 of 1329, 1.73 s
+[  1254.9s] NOTE    indirect_D2_seed123 trial 10: 7.2266 % kW, 14.2164 % k, best iteration 353 of 582, 1.12 s
+[  1256.0s] NOTE    indirect_D2_seed123 trial 11: 7.2167 % kW, 14.1526 % k, best iteration 215 of 1731, 0.77 s
+[  1256.9s] NOTE    indirect_D2_seed123 trial 12: 7.2398 % kW, 14.2041 % k, best iteration 78 of 868, 0.58 s
+[  1257.7s] NOTE    indirect_D2_seed123 trial 13: 7.2509 % kW, 14.2608 % k, best iteration 73 of 1443, 0.4 s
+[  1258.5s] NOTE    indirect_D2_seed123 trial 14: 7.2817 % kW, 14.3417 % k, best iteration 121 of 997, 0.5 s
+[  1259.6s] NOTE    indirect_D2_seed123 trial 15: 7.2658 % kW, 14.2449 % k, best iteration 212 of 958, 0.76 s
+[  1260.3s] NOTE    indirect_D2_seed123 trial 16: 7.2316 % kW, 14.2153 % k, best iteration 71 of 1633, 0.4 s
+[  1261.6s] NOTE    indirect_D2_seed123 trial 17: 7.1848 % kW, 14.0855 % k, best iteration 357 of 1663, 0.93 s
+[  1262.4s] NOTE    indirect_D2_seed123 trial 18: 7.2342 % kW, 14.2023 % k, best iteration 134 of 1459, 0.46 s
+[  1263.7s] NOTE    indirect_D2_seed123 trial 19: 7.2181 % kW, 14.1509 % k, best iteration 197 of 1771, 0.86 s
+[  1264.5s] NOTE    indirect_D2_seed123 trial 20: 7.2069 % kW, 14.1328 % k, best iteration 119 of 1535, 0.44 s
+[  1265.7s] NOTE    indirect_D2_seed123 trial 21: 7.1794 % kW, 14.0493 % k, best iteration 319 of 1780, 0.87 s
+[  1267.6s] NOTE    indirect_D2_seed123 trial 22: 7.1832 % kW, 14.0574 % k, best iteration 608 of 1909, 1.55 s
+[  1269.3s] NOTE    indirect_D2_seed123 trial 23: 7.2091 % kW, 14.1487 % k, best iteration 327 of 1944, 1.36 s
+[  1270.4s] NOTE    indirect_D2_seed123 trial 24: 7.2052 % kW, 14.1720 % k, best iteration 131 of 1788, 0.66 s
+[  1271.8s] NOTE    indirect_D2_seed123 trial 25: 7.1861 % kW, 14.0877 % k, best iteration 345 of 1936, 1.05 s
+[  1273.4s] NOTE    indirect_D2_seed123 trial 26: 7.1978 % kW, 14.0845 % k, best iteration 608 of 1516, 1.25 s
+[  1274.7s] NOTE    indirect_D2_seed123 trial 27: 7.1913 % kW, 14.0823 % k, best iteration 353 of 1699, 0.87 s
+[  1276.5s] NOTE    indirect_D2_seed123 trial 28: 7.1815 % kW, 14.0665 % k, best iteration 594 of 1917, 1.53 s
+[  1277.8s] NOTE    indirect_D2_seed123 trial 29: 7.2108 % kW, 14.2187 % k, best iteration 200 of 1776, 0.92 s
+[  1278.7s] NOTE    indirect_D2_seed123 trial 30: 7.2325 % kW, 14.2050 % k, best iteration 199 of 1815, 0.52 s
+[  1280.4s] NOTE    indirect_D2_seed123 trial 31: 7.2053 % kW, 14.1060 % k, best iteration 616 of 1807, 1.4 s
+[  1281.6s] NOTE    indirect_D2_seed123 trial 32: 7.2334 % kW, 14.2233 % k, best iteration 357 of 1759, 0.89 s
+[  1283.0s] NOTE    indirect_D2_seed123 trial 33: 7.1844 % kW, 14.0621 % k, best iteration 262 of 1756, 1.0 s
+[  1284.2s] NOTE    indirect_D2_seed123 trial 34: 7.2590 % kW, 14.2158 % k, best iteration 201 of 1967, 0.9 s
+[  1286.1s] NOTE    indirect_D2_seed123 trial 35: 7.1968 % kW, 14.0847 % k, best iteration 605 of 1783, 1.52 s
+[  1287.6s] NOTE    indirect_D2_seed123 trial 36: 7.1904 % kW, 14.0616 % k, best iteration 379 of 1536, 1.21 s
+[  1289.2s] NOTE    indirect_D2_seed123 trial 37: 7.2371 % kW, 14.2072 % k, best iteration 353 of 1971, 1.18 s
+[  1290.7s] NOTE    indirect_D2_seed123 trial 38: 7.1930 % kW, 14.1144 % k, best iteration 327 of 1701, 1.14 s
+[  1292.0s] NOTE    indirect_D2_seed123 trial 39: 7.2355 % kW, 14.1684 % k, best iteration 214 of 1660, 0.9 s
+[  1293.4s] NOTE    indirect_D2_seed123 trial 40: 7.1602 % kW, 14.0552 % k, best iteration 317 of 1972, 1.1 s
+[  1294.6s] NOTE    indirect_D2_seed123 trial 41: 7.1928 % kW, 14.0635 % k, best iteration 299 of 1767, 0.85 s
+[  1296.2s] NOTE    indirect_D2_seed123 trial 42: 7.2031 % kW, 14.0944 % k, best iteration 339 of 1832, 1.22 s
+[  1297.9s] NOTE    indirect_D2_seed123 trial 43: 7.1921 % kW, 14.0922 % k, best iteration 493 of 1827, 1.39 s
+[  1299.0s] NOTE    indirect_D2_seed123 trial 44: 7.1981 % kW, 14.0944 % k, best iteration 271 of 1599, 0.8 s
+[  1300.2s] NOTE    indirect_D2_seed123 trial 45: 7.2089 % kW, 14.0871 % k, best iteration 196 of 1874, 0.87 s
+[  1302.2s] NOTE    indirect_D2_seed123 trial 46: 7.1881 % kW, 14.0788 % k, best iteration 600 of 1791, 1.72 s
+[  1303.1s] NOTE    indirect_D2_seed123 trial 47: 7.2110 % kW, 14.1788 % k, best iteration 156 of 1879, 0.53 s
+[  1304.4s] NOTE    indirect_D2_seed123 trial 48: 7.1755 % kW, 14.0397 % k, best iteration 338 of 1726, 0.98 s
+[  1305.8s] NOTE    indirect_D2_seed123 trial 49: 7.1890 % kW, 14.0864 % k, best iteration 438 of 1874, 1.08 s
+[  1307.0s] NOTE    indirect_D2_seed123 trial 50: 7.2077 % kW, 14.1497 % k, best iteration 197 of 1990, 0.79 s
+[  1308.2s] NOTE    indirect_D2_seed123 trial 51: 7.1813 % kW, 14.0722 % k, best iteration 250 of 1789, 0.82 s
+[  1309.8s] NOTE    indirect_D2_seed123 trial 52: 7.1744 % kW, 14.0656 % k, best iteration 330 of 1934, 1.27 s
+[  1311.2s] NOTE    indirect_D2_seed123 trial 53: 7.1874 % kW, 14.0718 % k, best iteration 260 of 1966, 0.99 s
+[  1312.8s] NOTE    indirect_D2_seed123 trial 54: 7.1924 % kW, 14.1198 % k, best iteration 338 of 1911, 1.26 s
+[  1314.2s] NOTE    indirect_D2_seed123 trial 55: 7.1825 % kW, 14.0564 % k, best iteration 338 of 1805, 1.09 s
+[  1315.4s] NOTE    indirect_D2_seed123 trial 56: 7.2333 % kW, 14.1516 % k, best iteration 195 of 1729, 0.88 s
+[  1316.7s] NOTE    indirect_D2_seed123 trial 57: 7.1877 % kW, 14.0980 % k, best iteration 272 of 1889, 0.93 s
+[  1318.3s] NOTE    indirect_D2_seed123 trial 58: 7.2195 % kW, 14.0857 % k, best iteration 442 of 1898, 1.33 s
+[  1319.7s] NOTE    indirect_D2_seed123 trial 59: 7.2303 % kW, 14.1743 % k, best iteration 257 of 1936, 1.08 s
+[  1320.8s] STEP    indirect_D2_seed123: L-09 correction, out-of-fold fits ...
+[  1323.5s] STEP    indirect_D2_seed123: L-09 correction, out-of-fold fits done in 2.7s
+[  1323.6s] NOTE    indirect_D2_seed123: L-09 a +15.002 kW, b 0.97403 on 7834 out-of-fold hours; tuning window 7.1602 -> 6.9491 % of capacity
+[  1323.6s] WARN    indirect_D2_seed123: best trial on the edge of the search space for n_estimators = 1972, subsample = 0.603
+[  1323.6s] NOTE    indirect_D2_seed123: best trial 40, validation 6.9491 % of capacity (uncorrected 7.1602 %), best iteration 317 of 1972
+[  1323.7s] STEP    indirect_D2_seed123: 60 trial(s) done in 80.2s
+[  1323.7s] STEP    indirect_D2_seed777: 60 trial(s) ...
+[  1324.8s] NOTE    indirect_D2_seed777 trial 0: 7.2876 % kW, 14.3028 % k, best iteration 289 of 474, 0.83 s
+[  1326.5s] NOTE    indirect_D2_seed777 trial 1: 7.2312 % kW, 14.1029 % k, best iteration 381 of 684, 1.31 s
+[  1327.3s] NOTE    indirect_D2_seed777 trial 2: 7.2504 % kW, 14.2502 % k, best iteration 102 of 1427, 0.58 s
+[  1328.1s] NOTE    indirect_D2_seed777 trial 3: 7.1646 % kW, 14.1085 % k, best iteration 30 of 1300, 0.48 s
+[  1328.8s] NOTE    indirect_D2_seed777 trial 4: 7.2243 % kW, 14.2568 % k, best iteration 60 of 1133, 0.45 s
+[  1329.5s] NOTE    indirect_D2_seed777 trial 5: 7.2691 % kW, 14.3227 % k, best iteration 32 of 732, 0.37 s
+[  1331.3s] NOTE    indirect_D2_seed777 trial 6: 7.2362 % kW, 14.2694 % k, best iteration 181 of 1050, 1.54 s
+[  1333.7s] NOTE    indirect_D2_seed777 trial 7: 7.2140 % kW, 14.2710 % k, best iteration 196 of 947, 2.04 s
+[  1334.3s] NOTE    indirect_D2_seed777 trial 8: 7.4136 % kW, 14.6551 % k, best iteration 11 of 374, 0.3 s
+[  1335.9s] NOTE    indirect_D2_seed777 trial 9: 7.1965 % kW, 14.1965 % k, best iteration 90 of 369, 1.36 s
+[  1336.9s] NOTE    indirect_D2_seed777 trial 10: 7.1846 % kW, 14.2566 % k, best iteration 66 of 1429, 0.7 s
+[  1338.0s] NOTE    indirect_D2_seed777 trial 11: 7.2565 % kW, 14.2759 % k, best iteration 63 of 1404, 0.73 s
+[  1338.6s] NOTE    indirect_D2_seed777 trial 12: 7.1378 % kW, 14.1267 % k, best iteration 15 of 1550, 0.31 s
+[  1339.2s] NOTE    indirect_D2_seed777 trial 13: 7.1605 % kW, 14.1538 % k, best iteration 37 of 1877, 0.36 s
+[  1339.9s] NOTE    indirect_D2_seed777 trial 14: 7.0580 % kW, 13.9886 % k, best iteration 27 of 1707, 0.38 s
+[  1340.6s] NOTE    indirect_D2_seed777 trial 15: 7.2448 % kW, 14.3967 % k, best iteration 15 of 1726, 0.34 s
+[  1341.3s] NOTE    indirect_D2_seed777 trial 16: 7.2895 % kW, 14.3632 % k, best iteration 21 of 1951, 0.4 s
+[  1342.1s] NOTE    indirect_D2_seed777 trial 17: 7.2771 % kW, 14.1974 % k, best iteration 15 of 1750, 0.42 s
+[  1342.8s] NOTE    indirect_D2_seed777 trial 18: 7.2271 % kW, 14.1933 % k, best iteration 16 of 1268, 0.35 s
+[  1343.6s] NOTE    indirect_D2_seed777 trial 19: 7.2242 % kW, 14.1497 % k, best iteration 64 of 1989, 0.5 s
+[  1344.3s] NOTE    indirect_D2_seed777 trial 20: 7.0855 % kW, 14.1530 % k, best iteration 29 of 1476, 0.45 s
+[  1345.3s] NOTE    indirect_D2_seed777 trial 21: 7.1583 % kW, 14.1446 % k, best iteration 80 of 1861, 0.59 s
+[  1345.9s] NOTE    indirect_D2_seed777 trial 22: 7.1891 % kW, 14.2093 % k, best iteration 27 of 1592, 0.36 s
+[  1346.8s] NOTE    indirect_D2_seed777 trial 23: 7.2452 % kW, 14.2963 % k, best iteration 62 of 1896, 0.56 s
+[  1347.7s] NOTE    indirect_D2_seed777 trial 24: 7.1742 % kW, 14.1563 % k, best iteration 62 of 1799, 0.55 s
+[  1348.3s] NOTE    indirect_D2_seed777 trial 25: 7.1925 % kW, 14.1970 % k, best iteration 12 of 1341, 0.3 s
+[  1348.9s] NOTE    indirect_D2_seed777 trial 26: 7.1590 % kW, 14.1614 % k, best iteration 15 of 1587, 0.28 s
+[  1349.6s] NOTE    indirect_D2_seed777 trial 27: 7.1755 % kW, 14.0995 % k, best iteration 34 of 1424, 0.39 s
+[  1350.3s] NOTE    indirect_D2_seed777 trial 28: 7.2061 % kW, 14.1868 % k, best iteration 39 of 1920, 0.35 s
+[  1351.1s] NOTE    indirect_D2_seed777 trial 29: 7.1944 % kW, 14.1935 % k, best iteration 37 of 1693, 0.44 s
+[  1351.8s] NOTE    indirect_D2_seed777 trial 30: 7.2069 % kW, 14.1519 % k, best iteration 22 of 1519, 0.39 s
+[  1352.8s] NOTE    indirect_D2_seed777 trial 31: 7.1617 % kW, 14.0907 % k, best iteration 63 of 1729, 0.65 s
+[  1353.5s] NOTE    indirect_D2_seed777 trial 32: 7.1925 % kW, 14.1685 % k, best iteration 22 of 1119, 0.39 s
+[  1354.3s] NOTE    indirect_D2_seed777 trial 33: 7.2162 % kW, 14.2269 % k, best iteration 35 of 1529, 0.38 s
+[  1354.9s] NOTE    indirect_D2_seed777 trial 34: 7.1907 % kW, 14.2762 % k, best iteration 13 of 1574, 0.3 s
+[  1355.6s] NOTE    indirect_D2_seed777 trial 35: 7.2347 % kW, 14.3390 % k, best iteration 16 of 1304, 0.36 s
+[  1356.5s] NOTE    indirect_D2_seed777 trial 36: 7.2173 % kW, 14.1835 % k, best iteration 42 of 1819, 0.55 s
+[  1357.3s] NOTE    indirect_D2_seed777 trial 37: 7.2170 % kW, 14.2251 % k, best iteration 37 of 1192, 0.43 s
+[  1357.9s] NOTE    indirect_D2_seed777 trial 38: 7.2926 % kW, 14.4054 % k, best iteration 13 of 1653, 0.3 s
+[  1358.6s] NOTE    indirect_D2_seed777 trial 39: 7.2322 % kW, 14.1499 % k, best iteration 27 of 1519, 0.38 s
+[  1359.3s] NOTE    indirect_D2_seed777 trial 40: 7.1469 % kW, 14.2204 % k, best iteration 21 of 1873, 0.41 s
+[  1360.0s] NOTE    indirect_D2_seed777 trial 41: 7.1300 % kW, 14.2055 % k, best iteration 26 of 1820, 0.35 s
+[  1360.7s] NOTE    indirect_D2_seed777 trial 42: 7.0189 % kW, 14.0153 % k, best iteration 27 of 1738, 0.39 s
+[  1361.5s] NOTE    indirect_D2_seed777 trial 43: 7.2771 % kW, 14.3005 % k, best iteration 20 of 1738, 0.4 s
+[  1362.2s] NOTE    indirect_D2_seed777 trial 44: 7.1746 % kW, 14.1508 % k, best iteration 40 of 1636, 0.39 s
+[  1363.1s] NOTE    indirect_D2_seed777 trial 45: 7.1729 % kW, 14.1086 % k, best iteration 40 of 1609, 0.51 s
+[  1363.9s] NOTE    indirect_D2_seed777 trial 46: 7.2903 % kW, 14.2413 % k, best iteration 39 of 1831, 0.41 s
+[  1364.6s] NOTE    indirect_D2_seed777 trial 47: 7.2731 % kW, 14.2855 % k, best iteration 24 of 1755, 0.38 s
+[  1365.3s] NOTE    indirect_D2_seed777 trial 48: 7.2100 % kW, 14.2970 % k, best iteration 18 of 1427, 0.34 s
+[  1366.0s] NOTE    indirect_D2_seed777 trial 49: 7.2079 % kW, 14.1727 % k, best iteration 26 of 1725, 0.37 s
+[  1366.7s] NOTE    indirect_D2_seed777 trial 50: 7.1815 % kW, 14.1494 % k, best iteration 20 of 1301, 0.3 s
+[  1367.5s] NOTE    indirect_D2_seed777 trial 51: 7.1586 % kW, 14.0136 % k, best iteration 24 of 1593, 0.46 s
+[  1368.4s] NOTE    indirect_D2_seed777 trial 52: 7.1782 % kW, 14.0777 % k, best iteration 46 of 1801, 0.47 s
+[  1369.1s] NOTE    indirect_D2_seed777 trial 53: 7.2228 % kW, 14.2270 % k, best iteration 18 of 1869, 0.41 s
+[  1369.8s] NOTE    indirect_D2_seed777 trial 54: 7.1808 % kW, 14.1890 % k, best iteration 25 of 1843, 0.38 s
+[  1370.5s] NOTE    indirect_D2_seed777 trial 55: 7.1033 % kW, 14.0558 % k, best iteration 30 of 1917, 0.4 s
+[  1371.3s] NOTE    indirect_D2_seed777 trial 56: 7.1859 % kW, 14.1010 % k, best iteration 34 of 1837, 0.44 s
+[  1372.1s] NOTE    indirect_D2_seed777 trial 57: 7.1785 % kW, 14.1572 % k, best iteration 20 of 1946, 0.44 s
+[  1372.9s] NOTE    indirect_D2_seed777 trial 58: 7.1651 % kW, 14.1135 % k, best iteration 34 of 1822, 0.45 s
+[  1373.7s] NOTE    indirect_D2_seed777 trial 59: 7.2108 % kW, 14.1669 % k, best iteration 46 of 1863, 0.5 s
+[  1374.1s] STEP    indirect_D2_seed777: L-09 correction, out-of-fold fits ...
+[  1374.8s] STEP    indirect_D2_seed777: L-09 correction, out-of-fold fits done in 0.7s
+[  1374.9s] NOTE    indirect_D2_seed777: L-09 a +32.978 kW, b 0.96144 on 7834 out-of-fold hours; tuning window 7.0189 -> 6.7929 % of capacity
+[  1374.9s] WARN    indirect_D2_seed777: best trial on the edge of the search space for max_depth = 10
+[  1374.9s] NOTE    indirect_D2_seed777: best trial 42, validation 6.7929 % of capacity (uncorrected 7.0189 %), best iteration 27 of 1738
+[  1375.0s] STEP    indirect_D2_seed777: 60 trial(s) done in 51.3s
+[  1375.0s] NOTE    direct_D2: 89 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[  1375.0s] NOTE    direct_D2: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 14}
+[  1375.0s] NOTE    direct_D2: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[  1375.0s] STEP    direct_D2_seed42: 60 trial(s) ...
+[  1377.7s] NOTE    direct_D2_seed42 trial 0: 6.9693 % kW, best iteration 29 of 874, 2.37 s
+[  1386.1s] NOTE    direct_D2_seed42 trial 1: 7.0229 % kW, best iteration 400 of 1282, 8.08 s
+[  1388.4s] NOTE    direct_D2_seed42 trial 2: 6.9218 % kW, best iteration 89 of 747, 2.05 s
+[  1395.6s] NOTE    direct_D2_seed42 trial 3: 6.9251 % kW, best iteration 203 of 1021, 7.0 s
+[  1398.1s] NOTE    direct_D2_seed42 trial 4: 6.9970 % kW, best iteration 13 of 317, 2.15 s
+[  1402.4s] NOTE    direct_D2_seed42 trial 5: 6.9055 % kW, best iteration 353 of 419, 4.05 s
+[  1403.3s] NOTE    direct_D2_seed42 trial 6: 7.0400 % kW, best iteration 19 of 1184, 0.71 s
+[  1406.4s] NOTE    direct_D2_seed42 trial 7: 6.9440 % kW, best iteration 344 of 359, 2.83 s
+[  1410.1s] NOTE    direct_D2_seed42 trial 8: 6.9085 % kW, best iteration 241 of 705, 3.43 s
+[  1412.7s] NOTE    direct_D2_seed42 trial 9: 6.9790 % kW, best iteration 33 of 209, 2.31 s
+[  1416.8s] NOTE    direct_D2_seed42 trial 10: 6.8113 % kW, best iteration 212 of 213, 3.78 s
+[  1420.2s] NOTE    direct_D2_seed42 trial 11: 6.9397 % kW, best iteration 162 of 606, 3.06 s
+[  1424.5s] NOTE    direct_D2_seed42 trial 12: 6.9028 % kW, best iteration 141 of 438, 4.04 s
+[  1429.2s] NOTE    direct_D2_seed42 trial 13: 6.8734 % kW, best iteration 161 of 405, 4.33 s
+[  1432.1s] NOTE    direct_D2_seed42 trial 14: 6.8602 % kW, best iteration 104 of 252, 2.63 s
+[  1434.2s] NOTE    direct_D2_seed42 trial 15: 6.9089 % kW, best iteration 58 of 213, 1.77 s
+[  1436.8s] NOTE    direct_D2_seed42 trial 16: 6.9721 % kW, best iteration 75 of 286, 2.38 s
+[  1438.7s] NOTE    direct_D2_seed42 trial 17: 6.9230 % kW, best iteration 60 of 255, 1.59 s
+[  1443.2s] NOTE    direct_D2_seed42 trial 18: 6.9313 % kW, best iteration 223 of 224, 4.22 s
+[  1448.5s] NOTE    direct_D2_seed42 trial 19: 6.8993 % kW, best iteration 246 of 788, 4.96 s
+[  1450.7s] NOTE    direct_D2_seed42 trial 20: 6.8900 % kW, best iteration 100 of 222, 1.89 s
+[  1454.1s] NOTE    direct_D2_seed42 trial 21: 6.8957 % kW, best iteration 134 of 745, 3.06 s
+[  1458.1s] NOTE    direct_D2_seed42 trial 22: 6.9117 % kW, best iteration 176 of 508, 3.7 s
+[  1461.7s] NOTE    direct_D2_seed42 trial 23: 6.8634 % kW, best iteration 179 of 597, 3.3 s
+[  1467.1s] NOTE    direct_D2_seed42 trial 24: 6.8676 % kW, best iteration 319 of 622, 5.13 s
+[  1472.5s] NOTE    direct_D2_seed42 trial 25: 6.8858 % kW, best iteration 339 of 822, 5.1 s
+[  1476.5s] NOTE    direct_D2_seed42 trial 26: 6.8994 % kW, best iteration 176 of 652, 3.74 s
+[  1481.8s] NOTE    direct_D2_seed42 trial 27: 6.8658 % kW, best iteration 246 of 505, 4.94 s
+[  1485.8s] NOTE    direct_D2_seed42 trial 28: 6.9144 % kW, best iteration 163 of 321, 3.71 s
+[  1487.9s] NOTE    direct_D2_seed42 trial 29: 6.8449 % kW, best iteration 75 of 460, 1.78 s
+[  1491.8s] NOTE    direct_D2_seed42 trial 30: 6.8953 % kW, best iteration 135 of 375, 3.58 s
+[  1493.7s] NOTE    direct_D2_seed42 trial 31: 6.9151 % kW, best iteration 52 of 648, 1.63 s
+[  1496.1s] NOTE    direct_D2_seed42 trial 32: 6.9093 % kW, best iteration 67 of 531, 2.08 s
+[  1499.2s] NOTE    direct_D2_seed42 trial 33: 6.8782 % kW, best iteration 159 of 253, 2.8 s
+[  1501.6s] NOTE    direct_D2_seed42 trial 34: 6.8636 % kW, best iteration 90 of 475, 2.08 s
+[  1505.4s] NOTE    direct_D2_seed42 trial 35: 6.9222 % kW, best iteration 176 of 437, 3.5 s
+[  1509.9s] NOTE    direct_D2_seed42 trial 36: 6.8724 % kW, best iteration 121 of 323, 4.21 s
+[  1513.1s] NOTE    direct_D2_seed42 trial 37: 6.8675 % kW, best iteration 140 of 714, 2.87 s
+[  1517.0s] NOTE    direct_D2_seed42 trial 38: 6.8719 % kW, best iteration 183 of 252, 3.65 s
+[  1521.2s] NOTE    direct_D2_seed42 trial 39: 6.9104 % kW, best iteration 171 of 342, 3.9 s
+[  1525.2s] NOTE    direct_D2_seed42 trial 40: 6.8717 % kW, best iteration 208 of 655, 3.64 s
+[  1528.4s] NOTE    direct_D2_seed42 trial 41: 6.8401 % kW, best iteration 135 of 233, 2.93 s
+[  1530.7s] NOTE    direct_D2_seed42 trial 42: 6.8686 % kW, best iteration 86 of 217, 1.91 s
+[  1534.6s] NOTE    direct_D2_seed42 trial 43: 6.8739 % kW, best iteration 161 of 605, 3.64 s
+[  1538.8s] NOTE    direct_D2_seed42 trial 44: 6.8552 % kW, best iteration 242 of 558, 3.9 s
+[  1544.6s] NOTE    direct_D2_seed42 trial 45: 6.9304 % kW, best iteration 302 of 429, 5.5 s
+[  1547.3s] NOTE    direct_D2_seed42 trial 46: 6.9043 % kW, best iteration 116 of 383, 2.33 s
+[  1551.2s] NOTE    direct_D2_seed42 trial 47: 6.9152 % kW, best iteration 154 of 342, 3.61 s
+[  1556.3s] NOTE    direct_D2_seed42 trial 48: 6.8438 % kW, best iteration 259 of 260, 4.7 s
+[  1562.3s] NOTE    direct_D2_seed42 trial 49: 6.8949 % kW, best iteration 386 of 445, 5.71 s
+[  1566.9s] NOTE    direct_D2_seed42 trial 50: 6.9031 % kW, best iteration 289 of 370, 4.33 s
+[  1570.0s] NOTE    direct_D2_seed42 trial 51: 6.8458 % kW, best iteration 104 of 439, 2.75 s
+[  1575.5s] NOTE    direct_D2_seed42 trial 52: 6.9043 % kW, best iteration 247 of 289, 5.04 s
+[  1578.4s] NOTE    direct_D2_seed42 trial 53: 6.8693 % kW, best iteration 120 of 262, 2.68 s
+[  1583.0s] NOTE    direct_D2_seed42 trial 54: 6.8245 % kW, best iteration 244 of 245, 4.25 s
+[  1587.6s] NOTE    direct_D2_seed42 trial 55: 6.7953 % kW, best iteration 233 of 234, 4.37 s
+[  1593.1s] NOTE    direct_D2_seed42 trial 56: 6.8860 % kW, best iteration 300 of 301, 5.18 s
+[  1597.3s] NOTE    direct_D2_seed42 trial 57: 6.8715 % kW, best iteration 220 of 231, 3.81 s
+[  1602.3s] NOTE    direct_D2_seed42 trial 58: 6.8580 % kW, best iteration 256 of 257, 4.75 s
+[  1607.7s] NOTE    direct_D2_seed42 trial 59: 6.8760 % kW, best iteration 297 of 298, 5.03 s
+[  1612.1s] WARN    direct_D2_seed42: best iteration 233 at the cap of 234 rounds: it may not have converged (M12d)
+[  1612.1s] WARN    direct_D2_seed42: best trial on the edge of the search space for n_estimators = 234, max_depth = 10, colsample_bytree = 0.5046
+[  1612.2s] NOTE    direct_D2_seed42: best trial 55, validation 6.7953 % of capacity, best iteration 233 of 234
+[  1612.2s] STEP    direct_D2_seed42: 60 trial(s) done in 237.2s
+[  1612.2s] STEP    direct_D2_seed123: 60 trial(s) ...
+[  1614.9s] NOTE    direct_D2_seed123 trial 0: 6.9107 % kW, best iteration 179 of 1454, 2.35 s
+[  1617.2s] NOTE    direct_D2_seed123 trial 1: 6.9741 % kW, best iteration 120 of 1066, 2.01 s
+[  1618.7s] NOTE    direct_D2_seed123 trial 2: 7.0336 % kW, best iteration 77 of 528, 1.24 s
+[  1620.7s] NOTE    direct_D2_seed123 trial 3: 6.8973 % kW, best iteration 127 of 1501, 1.7 s
+[  1622.6s] NOTE    direct_D2_seed123 trial 4: 6.9086 % kW, best iteration 92 of 975, 1.62 s
+[  1625.0s] NOTE    direct_D2_seed123 trial 5: 7.0321 % kW, best iteration 195 of 1323, 2.15 s
+[  1629.4s] NOTE    direct_D2_seed123 trial 6: 6.9210 % kW, best iteration 261 of 1135, 4.11 s
+[  1631.0s] NOTE    direct_D2_seed123 trial 7: 6.9053 % kW, best iteration 19 of 951, 1.33 s
+[  1632.2s] NOTE    direct_D2_seed123 trial 8: 7.0503 % kW, best iteration 57 of 1717, 0.91 s
+[  1640.3s] NOTE    direct_D2_seed123 trial 9: 6.9268 % kW, best iteration 407 of 1329, 7.75 s
+[  1642.1s] NOTE    direct_D2_seed123 trial 10: 6.8937 % kW, best iteration 104 of 1680, 1.55 s
+[  1644.8s] NOTE    direct_D2_seed123 trial 11: 6.8740 % kW, best iteration 160 of 1754, 2.35 s
+[  1646.6s] NOTE    direct_D2_seed123 trial 12: 6.9063 % kW, best iteration 53 of 1826, 1.57 s
+[  1649.3s] NOTE    direct_D2_seed123 trial 13: 6.9493 % kW, best iteration 221 of 1848, 2.37 s
+[  1652.8s] NOTE    direct_D2_seed123 trial 14: 6.8925 % kW, best iteration 185 of 1576, 3.14 s
+[  1657.8s] NOTE    direct_D2_seed123 trial 15: 6.9149 % kW, best iteration 312 of 1877, 4.71 s
+[  1662.5s] NOTE    direct_D2_seed123 trial 16: 6.8779 % kW, best iteration 193 of 1815, 4.33 s
+[  1669.5s] NOTE    direct_D2_seed123 trial 17: 6.9151 % kW, best iteration 275 of 1683, 6.76 s
+[  1675.6s] NOTE    direct_D2_seed123 trial 18: 6.9352 % kW, best iteration 260 of 1300, 5.76 s
+[  1678.4s] NOTE    direct_D2_seed123 trial 19: 6.9304 % kW, best iteration 91 of 1752, 2.46 s
+[  1684.8s] NOTE    direct_D2_seed123 trial 20: 6.8812 % kW, best iteration 369 of 1845, 6.07 s
+[  1689.8s] NOTE    direct_D2_seed123 trial 21: 6.8550 % kW, best iteration 294 of 1914, 4.67 s
+[  1695.7s] NOTE    direct_D2_seed123 trial 22: 6.8731 % kW, best iteration 301 of 1806, 5.57 s
+[  1701.7s] NOTE    direct_D2_seed123 trial 23: 6.8334 % kW, best iteration 365 of 1808, 5.75 s
+[  1705.2s] NOTE    direct_D2_seed123 trial 24: 6.8685 % kW, best iteration 172 of 1867, 3.19 s
+[  1711.5s] NOTE    direct_D2_seed123 trial 25: 6.8724 % kW, best iteration 294 of 1937, 5.9 s
+[  1716.0s] NOTE    direct_D2_seed123 trial 26: 6.8345 % kW, best iteration 301 of 1475, 4.19 s
+[  1720.8s] NOTE    direct_D2_seed123 trial 27: 6.9369 % kW, best iteration 267 of 1874, 4.48 s
+[  1727.3s] NOTE    direct_D2_seed123 trial 28: 6.8550 % kW, best iteration 339 of 1754, 6.12 s
+[  1732.0s] NOTE    direct_D2_seed123 trial 29: 6.9061 % kW, best iteration 262 of 1981, 4.37 s
+[  1737.1s] NOTE    direct_D2_seed123 trial 30: 6.8538 % kW, best iteration 299 of 1416, 4.79 s
+[  1742.1s] NOTE    direct_D2_seed123 trial 31: 6.8526 % kW, best iteration 346 of 1463, 4.73 s
+[  1746.1s] NOTE    direct_D2_seed123 trial 32: 6.8520 % kW, best iteration 249 of 1242, 3.7 s
+[  1751.5s] NOTE    direct_D2_seed123 trial 33: 6.8648 % kW, best iteration 299 of 1177, 5.12 s
+[  1756.1s] NOTE    direct_D2_seed123 trial 34: 6.9036 % kW, best iteration 290 of 1655, 4.23 s
+[  1760.0s] NOTE    direct_D2_seed123 trial 35: 6.8808 % kW, best iteration 282 of 1439, 3.57 s
+[  1766.1s] NOTE    direct_D2_seed123 trial 36: 6.8580 % kW, best iteration 315 of 1359, 5.78 s
+[  1772.4s] NOTE    direct_D2_seed123 trial 37: 6.8948 % kW, best iteration 400 of 1404, 6.01 s
+[  1776.8s] NOTE    direct_D2_seed123 trial 38: 6.8656 % kW, best iteration 297 of 1721, 4.03 s
+[  1781.3s] NOTE    direct_D2_seed123 trial 39: 6.8555 % kW, best iteration 305 of 1507, 4.17 s
+[  1785.7s] NOTE    direct_D2_seed123 trial 40: 6.8897 % kW, best iteration 251 of 1929, 4.07 s
+[  1790.9s] NOTE    direct_D2_seed123 trial 41: 6.8857 % kW, best iteration 343 of 1614, 4.89 s
+[  1796.0s] NOTE    direct_D2_seed123 trial 42: 6.9022 % kW, best iteration 299 of 1687, 4.79 s
+[  1801.2s] NOTE    direct_D2_seed123 trial 43: 6.8855 % kW, best iteration 347 of 1401, 4.8 s
+[  1804.7s] NOTE    direct_D2_seed123 trial 44: 6.8962 % kW, best iteration 219 of 1248, 3.15 s
+[  1809.4s] NOTE    direct_D2_seed123 trial 45: 6.8601 % kW, best iteration 316 of 1429, 4.38 s
+[  1815.1s] NOTE    direct_D2_seed123 trial 46: 6.8761 % kW, best iteration 413 of 1796, 5.37 s
+[  1818.8s] NOTE    direct_D2_seed123 trial 47: 6.8517 % kW, best iteration 188 of 1335, 3.43 s
+[  1823.7s] NOTE    direct_D2_seed123 trial 48: 6.8745 % kW, best iteration 293 of 1268, 4.58 s
+[  1826.8s] NOTE    direct_D2_seed123 trial 49: 6.8626 % kW, best iteration 159 of 1342, 2.72 s
+[  1831.1s] NOTE    direct_D2_seed123 trial 50: 6.8906 % kW, best iteration 292 of 1740, 4.06 s
+[  1834.8s] NOTE    direct_D2_seed123 trial 51: 6.8603 % kW, best iteration 183 of 1489, 3.34 s
+[  1840.7s] NOTE    direct_D2_seed123 trial 52: 6.9093 % kW, best iteration 362 of 1637, 5.6 s
+[  1846.0s] NOTE    direct_D2_seed123 trial 53: 6.8774 % kW, best iteration 372 of 1457, 4.95 s
+[  1850.8s] NOTE    direct_D2_seed123 trial 54: 6.8989 % kW, best iteration 278 of 1275, 4.54 s
+[  1856.9s] NOTE    direct_D2_seed123 trial 55: 6.8643 % kW, best iteration 366 of 1622, 5.71 s
+[  1861.5s] NOTE    direct_D2_seed123 trial 56: 6.8737 % kW, best iteration 298 of 1520, 4.33 s
+[  1865.6s] NOTE    direct_D2_seed123 trial 57: 6.8877 % kW, best iteration 266 of 1290, 3.82 s
+[  1872.1s] NOTE    direct_D2_seed123 trial 58: 6.8729 % kW, best iteration 400 of 1479, 6.11 s
+[  1877.2s] NOTE    direct_D2_seed123 trial 59: 6.8732 % kW, best iteration 296 of 1329, 4.84 s
+[  1883.1s] WARN    direct_D2_seed123: best trial on the edge of the search space for learning_rate = 0.01019, min_child_weight = 20, reg_lambda = 1.085e-08
+[  1883.2s] NOTE    direct_D2_seed123: best trial 23, validation 6.8334 % of capacity, best iteration 365 of 1808
+[  1883.2s] STEP    direct_D2_seed123: 60 trial(s) done in 271.0s
+[  1883.2s] STEP    direct_D2_seed777: 60 trial(s) ...
+[  1887.3s] NOTE    direct_D2_seed777 trial 0: 6.9317 % kW, best iteration 341 of 474, 3.76 s
+[  1892.7s] NOTE    direct_D2_seed777 trial 1: 6.8993 % kW, best iteration 287 of 684, 5.14 s
+[  1895.7s] NOTE    direct_D2_seed777 trial 2: 6.8363 % kW, best iteration 152 of 1427, 2.73 s
+[  1897.9s] NOTE    direct_D2_seed777 trial 3: 6.8237 % kW, best iteration 45 of 1300, 1.91 s
+[  1899.6s] NOTE    direct_D2_seed777 trial 4: 6.8982 % kW, best iteration 58 of 1133, 1.44 s
+[  1901.2s] NOTE    direct_D2_seed777 trial 5: 7.0686 % kW, best iteration 34 of 732, 1.36 s
+[  1908.0s] NOTE    direct_D2_seed777 trial 6: 6.9074 % kW, best iteration 281 of 1050, 6.48 s
+[  1916.2s] NOTE    direct_D2_seed777 trial 7: 6.9102 % kW, best iteration 303 of 947, 7.89 s
+[  1917.8s] NOTE    direct_D2_seed777 trial 8: 6.9728 % kW, best iteration 20 of 374, 1.33 s
+[  1922.3s] NOTE    direct_D2_seed777 trial 9: 6.9134 % kW, best iteration 134 of 369, 4.26 s
+[  1925.5s] NOTE    direct_D2_seed777 trial 10: 6.9379 % kW, best iteration 87 of 1429, 2.93 s
+[  1927.9s] NOTE    direct_D2_seed777 trial 11: 6.9007 % kW, best iteration 64 of 1303, 2.01 s
+[  1929.9s] NOTE    direct_D2_seed777 trial 12: 6.8490 % kW, best iteration 53 of 1635, 1.8 s
+[  1933.1s] NOTE    direct_D2_seed777 trial 13: 6.8380 % kW, best iteration 165 of 1682, 2.82 s
+[  1934.6s] NOTE    direct_D2_seed777 trial 14: 6.9284 % kW, best iteration 40 of 878, 1.25 s
+[  1938.7s] NOTE    direct_D2_seed777 trial 15: 6.8641 % kW, best iteration 304 of 1868, 3.8 s
+[  1940.7s] NOTE    direct_D2_seed777 trial 16: 7.0124 % kW, best iteration 35 of 1425, 1.73 s
+[  1943.2s] NOTE    direct_D2_seed777 trial 17: 6.9124 % kW, best iteration 117 of 1120, 2.23 s
+[  1947.3s] NOTE    direct_D2_seed777 trial 18: 6.9286 % kW, best iteration 77 of 1555, 3.78 s
+[  1951.1s] NOTE    direct_D2_seed777 trial 19: 6.9041 % kW, best iteration 141 of 1506, 3.53 s
+[  1954.0s] NOTE    direct_D2_seed777 trial 20: 6.8272 % kW, best iteration 117 of 1251, 2.6 s
+[  1956.8s] NOTE    direct_D2_seed777 trial 21: 6.9186 % kW, best iteration 87 of 1140, 2.39 s
+[  1958.8s] NOTE    direct_D2_seed777 trial 22: 6.8651 % kW, best iteration 41 of 1265, 1.75 s
+[  1961.2s] NOTE    direct_D2_seed777 trial 23: 6.8508 % kW, best iteration 114 of 1374, 2.03 s
+[  1963.1s] NOTE    direct_D2_seed777 trial 24: 6.8050 % kW, best iteration 42 of 1100, 1.61 s
+[  1965.2s] NOTE    direct_D2_seed777 trial 25: 6.8030 % kW, best iteration 57 of 1121, 1.84 s
+[  1967.2s] NOTE    direct_D2_seed777 trial 26: 6.8061 % kW, best iteration 41 of 885, 1.63 s
+[  1968.8s] NOTE    direct_D2_seed777 trial 27: 6.8531 % kW, best iteration 37 of 897, 1.31 s
+[  1971.2s] NOTE    direct_D2_seed777 trial 28: 6.8605 % kW, best iteration 64 of 1363, 2.12 s
+[  1973.1s] NOTE    direct_D2_seed777 trial 29: 6.9349 % kW, best iteration 31 of 945, 1.61 s
+[  1975.4s] NOTE    direct_D2_seed777 trial 30: 6.8357 % kW, best iteration 52 of 1172, 2.01 s
+[  1977.5s] NOTE    direct_D2_seed777 trial 31: 6.8675 % kW, best iteration 56 of 924, 1.74 s
+[  1979.1s] NOTE    direct_D2_seed777 trial 32: 6.8988 % kW, best iteration 37 of 1173, 1.36 s
+[  1981.1s] NOTE    direct_D2_seed777 trial 33: 6.8778 % kW, best iteration 33 of 783, 1.62 s
+[  1983.1s] NOTE    direct_D2_seed777 trial 34: 6.8690 % kW, best iteration 35 of 882, 1.78 s
+[  1985.4s] NOTE    direct_D2_seed777 trial 35: 6.8591 % kW, best iteration 55 of 1009, 1.99 s
+[  1987.1s] NOTE    direct_D2_seed777 trial 36: 6.9090 % kW, best iteration 33 of 1281, 1.42 s
+[  1989.0s] NOTE    direct_D2_seed777 trial 37: 6.8799 % kW, best iteration 38 of 889, 1.59 s
+[  1991.0s] NOTE    direct_D2_seed777 trial 38: 6.9560 % kW, best iteration 33 of 1325, 1.63 s
+[  1993.1s] NOTE    direct_D2_seed777 trial 39: 6.9057 % kW, best iteration 52 of 1182, 1.8 s
+[  1995.0s] NOTE    direct_D2_seed777 trial 40: 6.8650 % kW, best iteration 54 of 995, 1.58 s
+[  1997.1s] NOTE    direct_D2_seed777 trial 41: 6.9474 % kW, best iteration 57 of 1289, 1.83 s
+[  1999.9s] NOTE    direct_D2_seed777 trial 42: 6.8478 % kW, best iteration 82 of 1079, 2.48 s
+[  2002.0s] NOTE    direct_D2_seed777 trial 43: 6.9081 % kW, best iteration 41 of 692, 1.72 s
+[  2004.1s] NOTE    direct_D2_seed777 trial 44: 6.8311 % kW, best iteration 43 of 1278, 1.79 s
+[  2006.4s] NOTE    direct_D2_seed777 trial 45: 6.8779 % kW, best iteration 58 of 1246, 2.0 s
+[  2008.7s] NOTE    direct_D2_seed777 trial 46: 6.8397 % kW, best iteration 45 of 1195, 2.01 s
+[  2010.9s] NOTE    direct_D2_seed777 trial 47: 6.9082 % kW, best iteration 54 of 732, 1.92 s
+[  2013.0s] NOTE    direct_D2_seed777 trial 48: 6.9281 % kW, best iteration 56 of 1217, 1.79 s
+[  2015.3s] NOTE    direct_D2_seed777 trial 49: 6.8833 % kW, best iteration 50 of 732, 1.9 s
+[  2017.7s] NOTE    direct_D2_seed777 trial 50: 6.8484 % kW, best iteration 57 of 1121, 2.09 s
+[  2020.4s] NOTE    direct_D2_seed777 trial 51: 6.8331 % kW, best iteration 65 of 1318, 2.4 s
+[  2022.6s] NOTE    direct_D2_seed777 trial 52: 6.8436 % kW, best iteration 52 of 1172, 1.88 s
+[  2024.6s] NOTE    direct_D2_seed777 trial 53: 6.8227 % kW, best iteration 35 of 1033, 1.71 s
+[  2026.7s] NOTE    direct_D2_seed777 trial 54: 6.8442 % kW, best iteration 38 of 1049, 1.73 s
+[  2028.8s] NOTE    direct_D2_seed777 trial 55: 6.8804 % kW, best iteration 36 of 1054, 1.81 s
+[  2031.1s] NOTE    direct_D2_seed777 trial 56: 6.8499 % kW, best iteration 38 of 1067, 1.95 s
+[  2033.4s] NOTE    direct_D2_seed777 trial 57: 6.8323 % kW, best iteration 38 of 1254, 1.98 s
+[  2035.1s] NOTE    direct_D2_seed777 trial 58: 6.9412 % kW, best iteration 25 of 793, 1.39 s
+[  2037.0s] NOTE    direct_D2_seed777 trial 59: 6.9295 % kW, best iteration 34 of 1184, 1.58 s
+[  2039.0s] NOTE    direct_D2_seed777: best trial 25, validation 6.8030 % of capacity, best iteration 57 of 1121
+[  2039.0s] STEP    direct_D2_seed777: 60 trial(s) done in 155.8s
+[  2039.3s] WARN    TEST ROWS READ (forecast the test window of D+3 (features), 5829 rows); recorded in test_access_log.csv
+[  2039.3s] NOTE    indirect_D3: 32 features; D-15 setting A, constraints {'ghi_clearsky': 1}; rows {'fit': 9575, 'early_stopping': 2825, 'scoring': 2901, 'scoring_op_limited': 146}
+[  2039.3s] NOTE    indirect_D3: NaN on the fit rows (passed to XGBoost, M8): {'irradiance_clear_index_prevday': 10}
+[  2039.3s] STEP    indirect_D3_seed42: 60 trial(s) ...
+[  2040.4s] NOTE    indirect_D3_seed42 trial 0: 6.8195 % kW, 13.8508 % k, best iteration 23 of 874, 0.74 s
+[  2043.1s] NOTE    indirect_D3_seed42 trial 1: 6.7344 % kW, 13.7426 % k, best iteration 323 of 1282, 2.43 s
+[  2044.1s] NOTE    indirect_D3_seed42 trial 2: 6.6975 % kW, 13.6398 % k, best iteration 95 of 747, 0.72 s
+[  2047.0s] NOTE    indirect_D3_seed42 trial 3: 6.6729 % kW, 13.6023 % k, best iteration 197 of 1021, 2.56 s
+[  2047.9s] NOTE    indirect_D3_seed42 trial 4: 6.8750 % kW, 14.1807 % k, best iteration 8 of 317, 0.67 s
+[  2049.4s] NOTE    indirect_D3_seed42 trial 5: 6.7849 % kW, 13.6938 % k, best iteration 360 of 419, 1.19 s
+[  2049.9s] NOTE    indirect_D3_seed42 trial 6: 6.9641 % kW, 13.9179 % k, best iteration 14 of 1184, 0.18 s
+[  2050.9s] NOTE    indirect_D3_seed42 trial 7: 6.8929 % kW, 13.7420 % k, best iteration 356 of 359, 0.75 s
+[  2052.3s] NOTE    indirect_D3_seed42 trial 8: 6.7379 % kW, 13.6686 % k, best iteration 261 of 705, 1.12 s
+[  2053.4s] NOTE    indirect_D3_seed42 trial 9: 6.7432 % kW, 13.8241 % k, best iteration 25 of 209, 0.79 s
+[  2054.8s] NOTE    indirect_D3_seed42 trial 10: 6.7301 % kW, 13.6522 % k, best iteration 112 of 793, 1.09 s
+[  2055.9s] NOTE    indirect_D3_seed42 trial 11: 6.7650 % kW, 13.6971 % k, best iteration 113 of 325, 0.83 s
+[  2057.4s] NOTE    indirect_D3_seed42 trial 12: 6.8102 % kW, 13.7140 % k, best iteration 263 of 656, 1.07 s
+[  2059.8s] NOTE    indirect_D3_seed42 trial 13: 6.7562 % kW, 13.7421 % k, best iteration 207 of 1249, 2.08 s
+[  2062.5s] NOTE    indirect_D3_seed42 trial 14: 6.6629 % kW, 13.6000 % k, best iteration 210 of 1027, 2.36 s
+[  2065.1s] NOTE    indirect_D3_seed42 trial 15: 6.7393 % kW, 13.7133 % k, best iteration 114 of 985, 2.29 s
+[  2066.9s] NOTE    indirect_D3_seed42 trial 16: 6.6822 % kW, 13.5607 % k, best iteration 112 of 605, 1.47 s
+[  2068.1s] NOTE    indirect_D3_seed42 trial 17: 6.6564 % kW, 13.5058 % k, best iteration 92 of 928, 0.89 s
+[  2069.0s] NOTE    indirect_D3_seed42 trial 18: 6.7536 % kW, 13.7672 % k, best iteration 49 of 1213, 0.66 s
+[  2075.4s] NOTE    indirect_D3_seed42 trial 19: 6.6896 % kW, 13.6572 % k, best iteration 383 of 1335, 6.03 s
+[  2078.2s] NOTE    indirect_D3_seed42 trial 20: 6.7334 % kW, 13.6638 % k, best iteration 249 of 791, 2.49 s
+[  2080.4s] NOTE    indirect_D3_seed42 trial 21: 6.7037 % kW, 13.6790 % k, best iteration 160 of 502, 1.81 s
+[  2082.2s] NOTE    indirect_D3_seed42 trial 22: 6.6745 % kW, 13.5428 % k, best iteration 221 of 822, 1.5 s
+[  2084.2s] NOTE    indirect_D3_seed42 trial 23: 6.7012 % kW, 13.6509 % k, best iteration 182 of 1306, 1.73 s
+[  2086.2s] NOTE    indirect_D3_seed42 trial 24: 6.7706 % kW, 13.7662 % k, best iteration 167 of 975, 1.58 s
+[  2089.0s] NOTE    indirect_D3_seed42 trial 25: 6.6764 % kW, 13.6836 % k, best iteration 222 of 1297, 2.56 s
+[  2092.2s] NOTE    indirect_D3_seed42 trial 26: 6.7104 % kW, 13.7202 % k, best iteration 191 of 724, 2.82 s
+[  2095.2s] NOTE    indirect_D3_seed42 trial 27: 6.7137 % kW, 13.5996 % k, best iteration 353 of 1094, 2.71 s
+[  2097.6s] NOTE    indirect_D3_seed42 trial 28: 6.7760 % kW, 13.8578 % k, best iteration 156 of 904, 2.06 s
+[  2100.4s] NOTE    indirect_D3_seed42 trial 29: 6.7374 % kW, 13.7393 % k, best iteration 192 of 1192, 2.45 s
+[  2102.6s] NOTE    indirect_D3_seed42 trial 30: 6.7019 % kW, 13.6292 % k, best iteration 210 of 1095, 1.88 s
+[  2104.9s] NOTE    indirect_D3_seed42 trial 31: 6.7024 % kW, 13.6638 % k, best iteration 181 of 1123, 1.9 s
+[  2106.4s] NOTE    indirect_D3_seed42 trial 32: 6.7463 % kW, 13.6578 % k, best iteration 168 of 981, 1.23 s
+[  2108.3s] NOTE    indirect_D3_seed42 trial 33: 6.7436 % kW, 13.6662 % k, best iteration 223 of 882, 1.55 s
+[  2112.5s] NOTE    indirect_D3_seed42 trial 34: 6.6692 % kW, 13.5827 % k, best iteration 367 of 1087, 3.84 s
+[  2114.8s] NOTE    indirect_D3_seed42 trial 35: 6.7214 % kW, 13.6266 % k, best iteration 218 of 1049, 1.97 s
+[  2116.5s] NOTE    indirect_D3_seed42 trial 36: 6.7420 % kW, 13.6630 % k, best iteration 158 of 1030, 1.35 s
+[  2119.4s] NOTE    indirect_D3_seed42 trial 37: 6.7350 % kW, 13.7722 % k, best iteration 221 of 766, 2.58 s
+[  2121.6s] NOTE    indirect_D3_seed42 trial 38: 6.6378 % kW, 13.5474 % k, best iteration 223 of 977, 1.82 s
+[  2123.0s] NOTE    indirect_D3_seed42 trial 39: 6.7565 % kW, 13.7288 % k, best iteration 131 of 1028, 1.09 s
+[  2125.6s] NOTE    indirect_D3_seed42 trial 40: 6.7334 % kW, 13.6852 % k, best iteration 193 of 877, 2.19 s
+[  2128.7s] NOTE    indirect_D3_seed42 trial 41: 6.7337 % kW, 13.7520 % k, best iteration 219 of 985, 2.79 s
+[  2131.6s] NOTE    indirect_D3_seed42 trial 42: 6.6825 % kW, 13.7002 % k, best iteration 168 of 1111, 2.59 s
+[  2134.1s] NOTE    indirect_D3_seed42 trial 43: 6.6715 % kW, 13.5873 % k, best iteration 261 of 985, 2.11 s
+[  2138.8s] NOTE    indirect_D3_seed42 trial 44: 6.6645 % kW, 13.6379 % k, best iteration 486 of 1187, 4.32 s
+[  2141.6s] NOTE    indirect_D3_seed42 trial 45: 6.6907 % kW, 13.6513 % k, best iteration 214 of 1102, 2.46 s
+[  2143.9s] NOTE    indirect_D3_seed42 trial 46: 6.7156 % kW, 13.6196 % k, best iteration 253 of 1111, 1.9 s
+[  2146.6s] NOTE    indirect_D3_seed42 trial 47: 6.6818 % kW, 13.6216 % k, best iteration 231 of 893, 2.35 s
+[  2150.0s] NOTE    indirect_D3_seed42 trial 48: 6.7046 % kW, 13.6960 % k, best iteration 273 of 933, 3.04 s
+[  2153.3s] NOTE    indirect_D3_seed42 trial 49: 6.7151 % kW, 13.7793 % k, best iteration 267 of 1331, 2.98 s
+[  2157.8s] NOTE    indirect_D3_seed42 trial 50: 6.6710 % kW, 13.5660 % k, best iteration 368 of 1201, 4.1 s
+[  2163.4s] NOTE    indirect_D3_seed42 trial 51: 6.6991 % kW, 13.6627 % k, best iteration 367 of 1014, 5.21 s
+[  2166.8s] NOTE    indirect_D3_seed42 trial 52: 6.6787 % kW, 13.6069 % k, best iteration 305 of 1305, 3.07 s
+[  2169.4s] NOTE    indirect_D3_seed42 trial 53: 6.7321 % kW, 13.6754 % k, best iteration 231 of 1199, 2.25 s
+[  2172.0s] NOTE    indirect_D3_seed42 trial 54: 6.7312 % kW, 13.6963 % k, best iteration 233 of 1078, 2.27 s
+[  2174.6s] NOTE    indirect_D3_seed42 trial 55: 6.7200 % kW, 13.6654 % k, best iteration 217 of 1447, 2.28 s
+[  2178.3s] NOTE    indirect_D3_seed42 trial 56: 6.6773 % kW, 13.6304 % k, best iteration 338 of 1094, 3.37 s
+[  2182.5s] NOTE    indirect_D3_seed42 trial 57: 6.7098 % kW, 13.6803 % k, best iteration 373 of 926, 3.84 s
+[  2187.7s] NOTE    indirect_D3_seed42 trial 58: 6.7044 % kW, 13.7327 % k, best iteration 367 of 1083, 4.86 s
+[  2190.8s] NOTE    indirect_D3_seed42 trial 59: 6.6868 % kW, 13.5960 % k, best iteration 373 of 1114, 2.73 s
+[  2192.6s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits ...
+[  2197.9s] STEP    indirect_D3_seed42: L-09 correction, out-of-fold fits done in 5.2s
+[  2197.9s] NOTE    indirect_D3_seed42: L-09 a +24.825 kW, b 0.98158 on 7834 out-of-fold hours; tuning window 6.6378 -> 6.5463 % of capacity
+[  2197.9s] NOTE    indirect_D3_seed42: best trial 38, validation 6.5463 % of capacity (uncorrected 6.6378 %), best iteration 223 of 977
+[  2198.0s] STEP    indirect_D3_seed42: 60 trial(s) done in 158.7s
+[  2198.0s] STEP    indirect_D3_seed123: 60 trial(s) ...
+[  2199.9s] NOTE    indirect_D3_seed123 trial 0: 6.7065 % kW, 13.4547 % k, best iteration 599 of 1454, 1.54 s
+[  2200.8s] NOTE    indirect_D3_seed123 trial 1: 6.7862 % kW, 13.6553 % k, best iteration 132 of 1066, 0.64 s
+[  2201.5s] NOTE    indirect_D3_seed123 trial 2: 6.7966 % kW, 13.6714 % k, best iteration 104 of 528, 0.36 s
+[  2202.3s] NOTE    indirect_D3_seed123 trial 3: 6.8394 % kW, 13.6860 % k, best iteration 130 of 1501, 0.51 s
+[  2203.3s] NOTE    indirect_D3_seed123 trial 4: 6.7545 % kW, 13.5705 % k, best iteration 153 of 975, 0.7 s
+[  2204.2s] NOTE    indirect_D3_seed123 trial 5: 6.8520 % kW, 13.7255 % k, best iteration 281 of 1323, 0.59 s
+[  2205.9s] NOTE    indirect_D3_seed123 trial 6: 6.7363 % kW, 13.7083 % k, best iteration 289 of 1135, 1.4 s
+[  2206.6s] NOTE    indirect_D3_seed123 trial 7: 6.9836 % kW, 14.0973 % k, best iteration 17 of 951, 0.41 s
+[  2207.2s] NOTE    indirect_D3_seed123 trial 8: 6.8898 % kW, 13.8149 % k, best iteration 63 of 1717, 0.23 s
+[  2209.9s] NOTE    indirect_D3_seed123 trial 9: 6.7295 % kW, 13.6412 % k, best iteration 345 of 1329, 2.37 s
+[  2210.7s] NOTE    indirect_D3_seed123 trial 10: 6.7230 % kW, 13.6267 % k, best iteration 211 of 1972, 0.55 s
+[  2212.2s] NOTE    indirect_D3_seed123 trial 11: 6.7597 % kW, 13.5854 % k, best iteration 310 of 1731, 1.17 s
+[  2213.6s] NOTE    indirect_D3_seed123 trial 12: 6.7363 % kW, 13.5649 % k, best iteration 439 of 1725, 1.02 s
+[  2214.3s] NOTE    indirect_D3_seed123 trial 13: 6.7221 % kW, 13.8078 % k, best iteration 105 of 1965, 0.39 s
+[  2216.5s] NOTE    indirect_D3_seed123 trial 14: 6.7602 % kW, 13.6745 % k, best iteration 372 of 881, 1.9 s
+[  2217.0s] NOTE    indirect_D3_seed123 trial 15: 6.9999 % kW, 13.9202 % k, best iteration 22 of 1633, 0.16 s
+[  2218.1s] NOTE    indirect_D3_seed123 trial 16: 6.7278 % kW, 13.5218 % k, best iteration 286 of 1884, 0.85 s
+[  2218.9s] NOTE    indirect_D3_seed123 trial 17: 6.8978 % kW, 13.7981 % k, best iteration 169 of 1433, 0.4 s
+[  2219.5s] NOTE    indirect_D3_seed123 trial 18: 6.8617 % kW, 13.7702 % k, best iteration 65 of 1699, 0.28 s
+[  2220.1s] NOTE    indirect_D3_seed123 trial 19: 6.8128 % kW, 13.6473 % k, best iteration 70 of 1210, 0.35 s
+[  2220.6s] NOTE    indirect_D3_seed123 trial 20: 6.8025 % kW, 13.7133 % k, best iteration 31 of 1772, 0.24 s
+[  2221.3s] NOTE    indirect_D3_seed123 trial 21: 6.8101 % kW, 13.7256 % k, best iteration 129 of 1950, 0.38 s
+[  2222.0s] NOTE    indirect_D3_seed123 trial 22: 6.7854 % kW, 13.6050 % k, best iteration 104 of 1950, 0.43 s
+[  2222.7s] NOTE    indirect_D3_seed123 trial 23: 6.8735 % kW, 13.7733 % k, best iteration 118 of 1923, 0.32 s
+[  2223.2s] NOTE    indirect_D3_seed123 trial 24: 6.9196 % kW, 13.9183 % k, best iteration 24 of 1731, 0.22 s
+[  2223.6s] NOTE    indirect_D3_seed123 trial 25: 6.9714 % kW, 13.9360 % k, best iteration 24 of 1456, 0.19 s
+[  2224.2s] NOTE    indirect_D3_seed123 trial 26: 6.8448 % kW, 13.7753 % k, best iteration 31 of 1812, 0.31 s
+[  2224.8s] NOTE    indirect_D3_seed123 trial 27: 6.8384 % kW, 13.7649 % k, best iteration 56 of 1908, 0.26 s
+[  2225.3s] NOTE    indirect_D3_seed123 trial 28: 6.8728 % kW, 13.8248 % k, best iteration 48 of 1955, 0.27 s
+[  2226.1s] NOTE    indirect_D3_seed123 trial 29: 6.7621 % kW, 13.5805 % k, best iteration 148 of 1891, 0.43 s
+[  2226.9s] NOTE    indirect_D3_seed123 trial 30: 6.7527 % kW, 13.5624 % k, best iteration 165 of 1697, 0.55 s
+[  2227.5s] NOTE    indirect_D3_seed123 trial 31: 6.8458 % kW, 13.8072 % k, best iteration 79 of 1885, 0.3 s
+[  2228.5s] NOTE    indirect_D3_seed123 trial 32: 6.8505 % kW, 13.7063 % k, best iteration 355 of 1840, 0.69 s
+[  2229.5s] NOTE    indirect_D3_seed123 trial 33: 6.7449 % kW, 13.5938 % k, best iteration 253 of 1476, 0.74 s
+[  2230.5s] NOTE    indirect_D3_seed123 trial 34: 6.7822 % kW, 13.6337 % k, best iteration 213 of 1972, 0.66 s
+[  2231.3s] NOTE    indirect_D3_seed123 trial 35: 6.7447 % kW, 13.5802 % k, best iteration 197 of 1896, 0.53 s
+[  2231.9s] NOTE    indirect_D3_seed123 trial 36: 6.7956 % kW, 13.7080 % k, best iteration 51 of 1956, 0.31 s
+[  2232.8s] NOTE    indirect_D3_seed123 trial 37: 6.7726 % kW, 13.5697 % k, best iteration 163 of 1786, 0.65 s
+[  2233.6s] NOTE    indirect_D3_seed123 trial 38: 6.8033 % kW, 13.6645 % k, best iteration 110 of 1977, 0.44 s
+[  2234.1s] NOTE    indirect_D3_seed123 trial 39: 6.8911 % kW, 13.8171 % k, best iteration 46 of 1876, 0.23 s
+[  2235.9s] NOTE    indirect_D3_seed123 trial 40: 6.7120 % kW, 13.5778 % k, best iteration 453 of 1761, 1.49 s
+[  2237.7s] NOTE    indirect_D3_seed123 trial 41: 6.7652 % kW, 13.6827 % k, best iteration 428 of 1650, 1.49 s
+[  2239.0s] NOTE    indirect_D3_seed123 trial 42: 6.7149 % kW, 13.5141 % k, best iteration 343 of 1398, 1.05 s
+[  2239.8s] NOTE    indirect_D3_seed123 trial 43: 6.8415 % kW, 13.6971 % k, best iteration 129 of 1516, 0.49 s
+[  2240.6s] NOTE    indirect_D3_seed123 trial 44: 6.7425 % kW, 13.6069 % k, best iteration 120 of 1904, 0.38 s
+[  2242.1s] NOTE    indirect_D3_seed123 trial 45: 6.7028 % kW, 13.5278 % k, best iteration 483 of 1534, 1.19 s
+[  2243.1s] NOTE    indirect_D3_seed123 trial 46: 6.7785 % kW, 13.6017 % k, best iteration 189 of 1768, 0.64 s
+[  2244.7s] NOTE    indirect_D3_seed123 trial 47: 6.7844 % kW, 13.6927 % k, best iteration 331 of 1917, 1.21 s
+[  2245.9s] NOTE    indirect_D3_seed123 trial 48: 6.7379 % kW, 13.5346 % k, best iteration 291 of 1512, 0.9 s
+[  2247.0s] NOTE    indirect_D3_seed123 trial 49: 6.8207 % kW, 13.6455 % k, best iteration 291 of 1803, 0.73 s
+[  2248.6s] NOTE    indirect_D3_seed123 trial 50: 6.7274 % kW, 13.5727 % k, best iteration 408 of 1675, 1.25 s
+[  2249.2s] NOTE    indirect_D3_seed123 trial 51: 6.8453 % kW, 13.8037 % k, best iteration 62 of 1995, 0.26 s
+[  2250.5s] NOTE    indirect_D3_seed123 trial 52: 6.7702 % kW, 13.5587 % k, best iteration 310 of 1393, 1.02 s
+[  2253.4s] NOTE    indirect_D3_seed123 trial 53: 6.7233 % kW, 13.5100 % k, best iteration 1185 of 1249, 2.56 s
+[  2254.4s] NOTE    indirect_D3_seed123 trial 54: 6.8187 % kW, 13.6735 % k, best iteration 149 of 1609, 0.6 s
+[  2256.2s] NOTE    indirect_D3_seed123 trial 55: 6.7694 % kW, 13.5280 % k, best iteration 480 of 1311, 1.43 s
+[  2256.8s] NOTE    indirect_D3_seed123 trial 56: 6.8503 % kW, 13.9448 % k, best iteration 47 of 1725, 0.22 s
+[  2258.2s] NOTE    indirect_D3_seed123 trial 57: 6.7760 % kW, 13.5754 % k, best iteration 449 of 1225, 1.11 s
+[  2259.5s] NOTE    indirect_D3_seed123 trial 58: 6.7327 % kW, 13.5219 % k, best iteration 292 of 1552, 0.95 s
+[  2261.1s] NOTE    indirect_D3_seed123 trial 59: 6.7387 % kW, 13.5940 % k, best iteration 390 of 1729, 1.16 s
+[  2262.3s] STEP    indirect_D3_seed123: L-09 correction, out-of-fold fits ...
+[  2265.2s] STEP    indirect_D3_seed123: L-09 correction, out-of-fold fits done in 2.8s
+[  2265.2s] NOTE    indirect_D3_seed123: L-09 a +18.399 kW, b 0.97850 on 7834 out-of-fold hours; tuning window 6.7028 -> 6.5368 % of capacity
+[  2265.2s] NOTE    indirect_D3_seed123: best trial 45, validation 6.5368 % of capacity (uncorrected 6.7028 %), best iteration 483 of 1534
+[  2265.3s] STEP    indirect_D3_seed123: 60 trial(s) done in 67.3s
+[  2265.3s] STEP    indirect_D3_seed777: 60 trial(s) ...
+[  2266.7s] NOTE    indirect_D3_seed777 trial 0: 6.8310 % kW, 13.7293 % k, best iteration 380 of 474, 1.11 s
+[  2268.8s] NOTE    indirect_D3_seed777 trial 1: 6.7842 % kW, 13.4939 % k, best iteration 479 of 684, 1.74 s
+[  2270.1s] NOTE    indirect_D3_seed777 trial 2: 6.7379 % kW, 13.6145 % k, best iteration 176 of 1427, 0.98 s
+[  2270.9s] NOTE    indirect_D3_seed777 trial 3: 6.7866 % kW, 13.7056 % k, best iteration 29 of 1300, 0.47 s
+[  2271.9s] NOTE    indirect_D3_seed777 trial 4: 6.7362 % kW, 13.5933 % k, best iteration 116 of 1133, 0.65 s
+[  2272.6s] NOTE    indirect_D3_seed777 trial 5: 6.8406 % kW, 13.9130 % k, best iteration 26 of 732, 0.39 s
+[  2275.0s] NOTE    indirect_D3_seed777 trial 6: 6.7448 % kW, 13.6955 % k, best iteration 210 of 1050, 2.07 s
+[  2278.1s] NOTE    indirect_D3_seed777 trial 7: 6.7352 % kW, 13.6824 % k, best iteration 290 of 947, 2.86 s
+[  2278.8s] NOTE    indirect_D3_seed777 trial 8: 6.7893 % kW, 13.8622 % k, best iteration 25 of 374, 0.39 s
+[  2280.7s] NOTE    indirect_D3_seed777 trial 9: 6.7074 % kW, 13.6760 % k, best iteration 123 of 369, 1.63 s
+[  2281.9s] NOTE    indirect_D3_seed777 trial 10: 6.7453 % kW, 13.5260 % k, best iteration 124 of 1641, 0.86 s
+[  2283.8s] NOTE    indirect_D3_seed777 trial 11: 6.6610 % kW, 13.6165 % k, best iteration 135 of 689, 1.58 s
+[  2285.0s] NOTE    indirect_D3_seed777 trial 12: 6.7255 % kW, 13.6600 % k, best iteration 81 of 782, 0.95 s
+[  2289.1s] NOTE    indirect_D3_seed777 trial 13: 6.7097 % kW, 13.7313 % k, best iteration 256 of 480, 3.79 s
+[  2290.9s] NOTE    indirect_D3_seed777 trial 14: 6.6930 % kW, 13.6352 % k, best iteration 160 of 651, 1.47 s
+[  2292.5s] NOTE    indirect_D3_seed777 trial 15: 6.7345 % kW, 13.7394 % k, best iteration 135 of 669, 1.32 s
+[  2295.2s] NOTE    indirect_D3_seed777 trial 16: 6.7136 % kW, 13.6225 % k, best iteration 330 of 804, 2.29 s
+[  2296.6s] NOTE    indirect_D3_seed777 trial 17: 6.7548 % kW, 13.7169 % k, best iteration 103 of 543, 1.11 s
+[  2298.1s] NOTE    indirect_D3_seed777 trial 18: 6.7310 % kW, 13.7066 % k, best iteration 99 of 471, 1.12 s
+[  2300.4s] NOTE    indirect_D3_seed777 trial 19: 6.7131 % kW, 13.6363 % k, best iteration 209 of 970, 2.01 s
+[  2302.5s] NOTE    indirect_D3_seed777 trial 20: 6.7106 % kW, 13.6962 % k, best iteration 187 of 722, 1.78 s
+[  2303.9s] NOTE    indirect_D3_seed777 trial 21: 6.7519 % kW, 13.6717 % k, best iteration 96 of 659, 1.07 s
+[  2305.2s] NOTE    indirect_D3_seed777 trial 22: 6.7772 % kW, 13.7101 % k, best iteration 116 of 413, 0.92 s
+[  2306.9s] NOTE    indirect_D3_seed777 trial 23: 6.7300 % kW, 13.5881 % k, best iteration 219 of 261, 1.43 s
+[  2308.7s] NOTE    indirect_D3_seed777 trial 24: 6.7282 % kW, 13.6756 % k, best iteration 169 of 463, 1.53 s
+[  2311.8s] NOTE    indirect_D3_seed777 trial 25: 6.7156 % kW, 13.6598 % k, best iteration 257 of 730, 2.71 s
+[  2313.0s] NOTE    indirect_D3_seed777 trial 26: 6.7603 % kW, 13.5606 % k, best iteration 80 of 603, 0.99 s
+[  2315.7s] NOTE    indirect_D3_seed777 trial 27: 6.6627 % kW, 13.6030 % k, best iteration 255 of 420, 2.35 s
+[  2319.2s] NOTE    indirect_D3_seed777 trial 28: 6.7344 % kW, 13.6416 % k, best iteration 246 of 389, 3.19 s
+[  2321.0s] NOTE    indirect_D3_seed777 trial 29: 6.7455 % kW, 13.6952 % k, best iteration 135 of 583, 1.51 s
+[  2324.4s] NOTE    indirect_D3_seed777 trial 30: 6.7092 % kW, 13.7039 % k, best iteration 261 of 595, 3.12 s
+[  2326.5s] NOTE    indirect_D3_seed777 trial 31: 6.6817 % kW, 13.6089 % k, best iteration 208 of 993, 1.8 s
+[  2328.2s] NOTE    indirect_D3_seed777 trial 32: 6.7415 % kW, 13.6562 % k, best iteration 98 of 882, 1.46 s
+[  2330.0s] NOTE    indirect_D3_seed777 trial 33: 6.6921 % kW, 13.6745 % k, best iteration 150 of 935, 1.49 s
+[  2332.5s] NOTE    indirect_D3_seed777 trial 34: 6.7414 % kW, 13.7225 % k, best iteration 243 of 1100, 2.18 s
+[  2334.6s] NOTE    indirect_D3_seed777 trial 35: 6.7260 % kW, 13.6804 % k, best iteration 158 of 1057, 1.73 s
+[  2336.2s] NOTE    indirect_D3_seed777 trial 36: 6.7174 % kW, 13.6737 % k, best iteration 133 of 663, 1.33 s
+[  2338.0s] NOTE    indirect_D3_seed777 trial 37: 6.6909 % kW, 13.6090 % k, best iteration 136 of 764, 1.55 s
+[  2340.2s] NOTE    indirect_D3_seed777 trial 38: 6.7417 % kW, 13.7769 % k, best iteration 144 of 799, 1.89 s
+[  2342.0s] NOTE    indirect_D3_seed777 trial 39: 6.6838 % kW, 13.5926 % k, best iteration 186 of 453, 1.53 s
+[  2344.0s] NOTE    indirect_D3_seed777 trial 40: 6.6911 % kW, 13.6114 % k, best iteration 269 of 427, 1.71 s
+[  2346.2s] NOTE    indirect_D3_seed777 trial 41: 6.6971 % kW, 13.5923 % k, best iteration 247 of 574, 1.87 s
+[  2347.9s] NOTE    indirect_D3_seed777 trial 42: 6.7579 % kW, 13.6485 % k, best iteration 168 of 656, 1.4 s
+[  2350.6s] NOTE    indirect_D3_seed777 trial 43: 6.7217 % kW, 13.6240 % k, best iteration 263 of 286, 2.4 s
+[  2352.4s] NOTE    indirect_D3_seed777 trial 44: 6.8298 % kW, 13.7046 % k, best iteration 213 of 214, 1.51 s
+[  2353.5s] NOTE    indirect_D3_seed777 trial 45: 6.7161 % kW, 13.5716 % k, best iteration 66 of 816, 0.83 s
+[  2355.4s] NOTE    indirect_D3_seed777 trial 46: 6.6752 % kW, 13.6635 % k, best iteration 174 of 619, 1.58 s
+[  2358.2s] NOTE    indirect_D3_seed777 trial 47: 6.7458 % kW, 13.7199 % k, best iteration 187 of 408, 2.51 s
+[  2360.3s] NOTE    indirect_D3_seed777 trial 48: 6.7197 % kW, 13.6381 % k, best iteration 133 of 557, 1.74 s
+[  2362.1s] NOTE    indirect_D3_seed777 trial 49: 6.7533 % kW, 13.6965 % k, best iteration 140 of 542, 1.52 s
+[  2365.1s] NOTE    indirect_D3_seed777 trial 50: 6.7514 % kW, 13.6624 % k, best iteration 330 of 465, 2.64 s
+[  2368.0s] NOTE    indirect_D3_seed777 trial 51: 6.6857 % kW, 13.6940 % k, best iteration 202 of 667, 2.57 s
+[  2370.9s] NOTE    indirect_D3_seed777 trial 52: 6.7206 % kW, 13.6901 % k, best iteration 186 of 668, 2.63 s
+[  2373.0s] NOTE    indirect_D3_seed777 trial 53: 6.7031 % kW, 13.6394 % k, best iteration 182 of 776, 1.76 s
+[  2376.0s] NOTE    indirect_D3_seed777 trial 54: 6.7138 % kW, 13.6520 % k, best iteration 326 of 424, 2.63 s
+[  2378.5s] NOTE    indirect_D3_seed777 trial 55: 6.7193 % kW, 13.6680 % k, best iteration 241 of 637, 2.18 s
+[  2381.0s] NOTE    indirect_D3_seed777 trial 56: 6.7260 % kW, 13.6528 % k, best iteration 181 of 705, 2.17 s
+[  2383.3s] NOTE    indirect_D3_seed777 trial 57: 6.6803 % kW, 13.5757 % k, best iteration 218 of 623, 1.89 s
+[  2384.7s] NOTE    indirect_D3_seed777 trial 58: 6.7437 % kW, 13.7266 % k, best iteration 96 of 774, 1.07 s
+[  2388.5s] NOTE    indirect_D3_seed777 trial 59: 6.6994 % kW, 13.7184 % k, best iteration 312 of 441, 3.49 s
+[  2390.2s] STEP    indirect_D3_seed777: L-09 correction, out-of-fold fits ...
+[  2394.2s] STEP    indirect_D3_seed777: L-09 correction, out-of-fold fits done in 4.0s
+[  2394.3s] NOTE    indirect_D3_seed777: L-09 a +23.980 kW, b 0.98330 on 7834 out-of-fold hours; tuning window 6.6610 -> 6.5865 % of capacity
+[  2394.3s] WARN    indirect_D3_seed777: validation RMSE 0.1034 is 2.1 x the train RMSE 0.04838 at the best iteration
+[  2394.3s] WARN    indirect_D3_seed777: best trial on the edge of the search space for max_depth = 10
+[  2394.3s] NOTE    indirect_D3_seed777: best trial 11, validation 6.5865 % of capacity (uncorrected 6.6610 %), best iteration 135 of 689
+[  2394.4s] STEP    indirect_D3_seed777: 60 trial(s) done in 129.1s
+[  2394.4s] NOTE    direct_D3: 82 features; D-15 setting A, constraints {'ghi_clearsky': 1, 'sun_elevation': 1, 'poa_global_clearsky': 1}; rows {'fit': 20393, 'early_stopping': 5685, 'scoring': 2901, 'scoring_op_limited': 146}
+[  2394.4s] NOTE    direct_D3: NaN on the fit rows (passed to XGBoost, M8): {'airmass': 9628, 'irradiance_clear_index_prevday': 24}
+[  2394.4s] NOTE    direct_D3: NaN on the early_stopping rows (passed to XGBoost, M8): {'airmass': 2469}
+[  2394.4s] STEP    direct_D3_seed42: 60 trial(s) ...
+[  2396.7s] NOTE    direct_D3_seed42 trial 0: 6.6167 % kW, best iteration 31 of 874, 1.93 s
+[  2404.8s] NOTE    direct_D3_seed42 trial 1: 6.6102 % kW, best iteration 431 of 1282, 7.85 s
+[  2407.1s] NOTE    direct_D3_seed42 trial 2: 6.5314 % kW, best iteration 100 of 747, 2.02 s
+[  2414.2s] NOTE    direct_D3_seed42 trial 3: 6.5627 % kW, best iteration 224 of 1021, 6.81 s
+[  2416.4s] NOTE    direct_D3_seed42 trial 4: 6.8671 % kW, best iteration 13 of 317, 1.9 s
+[  2420.5s] NOTE    direct_D3_seed42 trial 5: 6.5433 % kW, best iteration 413 of 419, 3.91 s
+[  2421.5s] NOTE    direct_D3_seed42 trial 6: 6.7099 % kW, best iteration 23 of 1184, 0.69 s
+[  2424.6s] NOTE    direct_D3_seed42 trial 7: 6.5572 % kW, best iteration 350 of 359, 2.76 s
+[  2428.2s] NOTE    direct_D3_seed42 trial 8: 6.4746 % kW, best iteration 260 of 705, 3.38 s
+[  2430.8s] NOTE    direct_D3_seed42 trial 9: 6.6346 % kW, best iteration 40 of 209, 2.26 s
+[  2432.5s] NOTE    direct_D3_seed42 trial 10: 6.4261 % kW, best iteration 31 of 1011, 1.44 s
+[  2434.4s] NOTE    direct_D3_seed42 trial 11: 6.5459 % kW, best iteration 41 of 1161, 1.56 s
+[  2435.7s] NOTE    direct_D3_seed42 trial 12: 6.5753 % kW, best iteration 60 of 839, 1.0 s
+[  2440.4s] NOTE    direct_D3_seed42 trial 13: 6.4993 % kW, best iteration 306 of 421, 4.4 s
+[  2441.7s] NOTE    direct_D3_seed42 trial 14: 6.6712 % kW, best iteration 19 of 768, 1.0 s
+[  2442.9s] NOTE    direct_D3_seed42 trial 15: 6.5265 % kW, best iteration 20 of 618, 0.87 s
+[  2445.0s] NOTE    direct_D3_seed42 trial 16: 6.4929 % kW, best iteration 129 of 382, 1.8 s
+[  2448.9s] NOTE    direct_D3_seed42 trial 17: 6.4525 % kW, best iteration 257 of 905, 3.5 s
+[  2450.4s] NOTE    direct_D3_seed42 trial 18: 6.5490 % kW, best iteration 76 of 1228, 1.2 s
+[  2455.1s] NOTE    direct_D3_seed42 trial 19: 6.4718 % kW, best iteration 337 of 752, 4.38 s
+[  2459.4s] NOTE    direct_D3_seed42 trial 20: 6.5026 % kW, best iteration 192 of 664, 3.96 s
+[  2463.7s] NOTE    direct_D3_seed42 trial 21: 6.5232 % kW, best iteration 368 of 948, 3.98 s
+[  2466.1s] NOTE    direct_D3_seed42 trial 22: 6.4749 % kW, best iteration 151 of 879, 2.07 s
+[  2467.4s] NOTE    direct_D3_seed42 trial 23: 6.5743 % kW, best iteration 24 of 1164, 0.95 s
+[  2469.3s] NOTE    direct_D3_seed42 trial 24: 6.4538 % kW, best iteration 43 of 965, 1.51 s
+[  2470.9s] NOTE    direct_D3_seed42 trial 25: 6.5825 % kW, best iteration 17 of 751, 1.22 s
+[  2472.6s] NOTE    direct_D3_seed42 trial 26: 6.5702 % kW, best iteration 39 of 962, 1.38 s
+[  2474.3s] NOTE    direct_D3_seed42 trial 27: 6.5330 % kW, best iteration 43 of 1044, 1.44 s
+[  2476.4s] NOTE    direct_D3_seed42 trial 28: 6.4991 % kW, best iteration 35 of 785, 1.8 s
+[  2477.8s] NOTE    direct_D3_seed42 trial 29: 6.5890 % kW, best iteration 11 of 1159, 1.03 s
+[  2479.1s] NOTE    direct_D3_seed42 trial 30: 6.5930 % kW, best iteration 17 of 1150, 1.02 s
+[  2481.2s] NOTE    direct_D3_seed42 trial 31: 6.5562 % kW, best iteration 31 of 1099, 1.68 s
+[  2484.3s] NOTE    direct_D3_seed42 trial 32: 6.5116 % kW, best iteration 214 of 991, 2.63 s
+[  2485.5s] NOTE    direct_D3_seed42 trial 33: 6.5202 % kW, best iteration 14 of 1315, 0.96 s
+[  2490.6s] NOTE    direct_D3_seed42 trial 34: 6.4904 % kW, best iteration 370 of 783, 4.72 s
+[  2494.2s] NOTE    direct_D3_seed42 trial 35: 6.5457 % kW, best iteration 261 of 598, 3.38 s
+[  2499.9s] NOTE    direct_D3_seed42 trial 36: 6.4904 % kW, best iteration 376 of 862, 5.43 s
+[  2501.5s] NOTE    direct_D3_seed42 trial 37: 6.5937 % kW, best iteration 23 of 941, 1.24 s
+[  2507.1s] NOTE    direct_D3_seed42 trial 38: 6.5331 % kW, best iteration 343 of 999, 5.35 s
+[  2509.1s] NOTE    direct_D3_seed42 trial 39: 6.5450 % kW, best iteration 47 of 1016, 1.66 s
+[  2511.0s] NOTE    direct_D3_seed42 trial 40: 6.4673 % kW, best iteration 90 of 910, 1.69 s
+[  2514.4s] NOTE    direct_D3_seed42 trial 41: 6.5144 % kW, best iteration 272 of 563, 3.1 s
+[  2517.1s] NOTE    direct_D3_seed42 trial 42: 6.4921 % kW, best iteration 132 of 1157, 2.37 s
+[  2521.1s] NOTE    direct_D3_seed42 trial 43: 6.4495 % kW, best iteration 279 of 1176, 3.65 s
+[  2524.6s] NOTE    direct_D3_seed42 trial 44: 6.4850 % kW, best iteration 274 of 1174, 3.19 s
+[  2527.8s] NOTE    direct_D3_seed42 trial 45: 6.5014 % kW, best iteration 216 of 1303, 2.94 s
+[  2529.9s] NOTE    direct_D3_seed42 trial 46: 6.5133 % kW, best iteration 81 of 598, 1.82 s
+[  2532.4s] NOTE    direct_D3_seed42 trial 47: 6.5073 % kW, best iteration 177 of 882, 2.19 s
+[  2537.7s] NOTE    direct_D3_seed42 trial 48: 6.4912 % kW, best iteration 406 of 897, 5.02 s
+[  2541.0s] NOTE    direct_D3_seed42 trial 49: 6.5253 % kW, best iteration 221 of 1270, 3.05 s
+[  2544.7s] NOTE    direct_D3_seed42 trial 50: 6.5238 % kW, best iteration 201 of 921, 3.48 s
+[  2549.9s] NOTE    direct_D3_seed42 trial 51: 6.5219 % kW, best iteration 320 of 1241, 4.88 s
+[  2553.7s] NOTE    direct_D3_seed42 trial 52: 6.4792 % kW, best iteration 267 of 1280, 3.53 s
+[  2558.5s] NOTE    direct_D3_seed42 trial 53: 6.5298 % kW, best iteration 426 of 1223, 4.43 s
+[  2561.5s] NOTE    direct_D3_seed42 trial 54: 6.5456 % kW, best iteration 183 of 715, 2.71 s
+[  2565.5s] NOTE    direct_D3_seed42 trial 55: 6.4675 % kW, best iteration 287 of 1301, 3.72 s
+[  2569.8s] NOTE    direct_D3_seed42 trial 56: 6.5102 % kW, best iteration 254 of 1346, 3.98 s
+[  2573.2s] NOTE    direct_D3_seed42 trial 57: 6.4850 % kW, best iteration 228 of 1104, 3.13 s
+[  2578.4s] NOTE    direct_D3_seed42 trial 58: 6.4954 % kW, best iteration 325 of 1049, 4.94 s
+[  2582.3s] NOTE    direct_D3_seed42 trial 59: 6.4942 % kW, best iteration 276 of 1395, 3.58 s
+[  2583.8s] NOTE    direct_D3_seed42: best trial 10, validation 6.4261 % of capacity, best iteration 31 of 1011
+[  2583.9s] STEP    direct_D3_seed42: 60 trial(s) done in 189.5s
+[  2583.9s] STEP    direct_D3_seed123: 60 trial(s) ...
+[  2586.4s] NOTE    direct_D3_seed123 trial 0: 6.5338 % kW, best iteration 201 of 1454, 2.27 s
+[  2588.6s] NOTE    direct_D3_seed123 trial 1: 6.5563 % kW, best iteration 142 of 1066, 1.98 s
+[  2591.1s] NOTE    direct_D3_seed123 trial 2: 6.6219 % kW, best iteration 233 of 528, 2.16 s
+[  2592.9s] NOTE    direct_D3_seed123 trial 3: 6.5284 % kW, best iteration 120 of 1501, 1.58 s
+[  2594.6s] NOTE    direct_D3_seed123 trial 4: 6.5017 % kW, best iteration 103 of 975, 1.52 s
+[  2598.9s] NOTE    direct_D3_seed123 trial 5: 6.6380 % kW, best iteration 546 of 1323, 3.97 s
+[  2603.0s] NOTE    direct_D3_seed123 trial 6: 6.4898 % kW, best iteration 274 of 1135, 3.91 s
+[  2604.4s] NOTE    direct_D3_seed123 trial 7: 6.5701 % kW, best iteration 18 of 951, 1.15 s
+[  2605.8s] NOTE    direct_D3_seed123 trial 8: 6.6910 % kW, best iteration 109 of 1717, 1.14 s
+[  2613.1s] NOTE    direct_D3_seed123 trial 9: 6.5263 % kW, best iteration 409 of 1329, 7.02 s
+[  2615.1s] NOTE    direct_D3_seed123 trial 10: 6.5448 % kW, best iteration 131 of 1611, 1.7 s
+[  2620.1s] NOTE    direct_D3_seed123 trial 11: 6.5467 % kW, best iteration 334 of 938, 4.63 s
+[  2624.5s] NOTE    direct_D3_seed123 trial 12: 6.5001 % kW, best iteration 193 of 1005, 4.16 s
+[  2631.0s] NOTE    direct_D3_seed123 trial 13: 6.4896 % kW, best iteration 266 of 1184, 6.16 s
+[  2637.9s] NOTE    direct_D3_seed123 trial 14: 6.5235 % kW, best iteration 235 of 892, 6.67 s
+[  2645.5s] NOTE    direct_D3_seed123 trial 15: 6.5663 % kW, best iteration 392 of 1578, 7.36 s
+[  2651.0s] NOTE    direct_D3_seed123 trial 16: 6.5053 % kW, best iteration 291 of 1566, 5.23 s
+[  2657.1s] NOTE    direct_D3_seed123 trial 17: 6.4870 % kW, best iteration 316 of 846, 5.82 s
+[  2663.8s] NOTE    direct_D3_seed123 trial 18: 6.5064 % kW, best iteration 306 of 544, 6.35 s
+[  2669.4s] NOTE    direct_D3_seed123 trial 19: 6.4811 % kW, best iteration 215 of 1263, 5.25 s
+[  2675.9s] NOTE    direct_D3_seed123 trial 20: 6.4968 % kW, best iteration 321 of 953, 6.22 s
+[  2683.7s] NOTE    direct_D3_seed123 trial 21: 6.4909 % kW, best iteration 365 of 1399, 7.55 s
+[  2687.2s] NOTE    direct_D3_seed123 trial 22: 6.4770 % kW, best iteration 140 of 1005, 3.19 s
+[  2692.3s] NOTE    direct_D3_seed123 trial 23: 6.4922 % kW, best iteration 201 of 811, 4.78 s
+[  2699.7s] NOTE    direct_D3_seed123 trial 24: 6.5136 % kW, best iteration 371 of 1114, 7.08 s
+[  2703.4s] NOTE    direct_D3_seed123 trial 25: 6.4765 % kW, best iteration 124 of 1387, 3.34 s
+[  2706.3s] NOTE    direct_D3_seed123 trial 26: 6.5702 % kW, best iteration 88 of 1123, 2.67 s
+[  2711.9s] NOTE    direct_D3_seed123 trial 27: 6.4527 % kW, best iteration 245 of 780, 5.29 s
+[  2717.8s] NOTE    direct_D3_seed123 trial 28: 6.4758 % kW, best iteration 299 of 933, 5.56 s
+[  2723.6s] NOTE    direct_D3_seed123 trial 29: 6.5024 % kW, best iteration 271 of 1053, 5.58 s
+[  2731.4s] NOTE    direct_D3_seed123 trial 30: 6.5094 % kW, best iteration 365 of 601, 7.48 s
+[  2737.5s] NOTE    direct_D3_seed123 trial 31: 6.5013 % kW, best iteration 407 of 994, 5.74 s
+[  2745.6s] NOTE    direct_D3_seed123 trial 32: 6.4993 % kW, best iteration 379 of 754, 7.78 s
+[  2748.9s] NOTE    direct_D3_seed123 trial 33: 6.5007 % kW, best iteration 130 of 813, 3.05 s
+[  2753.1s] NOTE    direct_D3_seed123 trial 34: 6.4623 % kW, best iteration 206 of 817, 3.85 s
+[  2757.3s] NOTE    direct_D3_seed123 trial 35: 6.4886 % kW, best iteration 236 of 691, 3.81 s
+[  2762.6s] NOTE    direct_D3_seed123 trial 36: 6.5220 % kW, best iteration 247 of 522, 4.98 s
+[  2769.5s] NOTE    direct_D3_seed123 trial 37: 6.4887 % kW, best iteration 386 of 670, 6.59 s
+[  2774.8s] NOTE    direct_D3_seed123 trial 38: 6.4852 % kW, best iteration 305 of 853, 5.02 s
+[  2778.7s] NOTE    direct_D3_seed123 trial 39: 6.4852 % kW, best iteration 142 of 815, 3.51 s
+[  2785.3s] NOTE    direct_D3_seed123 trial 40: 6.5131 % kW, best iteration 295 of 850, 6.32 s
+[  2794.8s] NOTE    direct_D3_seed123 trial 41: 6.5040 % kW, best iteration 407 of 1238, 9.11 s
+[  2802.1s] NOTE    direct_D3_seed123 trial 42: 6.4956 % kW, best iteration 327 of 950, 6.95 s
+[  2806.4s] NOTE    direct_D3_seed123 trial 43: 6.5453 % kW, best iteration 201 of 1008, 3.96 s
+[  2811.9s] NOTE    direct_D3_seed123 trial 44: 6.4867 % kW, best iteration 276 of 942, 5.17 s
+[  2817.8s] NOTE    direct_D3_seed123 trial 45: 6.4691 % kW, best iteration 290 of 906, 5.56 s
+[  2826.3s] NOTE    direct_D3_seed123 trial 46: 6.4773 % kW, best iteration 405 of 699, 8.16 s
+[  2830.7s] NOTE    direct_D3_seed123 trial 47: 6.5125 % kW, best iteration 153 of 692, 4.06 s
+[  2837.1s] NOTE    direct_D3_seed123 trial 48: 6.5327 % kW, best iteration 266 of 896, 6.07 s
+[  2845.3s] NOTE    direct_D3_seed123 trial 49: 6.5192 % kW, best iteration 379 of 863, 7.87 s
+[  2849.0s] NOTE    direct_D3_seed123 trial 50: 6.5272 % kW, best iteration 174 of 929, 3.34 s
+[  2853.9s] NOTE    direct_D3_seed123 trial 51: 6.5194 % kW, best iteration 208 of 1101, 4.61 s
+[  2857.0s] NOTE    direct_D3_seed123 trial 52: 6.4567 % kW, best iteration 128 of 1031, 2.73 s
+[  2862.6s] NOTE    direct_D3_seed123 trial 53: 6.4943 % kW, best iteration 316 of 898, 5.31 s
+[  2870.3s] NOTE    direct_D3_seed123 trial 54: 6.4892 % kW, best iteration 349 of 943, 7.33 s
+[  2874.8s] NOTE    direct_D3_seed123 trial 55: 6.4800 % kW, best iteration 261 of 944, 4.2 s
+[  2879.3s] NOTE    direct_D3_seed123 trial 56: 6.4878 % kW, best iteration 216 of 785, 4.13 s
+[  2884.5s] NOTE    direct_D3_seed123 trial 57: 6.4843 % kW, best iteration 317 of 1018, 4.83 s
+[  2888.8s] NOTE    direct_D3_seed123 trial 58: 6.5012 % kW, best iteration 222 of 633, 3.98 s
+[  2894.8s] NOTE    direct_D3_seed123 trial 59: 6.5152 % kW, best iteration 265 of 1075, 5.7 s
+[  2900.1s] WARN    direct_D3_seed123: best trial on the edge of the search space for max_depth = 10
+[  2900.2s] NOTE    direct_D3_seed123: best trial 27, validation 6.4527 % of capacity, best iteration 245 of 780
+[  2900.3s] STEP    direct_D3_seed123: 60 trial(s) done in 316.4s
+[  2900.3s] STEP    direct_D3_seed777: 60 trial(s) ...
+[  2904.3s] NOTE    direct_D3_seed777 trial 0: 6.5225 % kW, best iteration 356 of 474, 3.63 s
+[  2909.6s] NOTE    direct_D3_seed777 trial 1: 6.4827 % kW, best iteration 320 of 684, 5.09 s
+[  2912.7s] NOTE    direct_D3_seed777 trial 2: 6.5081 % kW, best iteration 183 of 1427, 2.8 s
+[  2914.8s] NOTE    direct_D3_seed777 trial 3: 6.5475 % kW, best iteration 50 of 1300, 1.84 s
+[  2916.5s] NOTE    direct_D3_seed777 trial 4: 6.5412 % kW, best iteration 63 of 1133, 1.31 s
+[  2918.0s] NOTE    direct_D3_seed777 trial 5: 6.6056 % kW, best iteration 36 of 732, 1.24 s
+[  2924.6s] NOTE    direct_D3_seed777 trial 6: 6.5350 % kW, best iteration 310 of 1050, 6.34 s
+[  2932.6s] NOTE    direct_D3_seed777 trial 7: 6.5097 % kW, best iteration 308 of 947, 7.71 s
+[  2934.1s] NOTE    direct_D3_seed777 trial 8: 6.5553 % kW, best iteration 19 of 374, 1.16 s
+[  2938.5s] NOTE    direct_D3_seed777 trial 9: 6.5185 % kW, best iteration 132 of 369, 4.11 s
+[  2941.5s] NOTE    direct_D3_seed777 trial 10: 6.5638 % kW, best iteration 99 of 350, 2.77 s
+[  2945.4s] NOTE    direct_D3_seed777 trial 11: 6.5333 % kW, best iteration 320 of 1584, 3.55 s
+[  2950.5s] NOTE    direct_D3_seed777 trial 12: 6.5094 % kW, best iteration 378 of 1457, 4.81 s
+[  2953.9s] NOTE    direct_D3_seed777 trial 13: 6.4910 % kW, best iteration 221 of 1848, 2.99 s
+[  2957.3s] NOTE    direct_D3_seed777 trial 14: 6.5100 % kW, best iteration 224 of 1665, 3.15 s
+[  2961.2s] NOTE    direct_D3_seed777 trial 15: 6.4803 % kW, best iteration 234 of 835, 3.59 s
+[  2965.0s] NOTE    direct_D3_seed777 trial 16: 6.4957 % kW, best iteration 148 of 655, 3.43 s
+[  2968.2s] NOTE    direct_D3_seed777 trial 17: 6.5419 % kW, best iteration 174 of 485, 2.92 s
+[  2971.7s] NOTE    direct_D3_seed777 trial 18: 6.5325 % kW, best iteration 222 of 1257, 3.16 s
+[  2976.7s] NOTE    direct_D3_seed777 trial 19: 6.4689 % kW, best iteration 247 of 774, 4.7 s
+[  2981.5s] NOTE    direct_D3_seed777 trial 20: 6.4981 % kW, best iteration 372 of 373, 4.56 s
+[  2987.1s] NOTE    direct_D3_seed777 trial 21: 6.5147 % kW, best iteration 313 of 1094, 5.24 s
+[  2992.9s] NOTE    direct_D3_seed777 trial 22: 6.4734 % kW, best iteration 393 of 647, 5.4 s
+[  3000.5s] NOTE    direct_D3_seed777 trial 23: 6.5705 % kW, best iteration 324 of 959, 7.33 s
+[  3005.4s] NOTE    direct_D3_seed777 trial 24: 6.5251 % kW, best iteration 330 of 780, 4.57 s
+[  3013.5s] NOTE    direct_D3_seed777 trial 25: 6.4875 % kW, best iteration 379 of 804, 7.68 s
+[  3018.8s] NOTE    direct_D3_seed777 trial 26: 6.4718 % kW, best iteration 304 of 794, 4.97 s
+[  3022.7s] NOTE    direct_D3_seed777 trial 27: 6.4700 % kW, best iteration 223 of 816, 3.64 s
+[  3026.4s] NOTE    direct_D3_seed777 trial 28: 6.4940 % kW, best iteration 237 of 497, 3.43 s
+[  3035.9s] NOTE    direct_D3_seed777 trial 29: 6.5193 % kW, best iteration 396 of 1003, 9.17 s
+[  3040.8s] NOTE    direct_D3_seed777 trial 30: 6.4607 % kW, best iteration 208 of 897, 4.53 s
+[  3046.0s] NOTE    direct_D3_seed777 trial 31: 6.4917 % kW, best iteration 238 of 935, 4.85 s
+[  3050.8s] NOTE    direct_D3_seed777 trial 32: 6.5186 % kW, best iteration 334 of 987, 4.47 s
+[  3055.5s] NOTE    direct_D3_seed777 trial 33: 6.4799 % kW, best iteration 200 of 711, 4.43 s
+[  3061.9s] NOTE    direct_D3_seed777 trial 34: 6.4722 % kW, best iteration 311 of 1063, 6.0 s
+[  3068.5s] NOTE    direct_D3_seed777 trial 35: 6.4891 % kW, best iteration 371 of 817, 6.26 s
+[  3072.3s] NOTE    direct_D3_seed777 trial 36: 6.4600 % kW, best iteration 188 of 982, 3.54 s
+[  3079.0s] NOTE    direct_D3_seed777 trial 37: 6.5001 % kW, best iteration 270 of 661, 6.3 s
+[  3084.6s] NOTE    direct_D3_seed777 trial 38: 6.4945 % kW, best iteration 213 of 782, 5.29 s
+[  3089.7s] NOTE    direct_D3_seed777 trial 39: 6.5058 % kW, best iteration 250 of 959, 4.78 s
+[  3093.8s] NOTE    direct_D3_seed777 trial 40: 6.4711 % kW, best iteration 265 of 720, 3.82 s
+[  3098.3s] NOTE    direct_D3_seed777 trial 41: 6.4689 % kW, best iteration 278 of 804, 4.08 s
+[  3102.4s] NOTE    direct_D3_seed777 trial 42: 6.4799 % kW, best iteration 251 of 808, 3.79 s
+[  3107.5s] NOTE    direct_D3_seed777 trial 43: 6.4365 % kW, best iteration 283 of 1026, 4.74 s
+[  3111.4s] NOTE    direct_D3_seed777 trial 44: 6.4738 % kW, best iteration 211 of 963, 3.63 s
+[  3117.9s] NOTE    direct_D3_seed777 trial 45: 6.4558 % kW, best iteration 372 of 1032, 6.15 s
+[  3124.4s] NOTE    direct_D3_seed777 trial 46: 6.4972 % kW, best iteration 295 of 928, 6.13 s
+[  3130.0s] NOTE    direct_D3_seed777 trial 47: 6.4805 % kW, best iteration 294 of 1112, 5.1 s
+[  3133.6s] NOTE    direct_D3_seed777 trial 48: 6.4904 % kW, best iteration 148 of 832, 3.31 s
+[  3140.9s] NOTE    direct_D3_seed777 trial 49: 6.5097 % kW, best iteration 378 of 863, 6.88 s
+[  3147.6s] NOTE    direct_D3_seed777 trial 50: 6.4294 % kW, best iteration 385 of 1108, 6.32 s
+[  3155.1s] NOTE    direct_D3_seed777 trial 51: 6.4706 % kW, best iteration 378 of 1148, 7.14 s
+[  3159.4s] NOTE    direct_D3_seed777 trial 52: 6.4817 % kW, best iteration 186 of 1002, 3.86 s
+[  3163.2s] NOTE    direct_D3_seed777 trial 53: 6.4711 % kW, best iteration 183 of 819, 3.49 s
+[  3169.6s] NOTE    direct_D3_seed777 trial 54: 6.4991 % kW, best iteration 378 of 1238, 6.07 s
+[  3176.4s] NOTE    direct_D3_seed777 trial 55: 6.4616 % kW, best iteration 404 of 1041, 6.42 s
+[  3181.9s] NOTE    direct_D3_seed777 trial 56: 6.4576 % kW, best iteration 322 of 1075, 5.16 s
+[  3186.3s] NOTE    direct_D3_seed777 trial 57: 6.5003 % kW, best iteration 222 of 794, 3.89 s
+[  3193.6s] NOTE    direct_D3_seed777 trial 58: 6.4507 % kW, best iteration 366 of 978, 6.98 s
+[  3200.2s] NOTE    direct_D3_seed777 trial 59: 6.5009 % kW, best iteration 388 of 944, 6.32 s
+[  3206.5s] WARN    direct_D3_seed777: best trial on the edge of the search space for learning_rate = 0.01003
+[  3206.6s] NOTE    direct_D3_seed777: best trial 50, validation 6.4294 % of capacity, best iteration 385 of 1108
+[  3206.6s] STEP    direct_D3_seed777: 60 trial(s) done in 306.4s
+[  3213.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/predictions_xgb_sota_seed42.csv sha256=135092ccb432a411
+[  3213.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/predictions_xgb_sota_seed123.csv sha256=d8df3ffd4fd5234e
+[  3213.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/predictions_xgb_sota_seed777.csv sha256=1f7abaf9a9b1230d
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/uncorrected_xgb_sota_seed42.csv sha256=ad146f17da0f3462
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/uncorrected_xgb_sota_seed123.csv sha256=382d4fde9e898079
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/uncorrected_xgb_sota_seed777.csv sha256=c37dd5451fd5ad69
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/mos_coefficients.csv sha256=23e19455efb73739
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/trials.csv sha256=e6ae2a4456382527
+[  3214.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/learning_curves.csv sha256=f109a881370587c3
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/best_params.json sha256=a72ace571d755d81
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/xgb_config.json sha256=e776d8d7017b7d72
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/figures/learning_curves.png sha256=a146b969e2f543d7
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/figures/optimization_history.png sha256=2c501aa2ee5beb21
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/optuna.db sha256=bf0faf6b0f854e6a
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D1_seed123.ubj sha256=3569c9e55cda1134
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D1_seed42.ubj sha256=8d7322df17e1868f
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D1_seed777.ubj sha256=d66485de79a6e801
+[  3214.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D2_seed123.ubj sha256=aba448bf43f8ac5a
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D2_seed42.ubj sha256=012a81c10ed94ff3
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D2_seed777.ubj sha256=41d862f21d835550
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D3_seed123.ubj sha256=4f1103d64f23a9ee
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D3_seed42.ubj sha256=3c9e0758fa76fb0f
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_direct_D3_seed777.ubj sha256=387cec35a516a5af
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D1_seed123.ubj sha256=3efdb6b01194d034
+[  3214.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D1_seed42.ubj sha256=6157fa9b630651f3
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D1_seed777.ubj sha256=f5d20691eaa64c80
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D2_seed123.ubj sha256=144ae2f2708357f8
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D2_seed42.ubj sha256=bdad186150d53996
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D2_seed777.ubj sha256=6dfa7aff7c56fd8d
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D3_seed123.ubj sha256=ac8ca5cf30a40ee3
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D3_seed42.ubj sha256=0f2fa9833aba4c93
+[  3214.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.xgb.tmp/models/xgb_sota_indirect_D3_seed777.ubj sha256=1187222e5b90fa72
+[  3214.3s] RUN     warnings: 22
+[  3214.3s] RUN     status: ok; duration 3214.3s

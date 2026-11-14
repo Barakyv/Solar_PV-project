@@ -327,3 +327,29 @@ to X96). The submitted project had no resume at all (M3): a run that stopped was
   +1.93 MB), so any change of code can move it; no result or decision uses it. The comparison of the
   reproduction was not widened: the explanation applies only to a file whose sole difference is that
   column.
+
+## 14. What the final test showed (stage 10, run `20261114T083930Z_final`)
+
+Figures S10-02 to S10-06; `docs/run_journal.md` R9-39; OP-65.
+
+- **Submitted:** a held-out test number that every script could see, and an nRMSE that fell
+  between the CV and the test for reasons that were never separated (C-37, C-40, M37).
+- **Rebuild:** the test split was scored once, in phase 2, after the acceptance was written, and
+  nothing (budget, seed, rule) was changed after the numbers were read (D-37).
+- **What it shows:** every model and reference is about 4.5 pp worse on test than on validation
+  (XGB 6.65 to 11.39, climatology 8.05 to 12.45, mean over cells and seeds). Compared in the
+  same view, the 186 operation-limited hours account for about two thirds of the rise for XGB and
+  half for climatology; the rest (+1.6 pp for XGB in normal operation) is a shift of the period that
+  the references share (S10-03). The XGB is significantly better than persistence, clear sky x k and
+  PatchTST in all six cells, and than climatology in one of six (S10-04): the climatology margin is
+  75 to 109 % of the minimum detectable effect (D-37).
+- **Likely question:** "Is XGB the best model?" **Answer:** "It is nominally best or close in
+  most cells, but among the neural models it separates only from PatchTST (all six cells) and from
+  the BiLSTM (the indirect route); the three TFTs are not significantly different, four of the five
+  neural models have one seed, so we state no winner."
+- **Likely question:** "Why is the test error so much higher than validation?" **Answer:** "Every
+  model and reference rises by the same order; about two thirds of XGB's rise comes from 186 hours of
+  curtailment, stops and derate (D-22), which the weather and the history do not describe. We report
+  both views and compare each test number only with the validation number of the same view."
+- **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's
+  decision, 14.11).

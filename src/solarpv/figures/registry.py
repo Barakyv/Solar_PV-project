@@ -9,13 +9,14 @@ submitted project, used in docs/defense_notes.md).
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
-STAGES = ("0", "1", "2", "3", "3b", "4", "5", "6", "6b", "7", "8", "9", "correction")
+STAGES = ("0", "1", "2", "3", "3b", "4", "5", "6", "6b", "7", "8", "9", "10", "correction")
 STAGE_NAMES = {
     "0": "Raw data intake", "1": "Infrastructure, splits and leakage contract",
     "2": "Ingestion and the UTC time base", "3": "Exploratory analysis",
     "3b": "Data quality before and after cleaning", "4": "Logger clocks and hourly data",
     "5": "Cleaning", "6": "Target and features", "6b": "Weather forecasts (GFS)",
     "7": "Feature selection", "8": "Evaluation layer", "9": "Light models and the runner",
+    "10": "The final run (all models)",
     "correction": "Corrections of the submitted project (defense notes)",
 }
 
@@ -154,6 +155,7 @@ def load_all() -> list[FigureSpec]:
         s09_models,
         s09_w5,
         s09_w6,
+        s10_final,
     )
     order = {s: i for i, s in enumerate(STAGES)}
     ids = [f.id for f in REGISTRY]

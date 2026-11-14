@@ -1,0 +1,175 @@
+{
+  "step": "bilstm",
+  "run_id": "20261114T083930Z_final",
+  "mode": "final",
+  "started_utc": "2026-11-14T09:42:21.662415+00:00",
+  "commit": "10611a6",
+  "fingerprint": "8c52fe2ad6693392e82e62ff61a1904fc9ec380a57fe9c1293bff61de33f96a1",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      },
+      {
+        "split": "test",
+        "start": "2024-10-01T00:00:00+00:00",
+        "end": "2025-06-01T00:00:00+00:00",
+        "label": "the whole test split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": true,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 60,
+      "epochs_trial": 25,
+      "epochs_final": 60,
+      "patience": 10,
+      "seeds": [
+        42,
+        123,
+        777
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "data/processed/05_clean/scada_1H_clean.parquet": "c1329ab3b209a2906ce8c66a9333aed8fbd900205130f019b402fc980db71873",
+    "data/processed/05_clean/scada_1min_clean.parquet": "120efa8cd47e9d90f2be29a4f41dd7b8d7d4c915d1722ac34e7aa54948041561",
+    "configs/cleaning_policy.yaml": "04ef51b4aa3607f636e7bd6bddbfa3f00299cde119f239b5ee48f5dcbf8e975b",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c",
+    "requirements-gpu.lock.txt": "cf0c2a9fbf9d2a8066c1932026271c30553d8450320f1857354e3a11e58e2fa7"
+  },
+  "log": "outputs/runs/20261114T083930Z_final/logs/bilstm_20261114T094221Z.log",
+  "status": "ok",
+  "folder": "bilstm",
+  "finished_utc": "2026-11-14T11:00:47.470284+00:00",
+  "duration_s": 4705.8,
+  "outputs": {
+    "best_params.json": "cf9a2c8518f69033567a97a04ab87dee7f32547644e5e5734251c61fc9e436a6",
+    "figures/learning_curves.png": "4e6dad25c741ea4c2d33b98e27a747e94f8bb98bb96427ef50d4e969e400a6df",
+    "figures/optimization_history.png": "1d8146cdb85713973f480b6bda567ba178f8f6055a69d4a9ec4700c153253acd",
+    "job/data_direct.npz": "f909bf762620a87799bff76936a59a5f137a73921174e45b973529f895c3e42e",
+    "job/data_indirect.npz": "380b8d322cced709128de0ec36b73e92c9ccff4a795174f29d7c6878e6a83688",
+    "job/job.json": "b4c0ae40dd545e4c2503791befb4ade166d0f2062856d026acd4787751f72d01",
+    "learning_curves.csv": "f7fe9392c7fa93718094522c1bddbf7147a97200bfce1e2d0ac56c89c1de90b0",
+    "lstm_sota_config.json": "ce0e8a3a4173d90a05e7de497eae2f8f80d431af22b211a4a2be508d64bd1552",
+    "mbe.csv": "3bcecfa67fc93ae48194083a6a28ca31ae14ce0f4b4499a20c58b3e1f56cbd14",
+    "predictions_lstm_sota_seed123.csv": "32fa02bb20c86d0f57ad5754921b60257cbfa415b764b2d28cedcfb6bd54b5ff",
+    "predictions_lstm_sota_seed42.csv": "476094f163ae470aa691518442331f0dd602bc23bf909658f2f9c96af6b4d873",
+    "predictions_lstm_sota_seed777.csv": "9b37475dd3399df5a25cf340869de1ff4aa2900097c085328f4a1885cddc967e",
+    "quantiles_lstm_sota_seed123.csv": "7644080b296cb7b2237e2bb80959cb48eaafd70d5015608e906cb9299268bffe",
+    "quantiles_lstm_sota_seed42.csv": "b31f1887f1a11f871abd7da0666d86c1c57f2c5045e9ddfb2fb5c0521ad02eb6",
+    "quantiles_lstm_sota_seed777.csv": "b7f2b9fa2f865f813c3dc4773ceb61f352d08b4bdb0650c0bb8904f26a978782",
+    "trials.csv": "20581505215bf6bdd5f3a5507e08675fa3f6471065f77e16abbd2013173d3060",
+    "worker/curves_direct_seed123.csv": "70fd5038337b64d703b205bab8615994f9f503e2c66f78dad021810110c300f0",
+    "worker/curves_direct_seed42.csv": "744f9088b87ee99b744abe20a754c6b6d70ae4c6a86cad2cd869031bd7ba273f",
+    "worker/curves_direct_seed777.csv": "a6af2f58fdd026fa4d36c2a6da7039fb0d8cfc608094e3d29028cec38f6bfbba",
+    "worker/curves_indirect_seed123.csv": "a1fa08bbd23a7c3c417086db7c3ab7a7ad2c26958c9aafc6cd7a1062e2dcc3df",
+    "worker/curves_indirect_seed42.csv": "bb78fb0a4f5b1795bb4df9fad10438281d443014a91681afa3c8f530856a7731",
+    "worker/curves_indirect_seed777.csv": "9359434f4352ca215940236d7d53aae9fc0d0202d458710d8caefd3b7acec4b5",
+    "worker/fit_direct_seed123.json": "385d6e7d9db4bf2c3f0bf496c336fd0d483dcef2e089d93902507a3dc5c88283",
+    "worker/fit_direct_seed42.json": "ac3216f59fb326300549f75e5a8f96c245275c1fc468cbecdc9e8646111161fd",
+    "worker/fit_direct_seed777.json": "1c4260acfcc8ef1cd12e96947412912f91a09e5572483a910da68184701105a1",
+    "worker/fit_indirect_seed123.json": "9b10a93d96fad5763a2f5ce296e9698a382624fc6f1cec56a51963f7a1411b7e",
+    "worker/fit_indirect_seed42.json": "cfe70438887314be3f18f968e2d37bc39d3d7a77840172c0fa77916d94fd7ef4",
+    "worker/fit_indirect_seed777.json": "22a0e64e622c515fec38331e3a110808fd01111b7557421da1cba04758e8a030",
+    "worker/forecast_direct_seed123.npz": "c657b2a54bdce72c7fe8e22f91d6b82c16e25b0f7b73a6d731114c11b9ff6249",
+    "worker/forecast_direct_seed42.npz": "1c98a83b44ae8a21edfeaef7d29d2aa845b1ca7cab6d7a1c1ff9c212a7fae384",
+    "worker/forecast_direct_seed777.npz": "1b8df7b5c2c15f461891a0b97fccf55937411b3a7c5b4d151a7f4d231f94c35f",
+    "worker/forecast_indirect_seed123.npz": "8155a09d739f1a5f832db76bcc1e5c7a5b688a24b07fd30c19ab69b21bce4ec1",
+    "worker/forecast_indirect_seed42.npz": "e84fea28e5ac5300a81a5aa10885cba1614b1e18d925824da617f4c2fd19d501",
+    "worker/forecast_indirect_seed777.npz": "ab2f6c7cbdbec8cd775c15f69b428fbe0595d6314880fbf5f964411ecb1ce961",
+    "worker/models/lstm_sota_direct_seed123.pt": "3157ab354cc62c5679cd34d11758ab8a8ac5be81c47852128764d6fb2d8c7d09",
+    "worker/models/lstm_sota_direct_seed42.pt": "882138f580ebbbd2307b1b93d55349acd4114f18183422948945e4db52d0a3b9",
+    "worker/models/lstm_sota_direct_seed777.pt": "8746b62c4e6feb98ec020276a9bc527c007d0f6ffb67a9404dbc78733415a642",
+    "worker/models/lstm_sota_indirect_seed123.pt": "d52f790e9077d0f31a8a736fa553220ace462d79a3b7b646c8de43448135f8e7",
+    "worker/models/lstm_sota_indirect_seed42.pt": "b2527608392eab97ae226bf6e36404a58796f13cf742abe95e1a4281e2191158",
+    "worker/models/lstm_sota_indirect_seed777.pt": "8c4e55c1ca92d8424a9f11869c7e58742968d2088b9aaa27c99cc8ab2676dd52",
+    "worker/optuna.db": "c1b70ea81e0f92319e8109e452ed104d78d18b750ac8adccefa153d9186e7903",
+    "worker/trials_direct_seed123.csv": "f28a55532eeabb5fc201816ac3406f5e800ea02caac8b4be82e51de048ace066",
+    "worker/trials_direct_seed42.csv": "92a352710974b004c514e60b4bd9f7a46e87e6c3f104d9337a5e3db62f3ab0cf",
+    "worker/trials_direct_seed777.csv": "aa08055a8519f1680928e9e55b9f8d75016db7f52a25cda79dbca0fde8ef7e30",
+    "worker/trials_indirect_seed123.csv": "b3fa728ed3a0d818a9c8e9b997fcfb3b5eafd670bd82987d67c107aeb1648ce5",
+    "worker/trials_indirect_seed42.csv": "99ad446047a008333a518d1aa37f7ab13b9e99f872f60e215980622c172aaedf",
+    "worker/trials_indirect_seed777.csv": "1752f05f906046455af89042535b696ebf653a86261e5da32399cd74fe0219c1",
+    "worker/worker.json": "7465939c366dda3cb13b00a844b88fcba26ee2ca1777550f56060d08c8bad167",
+    "worker_stdout.log": "1c57fa9fd34f4f253cc81434ab84519eae6380dd4dbcee941fe4eb0f76c73036"
+  },
+  "values": {
+    "best": {
+      "indirect_seed42": 7.063581269337918,
+      "direct_seed42": 6.659879632788231,
+      "indirect_seed123": 6.986001643799805,
+      "direct_seed123": 6.606695158532274,
+      "indirect_seed777": 6.962383577744132,
+      "direct_seed777": 6.638302500815478
+    },
+    "test_access": [
+      {
+        "step": "bilstm",
+        "purpose": "forecast the test window (the encoder series and the known inputs)",
+        "rows": 5829,
+        "files": [
+          "features_1H_D1.parquet",
+          "features_1H_D2.parquet",
+          "features_1H_D3.parquet",
+          "gfs_features_D1.parquet",
+          "gfs_features_D2.parquet",
+          "gfs_features_D3.parquet",
+          "scada_1H_clean.parquet",
+          "scada_1min_clean.parquet",
+          "cleaning_policy.yaml"
+        ]
+      }
+    ]
+  },
+  "notes": {
+    "seed_spread_pp": {
+      "indirect_D1": 0.02264312553070316,
+      "indirect_D2": 0.07367173203583062,
+      "indirect_D3": 0.0706147208474171,
+      "direct_D1": 0.03399985442896447,
+      "direct_D2": 0.05311459058650912,
+      "direct_D3": 0.0026670981441218647
+    },
+    "warnings": 7
+  },
+  "summary": [
+    "bilstm (final, seeds [42, 123, 777]): nRMSE in kW on the tuning window, the whole val split",
+    "  indirect_seed42         7.064 %  (D+1 7.017, D+2 7.247, D+3 6.923)",
+    "  direct_seed42           6.660 %  (D+1 6.671, D+2 6.833, D+3 6.471)",
+    "  indirect_seed123        6.986 %  (D+1 6.994, D+2 7.167, D+3 6.791)",
+    "  direct_seed123          6.607 %  (D+1 6.613, D+2 6.738, D+3 6.466)",
+    "  indirect_seed777        6.962 %  (D+1 6.972, D+2 7.100, D+3 6.813)",
+    "  direct_seed777          6.638 %  (D+1 6.612, D+2 6.828, D+3 6.471)"
+  ],
+  "warnings": [
+    "TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",
+    "bilstm: indirect seed 42: best trial on the edge of the search space for hidden = 256, n_layers = 1 (M23)",
+    "bilstm: indirect seed 123: best epoch 60 at the last epoch: it may not have converged",
+    "bilstm: indirect seed 123: best trial on the edge of the search space for hidden = 64, n_layers = 1, batch_size = 128 (M23)",
+    "bilstm: indirect seed 777: best trial on the edge of the search space for hidden = 64, n_layers = 1 (M23)",
+    "bilstm: direct seed 42: best trial on the edge of the search space for batch_size = 128 (M23)",
+    "bilstm: direct seed 123: best trial on the edge of the search space for batch_size = 32 (M23)",
+    "bilstm: direct seed 777: best trial on the edge of the search space for hidden = 256, n_layers = 1, batch_size = 32 (M23)"
+  ]
+}

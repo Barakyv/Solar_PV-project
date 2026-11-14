@@ -1376,6 +1376,38 @@ stored file changed).**
 - *Verification:* T-113 to T-119 (the GPU tests run in `solar-gpu`, T-117 and T-118).
 - *Original:* none: the original project had no resume at all (M3, M5).
 
+**OP-65 — The final run `20261114T083930Z_final` (stage 10; no stored data file changed).**
+- *Why:* stage 10 of D-08: one training of all six models and the references on the code frozen
+  at gate G-1 (tag `g1-frozen` on `10611a6`), in the two phases of D-32.
+- *Method:* phase 1, `python -m solarpv.pipeline run --mode final --to report --keep-going`: 13 steps
+  (select, baselines, xgb, cv, ablation, bilstm, tft96, tft168, tftbase, patchtst, evaluate, explain,
+  report), validation scored only; the test window was forecast and every read logged. The stage-10
+  acceptance was written after the report was read (`stage10_acceptance.md`: accepted).
+  Phase 2, `--resume 20261114T083930Z_final --only test,report --force --allow-test`, on the user's
+  explicit approval: the step `test` (130.7 s) scored the test split once, computed the XGB SHAP files
+  on the test window, the CV comparison and the ablation on test, and `truth_test.csv`; `report` was
+  rerun with the test tables. Then `promote` and `archive` (verified).
+- *Parameters:* none changed: the budgets of v6 (`pipeline/config.BUDGETS["final"]`), seeds 42/123/777
+  for XGB and BiLSTM, seed 42 for the TFTs and PatchTST. No budget, seed or rule changed after the
+  test numbers were read (D-37).
+- *Result:* every step `ok` at `10611a6`, `n_resumed` 0. Phase-1 seconds: xgb 3,214, cv 121, ablation
+  389, bilstm 4,706, tft96 8,701, tft168 12,210, tftbase 722, patchtst 899; GPU 27,238 s. Test
+  (`report.md`, nRMSE in kW, % of 3,449 kW, n = 2,575 hours): XGB 11.15–11.61, BiLSTM 11.29–11.97,
+  TFT 11.12–11.77, PatchTST 12.74–13.63, climatology 12.37–12.52, clear sky × k 12.85, persistence
+  15.71–17.57. The validation of the same XGB fits is 6.43–7.16. The references move by the same
+  amount (climatology 8.04–8.06 on validation). Like for like (mean over seeds and cells): XGB 6.65 to
+  11.39 on all hours and 4.93 to 6.55 in normal operation (2,389 of 2,575 hours); climatology 8.05 to
+  12.45 and 6.76 to 8.95, so the 186 operation-limited hours account for about 66 % (XGB) and 50 %
+  (climatology) of the rise and the rest is a period shift shared by the references. The kW DM on test: XGB is significantly better (HLN,
+  alpha 0.00625) than clear sky × k, PatchTST and persistence in all six cells, and than climatology
+  in one of six (direct D+2); the climatology margin is 75–109 % of the minimum detectable effect.
+  Promoted: `outputs/06_promoted.json`; archives `…_20261114T172512Z.zip` (phase 1) and
+  `…_20261114T175738Z.zip` (phase 2, 355 files, sha256 `7d08139b…c43f`).
+- *Verification:* `status` (13 steps ok, outputs as recorded), `archive --verify`, the test access log
+  (every read of a test row), the validity review (R9-39).
+- *Original:* the original scored the test split in every run; its test numbers are not comparable
+  (C-37, C-40).
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

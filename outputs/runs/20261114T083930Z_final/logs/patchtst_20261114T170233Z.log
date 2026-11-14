@@ -1,0 +1,57 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/patchtst
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only tftbase,patchtst,evaluate,explain,report
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T17:02:33+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.1s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.1s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.1s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.1s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.1s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    15.4s] NOTE    patchtst (patchtst): budget {'max_steps': 5000, 'val_check_steps': 100, 'patience': 10, 'seeds': [42]}, seeds [42]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    15.4s] STEP    load the inputs ...
+[    16.1s] WARN    TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv
+[    16.2s] STEP    load the inputs done in 0.8s
+[    16.2s] STEP    indirect: build and check the windows ...
+[    18.8s] NOTE    indirect: train 872 origins, val 246 origins, test 245 origins; 1 encoder and 0 decoder channels; 168 encoder hours
+[    18.8s] STEP    indirect: build and check the windows done in 2.7s
+[    18.8s] STEP    direct: build and check the windows ...
+[    21.6s] NOTE    direct: train 872 origins, val 246 origins, test 245 origins; 1 encoder and 0 decoder channels; 168 encoder hours
+[    21.6s] STEP    direct: build and check the windows done in 2.7s
+[    21.6s] STEP    patchtst: the training worker in solar-gpu ...
+[    21.6s] NOTE    worker: C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe -m solarpv.models.neural_worker C:\Users\204323141\Desktop\solar\outputs\runs\20261114T083930Z_final\.patchtst.tmp\job C:\Users\204323141\Desktop\solar\outputs\runs\20261114T083930Z_final\.patchtst.tmp\worker
+[    34.5s] NOTE    [worker 19:03:07] patchtst (final): targets ['indirect', 'direct'], seeds [42], budget {'max_steps': 5000, 'val_check_steps': 100, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+[   466.5s] NOTE    [worker 19:10:19] indirect seed 42 final: 8.8436 % kW, best step 4900 of 4999, 430.87 s
+[   894.7s] NOTE    [worker 19:17:27] direct seed 42 final: 8.2164 % kW, best step 4100 of 4999, 428.0 s
+[   895.0s] NOTE    [worker 19:17:28] done in 872.9 s, 9 outputs
+[   896.9s] STEP    patchtst: the training worker in solar-gpu done in 875.3s
+[   898.5s] NOTE    patchtst: seed spread: one seed per target, not computed
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/best_params.json sha256=5a269793a326fdca
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/figures/learning_curves.png sha256=bbe422b70f918df9
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/job/data_direct.npz sha256=ed40d2178cda58ac
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/job/data_indirect.npz sha256=f43c72738980021a
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/job/job.json sha256=05ede2e09090fe22
+[   898.9s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/learning_curves.csv sha256=4df97e180cf4b2ea
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/mbe.csv sha256=101757ce92e70404
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/patchtst_config.json sha256=f2ca93982f4a608e
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/predictions_patchtst_seed42.csv sha256=837fca71eb3fd4cf
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/curves_direct_seed42.csv sha256=987e873eb959a27b
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/curves_indirect_seed42.csv sha256=7554f48db37018c6
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/fit_direct_seed42.json sha256=12dcfc7de0d2aa77
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/fit_indirect_seed42.json sha256=8402b60f158e28ac
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/forecast_direct_seed42.npz sha256=e136c3544566ee52
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/forecast_indirect_seed42.npz sha256=852a36e8659e9119
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/models/patchtst_direct_seed42.pt sha256=f54eb39c68cde226
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/models/patchtst_indirect_seed42.pt sha256=5b1de0309cd98108
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/optuna.db sha256=767d478c5d69a433
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker/worker.json sha256=87da5911beabae07
+[   899.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.patchtst.tmp/worker_stdout.log sha256=1e6d7a9c8a5222ce
+[   899.1s] RUN     warnings: 1
+[   899.1s] RUN     status: ok; duration 899.1s

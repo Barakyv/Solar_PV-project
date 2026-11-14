@@ -1,0 +1,11 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only tft96
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T11:01:04+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261114T083930Z_final, mode final, steps ['tft96']
+[  8702.5s] NOTE    tft96: its checkpoints were removed (15 files, 16 MB)
+[  8702.5s] NOTE    tft96: ok in 8700.5 s, 27 outputs
+[  8702.5s] VALUE   status = ok
+[  8702.5s] RUN     warnings: 0
+[  8702.5s] RUN     status: ok; duration 8702.5s

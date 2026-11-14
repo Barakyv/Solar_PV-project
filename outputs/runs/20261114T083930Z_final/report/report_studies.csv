@@ -1,0 +1,29 @@
+step,subject,n_trials,n_complete,n_at_cap,best_trial,best_value_kw,edges
+xgb,indirect_D1_seed42,60,60,1.0,23,6.772605272982117,max_depth
+xgb,indirect_D1_seed123,60,60,0.0,50,6.771965887487243,"max_depth, min_child_weight"
+xgb,indirect_D1_seed777,60,60,0.0,29,6.7555311428103835,"max_depth, colsample_bytree"
+xgb,direct_D1_seed42,60,60,0.0,55,6.628409820647212,reg_lambda
+xgb,direct_D1_seed123,60,60,2.0,16,6.5983661073831055,n_estimators
+xgb,direct_D1_seed777,60,60,0.0,14,6.6438010632943785,
+xgb,indirect_D2_seed42,60,60,0.0,22,7.08834844177139,max_depth
+xgb,indirect_D2_seed123,60,60,0.0,40,7.160216518649041,"n_estimators, subsample"
+xgb,indirect_D2_seed777,60,60,0.0,42,7.018881153640969,max_depth
+xgb,direct_D2_seed42,60,60,8.0,55,6.795326264128362,"n_estimators, max_depth, colsample_bytree"
+xgb,direct_D2_seed123,60,60,0.0,23,6.83335813019125,"learning_rate, min_child_weight, reg_lambda"
+xgb,direct_D2_seed777,60,60,0.0,25,6.803015541909159,
+xgb,indirect_D3_seed42,60,60,0.0,38,6.637806408022772,
+xgb,indirect_D3_seed123,60,60,0.0,45,6.702797617516512,
+xgb,indirect_D3_seed777,60,60,1.0,11,6.660961960117332,max_depth
+xgb,direct_D3_seed42,60,60,0.0,10,6.426054684857406,
+xgb,direct_D3_seed123,60,60,0.0,27,6.452714550853184,max_depth
+xgb,direct_D3_seed777,60,60,1.0,50,6.429389568121986,learning_rate
+bilstm,indirect seed 42,60,60,,53,6.817014737415884,"hidden, n_layers"
+bilstm,direct seed 42,60,60,,34,6.659879632788231,batch_size
+bilstm,indirect seed 123,60,60,,58,6.748451301197308,"hidden, n_layers, batch_size"
+bilstm,direct seed 123,60,60,,36,6.606695158532274,batch_size
+bilstm,indirect seed 777,60,60,,52,6.799223470258493,"hidden, n_layers"
+bilstm,direct seed 777,60,60,,11,6.638302500815478,"hidden, n_layers, batch_size"
+tft96,indirect seed 42,20,20,,7,6.75560193923568,
+tft96,direct seed 42,20,20,,18,6.690102944188514,"hidden_size, lstm_layers"
+tft168,indirect seed 42,20,20,,19,6.821177681775685,hidden_continuous_size
+tft168,direct seed 42,20,20,,13,6.74527455077533,attention_head_size

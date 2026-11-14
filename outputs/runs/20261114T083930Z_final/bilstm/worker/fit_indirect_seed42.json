@@ -1,0 +1,43 @@
+{
+  "target": "indirect",
+  "seed": 42,
+  "params": {
+    "hidden": 256,
+    "n_layers": 1,
+    "dropout": 0.2962263024853572,
+    "lr": 0.0005092360667476643,
+    "batch_size": 64
+  },
+  "fixed": {
+    "grad_clip_norm": 1.0,
+    "optimizer": "Adam"
+  },
+  "quantiles": [
+    0.1,
+    0.5,
+    0.9
+  ],
+  "study": {
+    "best_trial": 53,
+    "best_value_kw": 6.817014737415884,
+    "n_trials": 60
+  },
+  "final": {
+    "value_kw": 7.063581269337918,
+    "n_scored": 8703,
+    "value_kw_D1": 7.016872657149556,
+    "value_kw_D2": 7.247049225797696,
+    "value_kw_D3": 6.9228835522372,
+    "value_k": 14.115232162757858,
+    "best_epoch": 55,
+    "epochs_run": 60,
+    "best_val_loss": 0.01929258103514843,
+    "train_loss_at_best": 0.025080728536201,
+    "stopped_early": false,
+    "nan_loss": false,
+    "duration_s": 26.33,
+    "gpu_peak_mb": 427.8,
+    "n_parameters": 1180931
+  },
+  "reproduce_diff_pp": null
+}

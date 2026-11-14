@@ -1,0 +1,46 @@
+[worker 13:01:43] tft96 (final): targets ['indirect', 'direct'], seeds [42], budget {'trials': 20, 'epochs': 100, 'patience': 10, 'seeds': [42]}, on GRID P40-24Q
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\lightning\pytorch\utilities\parsing.py:213: Attribute 'loss' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['loss'])`.
+C:\Users\204323141\miniforge3\envs\solar-gpu\Lib\site-packages\lightning\pytorch\utilities\parsing.py:213: Attribute 'logging_metrics' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['logging_metrics'])`.
+[worker 13:08:14] indirect seed 42 trial0: 6.9417 % kW, best epoch 73 of 83, 387.05 s
+[worker 13:11:31] indirect seed 42 trial1: 7.0434 % kW, best epoch 42 of 52, 195.96 s
+[worker 13:13:45] indirect seed 42 trial2: 6.8138 % kW, best epoch 26 of 36, 132.76 s
+[worker 13:15:49] indirect seed 42 trial3: 6.9089 % kW, best epoch 22 of 32, 122.55 s
+[worker 13:18:03] indirect seed 42 trial4: 6.8081 % kW, best epoch 16 of 26, 132.98 s
+[worker 13:22:09] indirect seed 42 trial5: 6.8950 % kW, best epoch 42 of 52, 245.12 s
+[worker 13:24:35] indirect seed 42 trial6: 7.0870 % kW, best epoch 16 of 26, 144.42 s
+[worker 13:26:33] indirect seed 42 trial7: 6.7556 % kW, best epoch 15 of 25, 116.89 s
+[worker 13:29:02] indirect seed 42 trial8: 6.9312 % kW, best epoch 22 of 32, 148.53 s
+[worker 13:31:45] indirect seed 42 trial9: 6.9568 % kW, best epoch 32 of 42, 162.2 s
+[worker 13:33:28] indirect seed 42 trial10: 6.8524 % kW, best epoch 12 of 22, 101.26 s
+[worker 13:35:23] indirect seed 42 trial11: 6.8767 % kW, best epoch 21 of 31, 114.35 s
+[worker 13:38:00] indirect seed 42 trial12: 7.0870 % kW, best epoch 22 of 32, 155.58 s
+[worker 13:41:24] indirect seed 42 trial13: 6.8130 % kW, best epoch 29 of 39, 202.19 s
+[worker 13:44:31] indirect seed 42 trial14: 7.0310 % kW, best epoch 27 of 37, 186.63 s
+[worker 13:46:31] indirect seed 42 trial15: 7.0762 % kW, best epoch 14 of 24, 118.85 s
+[worker 13:49:09] indirect seed 42 trial16: 7.3915 % kW, best epoch 22 of 32, 156.8 s
+[worker 13:52:16] indirect seed 42 trial17: 7.0237 % kW, best epoch 32 of 42, 185.69 s
+[worker 13:54:55] indirect seed 42 trial18: 6.9593 % kW, best epoch 25 of 35, 157.49 s
+[worker 13:57:52] indirect seed 42 trial19: 7.0614 % kW, best epoch 36 of 46, 175.46 s
+[worker 13:59:44] indirect seed 42 final: 6.7556 % kW, best epoch 15 of 25, 111.88 s
+[worker 14:10:12] direct seed 42 trial0: 7.0578 % kW, best epoch 100 of 100, 624.59 s
+[worker 14:18:39] direct seed 42 trial1: 6.9865 % kW, best epoch 94 of 100, 505.43 s
+[worker 14:22:33] direct seed 42 trial2: 6.9682 % kW, best epoch 36 of 46, 232.58 s
+[worker 14:25:59] direct seed 42 trial3: 7.0548 % kW, best epoch 31 of 41, 204.39 s
+[worker 14:30:43] direct seed 42 trial4: 6.7559 % kW, best epoch 32 of 42, 283.18 s
+[worker 14:37:55] direct seed 42 trial5: 6.9480 % kW, best epoch 60 of 70, 430.71 s
+[worker 14:39:50] direct seed 42 trial6: 7.0277 % kW, best epoch 6 of 16, 113.25 s
+[worker 14:46:12] direct seed 42 trial7: 7.1297 % kW, best epoch 54 of 64, 381.28 s
+[worker 14:50:10] direct seed 42 trial8: 6.9265 % kW, best epoch 31 of 41, 236.74 s
+[worker 14:53:34] direct seed 42 trial9: 7.0457 % kW, best epoch 31 of 41, 202.03 s
+[worker 14:56:46] direct seed 42 trial10: 6.8703 % kW, best epoch 19 of 29, 191.33 s
+[worker 14:59:40] direct seed 42 trial11: 6.8215 % kW, best epoch 16 of 26, 172.14 s
+[worker 15:04:39] direct seed 42 trial12: 6.9444 % kW, best epoch 32 of 42, 298.14 s
+[worker 15:07:08] direct seed 42 trial13: 7.2898 % kW, best epoch 12 of 22, 147.35 s
+[worker 15:09:03] direct seed 42 trial14: 8.2279 % kW, best epoch 7 of 17, 113.11 s
+[worker 15:12:04] direct seed 42 trial15: 7.2568 % kW, best epoch 17 of 27, 180.22 s
+[worker 15:15:16] direct seed 42 trial16: 6.7398 % kW, best epoch 19 of 29, 190.61 s
+[worker 15:17:44] direct seed 42 trial17: 6.8077 % kW, best epoch 12 of 22, 146.82 s
+[worker 15:20:13] direct seed 42 trial18: 6.6901 % kW, best epoch 12 of 22, 147.24 s
+[worker 15:23:33] direct seed 42 trial19: 7.0259 % kW, best epoch 20 of 30, 198.04 s
+[worker 15:25:56] direct seed 42 final: 6.6901 % kW, best epoch 12 of 22, 141.79 s
+[worker 15:26:00] done in 8668.8 s, 11 outputs

@@ -1,0 +1,113 @@
+{
+  "step": "cv",
+  "run_id": "20261114T083930Z_final",
+  "mode": "final",
+  "started_utc": "2026-11-14T09:33:20.952986+00:00",
+  "commit": "10611a6",
+  "fingerprint": "c3ac9ff6eb6517811fef3dfeea91cbfcc722f2960b4f25a3625f0586501a14c5",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      },
+      {
+        "split": "test",
+        "start": "2024-10-01T00:00:00+00:00",
+        "end": "2025-06-01T00:00:00+00:00",
+        "label": "the whole test split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": true,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 60,
+      "seeds": [
+        42,
+        123,
+        777
+      ]
+    }
+  },
+  "inputs": {
+    "outputs/runs/20261114T083930Z_final/xgb/best_params.json": "a72ace571d755d8196892347f5bfdba4740a4c2f9b70b1ae3877ee9b212c59f7",
+    "outputs/runs/20261114T083930Z_final/xgb/xgb_config.json": "e776d8d7017b7d729fe614a549bc65b56b61c700ce2b95563e787f5d4b1e1a3e",
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261114T083930Z_final/logs/cv_20261114T093320Z.log",
+  "status": "ok",
+  "folder": "cv",
+  "finished_utc": "2026-11-14T09:35:22.008399+00:00",
+  "duration_s": 121.1,
+  "outputs": {
+    "cv_folds.csv": "e17c6f9a3b4d8fa1e16e50905ea1a3bc7505fead0a80ac5d4ffbb2c19b7493cf",
+    "cv_summary.csv": "4fb681f03f566abd051fd59660a588c1862a1f0bdaf4f18a53b73aefc5fb9d90",
+    "cv_config.json": "0803382f637fe592c8afbef2515f4d6f9d3cc103270c000f0040f3db113eac63"
+  },
+  "values": {
+    "cv_mean": {
+      "indirect_D1_seed42": 7.3957385571883005,
+      "indirect_D1_seed123": 7.615864585629575,
+      "indirect_D1_seed777": 7.402702375170742,
+      "direct_D1_seed42": 7.470782552876699,
+      "direct_D1_seed123": 7.480105183511834,
+      "direct_D1_seed777": 7.499618103565941,
+      "indirect_D2_seed42": 7.817642368262075,
+      "indirect_D2_seed123": 7.7141022515599165,
+      "indirect_D2_seed777": 7.823137969827025,
+      "direct_D2_seed42": 7.734655745448963,
+      "direct_D2_seed123": 7.646698091198511,
+      "direct_D2_seed777": 7.736359694661493,
+      "indirect_D3_seed42": 8.020907570357235,
+      "indirect_D3_seed123": 7.897948275224318,
+      "indirect_D3_seed777": 8.042572629321128,
+      "direct_D3_seed42": 8.106739014032609,
+      "direct_D3_seed123": 8.012026849172,
+      "direct_D3_seed777": 8.006887656933571
+    },
+    "test_access": [],
+    "short_folds": []
+  },
+  "notes": {},
+  "summary": [
+    "cv: nRMSE in kW (% of capacity), mean +- std over the five folds, against the validation value of the same model",
+    "  direct   D+1 seed  42: CV   7.47 +-  2.36   validation   6.63",
+    "  direct   D+1 seed 123: CV   7.48 +-  2.21   validation   6.60",
+    "  direct   D+1 seed 777: CV   7.50 +-  2.38   validation   6.64",
+    "  direct   D+2 seed  42: CV   7.73 +-  2.04   validation   6.80",
+    "  direct   D+2 seed 123: CV   7.65 +-  2.23   validation   6.83",
+    "  direct   D+2 seed 777: CV   7.74 +-  2.25   validation   6.80",
+    "  direct   D+3 seed  42: CV   8.11 +-  2.50   validation   6.43",
+    "  direct   D+3 seed 123: CV   8.01 +-  2.51   validation   6.45",
+    "  direct   D+3 seed 777: CV   8.01 +-  2.44   validation   6.43",
+    "  indirect D+1 seed  42: CV   7.40 +-  2.32   validation   6.77",
+    "  indirect D+1 seed 123: CV   7.62 +-  2.40   validation   6.77",
+    "  indirect D+1 seed 777: CV   7.40 +-  2.35   validation   6.76",
+    "  indirect D+2 seed  42: CV   7.82 +-  2.36   validation   7.09",
+    "  indirect D+2 seed 123: CV   7.71 +-  2.28   validation   7.16",
+    "  indirect D+2 seed 777: CV   7.82 +-  2.30   validation   7.02",
+    "  indirect D+3 seed  42: CV   8.02 +-  2.40   validation   6.64",
+    "  indirect D+3 seed 123: CV   7.90 +-  2.42   validation   6.70",
+    "  indirect D+3 seed 777: CV   8.04 +-  2.57   validation   6.66"
+  ],
+  "warnings": []
+}

@@ -1540,6 +1540,138 @@
    "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or, for the other models, at most 70 s of epochs. A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.3e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 27 % of the seconds of the epochs it replaces on these small windows.",
    "git_commit": "30773fc"
   },
+  "S10-01": {
+   "stage": "10",
+   "kind": "process",
+   "title": "The final run: every step, its time and its device",
+   "file": "outputs/figures/stage_10/S10-01_run_steps.png",
+   "file_sha256": "f0018629fa4b4541e76b58600b6bd23108d47cc7a9cf834ad8f4945b34a1456d",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_steps.csv": "4e493b326b678818923512aff5d3124008489ddf3844be53c6e1ec2591c4bbce",
+    "outputs/runs/20261114T083930Z_final/stage10_acceptance.md": "8e57572a63fe44b821b4bb313abc0cfc4ddb42f3703477add4f293bbb29b91f4"
+   },
+   "facts": {
+    "n_steps": 13,
+    "train_h": 8.600333333333333,
+    "gpu_h": 7.565777777777778,
+    "longest": "TFT-168",
+    "longest_h": 3.3916388888888886,
+    "test_s": 130.7
+   },
+   "takeaway": "All 13 steps finished at one commit with no restart from a checkpoint. The model and analysis steps took 8.6 hours, 7.6 of them on the GPU; the longest step is TFT-168 (3.4 hours). The step test, run in the second phase, took 131 seconds.",
+   "git_commit": "10611a6+dirty"
+  },
+  "S10-02": {
+   "stage": "10",
+   "kind": "process",
+   "title": "The six models and the references on the test split",
+   "file": "outputs/figures/stage_10/S10-02_test_scores.png",
+   "file_sha256": "2d3accc7092a486d701a8fe18f97f5b066ab7bf39d67afa7a0d987ebb041fb0c",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv": "12e1091309cb64e556a5f033fa42618f3a57cf58b63e4e3245a6fab0b084635e"
+   },
+   "facts": {
+    "lo": 11.121207,
+    "hi": 13.630312,
+    "ref_lo": 12.372133,
+    "ref_hi": 17.570169,
+    "patch_worse": 6,
+    "winners": "TFT-96 in 3 of 6, TFT-168 in 2 of 6, XGB in 1 of 6"
+   },
+   "takeaway": "The six models score between 11.12 and 13.63 per cent, the references between 12.37 and 17.57. PatchTST is worse than climatology in 6 of 6 cells and no other model is. The lowest seed-mean among the six models is: TFT-96 in 3 of 6, TFT-168 in 2 of 6, XGB in 1 of 6. Whether such differences are significant is S10-04.",
+   "git_commit": "10611a6+dirty"
+  },
+  "S10-03": {
+   "stage": "10",
+   "kind": "process",
+   "title": "From validation to test: where the extra error is",
+   "file": "outputs/figures/stage_10/S10-03_val_test_views.png",
+   "file_sha256": "3d5b7913ebb8c8cce7aea09d912f35b8d2f0b97de4ed0749479fa448033bc6c1",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv": "b378c0d8a87ea1708830d495a2dd78657f6bad9e5afbedc7b24e5c14db90e4b4",
+    "outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv": "12e1091309cb64e556a5f033fa42618f3a57cf58b63e4e3245a6fab0b084635e",
+    "outputs/runs/20261114T083930Z_final/evaluate/val/benchmark_views.csv": "9aedd9acac34a9780cf747a316590f42d33284d030a2d2b935f739bf424d11b4",
+    "outputs/runs/20261114T083930Z_final/test/test/benchmark_views.csv": "3672b419516f48c50f3c30bb7b6d6b3f2807d34c6f729b40ee844533468ee1ba"
+   },
+   "facts": {
+    "c_val": 8.051784500000002,
+    "c_test": 12.4452645,
+    "x_val": 6.654721277777778,
+    "x_test": 11.3924685,
+    "x_norm": 6.554194555555554,
+    "c_norm": 8.950035999999999,
+    "x_val_n": 4.9283947222222215,
+    "c_val_n": 6.7622040000000005,
+    "n_lim": 186,
+    "sh_lo": 0.17823029629120582,
+    "sh_hi": 0.6818426760370483
+   },
+   "takeaway": "Every model and reference rises from validation to test: XGB 6.65 to 11.39 on all hours, climatology 8.05 to 12.45. On the hours of normal operation the rise is smaller (XGB 4.93 to 6.55, climatology 6.76 to 8.95): the 186 operation-limited hours of the test split account for 18% to 68% of the rise, and the rest is a shift of the period that every model and reference shares.",
+   "git_commit": "10611a6+dirty"
+  },
+  "S10-04": {
+   "stage": "10",
+   "kind": "process",
+   "title": "Every model and reference against XGB: Diebold-Mariano in kW on test",
+   "file": "outputs/figures/stage_10/S10-04_test_dm_vs_xgb.png",
+   "file_sha256": "e45418c124d51c305184dd4e227a9c186dec668083ff52579830078dd79581d9",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv": "c9ebe483e999bbcb81a3856aa7fcf08a518d1d2a565aace79c63140d1b03be2d"
+   },
+   "facts": {
+    "n_pers": 6,
+    "n_cs": 6,
+    "n_pt": 6,
+    "n_clim": 1,
+    "clim_lo": 74.869532,
+    "clim_hi": 109.403498,
+    "n_lstm": 3,
+    "n_tft": 0,
+    "n_worse": 0
+   },
+   "takeaway": "XGB is significantly better than persistence in 6 of 6 cells, than clear sky x k in 6, than PatchTST in 6 and than climatology in 1; the climatology effect is 75 to 109 per cent of the minimum detectable effect, so the test has too little power to separate them. BiLSTM is significantly worse than XGB in 3 cells; the three TFTs in 0. XGB is significantly worse than no model (0).",
+   "git_commit": "10611a6+dirty"
+  },
+  "S10-05": {
+   "stage": "10",
+   "kind": "process",
+   "title": "Seed spread in kW against the rule of stage 10",
+   "file": "outputs/figures/stage_10/S10-05_seed_spread.png",
+   "file_sha256": "475bfb33e44056069a1c206ae32f05319c10795ff375198a41a6934da0075336",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv": "20965de54544cddbfb761196ec0bf613ccc57c171cac34584b9c84a6dbea1439"
+   },
+   "facts": {
+    "x_max": 0.07872088772577006,
+    "l_max": 0.07367170122464477,
+    "limit": 0.15,
+    "n_above": 0,
+    "n_cells": 12,
+    "single": "PatchTST, TFT baseline, TFT-168, TFT-96"
+   },
+   "takeaway": "The largest spread is 0.079 pp for XGB and 0.074 pp for BiLSTM, against the rule of 0.15 pp; 0 of 12 cells are above it. PatchTST, TFT baseline, TFT-168, TFT-96 have one seed each, so their spread is unknown; the differences among models of a similar level (S10-02) are read with that caveat.",
+   "git_commit": "10611a6+dirty"
+  },
+  "S10-06": {
+   "stage": "10",
+   "kind": "process",
+   "title": "XGB: the five-fold CV on train, validation and test",
+   "file": "outputs/figures/stage_10/S10-06_cv_val_test.png",
+   "file_sha256": "36a32c05af6b112f05820520a25f522a291bcded22fdd7aa66034a85638b9ebb",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/report/report_cv_vs_test.csv": "cf2a23289059d0a99dd2402206c7c42beb4c0220a81022bae359bcf4c9e342d8"
+   },
+   "facts": {
+    "gap_lo": 3.5070916358266544,
+    "gap_hi": 4.006187982380569,
+    "val_lo": 0.5538857329108753,
+    "val_hi": 1.680684329175203,
+    "n_fits": 18,
+    "fold_std": 2.3515207778175276
+   },
+   "takeaway": "The test error is 3.5 to 4.0 pp above the train CV in every one of the 18 fits, and validation lies 0.6 to 1.7 pp below it. The mean spread between folds is 2.4 pp, so the folds themselves differ by a large part of the gap; the references rise from validation to test as well (S10-03).",
+   "git_commit": "10611a6+dirty"
+  },
   "C-01": {
    "stage": "correction",
    "kind": "correction",

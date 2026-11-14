@@ -1,0 +1,16 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only tftbase,patchtst,evaluate,explain,report
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T16:50:27+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] NOTE    run 20261114T083930Z_final, mode final, steps ['tftbase', 'patchtst', 'evaluate', 'explain', 'report']
+[   723.6s] NOTE    tftbase: its checkpoints were removed (11 files, 19 MB)
+[   723.6s] NOTE    tftbase: ok in 721.5 s, 23 outputs
+[  1624.3s] NOTE    patchtst: its checkpoints were removed (11 files, 6 MB)
+[  1624.3s] NOTE    patchtst: ok in 899.1 s, 20 outputs
+[  1654.4s] NOTE    evaluate: ok in 28.3 s, 10 outputs
+[  1989.7s] NOTE    explain: ok in 332.7 s, 27 outputs
+[  1993.3s] NOTE    report: ok in 1.1 s, 17 outputs
+[  1993.3s] VALUE   status = ok
+[  1993.3s] RUN     warnings: 0
+[  1993.3s] RUN     status: ok; duration 1993.3s

@@ -1,0 +1,72 @@
+{
+  "step": "baselines",
+  "run_id": "20261114T083930Z_final",
+  "mode": "final",
+  "started_utc": "2026-11-14T08:39:40.016891+00:00",
+  "commit": "10611a6",
+  "fingerprint": "1a54b14fb656a5d45a1fb728dce4b92c0ac3ed6d1548879f3229ab989703c1aa",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      },
+      {
+        "split": "test",
+        "start": "2024-10-01T00:00:00+00:00",
+        "end": "2025-06-01T00:00:00+00:00",
+        "label": "the whole test split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": true,
+    "xgb_threads": 8,
+    "budget": null
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261114T083930Z_final/logs/baselines_20261114T083940Z.log",
+  "status": "ok",
+  "folder": "baselines",
+  "finished_utc": "2026-11-14T08:39:44.500742+00:00",
+  "duration_s": 4.5,
+  "outputs": {
+    "predictions_clearsky_k.csv": "a1bdb7ed42a0242718979f7c05982e6ad8919126c7a2f61dbf645c45b6197f1d",
+    "predictions_climatology.csv": "ed6c096afee6d4d1e6473562b05cb4de83799d95f8f61e3246b2d16c7bc43d56",
+    "predictions_persistence.csv": "59fee4f8b7a32a448141a520c758a52ced0a78dba98aaf7e8f1225924b2277a8"
+  },
+  "values": {
+    "mean_daytime_k": 0.788157,
+    "rows": 209898,
+    "test_access": [
+      {
+        "step": "baselines",
+        "purpose": "forecast the references of the test window (observed AC and k before each forecast hour)",
+        "rows": 5829,
+        "files": [
+          "features_1H_D1.parquet"
+        ]
+      }
+    ]
+  },
+  "notes": {},
+  "summary": [
+    "3 reference files, 209,898 rows"
+  ],
+  "warnings": [
+    "TEST ROWS READ (forecast the references of the test window (observed AC and k before each forecast hour), 5829 rows); recorded in test_access_log.csv"
+  ]
+}

@@ -1,0 +1,302 @@
+{
+  "run_id": "20261114T083930Z_final",
+  "promoted_utc": "20261114T175726Z",
+  "files": {
+    "06_clearsky_k/predictions_clearsky_k.csv": {
+      "source": "baselines/predictions_clearsky_k.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "39705860104e31d22eaf5751f288785cc5c2250c77eb268e97e625f47742dbad"
+    },
+    "06_clearsky_k/metrics_clearsky_k.csv": {
+      "source": "table of the run",
+      "sha256": "e25001c6240644661588433a3e30e66cb9cd374d689fb0aa0237ade66f8a2bd4"
+    },
+    "06_climatology/predictions_climatology.csv": {
+      "source": "baselines/predictions_climatology.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "0ff47a7074917a22a3dcca063e087574859f315b02ab042f0693f23c18192fe3"
+    },
+    "06_climatology/metrics_climatology.csv": {
+      "source": "table of the run",
+      "sha256": "3cdac8b80bb4c86abf88a2d466a7bb7d79266e51a9916ef9cb5c0d3d8a44038f"
+    },
+    "06_persistence/predictions_persistence.csv": {
+      "source": "baselines/predictions_persistence.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "40ef4030c80b157b40878599891a3987e4673826e6a5ad7015fb1dbe320ef0c1"
+    },
+    "06_persistence/metrics_persistence.csv": {
+      "source": "table of the run",
+      "sha256": "0a34f4d35bd16793bbc99295184ac84e92a82d909a27ce4afa9f54eb86a0b1a2"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D1_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D1_seed123.ubj",
+      "sha256": "3569c9e55cda1134903ea9b5c6ad6b3f1662eb8d47930f405583894abb5df458"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D1_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D1_seed42.ubj",
+      "sha256": "8d7322df17e1868f5f2fd18184bdfc2a85070203021aa6c8e64a4d9e7f26659e"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D1_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D1_seed777.ubj",
+      "sha256": "d66485de79a6e80152a450fdad7fb4b3c248b2dda97f94f2a80d3dcd1aa12ca0"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D2_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D2_seed123.ubj",
+      "sha256": "aba448bf43f8ac5af75f058b57f68c3a69befe0dcf53517b0c3051698627da85"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D2_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D2_seed42.ubj",
+      "sha256": "012a81c10ed94ff31c5590053470d78c1823334fd6b8d28b8929ab7430bb1ab0"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D2_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D2_seed777.ubj",
+      "sha256": "41d862f21d835550f217195fff35d4b2094f98cfcaa7f65ec3986906d1d27158"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D3_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D3_seed123.ubj",
+      "sha256": "4f1103d64f23a9ee3df9dde56758ff32c9127bd1f0cb0f371dbe72e73f7979b1"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D3_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D3_seed42.ubj",
+      "sha256": "3c9e0758fa76fb0f343997406dacf0df21c7efa07afbb0b28ec9abf0b1c683d9"
+    },
+    "06_xgb_sota/models/xgb_sota_direct_D3_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_direct_D3_seed777.ubj",
+      "sha256": "387cec35a516a5af5d682e4064b69d52cfba46facaae27b900086b778e3f3009"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D1_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D1_seed123.ubj",
+      "sha256": "3efdb6b01194d0343512dab7ca109656a62b304a93d89232791adc79f704798b"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D1_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D1_seed42.ubj",
+      "sha256": "6157fa9b630651f3c74a4b224ea252dc8b644ae377f5d26e84dad27d5fb43f9f"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D1_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D1_seed777.ubj",
+      "sha256": "f5d20691eaa64c8017bae2585de38ebc6f8c6904f1e11e3b13d952b46f901d2e"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D2_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D2_seed123.ubj",
+      "sha256": "144ae2f2708357f88e79e0c0e363c85d5cc9cbb7a0a70bc389b0fbf778774c60"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D2_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D2_seed42.ubj",
+      "sha256": "bdad186150d5399612defe43e67b9421d4dd7bbb2f9ee6bb4c18db7b0ae7afd8"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D2_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D2_seed777.ubj",
+      "sha256": "6dfa7aff7c56fd8da1bc1f85e54c0ef9bd9888dc359475094068bd21a15048d5"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D3_seed123.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D3_seed123.ubj",
+      "sha256": "ac8ca5cf30a40ee3b4dbea744a6477c03e43f1b302063d1fa0ea9479fd93bce4"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D3_seed42.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D3_seed42.ubj",
+      "sha256": "0f2fa9833aba4c93d003f44c647e442c2889f1d5a2d4ee962d708b85675c8c83"
+    },
+    "06_xgb_sota/models/xgb_sota_indirect_D3_seed777.ubj": {
+      "source": "xgb/models/xgb_sota_indirect_D3_seed777.ubj",
+      "sha256": "1187222e5b90fa72c6421bc394cc76e36dc1cf6d1468c63f51f91fbeffbb25ca"
+    },
+    "06_xgb_sota/predictions_xgb_sota_seed123.csv": {
+      "source": "xgb/predictions_xgb_sota_seed123.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "392eee15e9ac54abe0ed108fd8218444ac477b6be7f4bdb3d506baee23ab5463"
+    },
+    "06_xgb_sota/metrics_xgb_sota_seed123.csv": {
+      "source": "table of the run",
+      "sha256": "8148c4078d02a2f615457d33258ed678c3231c902b87f82dbdd226fd348e331f"
+    },
+    "06_xgb_sota/predictions_xgb_sota_seed42.csv": {
+      "source": "xgb/predictions_xgb_sota_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "1372ee1afb7bfc464d027e1fa9448ec5da2ddabdefc52ea383712985aa636ae2"
+    },
+    "06_xgb_sota/metrics_xgb_sota_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "cb2ec3fbd9c3a96463b47360d990cbbe48beb4ba4ab0d0c014cf33dccce6d5ba"
+    },
+    "06_xgb_sota/predictions_xgb_sota_seed777.csv": {
+      "source": "xgb/predictions_xgb_sota_seed777.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "29a75be6298d558cde61f18704a4d5892b1058364959e101d901b0ca8bdd2080"
+    },
+    "06_xgb_sota/metrics_xgb_sota_seed777.csv": {
+      "source": "table of the run",
+      "sha256": "f9ce22a44b50d5c2ebdd4485a71d2153157b9f087a23ec52e2bea8feebf68aa7"
+    },
+    "06_lstm_sota/predictions_lstm_sota_seed123.csv": {
+      "source": "bilstm/predictions_lstm_sota_seed123.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "2f52a857cca971f75f90f2901bbb62a9902f9d301e5d23ec268a298302ce30a2"
+    },
+    "06_lstm_sota/metrics_lstm_sota_seed123.csv": {
+      "source": "table of the run",
+      "sha256": "af3cb3e9cd837867de0d4c9897a5084096bee85e588973ddf889323444aa1723"
+    },
+    "06_lstm_sota/predictions_lstm_sota_seed42.csv": {
+      "source": "bilstm/predictions_lstm_sota_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "e6875d481b7005b0d36423f8689788a42cb7965b646fb3b8c119107599907bb3"
+    },
+    "06_lstm_sota/metrics_lstm_sota_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "87e966743f0c756d330dc21ea4e82da123fea8e5675b55a0a72cd26ac756d864"
+    },
+    "06_lstm_sota/predictions_lstm_sota_seed777.csv": {
+      "source": "bilstm/predictions_lstm_sota_seed777.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "7f0f6f2b0cd68dd78760ff47adffe29ba363428582596edee3dbb532a49ec6e1"
+    },
+    "06_lstm_sota/metrics_lstm_sota_seed777.csv": {
+      "source": "table of the run",
+      "sha256": "a91c995561ceaa6df7c37eb9778d70cbbdd5da39c5854df65be65f3d994c36e8"
+    },
+    "06_lstm_sota/models/lstm_sota_direct_seed123.pt": {
+      "source": "bilstm/worker/models/lstm_sota_direct_seed123.pt",
+      "sha256": "3157ab354cc62c5679cd34d11758ab8a8ac5be81c47852128764d6fb2d8c7d09"
+    },
+    "06_lstm_sota/models/lstm_sota_direct_seed42.pt": {
+      "source": "bilstm/worker/models/lstm_sota_direct_seed42.pt",
+      "sha256": "882138f580ebbbd2307b1b93d55349acd4114f18183422948945e4db52d0a3b9"
+    },
+    "06_lstm_sota/models/lstm_sota_direct_seed777.pt": {
+      "source": "bilstm/worker/models/lstm_sota_direct_seed777.pt",
+      "sha256": "8746b62c4e6feb98ec020276a9bc527c007d0f6ffb67a9404dbc78733415a642"
+    },
+    "06_lstm_sota/models/lstm_sota_indirect_seed123.pt": {
+      "source": "bilstm/worker/models/lstm_sota_indirect_seed123.pt",
+      "sha256": "d52f790e9077d0f31a8a736fa553220ace462d79a3b7b646c8de43448135f8e7"
+    },
+    "06_lstm_sota/models/lstm_sota_indirect_seed42.pt": {
+      "source": "bilstm/worker/models/lstm_sota_indirect_seed42.pt",
+      "sha256": "b2527608392eab97ae226bf6e36404a58796f13cf742abe95e1a4281e2191158"
+    },
+    "06_lstm_sota/models/lstm_sota_indirect_seed777.pt": {
+      "source": "bilstm/worker/models/lstm_sota_indirect_seed777.pt",
+      "sha256": "8c4e55c1ca92d8424a9f11869c7e58742968d2088b9aaa27c99cc8ab2676dd52"
+    },
+    "06_tft_96/predictions_tft_96_seed42.csv": {
+      "source": "tft96/predictions_tft_96_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "b94beb4cfccef708bd382ce9064c56a13483f55433481e3c4c5aa246098fa9cd"
+    },
+    "06_tft_96/metrics_tft_96_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "9b8a92ab88ed25a59b20b590cb017894355070dedcd342337bfc90caddb4ca56"
+    },
+    "06_tft_96/models/tft_96_direct_seed42.pt": {
+      "source": "tft96/worker/models/tft_96_direct_seed42.pt",
+      "sha256": "b5f00ed0cae4b6988a1691d3b37c14691b541b8961f6388b40c1593771a98c61"
+    },
+    "06_tft_96/models/tft_96_indirect_seed42.pt": {
+      "source": "tft96/worker/models/tft_96_indirect_seed42.pt",
+      "sha256": "73ba6e5f7289153c62a44ae57da451af5c3b285b7e99da3d12a58d4f7e49f8e3"
+    },
+    "06_tft_168/predictions_tft_168_seed42.csv": {
+      "source": "tft168/predictions_tft_168_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "0f911831988d623b8f5ec5e1cc3bac812f325746d827cf86513a4d9b77fa9ad8"
+    },
+    "06_tft_168/metrics_tft_168_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "8db012644338b532658edbe36096474f5d96fcee344bcb9ad481ead22ae8b0fb"
+    },
+    "06_tft_168/models/tft_168_direct_seed42.pt": {
+      "source": "tft168/worker/models/tft_168_direct_seed42.pt",
+      "sha256": "c0c6b104745ba2f2c460148c9225276cad5103dcd91a634da5e25d4a6404ae4b"
+    },
+    "06_tft_168/models/tft_168_indirect_seed42.pt": {
+      "source": "tft168/worker/models/tft_168_indirect_seed42.pt",
+      "sha256": "14eaf9e52bed5646c412ad98834add91676cebef0642dcfd722e825b09609f9f"
+    },
+    "06_tft/predictions_tft_seed42.csv": {
+      "source": "tftbase/predictions_tft_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "a1c3f60c1f345abf3c3ceacd14cc9529528030d492f070a97c4f58b3051a8e62"
+    },
+    "06_tft/metrics_tft_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "d2e4c917886a6a058b8363c6c061b9e713ad7775ab2eb348889b05fa6b50793e"
+    },
+    "06_tft/models/tft_direct_seed42.pt": {
+      "source": "tftbase/worker/models/tft_direct_seed42.pt",
+      "sha256": "463b72eb9d2c9099144dbdc3893b708463006b1c5ae09363d43a771c03730afb"
+    },
+    "06_tft/models/tft_indirect_seed42.pt": {
+      "source": "tftbase/worker/models/tft_indirect_seed42.pt",
+      "sha256": "1aabf34665b1edd2531d12447d305986620f806d485524cb3b04b0a8afce5148"
+    },
+    "06_patchtst/predictions_patchtst_seed42.csv": {
+      "source": "patchtst/predictions_patchtst_seed42.csv with the y_true of its test rows from the step test (truth_test.csv)",
+      "sha256": "9ce5aabfd2eccbfd3707ca01e2a817860ba6fe637a7a847833cee30d32cf43ba"
+    },
+    "06_patchtst/metrics_patchtst_seed42.csv": {
+      "source": "table of the run",
+      "sha256": "c922907d85fae5e86209b84e75e798043074f0eec71e4cd45f9ee2c2f2945cb7"
+    },
+    "06_patchtst/models/patchtst_direct_seed42.pt": {
+      "source": "patchtst/worker/models/patchtst_direct_seed42.pt",
+      "sha256": "f54eb39c68cde2265dfc220de0938edb81ed1e3a3b0f1d1ef50aa89d44c65e3e"
+    },
+    "06_patchtst/models/patchtst_indirect_seed42.pt": {
+      "source": "patchtst/worker/models/patchtst_indirect_seed42.pt",
+      "sha256": "5b1de0309cd98108cc6d69a2d591b989e2f1a359cd5db3ac5402a3beb3711d62"
+    },
+    "06_xgb_sota/analysis/cv_folds.csv": {
+      "source": "cv/cv_folds.csv",
+      "sha256": "e17c6f9a3b4d8fa1e16e50905ea1a3bc7505fead0a80ac5d4ffbb2c19b7493cf"
+    },
+    "06_xgb_sota/analysis/cv_summary.csv": {
+      "source": "cv/cv_summary.csv",
+      "sha256": "4fb681f03f566abd051fd59660a588c1862a1f0bdaf4f18a53b73aefc5fb9d90"
+    },
+    "06_xgb_sota/analysis/cv_config.json": {
+      "source": "cv/cv_config.json",
+      "sha256": "0803382f637fe592c8afbef2515f4d6f9d3cc103270c000f0040f3db113eac63"
+    },
+    "06_xgb_sota/analysis/ablation_results.csv": {
+      "source": "ablation/ablation_results.csv",
+      "sha256": "d0193154ea830fea41a8fce5a80e05baff52fa90f15a5edaf2d611f80cd56e76"
+    },
+    "06_xgb_sota/analysis/ablation_modes.csv": {
+      "source": "ablation/ablation_modes.csv",
+      "sha256": "57f3d6e42cccfbffbfaceb7b240a6bd3c51092675b836b7691ac15ef64a7c304"
+    },
+    "06_xgb_sota/analysis/ablation_summary.csv": {
+      "source": "ablation/ablation_summary.csv",
+      "sha256": "94e3ae888e2c3c68f2f0a054981879edcaf9254798610d3658d312d6f9691704"
+    },
+    "06_xgb_sota/analysis/ablation_config.json": {
+      "source": "ablation/ablation_config.json",
+      "sha256": "0b5be3b3d7f7496a6c2d8a72937d477f2a67cc251dfc8ba1bc2934f8e0fdf56e"
+    },
+    "06_xgb_sota/analysis/cv_vs_test.csv": {
+      "source": "test/analyses/cv_vs_test.csv",
+      "sha256": "cf2a23289059d0a99dd2402206c7c42beb4c0220a81022bae359bcf4c9e342d8"
+    },
+    "06_xgb_sota/analysis/ablation_test.csv": {
+      "source": "test/analyses/ablation_test.csv",
+      "sha256": "2483085dbf64a7d2dc74073af3c4b740c59760510a7b4f3dea967982792d0177"
+    },
+    "06_xgb_sota/analysis/ablation_test_summary.csv": {
+      "source": "test/analyses/ablation_test_summary.csv",
+      "sha256": "32e010f672464935a985fc81c3976f729abfc413ea04c3c85577aaa4fc869c0b"
+    },
+    "06_xgb_sota/shap/shap_direct_D1.csv": {
+      "source": "table of the run",
+      "sha256": "5821a8b816939658f94eb0f51ce624cdbd9d38a6bcb8eecc55859ba774d39f1c"
+    },
+    "06_xgb_sota/shap/shap_direct_D2.csv": {
+      "source": "table of the run",
+      "sha256": "6d8c686ae6c11193ae02881491acea4ce1db4c6d514331b5bad0846c75edf3ab"
+    },
+    "06_xgb_sota/shap/shap_direct_D3.csv": {
+      "source": "table of the run",
+      "sha256": "0ef42d2289df87e76bd796f47242db8677a67961e5ed3e6e44d9b693f9ef4d94"
+    },
+    "06_xgb_sota/shap/shap_indirect_D1.csv": {
+      "source": "table of the run",
+      "sha256": "1ec566286d4f929ccde2638d790885ad441001ae96f5d9752c4df83abac3b417"
+    },
+    "06_xgb_sota/shap/shap_indirect_D2.csv": {
+      "source": "table of the run",
+      "sha256": "6db5e2f1635a2b2982d7b261a4c052e29c47d0834113513a0dd3631c2ff2b4cd"
+    },
+    "06_xgb_sota/shap/shap_indirect_D3.csv": {
+      "source": "table of the run",
+      "sha256": "7c7ca32580f0d3bd7783c955ba04b55ad7c814d305314160e904be88bd0082a6"
+    }
+  }
+}

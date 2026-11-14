@@ -1,0 +1,75 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/cv
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --only select,baselines,xgb,cv,ablation
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T09:33:20+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   outputs/runs/20261114T083930Z_final/xgb/best_params.json sha256=a72ace571d755d81
+[     0.2s] INPUT   outputs/runs/20261114T083930Z_final/xgb/xgb_config.json sha256=e776d8d7017b7d72
+[     0.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.4s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     0.4s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.4s] NOTE    CV of the xgb models on the train rows, seeds [42, 123, 777], five expanding date folds with a 3-day gap, the raw forecast, nRMSE in kW (% of 3,449 kW)
+[     0.5s] STEP    indirect_D1_seed42: five folds ...
+[    10.7s] STEP    indirect_D1_seed42: five folds done in 10.2s
+[    10.7s] NOTE    indirect_D1_seed42: CV 7.396 +- 2.325 % kW over 5 folds; validation (raw) 6.773 %
+[    10.7s] STEP    indirect_D1_seed123: five folds ...
+[    21.0s] STEP    indirect_D1_seed123: five folds done in 10.3s
+[    21.0s] NOTE    indirect_D1_seed123: CV 7.616 +- 2.402 % kW over 5 folds; validation (raw) 6.772 %
+[    21.0s] STEP    indirect_D1_seed777: five folds ...
+[    29.4s] STEP    indirect_D1_seed777: five folds done in 8.5s
+[    29.4s] NOTE    indirect_D1_seed777: CV 7.403 +- 2.354 % kW over 5 folds; validation (raw) 6.756 %
+[    29.4s] STEP    direct_D1_seed42: five folds ...
+[    40.9s] STEP    direct_D1_seed42: five folds done in 11.5s
+[    40.9s] NOTE    direct_D1_seed42: CV 7.471 +- 2.362 % kW over 5 folds; validation (raw) 6.628 %
+[    40.9s] STEP    direct_D1_seed123: five folds ...
+[    46.1s] STEP    direct_D1_seed123: five folds done in 5.1s
+[    46.1s] NOTE    direct_D1_seed123: CV 7.480 +- 2.212 % kW over 5 folds; validation (raw) 6.598 %
+[    46.1s] STEP    direct_D1_seed777: five folds ...
+[    47.9s] STEP    direct_D1_seed777: five folds done in 1.9s
+[    47.9s] NOTE    direct_D1_seed777: CV 7.500 +- 2.384 % kW over 5 folds; validation (raw) 6.644 %
+[    48.0s] STEP    indirect_D2_seed42: five folds ...
+[    49.2s] STEP    indirect_D2_seed42: five folds done in 1.1s
+[    49.2s] NOTE    indirect_D2_seed42: CV 7.818 +- 2.364 % kW over 5 folds; validation (raw) 7.088 %
+[    49.2s] STEP    indirect_D2_seed123: five folds ...
+[    51.8s] STEP    indirect_D2_seed123: five folds done in 2.6s
+[    51.8s] NOTE    indirect_D2_seed123: CV 7.714 +- 2.279 % kW over 5 folds; validation (raw) 7.160 %
+[    51.8s] STEP    indirect_D2_seed777: five folds ...
+[    52.5s] STEP    indirect_D2_seed777: five folds done in 0.7s
+[    52.5s] NOTE    indirect_D2_seed777: CV 7.823 +- 2.297 % kW over 5 folds; validation (raw) 7.019 %
+[    52.5s] STEP    direct_D2_seed42: five folds ...
+[    63.3s] STEP    direct_D2_seed42: five folds done in 10.8s
+[    63.3s] NOTE    direct_D2_seed42: CV 7.735 +- 2.037 % kW over 5 folds; validation (raw) 6.795 %
+[    63.3s] STEP    direct_D2_seed123: five folds ...
+[    75.8s] STEP    direct_D2_seed123: five folds done in 12.5s
+[    75.8s] NOTE    direct_D2_seed123: CV 7.647 +- 2.228 % kW over 5 folds; validation (raw) 6.833 %
+[    75.8s] STEP    direct_D2_seed777: five folds ...
+[    79.4s] STEP    direct_D2_seed777: five folds done in 3.6s
+[    79.4s] NOTE    direct_D2_seed777: CV 7.736 +- 2.247 % kW over 5 folds; validation (raw) 6.803 %
+[    79.4s] STEP    indirect_D3_seed42: five folds ...
+[    84.6s] STEP    indirect_D3_seed42: five folds done in 5.1s
+[    84.6s] NOTE    indirect_D3_seed42: CV 8.021 +- 2.399 % kW over 5 folds; validation (raw) 6.638 %
+[    84.6s] STEP    indirect_D3_seed123: five folds ...
+[    87.5s] STEP    indirect_D3_seed123: five folds done in 2.9s
+[    87.5s] NOTE    indirect_D3_seed123: CV 7.898 +- 2.416 % kW over 5 folds; validation (raw) 6.703 %
+[    87.5s] STEP    indirect_D3_seed777: five folds ...
+[    91.4s] STEP    indirect_D3_seed777: five folds done in 4.0s
+[    91.4s] NOTE    indirect_D3_seed777: CV 8.043 +- 2.572 % kW over 5 folds; validation (raw) 6.661 %
+[    91.4s] STEP    direct_D3_seed42: five folds ...
+[    93.7s] STEP    direct_D3_seed42: five folds done in 2.3s
+[    93.7s] NOTE    direct_D3_seed42: CV 8.107 +- 2.497 % kW over 5 folds; validation (raw) 6.426 %
+[    93.7s] STEP    direct_D3_seed123: five folds ...
+[   106.0s] STEP    direct_D3_seed123: five folds done in 12.3s
+[   106.0s] NOTE    direct_D3_seed123: CV 8.012 +- 2.512 % kW over 5 folds; validation (raw) 6.453 %
+[   106.0s] STEP    direct_D3_seed777: five folds ...
+[   121.0s] STEP    direct_D3_seed777: five folds done in 15.0s
+[   121.0s] NOTE    direct_D3_seed777: CV 8.007 +- 2.440 % kW over 5 folds; validation (raw) 6.429 %
+[   121.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.cv.tmp/cv_folds.csv sha256=e17c6f9a3b4d8fa1
+[   121.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.cv.tmp/cv_summary.csv sha256=4fb681f03f566abd
+[   121.0s] OUTPUT  outputs/runs/20261114T083930Z_final/.cv.tmp/cv_config.json sha256=0803382f637fe592
+[   121.1s] RUN     warnings: 0
+[   121.1s] RUN     status: ok; duration 121.1s

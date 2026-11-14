@@ -1,0 +1,257 @@
+{
+  "indirect_seed42": {
+    "target": "indirect",
+    "seed": 42,
+    "params": {
+      "hidden": 256,
+      "n_layers": 1,
+      "dropout": 0.2962263024853572,
+      "lr": 0.0005092360667476643,
+      "batch_size": 64
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 53,
+      "best_value_kw": 6.817014737415884,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 7.063581269337918,
+      "n_scored": 8703,
+      "value_kw_D1": 7.016872657149556,
+      "value_kw_D2": 7.247049225797696,
+      "value_kw_D3": 6.9228835522372,
+      "value_k": 14.115232162757858,
+      "best_epoch": 55,
+      "epochs_run": 60,
+      "best_val_loss": 0.01929258103514843,
+      "train_loss_at_best": 0.025080728536201,
+      "stopped_early": false,
+      "nan_loss": false,
+      "duration_s": 26.33,
+      "gpu_peak_mb": 427.8,
+      "n_parameters": 1180931
+    },
+    "reproduce_diff_pp": null
+  },
+  "direct_seed42": {
+    "target": "direct",
+    "seed": 42,
+    "params": {
+      "hidden": 128,
+      "n_layers": 2,
+      "dropout": 0.24623186187680862,
+      "lr": 0.004661662504801656,
+      "batch_size": 128
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 34,
+      "best_value_kw": 6.659879632788231,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 6.659879632788231,
+      "n_scored": 8703,
+      "value_kw_D1": 6.671262780612521,
+      "value_kw_D2": 6.8327062226286195,
+      "value_kw_D3": 6.470731701820802,
+      "best_epoch": 21,
+      "epochs_run": 31,
+      "best_val_loss": 0.004656660074246219,
+      "train_loss_at_best": 0.007012387776221881,
+      "stopped_early": true,
+      "nan_loss": false,
+      "duration_s": 9.68,
+      "gpu_peak_mb": 457.0,
+      "n_parameters": 882819
+    },
+    "reproduce_diff_pp": null
+  },
+  "indirect_seed123": {
+    "target": "indirect",
+    "seed": 123,
+    "params": {
+      "hidden": 64,
+      "n_layers": 1,
+      "dropout": 0.3266776290815467,
+      "lr": 0.0008380373903346139,
+      "batch_size": 128
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 58,
+      "best_value_kw": 6.748451301197308,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 6.986001643799805,
+      "n_scored": 8703,
+      "value_kw_D1": 6.9941762640638405,
+      "value_kw_D2": 7.1674866477994525,
+      "value_kw_D3": 6.791265746703134,
+      "value_k": 14.097254260630468,
+      "best_epoch": 60,
+      "epochs_run": 60,
+      "best_val_loss": 0.02254890065783069,
+      "train_loss_at_best": 0.03512111902924285,
+      "stopped_early": false,
+      "nan_loss": false,
+      "duration_s": 7.35,
+      "gpu_peak_mb": 274.3,
+      "n_parameters": 98627
+    },
+    "reproduce_diff_pp": null
+  },
+  "direct_seed123": {
+    "target": "direct",
+    "seed": 123,
+    "params": {
+      "hidden": 128,
+      "n_layers": 2,
+      "dropout": 0.3012040603810862,
+      "lr": 0.006173295351482016,
+      "batch_size": 32
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 36,
+      "best_value_kw": 6.606695158532274,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 6.606695158532274,
+      "n_scored": 8703,
+      "value_kw_D1": 6.612951881794856,
+      "value_kw_D2": 6.738249427539872,
+      "value_kw_D3": 6.46607491563822,
+      "best_epoch": 9,
+      "epochs_run": 19,
+      "best_val_loss": 0.004811340062727827,
+      "train_loss_at_best": 0.007140381722359301,
+      "stopped_early": true,
+      "nan_loss": false,
+      "duration_s": 9.35,
+      "gpu_peak_mb": 461.9,
+      "n_parameters": 882819
+    },
+    "reproduce_diff_pp": null
+  },
+  "indirect_seed777": {
+    "target": "indirect",
+    "seed": 777,
+    "params": {
+      "hidden": 64,
+      "n_layers": 1,
+      "dropout": 0.3025132679227539,
+      "lr": 0.0029852510110255207,
+      "batch_size": 64
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 52,
+      "best_value_kw": 6.799223470258493,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 6.962383577744132,
+      "n_scored": 8703,
+      "value_kw_D1": 6.971586447891285,
+      "value_kw_D2": 7.099867194528407,
+      "value_kw_D3": 6.812725113386081,
+      "value_k": 14.049659969708744,
+      "best_epoch": 57,
+      "epochs_run": 60,
+      "best_val_loss": 0.018908588461350784,
+      "train_loss_at_best": 0.02268810118426179,
+      "stopped_early": false,
+      "nan_loss": false,
+      "duration_s": 12.33,
+      "gpu_peak_mb": 265.7,
+      "n_parameters": 98627
+    },
+    "reproduce_diff_pp": null
+  },
+  "direct_seed777": {
+    "target": "direct",
+    "seed": 777,
+    "params": {
+      "hidden": 256,
+      "n_layers": 1,
+      "dropout": 0.2680455257632738,
+      "lr": 0.0034710496454001412,
+      "batch_size": 32
+    },
+    "fixed": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "study": {
+      "best_trial": 11,
+      "best_value_kw": 6.638302500815478,
+      "n_trials": 60
+    },
+    "final": {
+      "value_kw": 6.638302500815478,
+      "n_scored": 8703,
+      "value_kw_D1": 6.611811298247551,
+      "value_kw_D2": 6.8275719410114055,
+      "value_kw_D3": 6.470656305482376,
+      "best_epoch": 16,
+      "epochs_run": 26,
+      "best_val_loss": 0.004405571705929254,
+      "train_loss_at_best": 0.005905830634771851,
+      "stopped_early": true,
+      "nan_loss": false,
+      "duration_s": 15.81,
+      "gpu_peak_mb": 453.0,
+      "n_parameters": 1235203
+    },
+    "reproduce_diff_pp": null
+  }
+}

@@ -1,0 +1,42 @@
+step,kind,subject,text,status
+baselines,test_access,"TEST ROWS READ (forecast the references of the test window (observed AC and k before each forecast hour), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the references of the test window (observed AC and k before each forecast hour), 5829 rows); recorded in test_access_log.csv",step log only
+xgb,test_access,"TEST ROWS READ (forecast the test window of D+1 (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+1 (features), 5829 rows); recorded in test_access_log.csv",step log only
+xgb,gap,indirect_D1_seed42,indirect_D1_seed42: validation RMSE 0.1001 is 2.6 x the train RMSE 0.03901 at the best iteration,matched
+xgb,edge_space,indirect_D1_seed42,indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,gap,indirect_D1_seed123,indirect_D1_seed123: validation RMSE 0.1001 is 2.7 x the train RMSE 0.0374 at the best iteration,matched
+xgb,edge_space,indirect_D1_seed123,"indirect_D1_seed123: best trial on the edge of the search space for max_depth = 10, min_child_weight = 1",matched
+xgb,gap,indirect_D1_seed777,indirect_D1_seed777: validation RMSE 0.09944 is 2.7 x the train RMSE 0.03698 at the best iteration,matched
+xgb,edge_space,indirect_D1_seed777,"indirect_D1_seed777: best trial on the edge of the search space for max_depth = 10, colsample_bytree = 0.503",matched
+xgb,edge_space,direct_D1_seed42,direct_D1_seed42: best trial on the edge of the search space for reg_lambda = 1.24e-08,matched
+xgb,cap,direct_D1_seed123,direct_D1_seed123: best iteration 204 at the cap of 205 rounds: it may not have converged (M12d),matched
+xgb,edge_space,direct_D1_seed123,direct_D1_seed123: best trial on the edge of the search space for n_estimators = 205,matched
+xgb,test_access,"TEST ROWS READ (forecast the test window of D+2 (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+2 (features), 5829 rows); recorded in test_access_log.csv",step log only
+xgb,edge_space,indirect_D2_seed42,indirect_D2_seed42: best trial on the edge of the search space for max_depth = 10,matched
+xgb,edge_space,indirect_D2_seed123,"indirect_D2_seed123: best trial on the edge of the search space for n_estimators = 1972, subsample = 0.603",matched
+xgb,edge_space,indirect_D2_seed777,indirect_D2_seed777: best trial on the edge of the search space for max_depth = 10,matched
+xgb,cap,direct_D2_seed42,direct_D2_seed42: best iteration 233 at the cap of 234 rounds: it may not have converged (M12d),matched
+xgb,edge_space,direct_D2_seed42,"direct_D2_seed42: best trial on the edge of the search space for n_estimators = 234, max_depth = 10, colsample_bytree = 0.5046",matched
+xgb,edge_space,direct_D2_seed123,"direct_D2_seed123: best trial on the edge of the search space for learning_rate = 0.01019, min_child_weight = 20, reg_lambda = 1.085e-08",matched
+xgb,test_access,"TEST ROWS READ (forecast the test window of D+3 (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+3 (features), 5829 rows); recorded in test_access_log.csv",step log only
+xgb,gap,indirect_D3_seed777,indirect_D3_seed777: validation RMSE 0.1034 is 2.1 x the train RMSE 0.04838 at the best iteration,matched
+xgb,edge_space,indirect_D3_seed777,indirect_D3_seed777: best trial on the edge of the search space for max_depth = 10,matched
+xgb,edge_space,direct_D3_seed123,direct_D3_seed123: best trial on the edge of the search space for max_depth = 10,matched
+xgb,edge_space,direct_D3_seed777,direct_D3_seed777: best trial on the edge of the search space for learning_rate = 0.01003,matched
+ablation,test_access,"TEST ROWS READ (forecast the test window of D+1 for the ablation (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+1 for the ablation (features), 5829 rows); recorded in test_access_log.csv",step log only
+ablation,test_access,"TEST ROWS READ (forecast the test window of D+2 for the ablation (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+2 for the ablation (features), 5829 rows); recorded in test_access_log.csv",step log only
+ablation,test_access,"TEST ROWS READ (forecast the test window of D+3 for the ablation (features), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window of D+3 for the ablation (features), 5829 rows); recorded in test_access_log.csv",step log only
+bilstm,test_access,"TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",step log only
+bilstm,edge_space,indirect seed 42,"bilstm: indirect seed 42: best trial on the edge of the search space for hidden = 256, n_layers = 1 (M23)",matched
+bilstm,last_epoch,indirect seed 123,bilstm: indirect seed 123: best epoch 60 at the last epoch: it may not have converged,matched
+bilstm,edge_space,indirect seed 123,"bilstm: indirect seed 123: best trial on the edge of the search space for hidden = 64, n_layers = 1, batch_size = 128 (M23)",matched
+bilstm,edge_space,indirect seed 777,"bilstm: indirect seed 777: best trial on the edge of the search space for hidden = 64, n_layers = 1 (M23)",matched
+bilstm,edge_space,direct seed 42,bilstm: direct seed 42: best trial on the edge of the search space for batch_size = 128 (M23),matched
+bilstm,edge_space,direct seed 123,bilstm: direct seed 123: best trial on the edge of the search space for batch_size = 32 (M23),matched
+bilstm,edge_space,direct seed 777,"bilstm: direct seed 777: best trial on the edge of the search space for hidden = 256, n_layers = 1, batch_size = 32 (M23)",matched
+tft96,test_access,"TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",step log only
+tft96,edge_space,direct seed 42,"tft96: direct seed 42: best trial on the edge of the search space for hidden_size = 64, lstm_layers = 1 (M23)",matched
+tft168,test_access,"TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",step log only
+tft168,edge_space,indirect seed 42,tft168: indirect seed 42: best trial on the edge of the search space for hidden_continuous_size = 32 (M23),matched
+tft168,edge_space,direct seed 42,tft168: direct seed 42: best trial on the edge of the search space for attention_head_size = 4 (M23),matched
+tftbase,test_access,"TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",step log only
+patchtst,test_access,"TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv","TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv",step log only

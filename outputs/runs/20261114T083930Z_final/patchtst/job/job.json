@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "step": "patchtst",
+  "model": "patchtst",
+  "family": "patchtst",
+  "mode": "final",
+  "run_id": "20261114T083930Z_final",
+  "targets": [
+    "indirect",
+    "direct"
+  ],
+  "seeds": [
+    42
+  ],
+  "budget": {
+    "max_steps": 5000,
+    "val_check_steps": 100,
+    "patience": 10,
+    "seeds": [
+      42
+    ]
+  },
+  "fixed": {
+    "bilstm": {
+      "grad_clip_norm": 1.0,
+      "optimizer": "Adam"
+    },
+    "tft": {
+      "batch_size": 64,
+      "grad_clip_norm": 0.1,
+      "optimizer": "Adam"
+    },
+    "tftbase": {
+      "hidden_size": 64,
+      "dropout": 0.1,
+      "attention_head_size": 4,
+      "hidden_continuous_size": 8,
+      "lstm_layers": 1,
+      "learning_rate": 0.001
+    },
+    "patchtst": {
+      "input_size": 168,
+      "h": 73,
+      "patch_len": 16,
+      "stride": 8,
+      "scaler_type": "identity",
+      "revin": true
+    }
+  },
+  "search_space": null,
+  "quantiles": [
+    0.5
+  ],
+  "scopes": [
+    "train",
+    "val",
+    "test"
+  ],
+  "tune_scope": "val",
+  "mean_k": 0.788157,
+  "meta": {
+    "indirect": {
+      "enc_channels": [
+        "target_k"
+      ],
+      "dec_channels": [],
+      "n_unknown": 0,
+      "encoder_hours": 168,
+      "target_scale": 1.0
+    },
+    "direct": {
+      "enc_channels": [
+        "site_total_AC_kW"
+      ],
+      "dec_channels": [],
+      "n_unknown": 0,
+      "encoder_hours": 168,
+      "target_scale": 3449.0
+    }
+  },
+  "files": {
+    "indirect": {
+      "path": "data_indirect.npz",
+      "sha256": "f43c72738980021a8d295f012a0bd0424ec1d018cbf0d31f0b1b747c54385ab7"
+    },
+    "direct": {
+      "path": "data_direct.npz",
+      "sha256": "ed40d2178cda58ac6effae2f7747c7520ea2633e7ea9ae89f84f4ef32d3e9fbc"
+    }
+  },
+  "resume": {
+    "dir": "C:\\Users\\204323141\\Desktop\\solar\\outputs\\runs\\20261114T083930Z_final\\checkpoints\\patchtst",
+    "trust": true,
+    "identity": {
+      "run_id": "20261114T083930Z_final",
+      "step": "patchtst",
+      "mode": "final",
+      "fingerprint": "b60374a9075eac8167e4adbfac84b68942c419b364eef41af3a8b8b0fb95152d"
+    },
+    "fit_interval_s": 60.0
+  }
+}

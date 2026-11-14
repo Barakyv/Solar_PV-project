@@ -1,0 +1,49 @@
+point,subject,fact
+final fit against its best trial,bilstm indirect seed 42,"final 7.064 %, best trial 6.817 % (+0.247 pp)"
+final fit against its best trial,bilstm indirect seed 123,"final 6.986 %, best trial 6.748 % (+0.238 pp)"
+final fit against its best trial,bilstm indirect seed 777,"final 6.962 %, best trial 6.799 % (+0.163 pp)"
+best check against the step budget,patchtst indirect seed 42,best step 4900 of a budget of 5000
+best check against the step budget,patchtst direct seed 42,best step 4100 of a budget of 5000
+best value on the edge of the search space,xgb indirect_D1_seed42,max_depth
+best value on the edge of the search space,xgb indirect_D1_seed123,"max_depth, min_child_weight"
+best value on the edge of the search space,xgb indirect_D1_seed777,"max_depth, colsample_bytree"
+best value on the edge of the search space,xgb direct_D1_seed42,reg_lambda
+best value on the edge of the search space,xgb direct_D1_seed123,n_estimators
+best value on the edge of the search space,xgb indirect_D2_seed42,max_depth
+best value on the edge of the search space,xgb indirect_D2_seed123,"n_estimators, subsample"
+best value on the edge of the search space,xgb indirect_D2_seed777,max_depth
+best value on the edge of the search space,xgb direct_D2_seed42,"n_estimators, max_depth, colsample_bytree"
+best value on the edge of the search space,xgb direct_D2_seed123,"learning_rate, min_child_weight, reg_lambda"
+best value on the edge of the search space,xgb indirect_D3_seed777,max_depth
+best value on the edge of the search space,xgb direct_D3_seed123,max_depth
+best value on the edge of the search space,xgb direct_D3_seed777,learning_rate
+best value on the edge of the search space,bilstm indirect seed 42,"hidden, n_layers"
+best value on the edge of the search space,bilstm direct seed 42,batch_size
+best value on the edge of the search space,bilstm indirect seed 123,"hidden, n_layers, batch_size"
+best value on the edge of the search space,bilstm direct seed 123,batch_size
+best value on the edge of the search space,bilstm indirect seed 777,"hidden, n_layers"
+best value on the edge of the search space,bilstm direct seed 777,"hidden, n_layers, batch_size"
+best value on the edge of the search space,tft96 direct seed 42,"hidden_size, lstm_layers"
+best value on the edge of the search space,tft168 indirect seed 42,hidden_continuous_size
+best value on the edge of the search space,tft168 direct seed 42,attention_head_size
+trials stopped at their cap,xgb,13 of 1080 trials
+mean bias on validation,bilstm indirect seed 42,+1.16 % of capacity (+40.0 kW)
+mean bias on validation,bilstm direct seed 42,+0.52 % of capacity (+17.9 kW)
+mean bias on validation,bilstm indirect seed 123,+1.38 % of capacity (+47.5 kW)
+mean bias on validation,bilstm direct seed 123,-0.15 % of capacity (-5.2 kW)
+mean bias on validation,bilstm indirect seed 777,+0.96 % of capacity (+33.0 kW)
+mean bias on validation,bilstm direct seed 777,-0.00 % of capacity (-0.1 kW)
+mean bias on validation,tft96 indirect seed 42,+0.83 % of capacity (+28.5 kW)
+mean bias on validation,tft96 direct seed 42,+0.58 % of capacity (+20.0 kW)
+mean bias on validation,tft168 indirect seed 42,+0.75 % of capacity (+25.8 kW)
+mean bias on validation,tft168 direct seed 42,+0.70 % of capacity (+24.2 kW)
+mean bias on validation,tftbase indirect seed 42,+0.92 % of capacity (+31.6 kW)
+mean bias on validation,tftbase direct seed 42,+0.68 % of capacity (+23.5 kW)
+mean bias on validation,patchtst indirect seed 42,+2.73 % of capacity (+94.2 kW)
+mean bias on validation,patchtst direct seed 42,+0.72 % of capacity (+25.0 kW)
+margin against climatology (kW DM),xgb_sota direct D+1,"105 % of the minimum detectable effect, HLN p 0.0007"
+margin against climatology (kW DM),xgb_sota direct D+2,"93 % of the minimum detectable effect, HLN p 0.0014"
+margin against climatology (kW DM),xgb_sota direct D+3,"110 % of the minimum detectable effect, HLN p 0.0002"
+margin against climatology (kW DM),xgb_sota indirect D+1,"103 % of the minimum detectable effect, HLN p 0.0010"
+margin against climatology (kW DM),xgb_sota indirect D+2,"91 % of the minimum detectable effect, HLN p 0.0029"
+margin against climatology (kW DM),xgb_sota indirect D+3,"105 % of the minimum detectable effect, HLN p 0.0006"

@@ -1,0 +1,22 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/baselines
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --only select,baselines,xgb,cv,ablation
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T08:39:40+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.3s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.3s] STEP    references on val, the whole val split ...
+[     0.9s] NOTE    val: 5832 hours in the window, 2902 of them daytime; context rows 0
+[     0.9s] STEP    references on val, the whole val split done in 0.7s
+[     0.9s] STEP    references on test, the whole test split ...
+[     1.1s] WARN    TEST ROWS READ (forecast the references of the test window (observed AC and k before each forecast hour), 5829 rows); recorded in test_access_log.csv
+[     1.5s] NOTE    test: 5829 hours in the window, 2580 of them daytime; context rows 0
+[     1.5s] STEP    references on test, the whole test split done in 0.6s
+[     2.5s] VALUE   rows_clearsky_k = 69966
+[     3.4s] VALUE   rows_climatology = 69966
+[     4.4s] VALUE   rows_persistence = 69966
+[     4.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.baselines.tmp/predictions_clearsky_k.csv sha256=a1bdb7ed42a02427
+[     4.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.baselines.tmp/predictions_climatology.csv sha256=ed6c096afee6d4d1
+[     4.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.baselines.tmp/predictions_persistence.csv sha256=59fee4f8b7a32a44
+[     4.5s] RUN     warnings: 1
+[     4.5s] RUN     status: ok; duration 4.5s

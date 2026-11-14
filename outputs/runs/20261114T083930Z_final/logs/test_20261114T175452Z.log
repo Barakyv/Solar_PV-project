@@ -1,0 +1,91 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/test
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only test,report --force --allow-test
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T17:54:52+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.2s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_clearsky_k.csv sha256=a1bdb7ed42a02427
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_climatology.csv sha256=ed6c096afee6d4d1
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/baselines/predictions_persistence.csv sha256=59fee4f8b7a32a44
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed123.csv sha256=d8df3ffd4fd5234e
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed42.csv sha256=135092ccb432a411
+[     0.3s] INPUT   outputs/runs/20261114T083930Z_final/xgb/predictions_xgb_sota_seed777.csv sha256=1f7abaf9a9b1230d
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed123.csv sha256=32fa02bb20c86d0f
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed42.csv sha256=476094f163ae470a
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/bilstm/predictions_lstm_sota_seed777.csv sha256=9b37475dd3399df5
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/tft96/predictions_tft_96_seed42.csv sha256=254cd711c5865a92
+[     0.4s] INPUT   outputs/runs/20261114T083930Z_final/tft168/predictions_tft_168_seed42.csv sha256=e8c7887f1736bffd
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/tftbase/predictions_tft_seed42.csv sha256=24d3b99b38dbdd75
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/patchtst/predictions_patchtst_seed42.csv sha256=837fca71eb3fd4cf
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/cv/cv_summary.csv sha256=4fb681f03f566abd
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/xgb/uncorrected_xgb_sota_seed123.csv sha256=382d4fde9e898079
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/xgb/uncorrected_xgb_sota_seed42.csv sha256=ad146f17da0f3462
+[     0.5s] INPUT   outputs/runs/20261114T083930Z_final/xgb/uncorrected_xgb_sota_seed777.csv sha256=c37dd5451fd5ad69
+[     0.6s] INPUT   outputs/runs/20261114T083930Z_final/ablation/ablation_forecasts_seed123.csv sha256=86fd19e9c41c0768
+[     0.6s] INPUT   outputs/runs/20261114T083930Z_final/ablation/ablation_forecasts_seed42.csv sha256=bb80b5698d04b568
+[     0.7s] INPUT   outputs/runs/20261114T083930Z_final/ablation/ablation_forecasts_seed777.csv sha256=25ab3e31a3b97461
+[     1.8s] WARN    TEST ROWS READ (XGB SHAP on the test window of D+1 (features), 5829 rows); recorded in test_access_log.csv
+[    24.9s] NOTE    indirect_D1_seed42 test: SHAP on 2575 rows, additivity 1.07e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.016; kW view 2.20e-03 kW on 2575 unclipped rows; top fcst_gfs_k_phys
+[    36.0s] NOTE    indirect_D1_seed123 test: SHAP on 2575 rows, additivity 8.12e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.0167; kW view 2.23e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    50.4s] NOTE    indirect_D1_seed777 test: SHAP on 2575 rows, additivity 1.13e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.0166; kW view 2.06e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    55.0s] NOTE    direct_D1_seed42 test: SHAP on 2575 rows, additivity 3.07e-03 (kW), pred_contribs 0.00e+00, unsliced booster 47; kW view 3.07e-03 kW on 2575 unclipped rows; top fcst_gfs_pv_kw
+[    56.7s] NOTE    direct_D1_seed123 test: SHAP on 2575 rows, additivity 2.25e-03 (kW), pred_contribs 0.00e+00, unsliced booster 0.00225; kW view 2.25e-03 kW on 2575 unclipped rows; top fcst_gfs_poa
+[    57.4s] NOTE    direct_D1_seed777 test: SHAP on 2575 rows, additivity 1.73e-03 (kW), pred_contribs 0.00e+00, unsliced booster 202; kW view 1.73e-03 kW on 2575 unclipped rows; top fcst_gfs_pv_kw
+[    57.6s] WARN    TEST ROWS READ (XGB SHAP on the test window of D+2 (features), 5829 rows); recorded in test_access_log.csv
+[    59.3s] NOTE    indirect_D2_seed42 test: SHAP on 2575 rows, additivity 4.40e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.0936; kW view 9.18e-04 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    62.1s] NOTE    indirect_D2_seed123 test: SHAP on 2575 rows, additivity 1.21e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.0187; kW view 1.89e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    63.0s] NOTE    indirect_D2_seed777 test: SHAP on 2575 rows, additivity 3.87e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.118; kW view 7.92e-04 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    68.1s] NOTE    direct_D2_seed42 test: SHAP on 2575 rows, additivity 2.73e-03 (kW), pred_contribs 0.00e+00, unsliced booster 0.00273; kW view 2.73e-03 kW on 2575 unclipped rows; top fcst_gfs_poa
+[    73.1s] NOTE    direct_D2_seed123 test: SHAP on 2575 rows, additivity 4.07e-03 (kW), pred_contribs 0.00e+00, unsliced booster 38.7; kW view 4.07e-03 kW on 2575 unclipped rows; top fcst_gfs_poa
+[    74.5s] NOTE    direct_D2_seed777 test: SHAP on 2575 rows, additivity 1.25e-03 (kW), pred_contribs 0.00e+00, unsliced booster 149; kW view 1.25e-03 kW on 2575 unclipped rows; top fcst_gfs_poa
+[    74.7s] WARN    TEST ROWS READ (XGB SHAP on the test window of D+3 (features), 5829 rows); recorded in test_access_log.csv
+[    80.4s] NOTE    indirect_D3_seed42 test: SHAP on 2575 rows, additivity 9.32e-07 (k), pred_contribs 0.00e+00, unsliced booster 0.0306; kW view 2.05e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    81.6s] NOTE    indirect_D3_seed123 test: SHAP on 2575 rows, additivity 1.24e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.017; kW view 3.04e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    87.8s] NOTE    indirect_D3_seed777 test: SHAP on 2575 rows, additivity 1.17e-06 (k), pred_contribs 0.00e+00, unsliced booster 0.0411; kW view 2.04e-03 kW on 2575 unclipped rows; top fcst_gfs_kt_poa_daymean
+[    88.8s] NOTE    direct_D3_seed42 test: SHAP on 2575 rows, additivity 1.02e-03 (kW), pred_contribs 0.00e+00, unsliced booster 196; kW view 1.02e-03 kW on 2575 unclipped rows; top fcst_gfs_pv_kw
+[    95.6s] NOTE    direct_D3_seed123 test: SHAP on 2575 rows, additivity 3.04e-03 (kW), pred_contribs 0.00e+00, unsliced booster 53.9; kW view 3.04e-03 kW on 2575 unclipped rows; top fcst_gfs_pv_kw
+[   101.2s] NOTE    direct_D3_seed777 test: SHAP on 2575 rows, additivity 2.98e-03 (kW), pred_contribs 0.00e+00, unsliced booster 36.3; kW view 2.98e-03 kW on 2575 unclipped rows; top fcst_gfs_pv_kw
+[   101.9s] WARN    TEST ROWS READ (score the CV comparison and the ablation forecasts on the test window, 2575 rows); recorded in test_access_log.csv
+[   104.1s] STEP    evaluate test, the whole test split ...
+[   109.1s] WARN    TEST SPLIT EVALUATED; recorded in outputs/07_evaluation/test_access_log.csv
+[   110.0s] NOTE    test: 9 models (clearsky_k, climatology, lstm_sota, patchtst, persistence, tft, tft_168, tft_96, xgb_sota); daytime rows per model/target/horizon: 2575
+[   130.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/benchmark_summary.csv sha256=4548b4147ea0169c
+[   130.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/dm_tests.csv sha256=4d997e982b41ed96
+[   130.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/seasonal_metrics.csv sha256=21c0edee4ef582eb
+[   130.1s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/common_mask_summary.csv sha256=a1cf20e09761c13c
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/benchmark_views.csv sha256=3672b419516f48c5
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/common_mask_sensitivity.csv sha256=de27fa6557941197
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/route_comparison.csv sha256=0836461d7d6964f1
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/seed_variability_summary.csv sha256=c6798b3e5d3cfde0
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/dm_tests_kw.csv sha256=d4714659834ad0bf
+[   130.2s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/test/manifest.json sha256=69a0d49c2a84d9de
+[   130.2s] STEP    evaluate test, the whole test split done in 26.1s
+[   130.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D1_seed42_test.npz sha256=3149baf324bbe0a3
+[   130.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D1_seed123_test.npz sha256=0810c5ecca4dc60c
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D1_seed777_test.npz sha256=b2693366a0bf6867
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D1_seed42_test.npz sha256=c6529e1ea095d4b4
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D1_seed123_test.npz sha256=184c72f626c81b0c
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D1_seed777_test.npz sha256=5a142fdbb6efc1ae
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D2_seed42_test.npz sha256=dc80bbc684add505
+[   130.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D2_seed123_test.npz sha256=e0b3f4035a46c0c7
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D2_seed777_test.npz sha256=5656c089eb5b1bc2
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D2_seed42_test.npz sha256=bdfeba9f2444b036
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D2_seed123_test.npz sha256=a1e2267b37db536f
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D2_seed777_test.npz sha256=0db24b2263fa6887
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D3_seed42_test.npz sha256=c1543cf58140b6a9
+[   130.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D3_seed123_test.npz sha256=0f64b5d432803003
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_indirect_D3_seed777_test.npz sha256=b112222b642df5ba
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D3_seed42_test.npz sha256=44f26099b207ebbc
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D3_seed123_test.npz sha256=1fdb626d3bb07a41
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/shap_values_direct_D3_seed777_test.npz sha256=ac4e54c58542dd3b
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/xgb_shap_features_test.csv sha256=b8e6462e6b967c05
+[   130.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/xgb_shap_groups_test.csv sha256=206a917ccf89aa8e
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/xgb_shap_checks_test.csv sha256=16bddecd3fc9681f
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/shap_test/xgb_shap_rank_stability_test.csv sha256=6a72d119286dbc73
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/analyses/cv_vs_test.csv sha256=cf2a23289059d0a9
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/analyses/ablation_test.csv sha256=2483085dbf64a7d2
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/analyses/ablation_test_summary.csv sha256=32e010f672464935
+[   130.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.test.tmp/truth_test.csv sha256=c7d36f0a6b73d135
+[   130.7s] RUN     warnings: 5
+[   130.7s] RUN     status: ok; duration 130.7s

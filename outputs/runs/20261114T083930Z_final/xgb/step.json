@@ -1,0 +1,222 @@
+{
+  "step": "xgb",
+  "run_id": "20261114T083930Z_final",
+  "mode": "final",
+  "started_utc": "2026-11-14T08:39:45.430434+00:00",
+  "commit": "10611a6",
+  "fingerprint": "d1cf91b97651efb9b9e6ca5f783cbac32a4c6a09352af542c9542385ac917957",
+  "config": {
+    "windows": [
+      {
+        "split": "val",
+        "start": "2024-02-01T00:00:00+00:00",
+        "end": "2024-10-01T00:00:00+00:00",
+        "label": "the whole val split"
+      },
+      {
+        "split": "test",
+        "start": "2024-10-01T00:00:00+00:00",
+        "end": "2025-06-01T00:00:00+00:00",
+        "label": "the whole test split"
+      }
+    ],
+    "targets": [
+      "indirect",
+      "direct"
+    ],
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "seeds": null,
+    "allow_test": true,
+    "xgb_threads": 8,
+    "budget": {
+      "trials": 60,
+      "seeds": [
+        42,
+        123,
+        777
+      ]
+    }
+  },
+  "inputs": {
+    "data/processed/06_features/features_1H_D1.parquet": "b740b2c45feb7f16a3db5788e5d8f1e3b42c2564622b6046267bb94f741c2c61",
+    "data/processed/06b_gfs/gfs_features_D1.parquet": "fbc6d2120ce7511259ecf6f756786ac89253816bf697cc0d5c6df34662255bc0",
+    "data/processed/06_features/features_1H_D2.parquet": "3d8d5ed4e6815dc73b9357d4c1c2b2672610a980be6d2bf6b70618b5df0c07ff",
+    "data/processed/06b_gfs/gfs_features_D2.parquet": "4be70cdc30cbd39d9806f90fd08d55358cc3d44db695e03895a5bc68bc43fb57",
+    "data/processed/06_features/features_1H_D3.parquet": "21f18314bce5bb3400267cb54947f2f1b2b441c71ab2d5a911618deeeb68db5a",
+    "data/processed/06b_gfs/gfs_features_D3.parquet": "177d11abbf3bf7330ce0fa80e54b65c602572f3e3c9472d621102386fc7be8fe",
+    "outputs/07_feature_selection/model_inputs.json": "b693622407f2246e6541e4eee3eb78336e409c39ef9a5bd6542bac83e8fc89ca",
+    "configs/monotone_decision.yaml": "141636b887c1d672de6210fe470ef1d71a8477b18222facf6745f3e7f43986c6",
+    "configs/mos_decision.yaml": "20d159081fdd8093fc6ff5d90a0c848c031a602453a93720d39397dbaa312c25",
+    "configs/derived_constants.yaml": "c4156747717471a91a236b0f71e4517c7e8bc31c0e64e94301a93b54e4fe514c"
+  },
+  "log": "outputs/runs/20261114T083930Z_final/logs/xgb_20261114T083945Z.log",
+  "status": "ok",
+  "folder": "xgb",
+  "finished_utc": "2026-11-14T09:33:19.758415+00:00",
+  "duration_s": 3214.3,
+  "outputs": {
+    "predictions_xgb_sota_seed42.csv": "135092ccb432a411d5a0f323c1e2d1cf8fd82c2f941726e4788659fb1c5fca64",
+    "predictions_xgb_sota_seed123.csv": "d8df3ffd4fd5234e6e5c26f84b012185aaef0467844e0127e5f962ad6f672f0a",
+    "predictions_xgb_sota_seed777.csv": "1f7abaf9a9b1230dba9a879d6b93521e728bd8b7632b2378990293d6bf6f78b8",
+    "uncorrected_xgb_sota_seed42.csv": "ad146f17da0f3462c53f603baaa36179f851ac19eeea6ddd7fa24433dad14329",
+    "uncorrected_xgb_sota_seed123.csv": "382d4fde9e898079eb6ceef934d7ee053c36256d0dc5e86d673bf8798d3f06e7",
+    "uncorrected_xgb_sota_seed777.csv": "c37dd5451fd5ad69a97266bf114fa5887fc8e820f59c6cb9c5045eb132da3b07",
+    "mos_coefficients.csv": "23e19455efb737394e00a4f5383cdd712e45b5f8521948fa6badcd6b2d5b5603",
+    "trials.csv": "e6ae2a44563825278aa85212b195ca71f9ba87975ae5dc9c9b194b93e42a7f06",
+    "learning_curves.csv": "f109a881370587c3ce9ec4d501530923422d148f7e98b3f992022d3d964402f7",
+    "best_params.json": "a72ace571d755d8196892347f5bfdba4740a4c2f9b70b1ae3877ee9b212c59f7",
+    "xgb_config.json": "e776d8d7017b7d729fe614a549bc65b56b61c700ce2b95563e787f5d4b1e1a3e",
+    "figures/learning_curves.png": "a146b969e2f543d75444eba76cc9a2faa1ab397e58f36708f23c70341d950540",
+    "figures/optimization_history.png": "2c501aa2ee5beb21bf758934982731498b6888b3b57d30ff68540e23a64148a2",
+    "optuna.db": "bf0faf6b0f854e6acb3d4e0a6ee4d0d1004ad48dfd34e917c09f5386d520734d",
+    "models/xgb_sota_direct_D1_seed123.ubj": "3569c9e55cda1134903ea9b5c6ad6b3f1662eb8d47930f405583894abb5df458",
+    "models/xgb_sota_direct_D1_seed42.ubj": "8d7322df17e1868f5f2fd18184bdfc2a85070203021aa6c8e64a4d9e7f26659e",
+    "models/xgb_sota_direct_D1_seed777.ubj": "d66485de79a6e80152a450fdad7fb4b3c248b2dda97f94f2a80d3dcd1aa12ca0",
+    "models/xgb_sota_direct_D2_seed123.ubj": "aba448bf43f8ac5af75f058b57f68c3a69befe0dcf53517b0c3051698627da85",
+    "models/xgb_sota_direct_D2_seed42.ubj": "012a81c10ed94ff31c5590053470d78c1823334fd6b8d28b8929ab7430bb1ab0",
+    "models/xgb_sota_direct_D2_seed777.ubj": "41d862f21d835550f217195fff35d4b2094f98cfcaa7f65ec3986906d1d27158",
+    "models/xgb_sota_direct_D3_seed123.ubj": "4f1103d64f23a9ee3df9dde56758ff32c9127bd1f0cb0f371dbe72e73f7979b1",
+    "models/xgb_sota_direct_D3_seed42.ubj": "3c9e0758fa76fb0f343997406dacf0df21c7efa07afbb0b28ec9abf0b1c683d9",
+    "models/xgb_sota_direct_D3_seed777.ubj": "387cec35a516a5af5d682e4064b69d52cfba46facaae27b900086b778e3f3009",
+    "models/xgb_sota_indirect_D1_seed123.ubj": "3efdb6b01194d0343512dab7ca109656a62b304a93d89232791adc79f704798b",
+    "models/xgb_sota_indirect_D1_seed42.ubj": "6157fa9b630651f3c74a4b224ea252dc8b644ae377f5d26e84dad27d5fb43f9f",
+    "models/xgb_sota_indirect_D1_seed777.ubj": "f5d20691eaa64c8017bae2585de38ebc6f8c6904f1e11e3b13d952b46f901d2e",
+    "models/xgb_sota_indirect_D2_seed123.ubj": "144ae2f2708357f88e79e0c0e363c85d5cc9cbb7a0a70bc389b0fbf778774c60",
+    "models/xgb_sota_indirect_D2_seed42.ubj": "bdad186150d5399612defe43e67b9421d4dd7bbb2f9ee6bb4c18db7b0ae7afd8",
+    "models/xgb_sota_indirect_D2_seed777.ubj": "6dfa7aff7c56fd8da1bc1f85e54c0ef9bd9888dc359475094068bd21a15048d5",
+    "models/xgb_sota_indirect_D3_seed123.ubj": "ac8ca5cf30a40ee3b4dbea744a6477c03e43f1b302063d1fa0ea9479fd93bce4",
+    "models/xgb_sota_indirect_D3_seed42.ubj": "0f2fa9833aba4c93d003f44c647e442c2889f1d5a2d4ee962d708b85675c8c83",
+    "models/xgb_sota_indirect_D3_seed777.ubj": "1187222e5b90fa72c6421bc394cc76e36dc1cf6d1468c63f51f91fbeffbb25ca"
+  },
+  "values": {
+    "best": {
+      "indirect_D1_seed42": 6.6438495565386875,
+      "indirect_D1_seed123": 6.588546261656688,
+      "indirect_D1_seed777": 6.642638816404464,
+      "direct_D1_seed42": 6.628409820647212,
+      "direct_D1_seed123": 6.5983661073831055,
+      "direct_D1_seed777": 6.6438010632943785,
+      "indirect_D2_seed42": 6.887955037581069,
+      "indirect_D2_seed123": 6.94911884648642,
+      "indirect_D2_seed777": 6.792897501080219,
+      "direct_D2_seed42": 6.795326264128362,
+      "direct_D2_seed123": 6.83335813019125,
+      "direct_D2_seed777": 6.803015541909159,
+      "indirect_D3_seed42": 6.546261060150191,
+      "indirect_D3_seed123": 6.536817914017906,
+      "indirect_D3_seed777": 6.586459766360603,
+      "direct_D3_seed42": 6.426054684857406,
+      "direct_D3_seed123": 6.452714550853184,
+      "direct_D3_seed777": 6.429389568121986
+    },
+    "best_uncorrected": {
+      "indirect_D1_seed42": 6.772605272982117,
+      "indirect_D1_seed123": 6.771965887487243,
+      "indirect_D1_seed777": 6.7555311428103835,
+      "direct_D1_seed42": 6.628409820647212,
+      "direct_D1_seed123": 6.5983661073831055,
+      "direct_D1_seed777": 6.6438010632943785,
+      "indirect_D2_seed42": 7.08834844177139,
+      "indirect_D2_seed123": 7.160216518649041,
+      "indirect_D2_seed777": 7.018881153640969,
+      "direct_D2_seed42": 6.795326264128362,
+      "direct_D2_seed123": 6.83335813019125,
+      "direct_D2_seed777": 6.803015541909159,
+      "indirect_D3_seed42": 6.637806408022772,
+      "indirect_D3_seed123": 6.702797617516512,
+      "indirect_D3_seed777": 6.660961960117332,
+      "direct_D3_seed42": 6.426054684857406,
+      "direct_D3_seed123": 6.452714550853184,
+      "direct_D3_seed777": 6.429389568121986
+    },
+    "trials": 1080,
+    "test_access": [
+      {
+        "step": "xgb",
+        "purpose": "forecast the test window of D+1 (features)",
+        "rows": 5829,
+        "files": [
+          "features_1H_D1.parquet",
+          "gfs_features_D1.parquet"
+        ]
+      },
+      {
+        "step": "xgb",
+        "purpose": "forecast the test window of D+2 (features)",
+        "rows": 5829,
+        "files": [
+          "features_1H_D2.parquet",
+          "gfs_features_D2.parquet"
+        ]
+      },
+      {
+        "step": "xgb",
+        "purpose": "forecast the test window of D+3 (features)",
+        "rows": 5829,
+        "files": [
+          "features_1H_D3.parquet",
+          "gfs_features_D3.parquet"
+        ]
+      }
+    ]
+  },
+  "notes": {
+    "seed_spread_pp": {
+      "indirect_D1": 0.03158566340292978,
+      "direct_D1": 0.02310790007616128,
+      "indirect_D2": 0.07872108519528956,
+      "direct_D2": 0.020108955271521206,
+      "indirect_D3": 0.02636102708507662,
+      "direct_D3": 0.014525407169920472
+    }
+  },
+  "summary": [
+    "xgb (final, 60 trial(s), seeds [42, 123, 777]): nRMSE in kW on the tuning window, the whole val split",
+    "  indirect_D1_seed42      6.644 %  best iteration 220 of 1064  (L-09; uncorrected 6.773 %)",
+    "  indirect_D1_seed123     6.589 %  best iteration 192 of 826  (L-09; uncorrected 6.772 %)",
+    "  indirect_D1_seed777     6.643 %  best iteration 234 of 1140  (L-09; uncorrected 6.756 %)",
+    "  direct_D1_seed42        6.628 %  best iteration 280 of 1355",
+    "  direct_D1_seed123       6.598 %  best iteration 204 of 205",
+    "  direct_D1_seed777       6.644 %  best iteration 50 of 738",
+    "  indirect_D2_seed42      6.888 %  best iteration 44 of 1630  (L-09; uncorrected 7.088 %)",
+    "  indirect_D2_seed123     6.949 %  best iteration 317 of 1972  (L-09; uncorrected 7.160 %)",
+    "  indirect_D2_seed777     6.793 %  best iteration 27 of 1738  (L-09; uncorrected 7.019 %)",
+    "  direct_D2_seed42        6.795 %  best iteration 233 of 234",
+    "  direct_D2_seed123       6.833 %  best iteration 365 of 1808",
+    "  direct_D2_seed777       6.803 %  best iteration 57 of 1121",
+    "  indirect_D3_seed42      6.546 %  best iteration 223 of 977  (L-09; uncorrected 6.638 %)",
+    "  indirect_D3_seed123     6.537 %  best iteration 483 of 1534  (L-09; uncorrected 6.703 %)",
+    "  indirect_D3_seed777     6.586 %  best iteration 135 of 689  (L-09; uncorrected 6.661 %)",
+    "  direct_D3_seed42        6.426 %  best iteration 31 of 1011",
+    "  direct_D3_seed123       6.453 %  best iteration 245 of 780",
+    "  direct_D3_seed777       6.429 %  best iteration 385 of 1108"
+  ],
+  "warnings": [
+    "TEST ROWS READ (forecast the test window of D+1 (features), 5829 rows); recorded in test_access_log.csv",
+    "indirect_D1_seed42: validation RMSE 0.1001 is 2.6 x the train RMSE 0.03901 at the best iteration",
+    "indirect_D1_seed42: best trial on the edge of the search space for max_depth = 10",
+    "indirect_D1_seed123: validation RMSE 0.1001 is 2.7 x the train RMSE 0.0374 at the best iteration",
+    "indirect_D1_seed123: best trial on the edge of the search space for max_depth = 10, min_child_weight = 1",
+    "indirect_D1_seed777: validation RMSE 0.09944 is 2.7 x the train RMSE 0.03698 at the best iteration",
+    "indirect_D1_seed777: best trial on the edge of the search space for max_depth = 10, colsample_bytree = 0.503",
+    "direct_D1_seed42: best trial on the edge of the search space for reg_lambda = 1.24e-08",
+    "direct_D1_seed123: best iteration 204 at the cap of 205 rounds: it may not have converged (M12d)",
+    "direct_D1_seed123: best trial on the edge of the search space for n_estimators = 205",
+    "TEST ROWS READ (forecast the test window of D+2 (features), 5829 rows); recorded in test_access_log.csv",
+    "indirect_D2_seed42: best trial on the edge of the search space for max_depth = 10",
+    "indirect_D2_seed123: best trial on the edge of the search space for n_estimators = 1972, subsample = 0.603",
+    "indirect_D2_seed777: best trial on the edge of the search space for max_depth = 10",
+    "direct_D2_seed42: best iteration 233 at the cap of 234 rounds: it may not have converged (M12d)",
+    "direct_D2_seed42: best trial on the edge of the search space for n_estimators = 234, max_depth = 10, colsample_bytree = 0.5046",
+    "direct_D2_seed123: best trial on the edge of the search space for learning_rate = 0.01019, min_child_weight = 20, reg_lambda = 1.085e-08",
+    "TEST ROWS READ (forecast the test window of D+3 (features), 5829 rows); recorded in test_access_log.csv",
+    "indirect_D3_seed777: validation RMSE 0.1034 is 2.1 x the train RMSE 0.04838 at the best iteration",
+    "indirect_D3_seed777: best trial on the edge of the search space for max_depth = 10",
+    "direct_D3_seed123: best trial on the edge of the search space for max_depth = 10",
+    "direct_D3_seed777: best trial on the edge of the search space for learning_rate = 0.01003"
+  ]
+}

@@ -1,0 +1,456 @@
+[     0.0s] RUN     stage runs/20261114T083930Z_final/bilstm
+[     0.0s] RUN     command: python -m solarpv.pipeline run --mode final --resume 20261114T083930Z_final --only bilstm
+[     0.2s] RUN     git commit: 10611a6
+[     0.2s] RUN     started (UTC): 2026-11-14T09:42:21+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.4s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.4s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.1s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     1.1s] INPUT   configs/cleaning_policy.yaml sha256=04ef51b4aa3607f6
+[     1.1s] INPUT   outputs/07_feature_selection/model_inputs.json sha256=b693622407f2246e
+[     1.1s] INPUT   configs/derived_constants.yaml sha256=c4156747717471a9
+[     1.1s] INPUT   requirements-gpu.lock.txt sha256=cf0c2a9fbf9d2a80
+[    15.4s] NOTE    bilstm (lstm_sota): budget {'trials': 60, 'epochs_trial': 25, 'epochs_final': 60, 'patience': 10, 'seeds': [42, 123, 777]}, seeds [42, 123, 777]; GPU environment 2.5.1+cu121 on GRID P40-24Q
+[    15.4s] STEP    load the inputs ...
+[    16.2s] WARN    TEST ROWS READ (forecast the test window (the encoder series and the known inputs), 5829 rows); recorded in test_access_log.csv
+[    16.3s] STEP    load the inputs done in 0.8s
+[    16.3s] STEP    indirect: build and check the windows ...
+[    19.9s] NOTE    indirect: train 872 origins, val 246 origins, test 245 origins; 46 encoder and 30 decoder channels; 72 encoder hours
+[    19.9s] STEP    indirect: build and check the windows done in 3.7s
+[    19.9s] STEP    direct: build and check the windows ...
+[    23.9s] NOTE    direct: train 872 origins, val 246 origins, test 245 origins; 63 encoder and 49 decoder channels; 72 encoder hours
+[    23.9s] STEP    direct: build and check the windows done in 4.0s
+[    24.0s] STEP    bilstm: the training worker in solar-gpu ...
+[    24.0s] NOTE    worker: C:\Users\204323141\miniforge3\envs\solar-gpu\python.exe -m solarpv.models.neural_worker C:\Users\204323141\Desktop\solar\outputs\runs\20261114T083930Z_final\.bilstm.tmp\job C:\Users\204323141\Desktop\solar\outputs\runs\20261114T083930Z_final\.bilstm.tmp\worker
+[    36.7s] NOTE    [worker 11:42:58] bilstm (final): targets ['indirect', 'direct'], seeds [42, 123, 777], budget {'trials': 60, 'epochs_trial': 25, 'epochs_final': 60, 'patience': 10, 'seeds': [42, 123, 777]}, on GRID P40-24Q
+[    53.3s] NOTE    [worker 11:43:14] indirect seed 42 trial0: 6.9143 % kW, best epoch 25 of 25, 11.48 s
+[    75.3s] NOTE    [worker 11:43:36] indirect seed 42 trial1: 6.9951 % kW, best epoch 23 of 25, 21.57 s
+[    88.0s] NOTE    [worker 11:43:49] indirect seed 42 trial2: 6.8557 % kW, best epoch 25 of 25, 12.43 s
+[    99.0s] NOTE    [worker 11:44:00] indirect seed 42 trial3: 6.9633 % kW, best epoch 25 of 25, 10.61 s
+[   118.5s] NOTE    [worker 11:44:20] indirect seed 42 trial4: 7.2968 % kW, best epoch 24 of 25, 19.14 s
+[   124.7s] NOTE    [worker 11:44:26] indirect seed 42 trial5: 6.8974 % kW, best epoch 13 of 25, 5.94 s
+[   130.2s] NOTE    [worker 11:44:31] indirect seed 42 trial6: 6.9161 % kW, best epoch 25 of 25, 5.19 s
+[   146.3s] NOTE    [worker 11:44:47] indirect seed 42 trial7: 6.9534 % kW, best epoch 24 of 25, 15.69 s
+[   158.1s] NOTE    [worker 11:44:59] indirect seed 42 trial8: 8.3794 % kW, best epoch 25 of 25, 11.43 s
+[   163.0s] NOTE    [worker 11:45:04] indirect seed 42 trial9: 6.9753 % kW, best epoch 22 of 25, 4.58 s
+[   174.9s] NOTE    [worker 11:45:16] indirect seed 42 trial10: 6.8873 % kW, best epoch 25 of 25, 11.53 s
+[   186.6s] NOTE    [worker 11:45:28] indirect seed 42 trial11: 6.9449 % kW, best epoch 25 of 25, 11.26 s
+[   198.1s] NOTE    [worker 11:45:39] indirect seed 42 trial12: 6.9318 % kW, best epoch 25 of 25, 11.13 s
+[   209.6s] NOTE    [worker 11:45:51] indirect seed 42 trial13: 6.8793 % kW, best epoch 25 of 25, 11.07 s
+[   229.9s] NOTE    [worker 11:46:11] indirect seed 42 trial14: 7.0283 % kW, best epoch 24 of 25, 19.88 s
+[   241.5s] NOTE    [worker 11:46:23] indirect seed 42 trial15: 7.0695 % kW, best epoch 24 of 25, 11.28 s
+[   261.5s] NOTE    [worker 11:46:43] indirect seed 42 trial16: 7.1324 % kW, best epoch 24 of 25, 19.63 s
+[   280.6s] NOTE    [worker 11:47:02] indirect seed 42 trial17: 7.0804 % kW, best epoch 22 of 25, 18.67 s
+[   290.2s] NOTE    [worker 11:47:11] indirect seed 42 trial18: 6.9587 % kW, best epoch 25 of 25, 9.2 s
+[   299.8s] NOTE    [worker 11:47:21] indirect seed 42 trial19: 6.8436 % kW, best epoch 25 of 25, 9.27 s
+[   309.8s] NOTE    [worker 11:47:31] indirect seed 42 trial20: 6.9727 % kW, best epoch 23 of 25, 9.51 s
+[   321.6s] NOTE    [worker 11:47:43] indirect seed 42 trial21: 6.8384 % kW, best epoch 25 of 25, 11.31 s
+[   338.8s] NOTE    [worker 11:48:00] indirect seed 42 trial22: 7.0269 % kW, best epoch 24 of 25, 16.74 s
+[   358.7s] NOTE    [worker 11:48:20] indirect seed 42 trial23: 6.9772 % kW, best epoch 25 of 25, 19.53 s
+[   370.1s] NOTE    [worker 11:48:31] indirect seed 42 trial24: 6.9278 % kW, best epoch 24 of 25, 10.97 s
+[   385.8s] NOTE    [worker 11:48:47] indirect seed 42 trial25: 7.0696 % kW, best epoch 25 of 25, 15.32 s
+[   391.6s] NOTE    [worker 11:48:53] indirect seed 42 trial26: 6.8782 % kW, best epoch 25 of 25, 5.37 s
+[   407.5s] NOTE    [worker 11:49:09] indirect seed 42 trial27: 7.1259 % kW, best epoch 24 of 25, 15.5 s
+[   419.4s] NOTE    [worker 11:49:21] indirect seed 42 trial28: 6.9990 % kW, best epoch 25 of 25, 11.45 s
+[   439.4s] NOTE    [worker 11:49:41] indirect seed 42 trial29: 7.2704 % kW, best epoch 25 of 25, 19.56 s
+[   451.1s] NOTE    [worker 11:49:52] indirect seed 42 trial30: 6.9518 % kW, best epoch 25 of 25, 11.27 s
+[   456.8s] NOTE    [worker 11:49:58] indirect seed 42 trial31: 6.8759 % kW, best epoch 25 of 25, 5.33 s
+[   462.5s] NOTE    [worker 11:50:04] indirect seed 42 trial32: 6.9063 % kW, best epoch 25 of 25, 5.3 s
+[   468.2s] NOTE    [worker 11:50:09] indirect seed 42 trial33: 6.9484 % kW, best epoch 25 of 25, 5.37 s
+[   474.0s] NOTE    [worker 11:50:15] indirect seed 42 trial34: 6.9943 % kW, best epoch 24 of 25, 5.36 s
+[   494.0s] NOTE    [worker 11:50:35] indirect seed 42 trial35: 6.9616 % kW, best epoch 25 of 25, 19.65 s
+[   505.5s] NOTE    [worker 11:50:47] indirect seed 42 trial36: 6.9428 % kW, best epoch 25 of 25, 11.08 s
+[   517.2s] NOTE    [worker 11:50:58] indirect seed 42 trial37: 6.8404 % kW, best epoch 25 of 25, 11.33 s
+[   529.0s] NOTE    [worker 11:51:10] indirect seed 42 trial38: 6.9766 % kW, best epoch 25 of 25, 11.43 s
+[   540.6s] NOTE    [worker 11:51:22] indirect seed 42 trial39: 6.8437 % kW, best epoch 25 of 25, 11.27 s
+[   552.7s] NOTE    [worker 11:51:34] indirect seed 42 trial40: 6.8751 % kW, best epoch 25 of 25, 11.65 s
+[   564.5s] NOTE    [worker 11:51:46] indirect seed 42 trial41: 6.9034 % kW, best epoch 25 of 25, 11.45 s
+[   574.4s] NOTE    [worker 11:51:56] indirect seed 42 trial42: 6.8415 % kW, best epoch 25 of 25, 9.45 s
+[   584.4s] NOTE    [worker 11:52:06] indirect seed 42 trial43: 7.0265 % kW, best epoch 25 of 25, 9.6 s
+[   596.1s] NOTE    [worker 11:52:17] indirect seed 42 trial44: 6.8553 % kW, best epoch 25 of 25, 11.35 s
+[   607.7s] NOTE    [worker 11:52:29] indirect seed 42 trial45: 6.8610 % kW, best epoch 25 of 25, 11.2 s
+[   617.7s] NOTE    [worker 11:52:39] indirect seed 42 trial46: 6.9471 % kW, best epoch 25 of 25, 9.52 s
+[   629.3s] NOTE    [worker 11:52:50] indirect seed 42 trial47: 7.0398 % kW, best epoch 24 of 25, 11.26 s
+[   635.0s] NOTE    [worker 11:52:56] indirect seed 42 trial48: 6.8696 % kW, best epoch 25 of 25, 5.26 s
+[   652.1s] NOTE    [worker 11:53:13] indirect seed 42 trial49: 7.0120 % kW, best epoch 23 of 25, 16.7 s
+[   663.8s] NOTE    [worker 11:53:25] indirect seed 42 trial50: 6.8981 % kW, best epoch 25 of 25, 11.35 s
+[   675.7s] NOTE    [worker 11:53:37] indirect seed 42 trial51: 6.8823 % kW, best epoch 25 of 25, 11.49 s
+[   687.7s] NOTE    [worker 11:53:49] indirect seed 42 trial52: 6.9199 % kW, best epoch 25 of 25, 11.53 s
+[   698.8s] NOTE    [worker 11:54:00] indirect seed 42 trial53: 6.8170 % kW, best epoch 25 of 25, 10.69 s
+[   709.3s] NOTE    [worker 11:54:10] indirect seed 42 trial54: 7.0394 % kW, best epoch 23 of 25, 10.11 s
+[   729.4s] NOTE    [worker 11:54:31] indirect seed 42 trial55: 7.1201 % kW, best epoch 23 of 25, 19.67 s
+[   749.6s] NOTE    [worker 11:54:51] indirect seed 42 trial56: 7.1225 % kW, best epoch 24 of 25, 19.68 s
+[   759.6s] NOTE    [worker 11:55:01] indirect seed 42 trial57: 6.8385 % kW, best epoch 25 of 25, 9.58 s
+[   769.5s] NOTE    [worker 11:55:11] indirect seed 42 trial58: 6.9928 % kW, best epoch 25 of 25, 9.4 s
+[   786.6s] NOTE    [worker 11:55:28] indirect seed 42 trial59: 6.9378 % kW, best epoch 23 of 25, 16.65 s
+[   813.2s] NOTE    [worker 11:55:54] indirect seed 42 final: 7.0636 % kW, best epoch 55 of 60, 26.33 s
+[   822.7s] NOTE    [worker 11:56:04] indirect seed 123 trial0: 7.1311 % kW, best epoch 22 of 25, 8.87 s
+[   849.9s] NOTE    [worker 11:56:31] indirect seed 123 trial1: 7.1505 % kW, best epoch 23 of 25, 26.77 s
+[   889.1s] NOTE    [worker 11:57:10] indirect seed 123 trial2: 6.9594 % kW, best epoch 14 of 25, 38.77 s
+[   905.3s] NOTE    [worker 11:57:26] indirect seed 123 trial3: 7.0990 % kW, best epoch 22 of 25, 15.78 s
+[   922.3s] NOTE    [worker 11:57:43] indirect seed 123 trial4: 6.9209 % kW, best epoch 25 of 25, 16.55 s
+[   950.3s] NOTE    [worker 11:58:11] indirect seed 123 trial5: 7.1374 % kW, best epoch 22 of 25, 27.69 s
+[   990.5s] NOTE    [worker 11:58:52] indirect seed 123 trial6: 7.2503 % kW, best epoch 22 of 25, 39.71 s
+[  1002.2s] NOTE    [worker 11:59:03] indirect seed 123 trial7: 7.2457 % kW, best epoch 25 of 25, 11.35 s
+[  1012.9s] NOTE    [worker 11:59:14] indirect seed 123 trial8: 6.9901 % kW, best epoch 25 of 25, 10.32 s
+[  1018.7s] NOTE    [worker 11:59:20] indirect seed 123 trial9: 7.2820 % kW, best epoch 25 of 25, 5.44 s
+[  1035.2s] NOTE    [worker 11:59:36] indirect seed 123 trial10: 6.8524 % kW, best epoch 20 of 25, 16.05 s
+[  1051.5s] NOTE    [worker 11:59:53] indirect seed 123 trial11: 7.0905 % kW, best epoch 20 of 25, 15.88 s
+[  1069.0s] NOTE    [worker 12:00:10] indirect seed 123 trial12: 6.9491 % kW, best epoch 23 of 25, 17.15 s
+[  1079.5s] NOTE    [worker 12:00:21] indirect seed 123 trial13: 7.0216 % kW, best epoch 25 of 25, 9.85 s
+[  1089.3s] NOTE    [worker 12:00:30] indirect seed 123 trial14: 6.8946 % kW, best epoch 25 of 25, 9.48 s
+[  1099.3s] NOTE    [worker 12:00:40] indirect seed 123 trial15: 6.9324 % kW, best epoch 24 of 25, 9.54 s
+[  1116.3s] NOTE    [worker 12:00:57] indirect seed 123 trial16: 7.3293 % kW, best epoch 24 of 25, 16.53 s
+[  1136.9s] NOTE    [worker 12:01:18] indirect seed 123 trial17: 7.1644 % kW, best epoch 20 of 25, 20.23 s
+[  1140.4s] NOTE    [worker 12:01:22] indirect seed 123 trial18: 7.0731 % kW, best epoch 25 of 25, 3.06 s
+[  1150.0s] NOTE    [worker 12:01:31] indirect seed 123 trial19: 7.0071 % kW, best epoch 24 of 25, 9.25 s
+[  1174.2s] NOTE    [worker 12:01:55] indirect seed 123 trial20: 7.0971 % kW, best epoch 25 of 25, 23.78 s
+[  1191.2s] NOTE    [worker 12:02:12] indirect seed 123 trial21: 7.1063 % kW, best epoch 21 of 25, 16.58 s
+[  1208.8s] NOTE    [worker 12:02:30] indirect seed 123 trial22: 7.2191 % kW, best epoch 25 of 25, 17.2 s
+[  1218.8s] NOTE    [worker 12:02:40] indirect seed 123 trial23: 6.8966 % kW, best epoch 23 of 25, 9.7 s
+[  1222.3s] NOTE    [worker 12:02:43] indirect seed 123 trial24: 6.8352 % kW, best epoch 25 of 25, 3.07 s
+[  1245.9s] NOTE    [worker 12:03:07] indirect seed 123 trial25: 7.3096 % kW, best epoch 24 of 25, 23.2 s
+[  1255.9s] NOTE    [worker 12:03:17] indirect seed 123 trial26: 6.9277 % kW, best epoch 25 of 25, 9.6 s
+[  1265.7s] NOTE    [worker 12:03:27] indirect seed 123 trial27: 7.3261 % kW, best epoch 24 of 25, 9.36 s
+[  1279.9s] NOTE    [worker 12:03:41] indirect seed 123 trial28: 6.8308 % kW, best epoch 24 of 25, 13.72 s
+[  1283.3s] NOTE    [worker 12:03:44] indirect seed 123 trial29: 10.5279 % kW, best epoch 25 of 25, 3.05 s
+[  1307.4s] NOTE    [worker 12:04:09] indirect seed 123 trial30: 7.0229 % kW, best epoch 20 of 25, 23.64 s
+[  1338.1s] NOTE    [worker 12:04:39] indirect seed 123 trial31: 6.9091 % kW, best epoch 22 of 25, 30.23 s
+[  1347.8s] NOTE    [worker 12:04:49] indirect seed 123 trial32: 6.9097 % kW, best epoch 23 of 25, 9.27 s
+[  1351.4s] NOTE    [worker 12:04:53] indirect seed 123 trial33: 6.8312 % kW, best epoch 25 of 25, 3.18 s
+[  1356.3s] NOTE    [worker 12:04:57] indirect seed 123 trial34: 7.0266 % kW, best epoch 25 of 25, 4.45 s
+[  1372.3s] NOTE    [worker 12:05:13] indirect seed 123 trial35: 6.8937 % kW, best epoch 24 of 25, 15.56 s
+[  1375.9s] NOTE    [worker 12:05:17] indirect seed 123 trial36: 6.9660 % kW, best epoch 25 of 25, 3.18 s
+[  1380.9s] NOTE    [worker 12:05:22] indirect seed 123 trial37: 8.9144 % kW, best epoch 25 of 25, 4.51 s
+[  1384.6s] NOTE    [worker 12:05:26] indirect seed 123 trial38: 6.7930 % kW, best epoch 25 of 25, 3.19 s
+[  1388.3s] NOTE    [worker 12:05:29] indirect seed 123 trial39: 6.9142 % kW, best epoch 25 of 25, 3.26 s
+[  1391.9s] NOTE    [worker 12:05:33] indirect seed 123 trial40: 6.7875 % kW, best epoch 25 of 25, 3.23 s
+[  1395.5s] NOTE    [worker 12:05:37] indirect seed 123 trial41: 6.7684 % kW, best epoch 25 of 25, 3.23 s
+[  1399.0s] NOTE    [worker 12:05:40] indirect seed 123 trial42: 6.8046 % kW, best epoch 25 of 25, 3.07 s
+[  1402.6s] NOTE    [worker 12:05:44] indirect seed 123 trial43: 6.7937 % kW, best epoch 25 of 25, 3.17 s
+[  1406.2s] NOTE    [worker 12:05:47] indirect seed 123 trial44: 6.7743 % kW, best epoch 25 of 25, 3.2 s
+[  1409.8s] NOTE    [worker 12:05:51] indirect seed 123 trial45: 6.8095 % kW, best epoch 25 of 25, 3.22 s
+[  1413.4s] NOTE    [worker 12:05:55] indirect seed 123 trial46: 6.8595 % kW, best epoch 25 of 25, 3.23 s
+[  1417.1s] NOTE    [worker 12:05:58] indirect seed 123 trial47: 6.7786 % kW, best epoch 25 of 25, 3.31 s
+[  1420.7s] NOTE    [worker 12:06:02] indirect seed 123 trial48: 7.3913 % kW, best epoch 25 of 25, 3.18 s
+[  1424.3s] NOTE    [worker 12:06:05] indirect seed 123 trial49: 6.7729 % kW, best epoch 25 of 25, 3.18 s
+[  1427.0s] NOTE    [worker 12:06:08] indirect seed 123 trial50: 6.7968 % kW, best epoch 25 of 25, 2.33 s
+[  1430.5s] NOTE    [worker 12:06:12] indirect seed 123 trial51: 6.7953 % kW, best epoch 25 of 25, 3.16 s
+[  1433.2s] NOTE    [worker 12:06:14] indirect seed 123 trial52: 6.7529 % kW, best epoch 25 of 25, 2.32 s
+[  1436.6s] NOTE    [worker 12:06:18] indirect seed 123 trial53: 6.8974 % kW, best epoch 25 of 25, 3.07 s
+[  1440.2s] NOTE    [worker 12:06:21] indirect seed 123 trial54: 6.8698 % kW, best epoch 24 of 25, 3.18 s
+[  1443.7s] NOTE    [worker 12:06:25] indirect seed 123 trial55: 6.8736 % kW, best epoch 25 of 25, 3.21 s
+[  1447.2s] NOTE    [worker 12:06:28] indirect seed 123 trial56: 6.7657 % kW, best epoch 25 of 25, 3.14 s
+[  1450.8s] NOTE    [worker 12:06:32] indirect seed 123 trial57: 6.7669 % kW, best epoch 25 of 25, 3.12 s
+[  1454.3s] NOTE    [worker 12:06:35] indirect seed 123 trial58: 6.7485 % kW, best epoch 25 of 25, 3.18 s
+[  1458.5s] NOTE    [worker 12:06:40] indirect seed 123 trial59: 6.7629 % kW, best epoch 25 of 25, 3.76 s
+[  1466.1s] NOTE    [worker 12:06:47] indirect seed 123 final: 6.9860 % kW, best epoch 60 of 60, 7.35 s
+[  1476.7s] NOTE    [worker 12:06:58] indirect seed 777 trial0: 7.0000 % kW, best epoch 21 of 25, 10.18 s
+[  1483.1s] NOTE    [worker 12:07:04] indirect seed 777 trial1: 6.9565 % kW, best epoch 11 of 25, 5.99 s
+[  1490.3s] NOTE    [worker 12:07:11] indirect seed 777 trial2: 6.8957 % kW, best epoch 25 of 25, 6.85 s
+[  1506.5s] NOTE    [worker 12:07:28] indirect seed 777 trial3: 7.0662 % kW, best epoch 24 of 25, 15.82 s
+[  1512.2s] NOTE    [worker 12:07:33] indirect seed 777 trial4: 7.1995 % kW, best epoch 25 of 25, 5.23 s
+[  1525.9s] NOTE    [worker 12:07:47] indirect seed 777 trial5: 7.1492 % kW, best epoch 24 of 25, 13.4 s
+[  1536.6s] NOTE    [worker 12:07:58] indirect seed 777 trial6: 7.3294 % kW, best epoch 24 of 25, 10.33 s
+[  1560.6s] NOTE    [worker 12:08:22] indirect seed 777 trial7: 6.8763 % kW, best epoch 17 of 25, 23.53 s
+[  1574.6s] NOTE    [worker 12:08:36] indirect seed 777 trial8: 7.0721 % kW, best epoch 22 of 25, 13.68 s
+[  1601.9s] NOTE    [worker 12:09:03] indirect seed 777 trial9: 7.3003 % kW, best epoch 17 of 25, 26.9 s
+[  1625.8s] NOTE    [worker 12:09:27] indirect seed 777 trial10: 7.0820 % kW, best epoch 25 of 25, 23.43 s
+[  1633.1s] NOTE    [worker 12:09:34] indirect seed 777 trial11: 6.9278 % kW, best epoch 25 of 25, 6.9 s
+[  1657.8s] NOTE    [worker 12:09:59] indirect seed 777 trial12: 7.0462 % kW, best epoch 23 of 25, 24.22 s
+[  1673.7s] NOTE    [worker 12:10:15] indirect seed 777 trial13: 7.3498 % kW, best epoch 25 of 25, 15.44 s
+[  1684.3s] NOTE    [worker 12:10:25] indirect seed 777 trial14: 6.9611 % kW, best epoch 23 of 25, 10.23 s
+[  1708.0s] NOTE    [worker 12:10:49] indirect seed 777 trial15: 7.1015 % kW, best epoch 21 of 25, 23.19 s
+[  1732.6s] NOTE    [worker 12:11:14] indirect seed 777 trial16: 7.0886 % kW, best epoch 18 of 25, 24.19 s
+[  1750.0s] NOTE    [worker 12:11:31] indirect seed 777 trial17: 7.0650 % kW, best epoch 25 of 25, 16.97 s
+[  1757.2s] NOTE    [worker 12:11:38] indirect seed 777 trial18: 7.2213 % kW, best epoch 25 of 25, 6.78 s
+[  1781.0s] NOTE    [worker 12:12:02] indirect seed 777 trial19: 7.3972 % kW, best epoch 25 of 25, 23.38 s
+[  1788.2s] NOTE    [worker 12:12:09] indirect seed 777 trial20: 6.8935 % kW, best epoch 24 of 25, 6.84 s
+[  1799.1s] NOTE    [worker 12:12:20] indirect seed 777 trial21: 7.0954 % kW, best epoch 25 of 25, 10.5 s
+[  1806.3s] NOTE    [worker 12:12:27] indirect seed 777 trial22: 6.9543 % kW, best epoch 22 of 25, 6.86 s
+[  1812.2s] NOTE    [worker 12:12:33] indirect seed 777 trial23: 6.8782 % kW, best epoch 24 of 25, 5.37 s
+[  1817.8s] NOTE    [worker 12:12:39] indirect seed 777 trial24: 6.8457 % kW, best epoch 25 of 25, 5.3 s
+[  1823.5s] NOTE    [worker 12:12:45] indirect seed 777 trial25: 6.9877 % kW, best epoch 25 of 25, 5.3 s
+[  1829.2s] NOTE    [worker 12:12:50] indirect seed 777 trial26: 8.2085 % kW, best epoch 25 of 25, 5.37 s
+[  1836.0s] NOTE    [worker 12:12:57] indirect seed 777 trial27: 7.2857 % kW, best epoch 25 of 25, 6.46 s
+[  1841.5s] NOTE    [worker 12:13:03] indirect seed 777 trial28: 6.8331 % kW, best epoch 25 of 25, 5.2 s
+[  1846.8s] NOTE    [worker 12:13:08] indirect seed 777 trial29: 6.8421 % kW, best epoch 24 of 25, 4.96 s
+[  1852.3s] NOTE    [worker 12:13:14] indirect seed 777 trial30: 6.8507 % kW, best epoch 25 of 25, 5.18 s
+[  1858.0s] NOTE    [worker 12:13:19] indirect seed 777 trial31: 6.9063 % kW, best epoch 25 of 25, 5.33 s
+[  1863.7s] NOTE    [worker 12:13:25] indirect seed 777 trial32: 6.9651 % kW, best epoch 25 of 25, 5.39 s
+[  1869.5s] NOTE    [worker 12:13:31] indirect seed 777 trial33: 6.8515 % kW, best epoch 25 of 25, 5.45 s
+[  1875.2s] NOTE    [worker 12:13:36] indirect seed 777 trial34: 7.0318 % kW, best epoch 23 of 25, 5.31 s
+[  1880.8s] NOTE    [worker 12:13:42] indirect seed 777 trial35: 6.8619 % kW, best epoch 25 of 25, 5.29 s
+[  1886.5s] NOTE    [worker 12:13:48] indirect seed 777 trial36: 6.9791 % kW, best epoch 25 of 25, 5.3 s
+[  1892.1s] NOTE    [worker 12:13:53] indirect seed 777 trial37: 6.8744 % kW, best epoch 25 of 25, 5.28 s
+[  1897.8s] NOTE    [worker 12:13:59] indirect seed 777 trial38: 6.9408 % kW, best epoch 25 of 25, 5.35 s
+[  1903.4s] NOTE    [worker 12:14:05] indirect seed 777 trial39: 6.8578 % kW, best epoch 25 of 25, 5.27 s
+[  1909.0s] NOTE    [worker 12:14:10] indirect seed 777 trial40: 6.8058 % kW, best epoch 25 of 25, 5.29 s
+[  1916.0s] NOTE    [worker 12:14:17] indirect seed 777 trial41: 7.4814 % kW, best epoch 25 of 25, 6.68 s
+[  1922.8s] NOTE    [worker 12:14:24] indirect seed 777 trial42: 7.0820 % kW, best epoch 24 of 25, 6.45 s
+[  1928.5s] NOTE    [worker 12:14:30] indirect seed 777 trial43: 6.8370 % kW, best epoch 24 of 25, 5.35 s
+[  1934.1s] NOTE    [worker 12:14:35] indirect seed 777 trial44: 7.1698 % kW, best epoch 25 of 25, 5.31 s
+[  1941.3s] NOTE    [worker 12:14:42] indirect seed 777 trial45: 6.8530 % kW, best epoch 24 of 25, 6.85 s
+[  1946.9s] NOTE    [worker 12:14:48] indirect seed 777 trial46: 6.8948 % kW, best epoch 25 of 25, 5.22 s
+[  1952.5s] NOTE    [worker 12:14:54] indirect seed 777 trial47: 6.9700 % kW, best epoch 24 of 25, 5.29 s
+[  1958.1s] NOTE    [worker 12:14:59] indirect seed 777 trial48: 7.0129 % kW, best epoch 25 of 25, 5.29 s
+[  1963.7s] NOTE    [worker 12:15:05] indirect seed 777 trial49: 6.8037 % kW, best epoch 25 of 25, 5.19 s
+[  1969.2s] NOTE    [worker 12:15:10] indirect seed 777 trial50: 7.0016 % kW, best epoch 25 of 25, 5.22 s
+[  1975.0s] NOTE    [worker 12:15:16] indirect seed 777 trial51: 6.8110 % kW, best epoch 25 of 25, 5.28 s
+[  1980.5s] NOTE    [worker 12:15:22] indirect seed 777 trial52: 6.7992 % kW, best epoch 25 of 25, 5.15 s
+[  1986.1s] NOTE    [worker 12:15:27] indirect seed 777 trial53: 6.8112 % kW, best epoch 25 of 25, 5.25 s
+[  1991.6s] NOTE    [worker 12:15:33] indirect seed 777 trial54: 6.8186 % kW, best epoch 25 of 25, 5.14 s
+[  1997.1s] NOTE    [worker 12:15:38] indirect seed 777 trial55: 6.8323 % kW, best epoch 25 of 25, 5.22 s
+[  2002.7s] NOTE    [worker 12:15:44] indirect seed 777 trial56: 6.8154 % kW, best epoch 25 of 25, 5.23 s
+[  2008.1s] NOTE    [worker 12:15:49] indirect seed 777 trial57: 6.8049 % kW, best epoch 25 of 25, 5.11 s
+[  2013.6s] NOTE    [worker 12:15:55] indirect seed 777 trial58: 6.8471 % kW, best epoch 25 of 25, 5.15 s
+[  2018.9s] NOTE    [worker 12:16:00] indirect seed 777 trial59: 6.8043 % kW, best epoch 25 of 25, 5.03 s
+[  2031.5s] NOTE    [worker 12:16:13] indirect seed 777 final: 6.9624 % kW, best epoch 57 of 60, 12.33 s
+[  2042.7s] NOTE    [worker 12:16:24] direct seed 42 trial0: 6.8481 % kW, best epoch 25 of 25, 10.46 s
+[  2067.5s] NOTE    [worker 12:16:49] direct seed 42 trial1: 7.1320 % kW, best epoch 24 of 25, 24.51 s
+[  2080.3s] NOTE    [worker 12:17:02] direct seed 42 trial2: 6.9159 % kW, best epoch 24 of 25, 12.51 s
+[  2090.9s] NOTE    [worker 12:17:12] direct seed 42 trial3: 6.9197 % kW, best epoch 25 of 25, 10.22 s
+[  2108.3s] NOTE    [worker 12:17:29] direct seed 42 trial4: 6.8295 % kW, best epoch 21 of 25, 17.05 s
+[  2114.4s] NOTE    [worker 12:17:36] direct seed 42 trial5: 7.1425 % kW, best epoch 21 of 25, 5.75 s
+[  2119.9s] NOTE    [worker 12:17:41] direct seed 42 trial6: 7.0723 % kW, best epoch 25 of 25, 5.13 s
+[  2136.4s] NOTE    [worker 12:17:58] direct seed 42 trial7: 6.9664 % kW, best epoch 25 of 25, 16.14 s
+[  2148.2s] NOTE    [worker 12:18:09] direct seed 42 trial8: 8.3655 % kW, best epoch 25 of 25, 11.39 s
+[  2153.4s] NOTE    [worker 12:18:15] direct seed 42 trial9: 6.8579 % kW, best epoch 25 of 25, 4.95 s
+[  2181.6s] NOTE    [worker 12:18:43] direct seed 42 trial10: 6.8989 % kW, best epoch 11 of 25, 27.75 s
+[  2192.3s] NOTE    [worker 12:18:53] direct seed 42 trial11: 6.7788 % kW, best epoch 12 of 25, 10.28 s
+[  2206.4s] NOTE    [worker 12:19:08] direct seed 42 trial12: 7.1724 % kW, best epoch 23 of 25, 13.66 s
+[  2216.7s] NOTE    [worker 12:19:18] direct seed 42 trial13: 6.7398 % kW, best epoch 17 of 25, 9.87 s
+[  2227.0s] NOTE    [worker 12:19:28] direct seed 42 trial14: 6.9818 % kW, best epoch 15 of 25, 9.96 s
+[  2237.5s] NOTE    [worker 12:19:39] direct seed 42 trial15: 6.8972 % kW, best epoch 22 of 25, 10.02 s
+[  2255.0s] NOTE    [worker 12:19:56] direct seed 42 trial16: 7.1445 % kW, best epoch 21 of 25, 17.1 s
+[  2263.0s] NOTE    [worker 12:20:04] direct seed 42 trial17: 7.1555 % kW, best epoch 25 of 25, 7.64 s
+[  2270.2s] NOTE    [worker 12:20:11] direct seed 42 trial18: 6.9352 % kW, best epoch 25 of 25, 6.81 s
+[  2277.1s] NOTE    [worker 12:20:18] direct seed 42 trial19: 6.9146 % kW, best epoch 20 of 25, 6.57 s
+[  2287.6s] NOTE    [worker 12:20:29] direct seed 42 trial20: 6.8199 % kW, best epoch 22 of 25, 10.03 s
+[  2298.0s] NOTE    [worker 12:20:39] direct seed 42 trial21: 6.7710 % kW, best epoch 22 of 25, 10.08 s
+[  2308.4s] NOTE    [worker 12:20:50] direct seed 42 trial22: 6.6608 % kW, best epoch 21 of 25, 10.03 s
+[  2318.8s] NOTE    [worker 12:21:00] direct seed 42 trial23: 6.8063 % kW, best epoch 25 of 25, 10.04 s
+[  2329.3s] NOTE    [worker 12:21:10] direct seed 42 trial24: 6.8796 % kW, best epoch 22 of 25, 10.11 s
+[  2340.2s] NOTE    [worker 12:21:21] direct seed 42 trial25: 6.8926 % kW, best epoch 22 of 25, 10.48 s
+[  2347.3s] NOTE    [worker 12:21:28] direct seed 42 trial26: 7.0250 % kW, best epoch 21 of 25, 6.72 s
+[  2357.9s] NOTE    [worker 12:21:39] direct seed 42 trial27: 6.7127 % kW, best epoch 17 of 25, 10.14 s
+[  2368.1s] NOTE    [worker 12:21:49] direct seed 42 trial28: 6.7995 % kW, best epoch 17 of 25, 9.82 s
+[  2374.9s] NOTE    [worker 12:21:56] direct seed 42 trial29: 6.9830 % kW, best epoch 22 of 25, 6.53 s
+[  2385.3s] NOTE    [worker 12:22:07] direct seed 42 trial30: 6.8805 % kW, best epoch 19 of 25, 10.02 s
+[  2398.5s] NOTE    [worker 12:22:20] direct seed 42 trial31: 7.1468 % kW, best epoch 17 of 25, 12.73 s
+[  2412.4s] NOTE    [worker 12:22:34] direct seed 42 trial32: 7.1402 % kW, best epoch 21 of 25, 13.52 s
+[  2422.9s] NOTE    [worker 12:22:44] direct seed 42 trial33: 6.8232 % kW, best epoch 22 of 25, 10.06 s
+[  2431.1s] NOTE    [worker 12:22:52] direct seed 42 trial34: 6.6599 % kW, best epoch 21 of 25, 7.86 s
+[  2452.4s] NOTE    [worker 12:23:14] direct seed 42 trial35: 7.0181 % kW, best epoch 18 of 25, 20.79 s
+[  2459.4s] NOTE    [worker 12:23:21] direct seed 42 trial36: 6.8101 % kW, best epoch 25 of 25, 6.63 s
+[  2467.8s] NOTE    [worker 12:23:29] direct seed 42 trial37: 6.8335 % kW, best epoch 23 of 25, 8.03 s
+[  2474.6s] NOTE    [worker 12:23:36] direct seed 42 trial38: 6.8134 % kW, best epoch 19 of 25, 6.41 s
+[  2482.9s] NOTE    [worker 12:23:44] direct seed 42 trial39: 6.8208 % kW, best epoch 25 of 25, 7.89 s
+[  2489.1s] NOTE    [worker 12:23:50] direct seed 42 trial40: 6.8270 % kW, best epoch 24 of 25, 5.91 s
+[  2503.0s] NOTE    [worker 12:24:04] direct seed 42 trial41: 6.8782 % kW, best epoch 25 of 25, 13.49 s
+[  2513.4s] NOTE    [worker 12:24:15] direct seed 42 trial42: 6.7897 % kW, best epoch 22 of 25, 9.98 s
+[  2524.0s] NOTE    [worker 12:24:25] direct seed 42 trial43: 7.0802 % kW, best epoch 25 of 25, 10.2 s
+[  2529.5s] NOTE    [worker 12:24:31] direct seed 42 trial44: 6.9897 % kW, best epoch 24 of 25, 5.12 s
+[  2536.5s] NOTE    [worker 12:24:38] direct seed 42 trial45: 6.9181 % kW, best epoch 25 of 25, 6.6 s
+[  2550.0s] NOTE    [worker 12:24:51] direct seed 42 trial46: 6.8975 % kW, best epoch 22 of 25, 13.13 s
+[  2558.4s] NOTE    [worker 12:25:00] direct seed 42 trial47: 6.7525 % kW, best epoch 19 of 25, 7.92 s
+[  2568.7s] NOTE    [worker 12:25:10] direct seed 42 trial48: 7.1265 % kW, best epoch 20 of 25, 9.96 s
+[  2574.0s] NOTE    [worker 12:25:15] direct seed 42 trial49: 7.0358 % kW, best epoch 24 of 25, 5.0 s
+[  2587.3s] NOTE    [worker 12:25:28] direct seed 42 trial50: 7.1233 % kW, best epoch 12 of 25, 12.91 s
+[  2595.7s] NOTE    [worker 12:25:37] direct seed 42 trial51: 6.9055 % kW, best epoch 24 of 25, 8.0 s
+[  2604.0s] NOTE    [worker 12:25:45] direct seed 42 trial52: 6.9106 % kW, best epoch 25 of 25, 7.98 s
+[  2612.4s] NOTE    [worker 12:25:54] direct seed 42 trial53: 6.7828 % kW, best epoch 23 of 25, 7.97 s
+[  2620.7s] NOTE    [worker 12:26:02] direct seed 42 trial54: 6.7529 % kW, best epoch 25 of 25, 7.95 s
+[  2634.4s] NOTE    [worker 12:26:16] direct seed 42 trial55: 6.9652 % kW, best epoch 19 of 25, 13.32 s
+[  2642.7s] NOTE    [worker 12:26:24] direct seed 42 trial56: 6.9969 % kW, best epoch 24 of 25, 7.9 s
+[  2656.1s] NOTE    [worker 12:26:37] direct seed 42 trial57: 6.9407 % kW, best epoch 15 of 25, 13.0 s
+[  2666.3s] NOTE    [worker 12:26:48] direct seed 42 trial58: 6.9319 % kW, best epoch 21 of 25, 9.84 s
+[  2674.7s] NOTE    [worker 12:26:56] direct seed 42 trial59: 6.9012 % kW, best epoch 25 of 25, 8.01 s
+[  2684.7s] NOTE    [worker 12:27:06] direct seed 42 final: 6.6599 % kW, best epoch 21 of 31, 9.68 s
+[  2694.0s] NOTE    [worker 12:27:15] direct seed 123 trial0: 6.9522 % kW, best epoch 24 of 25, 8.8 s
+[  2721.8s] NOTE    [worker 12:27:43] direct seed 123 trial1: 6.9801 % kW, best epoch 14 of 25, 27.41 s
+[  2761.6s] NOTE    [worker 12:28:23] direct seed 123 trial2: 7.1552 % kW, best epoch 18 of 25, 39.36 s
+[  2777.3s] NOTE    [worker 12:28:39] direct seed 123 trial3: 6.8788 % kW, best epoch 24 of 25, 15.38 s
+[  2794.5s] NOTE    [worker 12:28:56] direct seed 123 trial4: 7.3775 % kW, best epoch 24 of 25, 16.71 s
+[  2822.9s] NOTE    [worker 12:29:24] direct seed 123 trial5: 7.1704 % kW, best epoch 22 of 25, 28.03 s
+[  2863.2s] NOTE    [worker 12:30:04] direct seed 123 trial6: 6.8858 % kW, best epoch 23 of 25, 39.81 s
+[  2874.9s] NOTE    [worker 12:30:16] direct seed 123 trial7: 7.1789 % kW, best epoch 25 of 25, 11.3 s
+[  2885.5s] NOTE    [worker 12:30:27] direct seed 123 trial8: 7.2007 % kW, best epoch 25 of 25, 10.26 s
+[  2890.3s] NOTE    [worker 12:30:31] direct seed 123 trial9: 7.7646 % kW, best epoch 24 of 25, 4.37 s
+[  2899.8s] NOTE    [worker 12:30:41] direct seed 123 trial10: 6.7733 % kW, best epoch 21 of 25, 9.16 s
+[  2909.2s] NOTE    [worker 12:30:50] direct seed 123 trial11: 6.7385 % kW, best epoch 18 of 25, 8.98 s
+[  2918.4s] NOTE    [worker 12:31:00] direct seed 123 trial12: 6.6944 % kW, best epoch 23 of 25, 8.93 s
+[  2927.6s] NOTE    [worker 12:31:09] direct seed 123 trial13: 7.0108 % kW, best epoch 16 of 25, 8.84 s
+[  2937.0s] NOTE    [worker 12:31:18] direct seed 123 trial14: 6.8767 % kW, best epoch 14 of 25, 8.94 s
+[  2950.2s] NOTE    [worker 12:31:31] direct seed 123 trial15: 7.2483 % kW, best epoch 13 of 25, 12.75 s
+[  2965.4s] NOTE    [worker 12:31:47] direct seed 123 trial16: 7.0877 % kW, best epoch 15 of 25, 14.82 s
+[  2974.9s] NOTE    [worker 12:31:56] direct seed 123 trial17: 6.7616 % kW, best epoch 23 of 25, 9.11 s
+[  2985.4s] NOTE    [worker 12:32:07] direct seed 123 trial18: 6.8209 % kW, best epoch 20 of 25, 10.05 s
+[  2993.7s] NOTE    [worker 12:32:15] direct seed 123 trial19: 7.0577 % kW, best epoch 20 of 25, 7.9 s
+[  3021.3s] NOTE    [worker 12:32:42] direct seed 123 trial20: 7.0700 % kW, best epoch 13 of 25, 27.16 s
+[  3030.8s] NOTE    [worker 12:32:52] direct seed 123 trial21: 6.7498 % kW, best epoch 24 of 25, 9.16 s
+[  3040.1s] NOTE    [worker 12:33:01] direct seed 123 trial22: 7.1574 % kW, best epoch 15 of 25, 8.92 s
+[  3049.7s] NOTE    [worker 12:33:11] direct seed 123 trial23: 6.8130 % kW, best epoch 24 of 25, 9.1 s
+[  3062.8s] NOTE    [worker 12:33:24] direct seed 123 trial24: 7.1617 % kW, best epoch 24 of 25, 12.71 s
+[  3072.5s] NOTE    [worker 12:33:34] direct seed 123 trial25: 6.9271 % kW, best epoch 25 of 25, 9.27 s
+[  3081.9s] NOTE    [worker 12:33:43] direct seed 123 trial26: 6.8405 % kW, best epoch 18 of 25, 8.98 s
+[  3095.0s] NOTE    [worker 12:33:56] direct seed 123 trial27: 7.1942 % kW, best epoch 12 of 25, 12.73 s
+[  3102.2s] NOTE    [worker 12:34:03] direct seed 123 trial28: 7.0695 % kW, best epoch 24 of 25, 6.73 s
+[  3112.0s] NOTE    [worker 12:34:13] direct seed 123 trial29: 6.7478 % kW, best epoch 24 of 25, 9.44 s
+[  3125.7s] NOTE    [worker 12:34:27] direct seed 123 trial30: 6.6995 % kW, best epoch 21 of 25, 13.24 s
+[  3139.3s] NOTE    [worker 12:34:40] direct seed 123 trial31: 6.9520 % kW, best epoch 20 of 25, 13.14 s
+[  3152.8s] NOTE    [worker 12:34:54] direct seed 123 trial32: 6.8913 % kW, best epoch 24 of 25, 13.0 s
+[  3162.0s] NOTE    [worker 12:35:03] direct seed 123 trial33: 6.8483 % kW, best epoch 13 of 25, 8.85 s
+[  3179.4s] NOTE    [worker 12:35:21] direct seed 123 trial34: 7.1343 % kW, best epoch 14 of 25, 17.04 s
+[  3196.9s] NOTE    [worker 12:35:38] direct seed 123 trial35: 6.6942 % kW, best epoch 13 of 25, 17.0 s
+[  3210.0s] NOTE    [worker 12:35:51] direct seed 123 trial36: 6.6067 % kW, best epoch 9 of 25, 12.74 s
+[  3227.4s] NOTE    [worker 12:36:09] direct seed 123 trial37: 6.7031 % kW, best epoch 13 of 25, 16.99 s
+[  3240.7s] NOTE    [worker 12:36:22] direct seed 123 trial38: 6.8423 % kW, best epoch 15 of 25, 12.82 s
+[  3254.1s] NOTE    [worker 12:36:35] direct seed 123 trial39: 6.8047 % kW, best epoch 14 of 25, 13.01 s
+[  3263.8s] NOTE    [worker 12:36:45] direct seed 123 trial40: 6.6565 % kW, best epoch 24 of 25, 9.31 s
+[  3273.4s] NOTE    [worker 12:36:55] direct seed 123 trial41: 6.7261 % kW, best epoch 24 of 25, 9.18 s
+[  3283.0s] NOTE    [worker 12:37:04] direct seed 123 trial42: 6.7995 % kW, best epoch 20 of 25, 9.21 s
+[  3296.3s] NOTE    [worker 12:37:17] direct seed 123 trial43: 6.6541 % kW, best epoch 13 of 25, 12.86 s
+[  3309.6s] NOTE    [worker 12:37:31] direct seed 123 trial44: 6.8312 % kW, best epoch 14 of 25, 12.91 s
+[  3319.3s] NOTE    [worker 12:37:40] direct seed 123 trial45: 6.8997 % kW, best epoch 18 of 25, 9.21 s
+[  3329.2s] NOTE    [worker 12:37:50] direct seed 123 trial46: 7.0581 % kW, best epoch 25 of 25, 9.2 s
+[  3338.6s] NOTE    [worker 12:38:00] direct seed 123 trial47: 6.8358 % kW, best epoch 15 of 25, 9.01 s
+[  3351.9s] NOTE    [worker 12:38:13] direct seed 123 trial48: 7.0909 % kW, best epoch 10 of 25, 12.87 s
+[  3365.3s] NOTE    [worker 12:38:26] direct seed 123 trial49: 7.0703 % kW, best epoch 15 of 25, 12.92 s
+[  3383.1s] NOTE    [worker 12:38:44] direct seed 123 trial50: 6.7411 % kW, best epoch 8 of 25, 17.36 s
+[  3390.4s] NOTE    [worker 12:38:52] direct seed 123 trial51: 6.9933 % kW, best epoch 25 of 25, 6.86 s
+[  3400.4s] NOTE    [worker 12:39:02] direct seed 123 trial52: 6.7774 % kW, best epoch 23 of 25, 9.36 s
+[  3410.2s] NOTE    [worker 12:39:11] direct seed 123 trial53: 6.9349 % kW, best epoch 22 of 25, 9.36 s
+[  3424.1s] NOTE    [worker 12:39:25] direct seed 123 trial54: 7.0578 % kW, best epoch 18 of 25, 13.44 s
+[  3442.0s] NOTE    [worker 12:39:43] direct seed 123 trial55: 7.1344 % kW, best epoch 8 of 25, 17.45 s
+[  3456.0s] NOTE    [worker 12:39:57] direct seed 123 trial56: 7.1160 % kW, best epoch 20 of 25, 13.53 s
+[  3470.1s] NOTE    [worker 12:40:11] direct seed 123 trial57: 6.7710 % kW, best epoch 21 of 25, 13.72 s
+[  3483.9s] NOTE    [worker 12:40:25] direct seed 123 trial58: 6.8767 % kW, best epoch 20 of 25, 13.34 s
+[  3496.9s] NOTE    [worker 12:40:38] direct seed 123 trial59: 6.8054 % kW, best epoch 16 of 25, 12.6 s
+[  3506.6s] NOTE    [worker 12:40:48] direct seed 123 final: 6.6067 % kW, best epoch 9 of 19, 9.35 s
+[  3517.3s] NOTE    [worker 12:40:58] direct seed 777 trial0: 6.7361 % kW, best epoch 13 of 25, 10.08 s
+[  3523.6s] NOTE    [worker 12:41:05] direct seed 777 trial1: 6.9399 % kW, best epoch 11 of 25, 5.92 s
+[  3530.8s] NOTE    [worker 12:41:12] direct seed 777 trial2: 6.9266 % kW, best epoch 25 of 25, 6.83 s
+[  3548.3s] NOTE    [worker 12:41:29] direct seed 777 trial3: 6.7761 % kW, best epoch 15 of 25, 17.11 s
+[  3553.8s] NOTE    [worker 12:41:35] direct seed 777 trial4: 6.8854 % kW, best epoch 23 of 25, 5.13 s
+[  3567.0s] NOTE    [worker 12:41:48] direct seed 777 trial5: 7.0448 % kW, best epoch 24 of 25, 12.73 s
+[  3578.0s] NOTE    [worker 12:41:59] direct seed 777 trial6: 6.9399 % kW, best epoch 22 of 25, 10.68 s
+[  3602.8s] NOTE    [worker 12:42:24] direct seed 777 trial7: 6.9492 % kW, best epoch 23 of 25, 24.32 s
+[  3617.0s] NOTE    [worker 12:42:38] direct seed 777 trial8: 6.8690 % kW, best epoch 22 of 25, 13.81 s
+[  3648.8s] NOTE    [worker 12:43:10] direct seed 777 trial9: 7.0659 % kW, best epoch 10 of 25, 31.33 s
+[  3659.5s] NOTE    [worker 12:43:21] direct seed 777 trial10: 6.8753 % kW, best epoch 24 of 25, 10.26 s
+[  3675.7s] NOTE    [worker 12:43:37] direct seed 777 trial11: 6.6383 % kW, best epoch 16 of 25, 15.87 s
+[  3691.6s] NOTE    [worker 12:43:53] direct seed 777 trial12: 6.8207 % kW, best epoch 19 of 25, 15.48 s
+[  3705.6s] NOTE    [worker 12:44:07] direct seed 777 trial13: 7.2704 % kW, best epoch 16 of 25, 13.62 s
+[  3716.1s] NOTE    [worker 12:44:17] direct seed 777 trial14: 7.0029 % kW, best epoch 21 of 25, 10.11 s
+[  3733.3s] NOTE    [worker 12:44:35] direct seed 777 trial15: 6.8775 % kW, best epoch 19 of 25, 16.83 s
+[  3761.6s] NOTE    [worker 12:45:03] direct seed 777 trial16: 6.7292 % kW, best epoch 16 of 25, 27.76 s
+[  3790.6s] NOTE    [worker 12:45:32] direct seed 777 trial17: 6.7232 % kW, best epoch 16 of 25, 28.51 s
+[  3831.0s] NOTE    [worker 12:46:12] direct seed 777 trial18: 7.1430 % kW, best epoch 17 of 25, 39.96 s
+[  3858.4s] NOTE    [worker 12:46:40] direct seed 777 trial19: 7.2390 % kW, best epoch 24 of 25, 27.03 s
+[  3874.7s] NOTE    [worker 12:46:56] direct seed 777 trial20: 7.0763 % kW, best epoch 14 of 25, 15.87 s
+[  3902.3s] NOTE    [worker 12:47:23] direct seed 777 trial21: 7.0288 % kW, best epoch 17 of 25, 27.08 s
+[  3910.2s] NOTE    [worker 12:47:31] direct seed 777 trial22: 6.8040 % kW, best epoch 16 of 25, 7.49 s
+[  3939.1s] NOTE    [worker 12:48:00] direct seed 777 trial23: 6.7346 % kW, best epoch 16 of 25, 28.57 s
+[  3978.7s] NOTE    [worker 12:48:40] direct seed 777 trial24: 7.0507 % kW, best epoch 16 of 25, 39.13 s
+[  4018.6s] NOTE    [worker 12:49:20] direct seed 777 trial25: 7.0125 % kW, best epoch 16 of 25, 39.46 s
+[  4046.3s] NOTE    [worker 12:49:47] direct seed 777 trial26: 7.1572 % kW, best epoch 17 of 25, 27.26 s
+[  4056.3s] NOTE    [worker 12:49:57] direct seed 777 trial27: 6.7121 % kW, best epoch 17 of 25, 9.54 s
+[  4066.1s] NOTE    [worker 12:50:07] direct seed 777 trial28: 6.7777 % kW, best epoch 17 of 25, 9.46 s
+[  4081.7s] NOTE    [worker 12:50:23] direct seed 777 trial29: 6.8893 % kW, best epoch 24 of 25, 15.17 s
+[  4091.5s] NOTE    [worker 12:50:33] direct seed 777 trial30: 6.8661 % kW, best epoch 21 of 25, 9.41 s
+[  4118.7s] NOTE    [worker 12:51:00] direct seed 777 trial31: 6.9690 % kW, best epoch 16 of 25, 26.81 s
+[  4146.4s] NOTE    [worker 12:51:28] direct seed 777 trial32: 6.8756 % kW, best epoch 16 of 25, 27.29 s
+[  4162.5s] NOTE    [worker 12:51:44] direct seed 777 trial33: 6.7782 % kW, best epoch 15 of 25, 15.76 s
+[  4190.1s] NOTE    [worker 12:52:11] direct seed 777 trial34: 6.9226 % kW, best epoch 17 of 25, 27.13 s
+[  4199.8s] NOTE    [worker 12:52:21] direct seed 777 trial35: 6.9331 % kW, best epoch 21 of 25, 9.31 s
+[  4213.3s] NOTE    [worker 12:52:34] direct seed 777 trial36: 6.9095 % kW, best epoch 23 of 25, 13.1 s
+[  4240.6s] NOTE    [worker 12:53:02] direct seed 777 trial37: 6.8439 % kW, best epoch 12 of 25, 26.94 s
+[  4248.4s] NOTE    [worker 12:53:10] direct seed 777 trial38: 6.7937 % kW, best epoch 21 of 25, 7.4 s
+[  4278.7s] NOTE    [worker 12:53:40] direct seed 777 trial39: 7.1064 % kW, best epoch 24 of 25, 29.84 s
+[  4296.8s] NOTE    [worker 12:53:58] direct seed 777 trial40: 6.9892 % kW, best epoch 24 of 25, 17.82 s
+[  4324.0s] NOTE    [worker 12:54:25] direct seed 777 trial41: 7.1489 % kW, best epoch 17 of 25, 26.76 s
+[  4356.0s] NOTE    [worker 12:54:57] direct seed 777 trial42: 6.7822 % kW, best epoch 16 of 25, 31.67 s
+[  4383.9s] NOTE    [worker 12:55:25] direct seed 777 trial43: 6.7676 % kW, best epoch 16 of 25, 27.46 s
+[  4403.0s] NOTE    [worker 12:55:44] direct seed 777 trial44: 6.6944 % kW, best epoch 16 of 25, 18.76 s
+[  4412.7s] NOTE    [worker 12:55:54] direct seed 777 trial45: 6.8757 % kW, best epoch 21 of 25, 9.35 s
+[  4430.8s] NOTE    [worker 12:56:12] direct seed 777 trial46: 6.6712 % kW, best epoch 10 of 25, 17.64 s
+[  4440.4s] NOTE    [worker 12:56:22] direct seed 777 trial47: 6.8631 % kW, best epoch 23 of 25, 9.3 s
+[  4456.2s] NOTE    [worker 12:56:37] direct seed 777 trial48: 6.7962 % kW, best epoch 10 of 25, 15.33 s
+[  4472.1s] NOTE    [worker 12:56:53] direct seed 777 trial49: 6.9670 % kW, best epoch 17 of 25, 15.59 s
+[  4488.0s] NOTE    [worker 12:57:09] direct seed 777 trial50: 6.9496 % kW, best epoch 17 of 25, 15.41 s
+[  4515.0s] NOTE    [worker 12:57:36] direct seed 777 trial51: 6.7315 % kW, best epoch 16 of 25, 26.64 s
+[  4554.3s] NOTE    [worker 12:58:15] direct seed 777 trial52: 6.8770 % kW, best epoch 16 of 25, 38.69 s
+[  4581.5s] NOTE    [worker 12:58:43] direct seed 777 trial53: 6.7623 % kW, best epoch 6 of 25, 26.78 s
+[  4597.8s] NOTE    [worker 12:58:59] direct seed 777 trial54: 6.8186 % kW, best epoch 21 of 25, 15.83 s
+[  4607.4s] NOTE    [worker 12:59:09] direct seed 777 trial55: 6.7954 % kW, best epoch 17 of 25, 9.28 s
+[  4623.6s] NOTE    [worker 12:59:25] direct seed 777 trial56: 6.8362 % kW, best epoch 17 of 25, 15.86 s
+[  4651.0s] NOTE    [worker 12:59:52] direct seed 777 trial57: 7.2091 % kW, best epoch 24 of 25, 26.93 s
+[  4660.7s] NOTE    [worker 13:00:02] direct seed 777 trial58: 6.8121 % kW, best epoch 14 of 25, 9.31 s
+[  4678.2s] NOTE    [worker 13:00:19] direct seed 777 trial59: 6.7781 % kW, best epoch 14 of 25, 17.17 s
+[  4694.4s] NOTE    [worker 13:00:36] direct seed 777 final: 6.6383 % kW, best epoch 16 of 26, 15.81 s
+[  4695.0s] NOTE    [worker 13:00:36] done in 4670.5 s, 31 outputs
+[  4697.0s] STEP    bilstm: the training worker in solar-gpu done in 4673.0s
+[  4704.3s] WARN    bilstm: indirect seed 42: best trial on the edge of the search space for hidden = 256, n_layers = 1 (M23)
+[  4704.3s] WARN    bilstm: indirect seed 123: best epoch 60 at the last epoch: it may not have converged
+[  4704.3s] WARN    bilstm: indirect seed 123: best trial on the edge of the search space for hidden = 64, n_layers = 1, batch_size = 128 (M23)
+[  4704.3s] WARN    bilstm: indirect seed 777: best trial on the edge of the search space for hidden = 64, n_layers = 1 (M23)
+[  4704.3s] WARN    bilstm: direct seed 42: best trial on the edge of the search space for batch_size = 128 (M23)
+[  4704.3s] WARN    bilstm: direct seed 123: best trial on the edge of the search space for batch_size = 32 (M23)
+[  4704.3s] WARN    bilstm: direct seed 777: best trial on the edge of the search space for hidden = 256, n_layers = 1, batch_size = 32 (M23)
+[  4705.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/best_params.json sha256=cf9a2c8518f69033
+[  4705.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/figures/learning_curves.png sha256=4e6dad25c741ea4c
+[  4705.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/figures/optimization_history.png sha256=1d8146cdb8571397
+[  4705.3s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/job/data_direct.npz sha256=f909bf762620a877
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/job/data_indirect.npz sha256=380b8d322cced709
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/job/job.json sha256=b4c0ae40dd545e4c
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/learning_curves.csv sha256=f7fe9392c7fa9371
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/lstm_sota_config.json sha256=ce0e8a3a4173d90a
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/mbe.csv sha256=3bcecfa67fc93ae4
+[  4705.4s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/predictions_lstm_sota_seed123.csv sha256=32fa02bb20c86d0f
+[  4705.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/predictions_lstm_sota_seed42.csv sha256=476094f163ae470a
+[  4705.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/predictions_lstm_sota_seed777.csv sha256=9b37475dd3399df5
+[  4705.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/quantiles_lstm_sota_seed123.csv sha256=7644080b296cb7b2
+[  4705.5s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/quantiles_lstm_sota_seed42.csv sha256=b31f1887f1a11f87
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/quantiles_lstm_sota_seed777.csv sha256=b7f2b9fa2f865f81
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/trials.csv sha256=20581505215bf6bd
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_direct_seed123.csv sha256=70fd5038337b64d7
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_direct_seed42.csv sha256=744f9088b87ee99b
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_direct_seed777.csv sha256=a6af2f58fdd026fa
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_indirect_seed123.csv sha256=a1fa08bbd23a7c3c
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_indirect_seed42.csv sha256=bb78fb0a4f5b1795
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/curves_indirect_seed777.csv sha256=9359434f4352ca21
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_direct_seed123.json sha256=385d6e7d9db4bf2c
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_direct_seed42.json sha256=ac3216f59fb32630
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_direct_seed777.json sha256=1c4260acfcc8ef1c
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_indirect_seed123.json sha256=9b10a93d96fad576
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_indirect_seed42.json sha256=cfe70438887314be
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/fit_indirect_seed777.json sha256=22a0e64e622c515f
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_direct_seed123.npz sha256=c657b2a54bdce72c
+[  4705.6s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_direct_seed42.npz sha256=1c98a83b44ae8a21
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_direct_seed777.npz sha256=1b8df7b5c2c15f46
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_indirect_seed123.npz sha256=8155a09d739f1a5f
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_indirect_seed42.npz sha256=e84fea28e5ac5300
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/forecast_indirect_seed777.npz sha256=ab2f6c7cbdbec8cd
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_direct_seed123.pt sha256=3157ab354cc62c56
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_direct_seed42.pt sha256=882138f580ebbbd2
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_direct_seed777.pt sha256=8746b62c4e6feb98
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_indirect_seed123.pt sha256=d52f790e9077d0f3
+[  4705.7s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_indirect_seed42.pt sha256=b2527608392eab97
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/models/lstm_sota_indirect_seed777.pt sha256=8c4e55c1ca92d842
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/optuna.db sha256=c1b70ea81e0f9231
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_direct_seed123.csv sha256=f28a55532eeabb5f
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_direct_seed42.csv sha256=92a352710974b004
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_direct_seed777.csv sha256=aa08055a8519f168
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_indirect_seed123.csv sha256=b3fa728ed3a0d818
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_indirect_seed42.csv sha256=99ad446047a00833
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/trials_indirect_seed777.csv sha256=1752f05f90604645
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker/worker.json sha256=7465939c366dda3c
+[  4705.8s] OUTPUT  outputs/runs/20261114T083930Z_final/.bilstm.tmp/worker_stdout.log sha256=1c57fa9fd34f4f25
+[  4705.8s] RUN     warnings: 8
+[  4705.8s] RUN     status: ok; duration 4705.8s

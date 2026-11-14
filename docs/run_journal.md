@@ -2136,3 +2136,47 @@ hashes, numbers) and the commit messages are the record:
   1,127 issuances of train and validation (53 under 5 h). The row-by-row rule of T-17 always held;
   the text is corrected.
 - **GPU suite** (after X55): passes, and the worker records the file it imported.
+
+### 2026-11-14 · R9-39 · Stage 10: the final run `20261114T083930Z_final`, both phases
+
+- **Before the run:** `g1-frozen` tagged locally on `10611a6` (a descendant of `ac63bb0`, no code
+  change, 202 changed files all inside the D-36 list; no push). `check` passed, `neural_env` reported no
+  error (CUDA 12.1, `sm_61`), the dry run was ok, 199.5 GB free.
+- **Phase 1** (one sequence, `--to report --keep-going`): 13 steps ok, one commit, `n_resumed` 0.
+  Seconds: select 4.1, baselines 4.5, xgb 3,214.3, cv 121.1, ablation 389.0, bilstm 4,705.8, tft96
+  8,700.5, tft168 12,209.9, tftbase 721.5, patchtst 899.1, evaluate 28.3, explain 332.7, report 1.1.
+  Slower than the dry-run estimate: BiLSTM 4,706 s against 1,716 s (x2.7); the others at or below it.
+- **Acceptance** (`stage10_acceptance.md`, accepted): XGB seed spread in kW at most 0.079 pp (limit 0.15);
+  kW DM on validation: XGB significantly better than all three references in 6 of 6 cells; 41 warnings
+  read, none a failure (the G-1 list points of D-37). Archive of phase 1 written and verified (sha256
+  `86bdd252…4ac`).
+- **Phase 2**, on the user's explicit approval and after the user waived an off-VDI copy of the archive
+  (the copy is not made; the project is not backed up outside the VDI): the step `test` 130.7 s, `report`
+  rerun. Failure: none (the stderr file was empty). Test scores were not read before the step ended.
+  Promote ok; archive `20261114T083930Z_final_20261114T175738Z.zip` verified, sha256
+  `7d08139b7534fdf1bd2f012976ccf9fd644eb2aa90ea1e3cb292b526bf54c43f`.
+- **Validity review** (`forecasting-validity-review`, written before any claim):
+  - *isolation:* test truth appears only in `truth_test.csv` written by `test`; 17 rows in the access log,
+    12 forecasts of phase 1 and 5 reads by `test`; the 5 `test` warnings are the SHAP, the CV comparison, the
+    ablation and the evaluation. Same rows for every model (n = 2,575 hours with truth).
+  - *red flag, a sharp change between inner folds, validation and test:* the XGB error is 11.1–11.6 on
+    test against 6.4–7.2 on validation and 7.4–8.1 in the train CV (test minus CV 3.5–4.0 pp in all 18
+    fits). The references degrade as well (climatology 8.04 to 12.37–12.52, clear sky × k 8.96 to 12.85,
+    persistence 9.7–10.8 to 15.7–17.6), so the shift belongs to the test period and not to one model.
+    The views of `benchmark_views.csv`, compared like for like (S10-03, mean over seeds and cells): XGB
+    rises from 6.65 to 11.39 on all hours and from 4.93 to 6.55 in normal operation (2,389 of 2,575
+    hours); climatology from 8.05 to 12.45 and from 6.76 to 8.95. The 186 operation-limited hours
+    (D-22: curtailment, stops, derate) account for 66 % of the rise of XGB and 50 % of climatology's
+    (18–68 % over the nine models and references); the rest, +1.6 pp for XGB, is a period shift that the
+    references share. (A first reading in this session compared the test normal-operation number with
+    the validation all-hours number; the figure S10-03 put the views side by side and corrected it.)
+    By source on test: minute 12.62–12.95, polled 7.52–8.03 (XGB, seed 42).
+  - *consequence for the acceptance rule:* the D-14 requirement that the XGB is significantly better than
+    the references holds on test against clear sky × k, PatchTST and persistence, and fails against
+    climatology in five of six cells (HLN p 0.0097–0.0224 against alpha 0.00625), with the margin at
+    75–85 % of the minimum detectable effect (109 % in the one passing cell). The limitation was stated
+    before the run (D-37).
+  - *not concluded:* the BiLSTM, TFT-96 and TFT-168 are not significantly different from the XGB in most
+    cells, and TFT-96 is nominally best in the direct route; no model is declared the winner.
+- **No change:** no budget, seed or rule was changed after the test numbers. The off-VDI copy and the
+  backup of the whole project are open (the user's decision, 14.11).
