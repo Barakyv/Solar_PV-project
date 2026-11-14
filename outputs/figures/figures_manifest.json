@@ -1312,7 +1312,7 @@
     "suite": "670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c"
    },
    "takeaway": "9 of 9 items have complete evidence, 0 is in progress and 0 wait for the tag (0 wait for a decision). The full suite: 670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-35": {
    "stage": "9",
@@ -1330,7 +1330,7 @@
     "upload_margin": 1.0877777777777777
    },
    "takeaway": "No measured input reads an hour that ends after T0, at any horizon: the newest lag is 1, 2, 3 days at D+1, D+2 and D+3, and it ends exactly at T0, as do the rolling windows and the encoders. The GFS run starts 9–16 h before T0 and its last file arrives at least 1.1 h before T0 on every train row. Only deterministic inputs (calendar, clear sky, geometry) and that GFS run describe the forecast days.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-36": {
    "stage": "9",
@@ -1354,7 +1354,7 @@
     "polled_max": 0.6796
    },
    "takeaway": "The clock correction is the one look-ahead of size: a causal median would move the shift of 40 % of the days, by at most 3 min. The cleaning changes 66 of 458,304 source cells on 4 issuance days, none a scored hour, all a stale value at night; the full-window cleaning equals the stage-5 table on every compared cell. The polled interpolation is bounded by 0.68 °C on a night hour.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-37": {
    "stage": "9",
@@ -1375,7 +1375,7 @@
     "log_state": "does not exist and was never committed"
    },
    "takeaway": "Across 23 runs, 185 step records hold no test access and 171 forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-38": {
    "stage": "9",
@@ -1406,7 +1406,7 @@
     "ingest_rel": 9.737797865048907e-14
    },
    "takeaway": "The script's verdict is NOT reproduced, by its rule that any failing file fails: of 312 compared files, 227 have identical bytes, 52 the same content, 16 differ by floating-point noise only (at most 3e-12 relative), 17 differ for a documented reason and 0 for none. The explained files are the 5 of the decision checks run on the laptop (X66: the 2 decisions they record come out the same), the 3 report tables of the development runs (X45, the row order of a resumed report, and the column n_resumed of D-38) and the 9 learning-curve and trial tables of the TFT models in which only the column gpu_peak_mb differs, by at most 7e-05 relative (X99: the peak of the GPU memory depends on the timing of Python's garbage collector, not on the computation). 6 of 6 models give the same forecasts as the reference runs. The parse of the raw text differs by up to 1e-13 relative (X63).",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-39": {
    "stage": "9",
@@ -1428,7 +1428,7 @@
     "writer_new": "pyarrow 26.0.0"
    },
    "takeaway": "At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 38 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-40": {
    "stage": "9",
@@ -1454,7 +1454,7 @@
     "gap_hi": 1.680684329175203
    },
    "takeaway": "The fold values range from 4.7 to 11.0 % (mean 7.4–8.1 %, std 2.1–2.6 pp over the five folds); the fits grow from 1,374 to 17,005 rows. The validation value is 0.6–1.7 pp below the CV mean in all six cases. Validation tuned the model, the folds did not, and the early folds train on less: the gap is reported and not explained (M43). One seed.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-41": {
    "stage": "9",
@@ -1479,7 +1479,7 @@
     "harmful": 0
    },
    "takeaway": "Removing the GFS forecasts raises the error by 0.96–1.48 pp in every case and is the largest change of any single group; with only the time encodings the error is 1.2–1.5 pp higher. Of 49 changes, 30 exceed the margin on one seed, 19 do not and 0 are below minus it. With one seed the margin is only the floor, so these verdicts are provisional (M41); the final run adds two seeds and the pooled seed std.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-42": {
    "stage": "9",
@@ -1502,7 +1502,7 @@
     "n_open": 0
    },
    "takeaway": "The review wrote 38 comments: 1 blocking, 8 should fix and 29 notes. All 9 blocking and should-fix comments were fixed in code with a test and an errata row; 13 comments were answered by correcting the documents, 1 by a test and 2 by an explanation. 0 are unanswered.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S09-43": {
    "stage": "9",
@@ -1538,7 +1538,7 @@
     "replay_pct": 27.03117377192345
    },
    "takeaway": "With the development budgets an interruption lost a whole step (332 s of XGB, 1.4 h of TFT-168); a checkpoint now bounds the loss to one trial of XGB (9.7 s), one PatchTST fit (376 s) or, for the other models, at most 70 s of epochs. A fit continued from an epoch checkpoint is equal to the uninterrupted fit, bit for bit, in 7 of 7 configurations. The first design, with every random state restored, failed in the 4 that have dropout between their LSTM layers (weights up to 2.3e-02 apart), because cuDNN keeps a dropout state that torch's random state does not hold (X95); running the earlier training passes again fixes it, at 27 % of the seconds of the epochs it replaces on these small windows.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-01": {
    "stage": "10",
@@ -1559,7 +1559,7 @@
     "test_s": 130.7
    },
    "takeaway": "All 13 steps finished at one commit with no restart from a checkpoint. The model and analysis steps took 8.6 hours, 7.6 of them on the GPU; the longest step is TFT-168 (3.4 hours). The step test, run in the second phase, took 131 seconds.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-02": {
    "stage": "10",
@@ -1579,7 +1579,7 @@
     "winners": "TFT-96 in 3 of 6, TFT-168 in 2 of 6, XGB in 1 of 6"
    },
    "takeaway": "The six models score between 11.12 and 13.63 per cent, the references between 12.37 and 17.57. PatchTST is worse than climatology in 6 of 6 cells and no other model is. The lowest seed-mean among the six models is: TFT-96 in 3 of 6, TFT-168 in 2 of 6, XGB in 1 of 6. Whether such differences are significant is S10-04.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-03": {
    "stage": "10",
@@ -1607,7 +1607,7 @@
     "sh_hi": 0.6818426760370483
    },
    "takeaway": "Every model and reference rises from validation to test: XGB 6.65 to 11.39 on all hours, climatology 8.05 to 12.45. On the hours of normal operation the rise is smaller (XGB 4.93 to 6.55, climatology 6.76 to 8.95): the 186 operation-limited hours of the test split account for 18% to 68% of the rise, and the rest is a shift of the period that every model and reference shares.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-04": {
    "stage": "10",
@@ -1630,7 +1630,7 @@
     "n_worse": 0
    },
    "takeaway": "XGB is significantly better than persistence in 6 of 6 cells, than clear sky x k in 6, than PatchTST in 6 and than climatology in 1; the climatology effect is 75 to 109 per cent of the minimum detectable effect, so the test has too little power to separate them. BiLSTM is significantly worse than XGB in 3 cells; the three TFTs in 0. XGB is significantly worse than no model (0).",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-05": {
    "stage": "10",
@@ -1650,7 +1650,7 @@
     "single": "PatchTST, TFT baseline, TFT-168, TFT-96"
    },
    "takeaway": "The largest spread is 0.079 pp for XGB and 0.074 pp for BiLSTM, against the rule of 0.15 pp; 0 of 12 cells are above it. PatchTST, TFT baseline, TFT-168, TFT-96 have one seed each, so their spread is unknown; the differences among models of a similar level (S10-02) are read with that caveat.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S10-06": {
    "stage": "10",
@@ -1670,7 +1670,7 @@
     "fold_std": 2.3515207778175276
    },
    "takeaway": "The test error is 3.5 to 4.0 pp above the train CV in every one of the 18 fits, and validation lies 0.6 to 1.7 pp below it. The mean spread between folds is 2.4 pp, so the folds themselves differ by a large part of the gap; the references rise from validation to test as well (S10-03).",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-01": {
    "stage": "11",
@@ -1680,7 +1680,7 @@
    "file_sha256": "bf6a87b6d0845db2ebcce83a234c6c7badadee4b47795171f923698f3fccf26a",
    "inputs": {
     "outputs/11_analyses/benchmark_ci_kw.csv": "422273348b100b34782ee48cce712cdec56d1d54e2821d667cfee36c2cfa8dbb",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "hw_val": 1.1742141030092594,
@@ -1691,7 +1691,7 @@
     "ov_test": 6
    },
    "takeaway": "On test the interval of a single score is about 1.93 pp on each side, and the six models differ by at most 2.30 pp in a cell; on validation the figures are 1.17 and 2.30 pp. The intervals of all six models overlap in 6 of 6 cells on test and in 6 of 6 on validation. These intervals are not paired, so overlap is not a test of a difference: the paired test of S10-04 separates PatchTST from XGB in every cell although the intervals overlap.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-02": {
    "stage": "11",
@@ -1701,7 +1701,7 @@
    "file_sha256": "84680fb252571477285a8231f023da62ad2dd7a81f8a5792789130ae905a6525",
    "inputs": {
     "outputs/11_analyses/horizon_robustness.csv": "874eb64ee78df17074ca592f7dbd749524be7b0e441c446138dc27c72b5d5e56",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "val_down": 10,
@@ -1715,7 +1715,7 @@
     "big": 0.375008517
    },
    "takeaway": "On validation the error at D+3 is lower than at D+1 for 10 of the 12 pairs of a model and a route (change -0.22 to +0.20 pp); on test it is higher for 12 of 12 (change +0.12 to +0.38 pp). The sign of the horizon effect reverses between the two periods, and its size is at most 0.38 pp, so the order of the horizons is a property of the period and not of the horizon.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-03": {
    "stage": "11",
@@ -1726,14 +1726,14 @@
    "inputs": {
     "outputs/11_analyses/scatter_hist.csv": "83a69e357595b4a0e63b596c2a04ef2da6a69600b4a06fda819d6ab17b1c1af4",
     "outputs/11_analyses/decomposition.csv": "648ff7986347840e21a1cd4cbe9c072e6ce624ed71a92bc702f0936cf50cbd59",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "r_lo": 0.846270326,
     "r_hi": 0.879333115
    },
    "takeaway": "The correlation between forecast and observation on test is between 0.846 and 0.879 for the six models. In every panel a group of hours lies above the diagonal at observed values near zero: forecasts of high power while the plant delivered little. Some of these hours are operation-limited (D-22; S11-12).",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-04": {
    "stage": "11",
@@ -1743,7 +1743,7 @@
    "file_sha256": "eb1adfc62bfb0d878887cffacc4a5cf3e99bef65f240779cb343552c2acb8aac",
    "inputs": {
     "outputs/11_analyses/seasonal_kw.csv": "a750d62f82bab961d4df72043572ac6d374a0d9d0a66d187ae8bb820726b3258",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "fall_test": "2024-10..2024-11",
@@ -1762,7 +1762,7 @@
     "ol_f_val": 0.0179640719
    },
    "takeaway": "The test split has no summer, and its autumn is 2024-10..2024-11 against 2024-09..2024-09 on validation, so a season is not the same weather in the two periods. XGB's error is highest in Winter on validation (10.05 per cent) and in Fall on test (14.19 per cent). From validation to test the error of XGB changes by +1.6 (Winter), -0.1 (Spring) and +10.5 (Fall) points, and that of climatology by -0.8, +0.7 and +9.5: the rise of the test period is concentrated in the autumn, where 10% of the test hours are operation-limited against 2% of the validation hours; Spring is almost unchanged.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-05": {
    "stage": "11",
@@ -1772,7 +1772,7 @@
    "file_sha256": "c6488f1d87443947762c95c7e58a361052796c4954fdeac1b2a4aff675a76f37",
    "inputs": {
     "outputs/11_analyses/hour_season.csv": "e899aae531da6dbd228a325cbc6c8f05954978425eb6f9975bfc14d50f1f8f79",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "pk_hours": "11",
@@ -1787,7 +1787,7 @@
     "lim_share": 0.180327868852459
    },
    "takeaway": "The largest cell of each model is in the local hour(s) 11, and the largest cell of the figure is Fall at 11:00 (24.0 per cent of the capacity, PatchTST). Averaged over the seasons, the XGB error changes by 17.3 points between the hours of the day, and the six models differ by at most 3.1 points within an hour: the shape over the day is shared by the models. For XGB in the autumn at 11:00 the error is 22.9 per cent on all hours and 4.4 in normal operation; 18% of those hours are operation-limited (S11-17).",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-06": {
    "stage": "11",
@@ -1807,7 +1807,7 @@
     "flip": 7
    },
    "takeaway": "The direct route is better in 16 of the 18 pairs of a model and a horizon on validation and in 11 of 18 on test. The differences are between -0.69 and +0.24 pp, and the sign differs between the two periods for 7 of the 18 pairs: the direct route is nominally better on validation, and the evidence on test is mixed.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-07": {
    "stage": "11",
@@ -1830,7 +1830,7 @@
     "rho_test": 0.7723076923076923
    },
    "takeaway": "The group with the largest share is the same on validation and on test in 6 of the 6 cells (nwp_gfs). The share of the weather-forecast group (GFS) is between 56 and 75 per cent. The rank correlation between two horizons, or between two seeds, is at least 0.85 on validation and 0.77 on test.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-08": {
    "stage": "11",
@@ -1854,7 +1854,7 @@
     "hi_first": 1.3697577487569421
    },
    "takeaway": "The mean attention over the encoder positions is almost entirely a daily cycle: the 24-hour pattern accounts for 76% to 100% of its variance in the six cases (76% for TFT-96 indirect), and the clock hour of the strongest attention differs between the cases (from 6 to 20). The attention on the clock hour of the forecast hour is 0.82 to 1.07 times what a uniform attention would give, and the weight on the oldest encoder position relative to uniform is between 0.49 and 1.37; only the TFT-168 indirect model is above one. The attention of a model is descriptive: it does not show that the model uses those hours.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-09": {
    "stage": "11",
@@ -1864,7 +1864,7 @@
    "file_sha256": "85f32994824a7971d346cbc3b86a9041f081919aa0a675826b3f8aa0743bb3f9",
    "inputs": {
     "outputs/11_analyses/encoder_length.csv": "a41239be510358bfe50542ff03e9f7ab6230acfa3da5a12f679089f41bbdc152",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "v_lo": -0.0215859544,
@@ -1876,7 +1876,7 @@
     "n_sig": 1
    },
    "takeaway": "On validation the difference is between -0.02 and +0.10 pp, and no cell is significant. On test it is between -0.27 and +0.33 pp, with the sign negative for the indirect route in 3 of 3 horizons and positive for the direct route in 3 of 3; the number of significant cells is 1 of 12. A consistent advantage of the shorter window is not found: the sign depends on the route.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-10": {
    "stage": "11",
@@ -1898,7 +1898,7 @@
     "imp_dir": 80.24275234295742
    },
    "takeaway": "The best trial is number 8 of 20 for the indirect route and number 19 for the direct route; a winner that late means that the direct search had not visibly converged. The most important hyper-parameter is attention_head_size for the indirect route (48 per cent) and learning_rate for the direct route (80 per cent). With 20 trials the importance model has few points; the values are descriptive.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-11": {
    "stage": "11",
@@ -1909,7 +1909,7 @@
    "inputs": {
     "outputs/11_analyses/decomposition.csv": "648ff7986347840e21a1cd4cbe9c072e6ce624ed71a92bc702f0936cf50cbd59",
     "outputs/11_analyses/decomposition_seeds.csv": "98b7084b50a1c256216bc4c68a453b8e67cbcab7ce4a95f180d479c0cd5f266b",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "b2_max": 0.015612937841888889,
@@ -1924,7 +1924,7 @@
     "pt_n": 63.8590752
    },
    "takeaway": "Bias² is below 1.6% of the squared error for the six models on validation and below 3.6% on test, except PatchTST (8.0% on test). Every model has a positive mean error on all hours, +52 to +125 kW on test; on the hours of normal operation it is -11 to +12 kW for XGB, BiLSTM and the three TFTs, so nearly all of their positive mean error is made on the 186 operation-limited hours; PatchTST keeps +64 kW in normal operation. The variance between seeds is at most 1.8% of the squared error.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-12": {
    "stage": "11",
@@ -1935,7 +1935,7 @@
    "inputs": {
     "outputs/11_analyses/quintiles.csv": "a00bab0883c5aa84ec8d49c7a14dff28c189b7a3fb919fd6881fef47b3351e3a",
     "outputs/11_analyses/quintile_control.csv": "ca6e1f4e82c638ec528c33d9eaa80abc1e44d1906a35ab1ad9f96742b1146093",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "obs_lo": 263.485339,
@@ -1948,7 +1948,7 @@
     "ol_val": 0.024137931
    },
    "takeaway": "Binned by the observed power the lowest bin has a mean error of +263 kW and the highest -98 kW on test (direct route): a positive then negative pattern. Binned by the forecast it is +4 and +162 kW: the signs are the opposite at both ends. The control forecast, unbiased by construction on validation, gives +263 and -170 kW in the same observed bins on test, so binning by the outcome produces the first pattern without any conditional bias in the model. In the lowest observed bin 14% of the test hours are operation-limited against 2% on validation.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-13": {
    "stage": "11",
@@ -1971,7 +1971,7 @@
     "n_all": 49
    },
    "takeaway": "Removing all but the minimal set raises the error by 1.18 to 1.50 pp on validation, and the GFS group by 0.96 to 1.44 pp; the other groups change it by at most 0.14 pp. The verdicts agree between validation and test in 45 of 49 cells.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-14": {
    "stage": "11",
@@ -1981,7 +1981,7 @@
    "file_sha256": "01d67e46922b7cd4d223df4c943bc7c974ca331de9e4fb8a0b3457fc3d88555b",
    "inputs": {
     "outputs/11_analyses/patchtst_gap.csv": "03250446ab6435a3fe83e0d5a5e10dca1ed9791cc5ed695f3067807c23f1056a",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "x_lo": 1.36184325,
@@ -1992,7 +1992,7 @@
     "c_sig": 8
    },
    "takeaway": "PatchTST is worse than XGB by 1.36 to 2.31 pp, significantly in 12 of 12 cells. Against climatology the gap is +0.05 to +1.26 pp, significant in 8 of 12 cells, all of them in the worse direction. A gap of this size does not support the reading of PatchTST as a lower bound within about one point of XGB.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-15": {
    "stage": "11",
@@ -2013,7 +2013,7 @@
     "lit_hi": 48.7
    },
    "takeaway": "On this normalisation our six models are between 15 and 19 per cent on validation and between 26 and 30 per cent on test, against 37.4 to 48.7 per cent in the papers. The numbers are not comparable one to one: a hyper-arid site where most hours are clear, a coarser NWP, hourly instead of 15-minute data, one plant instead of a mean over seven, and an eight-month test period. No ranking against the papers is made.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-16": {
    "stage": "11",
@@ -2044,7 +2044,7 @@
     "xgb_h": 0.8928611111111112
    },
    "takeaway": "The final run used the budgets of the submitted study: 60 trials and 3 seeds for XGB and BiLSTM, 20 trials per route for the two tuned TFTs, fixed settings for the TFT baseline and PatchTST. The five neural models took 7.6 hours of GPU time in total and XGB 0.9 hours of CPU time.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "S11-17": {
    "stage": "11",
@@ -2054,7 +2054,7 @@
    "file_sha256": "3ffcc685b3b8025cc515c851b691ba91246dba7584a438d1a3b50f9f33e87d64",
    "inputs": {
     "outputs/11_analyses/hour_season.csv": "e899aae531da6dbd228a325cbc6c8f05954978425eb6f9975bfc14d50f1f8f79",
-    "outputs/11_analyses/manifest.json": "2613956326d7dc1b786c68864028ec81a082e9abcf3dc52fb819b3b4a7ab716d"
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70"
    },
    "facts": {
     "pk_hours": "10, 11",
@@ -2069,7 +2069,7 @@
     "lim_share": 0.180327868852459
    },
    "takeaway": "In normal operation the largest cell of each model is in the local hour(s) 10, 11, and the largest cell is Winter at 11:00 (14.6 per cent, PatchTST). For XGB in the autumn at 11:00 the error falls from 22.9 per cent on all hours to 4.4 in normal operation: the autumn peak of S11-05 is mostly the operation-limited hours.",
-   "git_commit": "a92756b+dirty"
+   "git_commit": "fff0e5c"
   },
   "C-01": {
    "stage": "correction",
