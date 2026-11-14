@@ -380,5 +380,38 @@ Figures S11-01 to S11-17; `docs/run_journal.md` R11-01; OP-66; errata C-78 to C-
 - **Likely question:** "Does a longer TFT encoder help?" **Answer:** "No consistent difference: the sign depends
   on the route and on the period, one cell of twelve is significant, and each model was tuned separately with
   one seed (S11-09)."
-- **Open:** the dust-day split of L-20 needs a definition (Q-29); the options `--xgb-only` and `--skip-train` of
-  the reproduction script need a decision (Q-30).
+- **Decided in part B (section 16):** the dust-day split of L-20 is dropped (Q-29, option c) and the options
+  `--xgb-only` and `--skip-train` of the reproduction script are replaced by a new script (Q-30, option a).
+
+## 16. Stage 11, part B: the report sections of the submitted report, rewritten from the frozen final run
+
+Figures S11-18, S11-19, C-11 and C-12; `docs/report_v7.md`; `docs/traceability.csv`; the table "Old vs new results"
+in `docs/errata.md`; `docs/run_journal.md` R11-02; OP-67; errata C-85 to C-91.
+
+- **Submitted:** a plant described as two inverters (3.1); a route "recommendation" from a truth rebuilt from clipped
+  k (13.2); an estimate for a summer with no computation (13.5); an "independent" agreement of SHAP and attention on
+  three lags (13.3, C6); a disclosure of 13.5 percent downtime that was a time-base artefact (D1); a hidden size of 16
+  read as a finding (D2); recommendations that followed from them (14).
+- **Rebuild:** every section is generated from the files of the final run, every number is registered with its file and
+  script, every test number sits beside the validation number of the same view, and no model is declared the winner.
+- **Conclusions, one by one (C-11):** of the eight conclusions of the submitted report one is reproduced (the power
+  limitation), two are replaced by a different statement (the ranking, the horizon profile) and five are not supported
+  (the route, PatchTST as a bound, the encoder length, the SHAP and attention agreement, the quintile profile).
+  C-11 (`../outputs/figures/correction/C-11_conclusions_ledger.png`) shows the ledger.
+- **Route (C-12):** the submitted advantage of the indirect route of 1.66 to 2.10 pp is not reproduced: the direct route is
+  nominally better in most pairs on validation and in a smaller majority on test, and the sign changes between the
+  periods. C-12 (`../outputs/figures/correction/C-12_route_old_new.png`) shows the six values of the submitted report next
+  to the rebuild on validation and on test.
+- **Likely question:** "Is the indirect route not better, as your report said?" **Answer:** "That statement came from a
+  comparison in which one route's truth was rebuilt from the clipped index and the rows differed per route (C-16). With the
+  actual AC as the truth and the same hours for both routes the difference is within the seed and period uncertainty
+  and its sign changes between validation and test; we do not recommend either route."
+- **Likely question:** "Why does the report not say which model is best?" **Answer:** "On test XGB-Opt has the lowest seed
+  mean in one cell of six and on validation in five of six, but it is separated from climatology in one cell of six and from
+  the neural models only in part; four of the five neural models have one seed (D-37). The report gives both periods
+  and the paired tests and draws no ranking from them."
+- **Likely question:** "What about dust days?" **Answer:** "The project holds no aerosol record, and a label made from the
+  measured deficit would be made from the outcome. The season half of the analysis is done; the dust half is future work
+  (Q-29, the user's decision)."
+- **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's action); `--xgb-only`
+  (a training run) is left for the end of the stage.

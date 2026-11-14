@@ -2214,3 +2214,34 @@ hashes, numbers) and the commit messages are the record:
   in its builder.
 - **No change:** no budget, seed or rule changed, and no file outside the D-36 list was edited. The decisions asked
   of the user are Q-29 (the definition of a dust day) and Q-30 (S-45: the options of the reproduction script).
+
+### 2026-11-14 · R11-02 · Part B: the report sections, the traceability and the old against new results
+
+- **Before the work:** `g1-frozen` present; `git log` shows `a5167f0` and `fff0e5c` above `a92756b`; no tracked change;
+  `python -m solarpv.pipeline status` lists 14 steps `ok`, outputs as recorded; `tests/contracts/test_after_tag.py`
+  passed (3). On this machine `git` and `python` are not on PATH: they were called through `PortableGit` and the
+  `solar` environment. The off-VDI copy of the archive and the backup of the project are still open (the user, 2026-11-14).
+- **Decisions of the user:** Q-29 option (c), the dust-day half of L-20 dropped; Q-30 option (a), the new script
+  `scripts/make_tables_from_frozen.py`, with `reproduce_paper_results.py` not edited.
+- **What ran:** `python scripts/make_report_v7.py` (a few seconds; reads tables only),
+  `python -m solarpv.figures task S11-B`, `python -m solarpv.figures catalog`,
+  `python scripts/make_stage11_part_b_notebook.py`, `python scripts/build_data_record.py`. No model was trained, the step
+  `test` was not run, and `analyses11` was not run again (the tables of part A are the ones read).
+- **Reading the first draft of the report** found three errors of mine, now X110 to X112: the rank correlation of the
+  SHAP importances taken as the minimum over every pair of seeds (0.82 and 0.70) where S11-07 states the minimum of
+  the seed means (0.85 and 0.77); a count of test scorings that was 0 (the log is searched for the command of the step
+  `test`, asserted to be 1); and a range of the feature counts built from two horizons only.
+- **Findings (the numbers are in `docs/report_v7.md` and registered in `docs/traceability.csv`):**
+  - Of the eight conclusions of v6, one is reproduced (the power limitation), two are replaced and five are not
+    supported (the route, PatchTST as a bound, the encoder length, the SHAP and attention agreement, the quintile
+    profile); figure C-11.
+  - The route: the direct route is nominally better in 16 of 18 pairs on validation and in 11 of 18 on test; the sign
+    changes for 7 pairs; the 1.66 to 2.10 pp of v6 is not reproduced (C-12, M52).
+  - XGB-Opt has the lowest seed mean in 1 of 6 cells on test and in 5 of 6 on validation; it is separated from
+    climatology in 1 of 6 cells on test, at 75 to 109 percent of the minimum detectable effect (D-37); no winner.
+  - The weather-forecast group is the largest in every SHAP cell and removing it raises the error by about one point.
+  - The positive bias of the neural forecasts is made in the 186 operation-limited hours (F-30, D-22).
+- **No change:** no budget, seed or rule changed, no file outside the D-36 list was edited (`scripts/make_*`,
+  `src/solarpv/figures/`, `tests/`, `docs/`, `notebooks/`, `outputs/` and `PROJECT_MASTER.md`), and nothing was pushed.
+- **Open:** the choice of the report figures by the user from `outputs/figures/gallery.html`; `--xgb-only` (training,
+  Q-30, the end of stage 11); the backup outside the VDI.

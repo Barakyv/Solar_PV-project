@@ -1430,6 +1430,32 @@ stored data file changed).**
 - *Original:* the submitted report computed these analyses with scripts that were lost (X59) and with the
   definitions criticised in M45–M50.
 
+**OP-67 — Stage 11, part B: the report sections, the traceability table and the table of old against new results (no
+stored data file changed).**
+- *Why:* PROJECT_MASTER §7, stage 11: the text sections of the submitted report (S-01, S-05, S-42 to S-44), a source
+  and a script for every number of the report (§13), and the "old vs new" table of D-02. User decisions of 2026-11-14:
+  Q-29 option (c), the dust-day half of L-20 is dropped; Q-30 option (a), a new script rebuilds the tables from the
+  frozen predictions.
+- *Method:* `python scripts/make_report_v7.py` reads the report tables of the run `20261114T083930Z_final`, the tables
+  of `outputs/11_analyses/`, the stage manifests and, read-only, the evidence of the submission, and writes
+  `docs/report_v7.md`, `docs/traceability.csv` (every number of the text: claim, value_old, value_new, file, script,
+  verified_on), `docs/old_vs_new.csv` and the table "Old vs new results" of `docs/errata.md`. Every claim of the text
+  (counts of significant cells, signs, ranges) is asserted before it is written. `python
+  scripts/make_tables_from_frozen.py` runs the whole chain (status of the run, the analyses, the figures, the report)
+  without training.
+- *Parameters:* none tuned; the significance rules are those of the run (HLN, Bonferroni over the six cells of a split,
+  Newey-West 24 hours).
+- *Result:* the five sections and the correction note, the registered numbers (see `docs/traceability.csv`), the table
+  of old against new results (92 rows: the benchmark in the unit of the target and in kW, the route, the seeds, the
+  tests, the SHAP groups, the seasons, the cross-validation, the ablation, the quintiles, the scored hours,
+  `MEAN_DAYTIME_K` and the skill score), the figures S11-18, S11-19, C-11 and C-12, the notebook
+  `10_stage11_part_b.ipynb`. Findings: M51 to M57 (C-85 to C-91) and X107 to X112.
+- *Verification:* the old numbers are read from `submission_evidence/` and compared with the files by T-180; every number
+  of the text has a row (T-178) and every named file exists (T-179); the generator cannot score the test split (T-182);
+  T-178 to T-184.
+- *Original:* the submitted report typed its numbers by hand; of the 125 claims of its own claim matrix
+  (`submission_evidence/11_audit/REPORT_CLAIM_EVIDENCE_MATRIX.csv`) 9 are marked contradicted and 25 need manual review.
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |

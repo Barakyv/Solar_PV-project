@@ -1,0 +1,157 @@
+claim,value_old,value_new,file,script,verified_on
+cells per comparison (target x horizon),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+old test daytime hours,,"2,580",submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
+test daytime hours with a measured output,,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+"park size, MW",40,40,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
+park inverters,25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
+"AC capacity, kW",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-14
+park inverters (table),25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
+"AC capacity, kW (table)",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-14
+"panel tilt, deg",,21,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
+"panel azimuth, deg",,185,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
+one-minute rows,,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
+hourly rows,,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
+train hours,,"21,195",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+train daytime valid,,"9,656",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+val hours,,"5,832",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+val daytime valid,,"2,901",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test hours,,"5,829",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test daytime valid (table),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+train op-limited,,379,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+val op-limited,,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test op-limited,,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test hours polled or mixed,,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+rows 1min (milestones),,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
+hourly rows (milestones),,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
+op-limited daytime hours all,,711,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+daytime hours all,,"15,180",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+MEAN_DAYTIME_K,0.6279,0.788157,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
+GFS runs,,"1,371",outputs/06b_gfs/gfs_manifest.json,scripts/make_report_v7.py,2026-11-14
+indirect inputs per horizon,,28 to 32,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-14
+direct inputs per horizon,,82 to 96,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-14
+GPU hours,,7.6,outputs/runs/20261114T083930Z_final/report/report_steps.csv,scripts/make_report_v7.py,2026-11-14
+test scoring events,,1,outputs/07_evaluation/test_access_log.csv,scripts/make_report_v7.py,2026-11-14
+"v6 PatchTST gap, points",1.2,1.2,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+"PatchTST minus XGB, pp",,1.36 to 2.31,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST vs XGB significant cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST vs XGB cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+"PatchTST minus climatology, pp",,0.05 to 1.26,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST vs climatology significant cells,,8,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST vs climatology cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
+"ablation no_nwp_gfs validation, pp",,0.96 to 1.44,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-14
+"ablation no_nwp_gfs test, pp",,0.95 to 1.21,outputs/runs/20261114T083930Z_final/report/report_ablation_test.csv,scripts/make_report_v7.py,2026-11-14
+"ablation other groups max validation, pp",,0.14,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-14
+"GFS share of mean absolute SHAP, validation, %",,56 to 75,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_groups.csv,scripts/make_report_v7.py,2026-11-14
+"GFS share of mean absolute SHAP, test, %",,64 to 74,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_groups_test.csv,scripts/make_report_v7.py,2026-11-14
+"v6 route advantage, points",1.66 to 2.10,1.66 to 2.10,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+"direct better pairs, validation",,16,evaluate/val/route_comparison.csv; test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+model-horizon pairs,,18,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+"direct better pairs, test",,11,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+model-horizon pairs (test),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+"route difference min, pp",,-0.69,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+"route difference max, pp",,+0.24,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+pairs with a changed sign,,7,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+pairs (sign),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+"cells where XGB lowest, test",,1,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+"cells where XGB lowest, validation",,5,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+"BiLSTM significant cells, test",,3,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"TFT-96 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"TFT-168 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"TFT baseline significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"encoder diff validation min, pp",,-0.02,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+"encoder diff validation max, pp",,+0.10,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+"encoder diff test min, pp",,-0.27,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+"encoder diff test max, pp",,+0.33,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+encoder significant cells,,1,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+encoder cells,,12,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
+same-hour attention ratio,,0.82 to 1.07,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-14
+first-position attention ratio,,0.49 to 1.37,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-14
+v6 lags,"-24, -48 and -168","-24, -48 and -168",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+"v6 BiLSTM alignment, points",13,13,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+"statistical power of the MDE, %",,80,src/solarpv/evaluation/stats_tests.py,scripts/make_report_v7.py,2026-11-14
+"climatology significant cells, test",,1,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+climatology cells,,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"climatology significant cells, validation",,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-14
+climatology cells (validation),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-14
+"climatology effect, percent of MDE",,75 to 109,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+test hours (power),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+old underpowered pairs,,12,submission_evidence/02_statistical_tests/detectable_effect_summary.csv,scripts/make_report_v7.py,2026-11-14
+old pairs with an MDE,,12,submission_evidence/02_statistical_tests/detectable_effect_summary.csv,scripts/make_report_v7.py,2026-11-14
+old significant pairs,,21,submission_evidence/02_statistical_tests/dm_tests.csv,scripts/make_report_v7.py,2026-11-14
+old DM pairs,,30,submission_evidence/02_statistical_tests/dm_tests.csv,scripts/make_report_v7.py,2026-11-14
+"v6 summer estimate, points",5 to 8,5 to 8,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+"XGB Fall validation, %",,3.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"XGB Fall test, %",,14.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"climatology Fall validation, %",,4.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"climatology Fall test, %",,13.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"Fall op-limited share test, %",,10,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"Fall op-limited share validation, %",,2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"XGB Spring validation, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+"XGB Spring test, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
+XGB test indirect D1,29.09,11.28,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+BiLSTM test indirect D1,,11.61,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+TFT-96 test indirect D1,,11.45,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+TFT-168 test indirect D1,,11.21,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+TFT baseline test indirect D1,,11.39,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST test indirect D1,,13.44,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+XGB val indirect D1,,6.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+BiLSTM val indirect D1,,6.99,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+TFT-96 val indirect D1,,6.74,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+TFT-168 val indirect D1,,6.82,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+TFT baseline val indirect D1,,6.83,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST val indirect D1,,8.77,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+climatology test indirect D1,,12.37,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+persistence test indirect D1,,15.71,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+climatology val indirect D1,,8.06,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+persistence val indirect D1,,9.68,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
+"mean rise val to test, pp",,4.8,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
+old XGB indirect D1 (C1),,29.09,submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
+old TFT baseline indirect D1 (C1),,31.76,submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
+direct better validation (C2),,16,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+pairs (C2),,18,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+direct better test (C2),,11,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+pairs (C2 test),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
+"pairs with D3<D1, validation",,10,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
+pairs for horizons,,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
+"pairs with D3>D1, test",,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
+pairs for horizons (test),,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
+"largest D3 minus D1, pp",,0.38,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
+"rank correlation minimum, validation",,0.85,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_rank_stability.csv,scripts/make_report_v7.py,2026-11-14
+"rank correlation minimum, test",,0.77,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_rank_stability_test.csv,scripts/make_report_v7.py,2026-11-14
+"quintile 1 observed, kW",,+263,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
+"quintile 5 observed, kW",,-98,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
+"quintile 1 forecast, kW",,+4,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
+"quintile 5 forecast, kW",,+162,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
+"control quintile 1, kW",,+263,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-14
+"control quintile 5, kW",,-170,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-14
+"mean error all hours, kW",,+52 to +125,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
+"mean error normal operation, kW",,-11 to +12,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
+"PatchTST mean error normal operation, kW",,+64,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
+test op-limited hours (bias),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+"bias2 share max, validation, %",,4.6,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
+"bias2 share max, test, %",,6.0,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
+"seed variance share max, %",,2.8,outputs/11_analyses/decomposition_seeds.csv,scripts/make_report_v7.py,2026-11-14
+"v6 downtime share, %",13.5,13.5,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+v6 zero-output hours,339,339,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
+test op-limited (D1),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test daytime hours (D1),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+val op-limited (D1),,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+val daytime hours (D1),,"2,902",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+v6 TFT hidden size,16,16,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
+TFT-96 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-14
+TFT-96 hidden direct,,64,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-14
+TFT-168 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-14
+TFT-168 hidden direct,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-14
+studies with a value on the edge,,22,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+studies in the final run,,28,outputs/runs/20261114T083930Z_final/report/report_studies.csv,scripts/make_report_v7.py,2026-11-14
+"BiLSTM final fit minus best trial, pp",,0.16 to 0.25,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST best step direct,,"4,100",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST best step indirect,,"4,900",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+PatchTST step budget,,"5,000",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+XGB trials at their cap,,13,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+XGB trials,,"1,080",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
+Newey-West lags,,24,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
+"XGB seed std max, pp",,0.079,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-14
+"BiLSTM seed std max, pp",,0.074,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-14
+test hours polled or mixed (D6),,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+test daytime hours (D6),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14

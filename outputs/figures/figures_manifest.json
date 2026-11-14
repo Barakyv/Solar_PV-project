@@ -1300,7 +1300,7 @@
     "outputs/g1_audit/audit/test_access.json": "b9829dab234ae6f5ff850ae72ba066ddc9cd6f0a449234ec1bddff58d25cb9ce",
     "outputs/g1_audit/reproduction_20261113T202349Z/record.json": "49879c1ee6a7d391cd7ee099fffc40f8fe95f0f53e71fc34bce77a23e6b57466",
     "docs/g1_review_log.md": "5895eec9c74472c2121d2c37c7d746e06eb7ea5b64d361073864315cdf5e558d",
-    "docs/scope_register.md": "165cec1d9a1bd4256c7e8373ee4bebc95754c8352c2b823ebddfe4e418ed0a00",
+    "docs/scope_register.md": "3b4e8d182ccba0331a912f67cfbfb00c2941c2e36718a0d8c553eaa76d5d5e1b",
     "docs/leakage_audit.md": "1b1d8a75d0ce41534167798674bdb8c3a08e0dc60d81d6dd53e98887d768bca6"
    },
    "facts": {
@@ -1312,7 +1312,7 @@
     "suite": "670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c"
    },
    "takeaway": "9 of 9 items have complete evidence, 0 is in progress and 0 wait for the tag (0 wait for a decision). The full suite: 670 tests: 0 failed, 1 skipped (T-103, from the tag); at 6de1b2c.",
-   "git_commit": "fff0e5c"
+   "git_commit": "a5167f0+dirty"
   },
   "S09-35": {
    "stage": "9",
@@ -2071,6 +2071,49 @@
    "takeaway": "In normal operation the largest cell of each model is in the local hour(s) 10, 11, and the largest cell is Winter at 11:00 (14.6 per cent, PatchTST). For XGB in the autumn at 11:00 the error falls from 22.9 per cent on all hours to 4.4 in normal operation: the autumn peak of S11-05 is mostly the operation-limited hours.",
    "git_commit": "fff0e5c"
   },
+  "S11-18": {
+   "stage": "11",
+   "kind": "process",
+   "title": "Where every number of the report comes from",
+   "file": "outputs/figures/stage_11/S11-18_number_sources.png",
+   "file_sha256": "6298b2f76f1cd2b93c010eadac32cfe1c2d88942cd03ab36c38f11064ddf1bdf",
+   "inputs": {
+    "docs/traceability.csv": "a93f3556fd2edc1a48e354030ad260ad81fc983f0f514917781cae60f586afa2"
+   },
+   "facts": {
+    "n_rows": 156,
+    "n_files": 40,
+    "n_run": 68,
+    "n_ana": 37,
+    "n_data": 40,
+    "n_quoted": 11
+   },
+   "takeaway": "The 156 registered numbers of the report are read from 40 files: 68 from the tables and explanations of the final run, 37 from the tables of the analyses of part A, 40 from the data stages and constants, and 11 are quotations of the submitted report or of the project documents. Every row names the script that formats it; a test fails when a number of the text has no row.",
+   "git_commit": "a5167f0+dirty"
+  },
+  "S11-19": {
+   "stage": "11",
+   "kind": "process",
+   "title": "The rebuild from the frozen predictions",
+   "file": "outputs/figures/stage_11/S11-19_rebuild_chain.png",
+   "file_sha256": "c193b423caadc04825eb8c0b968ebe8e8fac495449aecdb44658b8d11bca9b60",
+   "inputs": {
+    "outputs/runs/20261114T083930Z_final/run.json": "2bb56acd44cf1ce14869cf6a0cdbe89892c56653796c1f09ec76e54176f9b465",
+    "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70",
+    "docs/traceability.csv": "a93f3556fd2edc1a48e354030ad260ad81fc983f0f514917781cae60f586afa2",
+    "docs/old_vs_new.csv": "02ed1f339f06de4118425a59f1ad73f938dd3ebb203df4f21f19de1825983519",
+    "outputs/07_evaluation/test_access_log.csv": "98df1f92c50a5a1908bda2e20603b0918b37b331c18444f0b0dd43394c450e3d"
+   },
+   "facts": {
+    "n_steps": 14,
+    "n_tables": 13,
+    "n_rows": 156,
+    "n_ovn": 92,
+    "n_test_scored": 1
+   },
+   "takeaway": "The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 156 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37).",
+   "git_commit": "a5167f0+dirty"
+  },
   "C-01": {
    "stage": "correction",
    "kind": "correction",
@@ -2264,6 +2307,62 @@
    },
    "takeaway": "In the submission rolling statistics led with 57 % (indirect) and 71 % (direct); those features leak at D+2 and D+3 (F-07) and the model had 76 inputs (C-31). In the rebuild the GFS forecasts lead with 56 % and 79 %, and rolling statistics hold 8 %.",
    "git_commit": "ff2d06a"
+  },
+  "C-11": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "The eight conclusions of the submitted report, one by one",
+   "file": "outputs/figures/correction/C-11_conclusions_ledger.png",
+   "file_sha256": "4dbfbe93426d21eab08a88e625abd8971687ec256e6ae998ebc56ca003b2790e",
+   "inputs": {
+    "outputs/11_analyses/patchtst_gap.csv": "03250446ab6435a3fe83e0d5a5e10dca1ed9791cc5ed695f3067807c23f1056a",
+    "outputs/11_analyses/encoder_length.csv": "a41239be510358bfe50542ff03e9f7ab6230acfa3da5a12f679089f41bbdc152",
+    "outputs/11_analyses/horizon_robustness.csv": "874eb64ee78df17074ca592f7dbd749524be7b0e441c446138dc27c72b5d5e56",
+    "outputs/11_analyses/quintile_control.csv": "ca6e1f4e82c638ec528c33d9eaa80abc1e44d1906a35ab1ad9f96742b1146093",
+    "outputs/runs/20261114T083930Z_final/evaluate/val/route_comparison.csv": "7ab7cae45661235bfa77d96431555a3378c6520cc5f89de7629831a80ea573d6",
+    "outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv": "0836461d7d6964f1c691a4283c29a320eac2bba1abce5d29fb9c49915e607c01",
+    "outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv": "c9ebe483e999bbcb81a3856aa7fcf08a518d1d2a565aace79c63140d1b03be2d",
+    "outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv": "12e1091309cb64e556a5f033fa42618f3a57cf58b63e4e3245a6fab0b084635e",
+    "outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv": "b378c0d8a87ea1708830d495a2dd78657f6bad9e5afbedc7b24e5c14db90e4b4",
+    "outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_groups.csv": "ae2cd933b24391057dc348731d67f224010849c45d638a8c417413bfc0e711f9",
+    "outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv": "b3a986d7955afbabbab6cecf62a315880b89f3901b90def35a0fdc79a3dc6fd1",
+    "docs/old_vs_new.csv": "02ed1f339f06de4118425a59f1ad73f938dd3ebb203df4f21f19de1825983519"
+   },
+   "facts": {
+    "n_ok": 1,
+    "n_replaced": 2,
+    "n_bad": 5,
+    "route_val": 16,
+    "route_test": 11,
+    "enc_sig": 1,
+    "pt_lo": 1.36184325,
+    "pt_hi": 2.3135664,
+    "v6_gap": 1.2100000000000009,
+    "clim_sig": 1
+   },
+   "takeaway": "Of the eight conclusions, 1 is reproduced, 2 are replaced by a different statement and 5 are not supported. The route (C2) is nominally the other way in 16 of 18 pairs on validation and 11 of 18 on test; the encoder (C5) has 1 of 12 cells significant; PatchTST (C4) is 1.36 to 2.31 pp behind XGB in kW (the submitted report stated 1.2 pp, in the units of the target, F-06); the climatology margin (C7) is significant in 1 cell of 6.",
+   "git_commit": "a5167f0+dirty"
+  },
+  "C-12": {
+   "stage": "correction",
+   "kind": "correction",
+   "title": "The route advantage: submitted report and rebuild",
+   "file": "outputs/figures/correction/C-12_route_old_new.png",
+   "file_sha256": "71b58852a65f4167d1cefd6c619522b933d958a1d9fb4cd7af2bb152a8d23bd2",
+   "inputs": {
+    "docs/old_vs_new.csv": "02ed1f339f06de4118425a59f1ad73f938dd3ebb203df4f21f19de1825983519"
+   },
+   "facts": {
+    "old_lo": 1.66,
+    "old_hi": 2.1,
+    "val_lo": -0.37,
+    "val_hi": -0.0,
+    "test_lo": -0.35,
+    "test_hi": 0.11,
+    "changed": 3
+   },
+   "takeaway": "The submitted report found the indirect route better by 1.66 to 2.10 pp. In the rebuild the difference is -0.37 to -0.00 pp on validation and -0.35 to +0.11 pp on test, with the sign of 3 of the 6 bars changing between the two periods: the advantage is not reproduced, and neither route is declared better.",
+   "git_commit": "a5167f0+dirty"
   }
  }
 }
