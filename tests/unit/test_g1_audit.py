@@ -126,6 +126,34 @@ def test_the_figures_explain_only_what_d34_names_and_trust_evidence_only_while_c
     assert not W._code_unchanged_since("b2c3f1f")  # the pipeline code changed in W6
 
 
+def test_an_explanation_is_tied_to_its_cause_and_not_to_a_file_name():
+    """T-120 (X99, D-34): the files whose only difference is `gpu_peak_mb` (the peak of the GPU
+    memory, which moves with the timing of Python's garbage collector) and the report column
+    `n_resumed` are explained; the same file names with another column, a cell that is not a
+    number, or in another step are not."""
+    from solarpv.figures import s09_w6 as W
+
+    peak = ("294 numeric cells differ (max abs 0.00977, max rel 9.05e-06), 0 other cells, in "
+            "['gpu_peak_mb']; DataFrame.iloc[:, 8] (column name=\"gpu_peak_mb\") are different")
+    path = "<run>/tft168/learning_curves.csv"
+    assert W.explained_reason("dev_neural", path, peak)
+    assert W.explained_group("dev_neural", path, peak) == "gpu_peak"
+    for detail in (peak.replace("['gpu_peak_mb']", "['val_loss']"),          # another column
+                   peak.replace("['gpu_peak_mb']", "['gpu_peak_mb', 'val_loss']"),  # and another
+                   peak.replace("0 other cells", "10 other cells"),         # a cell that is text
+                   peak.replace("0 other cells", "3 other cells"),
+                   ""):                                                       # no detail at all
+        assert W.explained_reason("dev_neural", path, detail) is None, detail
+    assert W.explained_reason("dev_xgb", path, peak) is None            # another step
+    assert W.explained_reason("dev_neural", "<run>/tft168/predictions_tft_168_seed42.csv",
+                              peak) is None                              # another file
+    column = "columns differ: ['n_resumed']"
+    assert W.explained_group("dev_xgb", "<run>/report/report_steps.csv", column) == "reports"
+    assert W.explained_reason("dev_xgb", "<run>/report/report_steps.csv",
+                              "columns differ: ['n_resumed', 'budget']") is None
+    assert W.explained_reason("dev_xgb", "<run>/report/report_steps.csv", "") is None
+
+
 def test_the_test_access_audit_reads_every_kind_of_forecast_file(A, tmp_path, monkeypatch):
     """X76: the audit globbed `predictions_*.csv` only and never saw the ablation forecasts of
     the new step; a test hour in any kind of forecast file is counted, in a moved-aside folder

@@ -568,7 +568,7 @@ Figures made earlier by the stage's own producer:
 
 - **Question:** Which items of gate G-1 have their evidence, and which are still open?
 - **Shows:** The nine items of the gate (PROJECT_MASTER.md §7), each with its state read from its evidence file (the assumption register, the JUnit file of the full suite, the test-access audit, the reproduction record, the smoke run, the dry run, the review log, the scope register, the git tags). Evidence gathered at an earlier commit counts for HEAD only when nothing outside the paths of D-36 changed since.
-- **Takeaway:** 8 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (0 wait for a decision). The full suite: 638 tests: 0 failed, 1 skipped (T-103, from the tag); at d126db8.
+- **Takeaway:** 7 of 9 items have complete evidence, 0 is in progress and 1 wait for the tag (1 wait for a decision). The full suite: 638 tests: 0 failed, 1 skipped (T-103, from the tag); at d126db8.
 - **Led to:** The user approves the tag; then the final run by the runbook.
 - **File:** `outputs/figures/stage_09/S09-34_g1_checklist.png`
 
@@ -592,7 +592,7 @@ Figures made earlier by the stage's own producer:
 
 - **Question:** Has any run of the rebuild read or forecast a test hour before the gate?
 - **Shows:** Every run of the runner so far: the last hour that any of its forecast files holds (predictions, uncorrected and ablation forecast files), against the start of the test split, with the number of its step records and forecast files; the evaluation layer's test-access log and its git history.
-- **Takeaway:** Across 22 runs, 172 step records hold no test access and 160 forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.
+- **Takeaway:** Across 23 runs, 185 step records hold no test access and 171 forecast files hold 0 test hours; the latest forecast hour of any run is 2024-09-30 23:00 UTC, before the test split starts on 2024-10-01. The access log does not exist and was never committed.
 - **Led to:** The test split is read once, by the final run (phase 1 forecasts it, phase 2 scores it, D-32), and every read is logged.
 - **File:** `outputs/figures/stage_09/S09-37_test_never_read.png`
 
@@ -600,7 +600,7 @@ Figures made earlier by the stage's own producer:
 
 - **Question:** Does a fresh checkout, given only the raw data, the GFS point extracts and the site file, produce the same outputs at every stage and the same forecasts for every model?
 - **Shows:** Left: every file each stage wrote in a fresh clone, compared with this checkout's: identical bytes, the same content in other bytes (a newer parquet writer), floating-point noise (numeric cells only, relative difference at most 1e-9, nothing missing on one side), a difference explained by a documented fix (D-34), an unexplained difference, or listed only (figures, logs, notebooks). Right: the forecast files of the two development runs per model, against the reference runs; colour and marker per model.
-- **Takeaway:** The script's verdict is NOT reproduced, by its rule that any failing file fails: of 317 compared files, 227 have identical bytes, 67 the same content, 16 differ by floating-point noise only (at most 3e-12 relative), 7 differ for a documented reason and 0 for none. The explained files are the 5 of the decision checks run on the laptop (X66: the 2 decisions they record come out the same) and the 2 reports of the neural development run (X45 and the row order of a resumed report). 6 of 6 models give the same forecasts as the reference runs. The parse of the raw text differs by up to 1e-13 relative (X63).
+- **Takeaway:** The script's verdict is NOT reproduced, by its rule that any failing file fails: of 312 compared files, 227 have identical bytes, 52 the same content, 16 differ by floating-point noise only (at most 3e-12 relative), 17 differ for a documented reason and 0 for none. The explained files are the 5 of the decision checks run on the laptop (X66: the 2 decisions they record come out the same), the 3 report tables of the development runs (X45, the row order of a resumed report, and the column n_resumed of D-38) and the 9 learning-curve and trial tables of the TFT models in which only the column gpu_peak_mb differs, by at most 7e-05 relative (X99: the peak of the GPU memory depends on the timing of Python's garbage collector, not on the computation). 6 of 6 models give the same forecasts as the reference runs. The parse of the raw text differs by up to 1e-13 relative (X63).
 - **Led to:** Evidence of gate G-1 (stage-9 plan §20.5, D-34); the final run starts from the same code and inputs.
 - **File:** `outputs/figures/stage_09/S09-38_reproduction.png`
 
@@ -608,7 +608,7 @@ Figures made earlier by the stage's own producer:
 
 - **Question:** Could reading a module's help rewrite data, and did the accidental rerun change anything?
 - **Shows:** Left: the entry points of the code (stage modules, scripts, notebook builders) at the start of W6 and now, by whether they parse their arguments before any work. Right: the four stage-4 and stage-5 tables that the accidental run rewrote, cell by cell against the originals restored from the hand-off package.
-- **Takeaway:** At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 35 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.
+- **Takeaway:** At the start of W6 22 of 32 entry points ran their work on any argument, --help included; now 0 of 36 do. The accidental rerun rewrote 4 tables with 158,300,208 cells, every one equal to the original; only the parquet writer's bytes differed (pyarrow 25.0.0 against pyarrow 26.0.0), and the originals are back.
 - **Led to:** T-98 checks every entry point statically before it calls any; the reproduction compares content, not bytes (M33).
 - **File:** `outputs/figures/stage_09/S09-39_entry_points.png`
 

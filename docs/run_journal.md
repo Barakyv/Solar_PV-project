@@ -2085,6 +2085,38 @@ hashes, numbers) and the commit messages are the record:
 - **Next.** Commit the candidate, repeat the smoke run, the audit and the reproduction at it, then
   the figures, the notebook and the full suite.
 
+### 2026-11-14 · R9-38 · W6: the reproduction at the final candidate `ac63bb0` (D-34), and X99
+
+- **Reproduction** (`reproduction_20261113T202349Z`, commit `ac63bb0`, a fresh clone `repro_g1/r8`,
+  `--dev --with-eda --rerun-selection`, started after the review of the checkpoints was answered):
+  19 steps, every one exit 0, 4.84 h of step time. The two environments are the existing ones and
+  match the lock files; nothing was installed. The script writes `NOT reproduced` because 17 files
+  fail, and by D-34 each is explained or the check fails. Of 443 files listed: 227 identical in
+  bytes, 52 equal tables or data files in other bytes, 16 tables that differ only by floating-point
+  noise (relative at most `1e-9`), 81 not compared, 42 listed as expected to differ (step records,
+  worker files and reports of another run), 8 run logs without a reference, and 17 failing.
+- **Forecast files:** every forecast file, best-parameter file and result table that the record
+  lists, in the XGB development run (with its `cv` and `ablation` steps) and in the neural run, is
+  identical in bytes to the development runs of this checkout. No step resumed (`n_resumed` is 0
+  for all 16 steps of the two runs) and no checkpoint folder was left behind.
+- **The 17 failing files, all explained (D-34), by three causes:**
+  - 5 of `decide_k` and `nwp_check`: other validation numbers on this machine, the same decisions
+    (X66); the same values as in the reproduction at `e262fe3`;
+  - 3 report tables (`report_steps.csv` of the XGB and the neural run, `report_warnings.csv` of the
+    neural run): the column `n_resumed` of the checkpoints (D-38), the warning that the neural step
+    emits and the row order (X45); the `job.json` files carry the new key `resume`, listed;
+  - 9 learning-curve and trial tables of TFT-96 and TFT-168 in which only `gpu_peak_mb` differs
+    (X99, new at this commit). Measured with a probe that trains the same TFT eight times, after a
+    reference run, with only the number of live Python objects changed: weights equal bit for bit, peak from -0.40 to +1.93
+    MB. A peak of the GPU memory is not a result of the computation; it was equal at `e262fe3` and
+    moved when the code of the fit changed. The explanation in the figures is tied to this cause
+    (T-120), so another column in the same files would still fail. No rule of the comparison was
+    widened (`scripts/` is unchanged).
+- **Figures and notebook:** S09-38 now counts the explained files by cause, and notebook 08 shows
+  the probe.
+- **Next:** the full suite at the clean tree, the W6 figures, the documents, and the request for the
+  approval of the tag.
+
 ### 2026-11-12 · R9-28 · W6: the manual audit, its measures, and the W6 figures (X57, X65)
 
 - **Look-ahead in the data preparation (`scripts/g1_audit.py`, `docs/leakage_audit.md` §3.2):**

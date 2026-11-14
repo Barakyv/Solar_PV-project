@@ -4,6 +4,7 @@ test-split row is read (the GFS table is filtered to the hours before VAL_START 
 """
 
 import ast
+import re
 import subprocess
 
 import numpy as np
@@ -113,7 +114,7 @@ def _checklist() -> list[tuple[str, str, str]]:
                  and _access_covers_disk(acc))
     rec = D.jload(REPRO)
     unexplained = [(s["step"], r["path"]) for s in rec["steps"] for r in s["failing"]
-                   if not explained_reason(s["step"], r["path"])]
+                   if not explained_reason(s["step"], r["path"], r.get("detail") or "")]
     smoke = D.jload(SMOKE_FINAL)
     dry = _dry_run()
     dry_ok = "exit 0" in (REPO_ROOT / dry).read_text(encoding="utf-8")
@@ -405,26 +406,54 @@ CLASSES = (("identical bytes", C["green"], ""), ("same content, other bytes", C[
            (UNEXPLAINED_CLASS, C["red"], "XX"), ("listed, not compared", C["light"], ""))
 # D-34: a difference that follows from a documented fix is explained; nothing else is. A failing
 # file that is not listed here is unexplained, and the figure refuses to be built with one.
+# Each rule is (step, file names or None, a pattern the difference of the file must match or None,
+# group, reason). `needs` ties a rule to one cause: a file with the same name that differs for
+# another reason (another column, a cell that is not a number) is not explained by it (T-120).
+GPU_PEAK_FILES = ("learning_curves.csv", "trials.csv", "curves_direct_seed42.csv",
+                  "curves_indirect_seed42.csv", "trials_direct_seed42.csv",
+                  "trials_indirect_seed42.csv")
 EXPLAINED = (
-    ("decide_k", None, "X66: a decision check run on the laptop; its numbers depend on the "
-                       "machine and its decisions are equal"),
-    ("nwp_check", None, "X66: a decision check run on the laptop; its numbers depend on the "
-                        "machine and its decisions are equal"),
-    ("dev_neural", ("report_steps.csv", "report_warnings.csv"),
-     "X45: the step now emits the tft168 warning; and the row order of a resumed report"),
+    ("decide_k", None, None, "laptop",
+     "X66: a decision check run on the laptop; its numbers depend on the machine and its "
+     "decisions are equal"),
+    ("nwp_check", None, None, "laptop",
+     "X66: a decision check run on the laptop; its numbers depend on the machine and its "
+     "decisions are equal"),
+    ("dev_xgb", ("report_steps.csv",), r"^columns differ: \['n_resumed'\]$", "reports",
+     "D-38: the steps table of the report has a new column, n_resumed"),
+    ("dev_neural", ("report_steps.csv", "report_warnings.csv"), None, "reports",
+     "X45: the step now emits the tft168 warning, and the row order of a resumed report; D-38: "
+     "the steps table has a new column, n_resumed"),
+    ("dev_neural", GPU_PEAK_FILES, r"^\d+ numeric cells differ \(max abs [^)]*\), "
+                                   r"0 other cells, in \['gpu_peak_mb'\];", "gpu_peak",
+     "X99: gpu_peak_mb, the high-water mark of the GPU memory, moves with the timing of Python's "
+     "garbage collector when any code changes; every other column is equal"),
 )
 
 
-def explained_reason(step: str, path: str) -> str | None:
-    for name, files, why in EXPLAINED:
-        if step == name and (files is None or path.rsplit("/", 1)[-1] in files):
-            return why
+def _explained_rule(step: str, path: str, detail: str):
+    for rule in EXPLAINED:
+        name, files, needs, _, _ = rule
+        if (step == name and (files is None or path.rsplit("/", 1)[-1] in files)
+                and (needs is None or re.search(needs, detail))):
+            return rule
     return None
+
+
+def explained_reason(step: str, path: str, detail: str = "") -> str | None:
+    rule = _explained_rule(step, path, detail)
+    return rule[4] if rule else None
+
+
+def explained_group(step: str, path: str, detail: str = "") -> str | None:
+    rule = _explained_rule(step, path, detail)
+    return rule[3] if rule else None
 
 
 def _class(row: dict, step: str, failing: set) -> str:
     if row["path"] in failing:
-        return EXPLAINED_CLASS if explained_reason(step, row["path"]) else UNEXPLAINED_CLASS
+        return (EXPLAINED_CLASS if explained_reason(step, row["path"], row.get("detail") or "")
+                else UNEXPLAINED_CLASS)
     if row["equal"] is True:
         return "identical bytes" if row["kind"] == "bytes" else "same content, other bytes"
     if row["equal"] is False and row.get("float_noise"):
@@ -455,10 +484,13 @@ def _model_style():
     "differ by floating-point noise only (at most {max_rel:.1g} relative), {explained} differ for "
     "a documented reason and {unexplained} for none. The explained files are the {n_laptop} of "
     "the decision checks run on the laptop (X66: the {decisions} decisions they record come out "
-    "the same) and the {n_neural} reports of the neural development run (X45 and the row order "
-    "of a resumed report). {models_equal} of {models} models give the same forecasts as the "
-    "reference runs. The parse of the raw text differs by up to {ingest_rel:.1g} relative "
-    "(X63).",
+    "the same), the {n_reports} report tables of the development runs (X45, the row order of a "
+    "resumed report, and the column n_resumed of D-38) and the {n_peak} learning-curve and trial "
+    "tables of the TFT models in which only the column gpu_peak_mb differs, by at most "
+    "{peak_rel:.1g} relative (X99: the peak of the GPU memory depends on the timing of Python's "
+    "garbage collector, not on the computation). {models_equal} of {models} models give the same "
+    "forecasts as the reference runs. The parse of the raw text differs by up to {ingest_rel:.1g} "
+    "relative (X63).",
     "Evidence of gate G-1 (stage-9 plan §20.5, D-34); the final run starts from the same code "
     "and inputs.",
     (REPRO,))
@@ -467,7 +499,7 @@ def s09_reproduction():
     steps = rec["steps"]
     dev_steps = [s for s in steps if s["step"].startswith("dev_")]
     unexplained = [(s["step"], r["path"]) for s in steps for r in s["failing"]
-                   if not explained_reason(s["step"], r["path"])]
+                   if not explained_reason(s["step"], r["path"], r.get("detail") or "")]
     assert not unexplained, f"unexplained differences: {unexplained}"  # D-34
     counts = []
     for s in steps:
@@ -553,16 +585,25 @@ def s09_reproduction():
                     for k in ref["results"])
             decisions.append((r["path"], same))
     assert decisions and all(same for _, same in decisions), decisions
-    in_step = {name: sum(1 for s in steps if s["step"] == name for _ in s["failing"])
-               for name in ("decide_k", "nwp_check", "dev_neural")}
+    groups: dict[str, list] = {}
+    for s in steps:
+        for r in s["failing"]:
+            groups.setdefault(explained_group(s["step"], r["path"], r.get("detail") or ""),
+                              []).append(r)
+    assert set(groups) <= {"laptop", "reports", "gpu_peak"}, set(groups)
+    peak_rels = [float(m) for r in groups.get("gpu_peak", [])
+                 for m in re.findall(r"max rel ([0-9.]+(?:e[-+]?\d+)?)", r["detail"])[:1]]
+    assert len(peak_rels) == len(groups.get("gpu_peak", []))  # every such file states its bound
     facts = {"result": "NOT reproduced" if rec.get("result") != "reproduced" else "reproduced",
              "decisions": len(decisions), "stages": len(steps),
              "files": sum(total[k] for k in total if k != "listed, not compared"),
              "identical": total["identical bytes"], "content": total["same content, other bytes"],
              "noise": total["floating-point noise"], "explained": total[EXPLAINED_CLASS],
              "unexplained": total[UNEXPLAINED_CLASS],
-             "n_laptop": in_step["decide_k"] + in_step["nwp_check"],
-             "n_neural": in_step["dev_neural"],
+             "n_laptop": len(groups.get("laptop", [])),
+             "n_reports": len(groups.get("reports", [])),
+             "n_peak": len(groups.get("gpu_peak", [])),
+             "peak_rel": max(peak_rels) if peak_rels else 0.0,
              "max_rel": max(rels) if rels else 0.0,
              "models_equal": sum(per_model[m]["differs"] == 0 and per_model[m]["noise"] == 0
                                  for m in models),

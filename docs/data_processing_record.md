@@ -1287,6 +1287,16 @@ stored file changed).**
   neural run) are identical in bytes; the 7 files that fail the comparison are those D-34 explains
   (`decide_k` 3, `nwp_check` 2, the two report tables of the neural run). The two environments were
   the existing ones; nothing was installed.
+- *Reproduction at the final candidate after the checkpoints (14.11, run journal R9-38,
+  `outputs/g1_audit/reproduction_20261113T202349Z/`):* commit `ac63bb0`, 19 steps, every one exit 0,
+  4.84 h; nothing installed. Every forecast file, best-parameter file and result table of both
+  development runs is identical in bytes. 17 files fail the comparison and D-34 explains each: the
+  same 5 of `decide_k` and `nwp_check` (X66); 3 report tables (the column `n_resumed` of D-38, X45);
+  and 9 learning-curve and trial tables of TFT-96 and TFT-168 in which only the column
+  `gpu_peak_mb` differs, by 0.00977 MB in the curves and 0.1 MB (the rounding) in the trial tables,
+  at most 7.2e-5 relative (X99: the peak of the GPU memory moves with the timing of Python's
+  garbage collector while the weights stay equal bit for bit,
+  `outputs/g1_audit/gpu_peak_probe.txt`, T-120). No step resumed.
 
 **OP-62 — The steps `cv` (S-38) and `ablation` (S-41) of D-36 (no stored file changed).**
 - *Why:* v6 §12.2 (a 5-fold expanding-window CV against the test) and §12.5 (a feature-group

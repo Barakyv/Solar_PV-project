@@ -1945,6 +1945,7 @@ checkpoint.
 | T-117 | On the GPU, `fit` stopped after epoch e and continued gives the same weights and curve as an uninterrupted fit, for the BiLSTM and the TFT |
 | T-118 | On the GPU, the worker killed at an epoch, at a trial and at a unit boundary, and started again, writes forecast files equal in bytes to an uninterrupted worker's, and says what it restored |
 | T-119 | The neural step of the runner on the stub worker passes the resume identity in the job and records `notes.resumed` |
+| T-120 | An explanation of a difference in the reproduction is tied to its cause and not to a file name (X99, 2026-11-14): a file whose only difference is the column `gpu_peak_mb` (or the report column `n_resumed`) is explained; another column, a cell that is not a number, another step or another file is not |
 
 ### 23.5 What it changes for the gate
 
@@ -2010,4 +2011,20 @@ The reviewer read the diff of the checkpoints: one should-fix row and eight note
   worker or runner process is alive before a resume (R-G1-35).
 - **Consequence for the gate.** The code changed again, so the evidence at `9e816ef` (the smoke
   run, the audit, the reproduction that had run for 25 minutes) is repeated at the new candidate.
+
+### 23.8 The reproduction at the final candidate `ac63bb0` (2026-11-14)
+
+The reproduction from the raw data was repeated at `ac63bb0` (run journal R9-38). It differs from
+the one at `e262fe3` in what the checkpoints change: the reports have the column `n_resumed`, the
+job files the key `resume`, and the learning-curve and trial tables of TFT-96 and TFT-168 have
+another `gpu_peak_mb` in 9 files. Every forecast file is identical in bytes, and no step resumed.
+
+The peak of the GPU memory was a self-review point that no test had covered: it is a measurement of
+the host, and the reproduction at `e262fe3` had equal values while `neural_torch.py` was as in the
+development run (it did not change from `d089a22` to `9e816ef`, the first commit of the
+checkpoints). A probe (`outputs/g1_audit/gpu_peak_probe.txt`) trains one TFT on the same windows after
+changing only the number of live Python container objects, which moves the moments at which the
+cyclic collector runs: the weights are equal bit for bit and the peak moves from -0.40 to +1.93 MB
+(X99). So no code is wrong, the comparison of the reproduction is not widened, and the figure's
+explanation is tied to the cause, so that any other column of the same files would fail (T-120).
 

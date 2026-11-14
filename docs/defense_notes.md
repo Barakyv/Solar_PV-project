@@ -319,3 +319,11 @@ to X96). The submitted project had no resume at all (M3): a run that stopped was
   S09-43).
 - **Limits:** the steps shorter than 15 minutes start again; the equality was measured on one
   machine and one driver; a resumed step carries a note in its record and a warning in the report.
+- **What the reproduction shows after the checkpoints (X99, T-120):** the reproduction from the raw
+  data at the final candidate differs from the development runs in the column `gpu_peak_mb` of the
+  learning-curve and trial tables of TFT-96 and TFT-168, by kilobytes in both directions, while
+  every forecast file is identical in bytes. The peak of the GPU memory moves with the timing of
+  Python's garbage collector (a probe with the same weights, bit for bit, moves it by -0.40 to
+  +1.93 MB), so any change of code can move it; no result or decision uses it. The comparison of the
+  reproduction was not widened: the explanation applies only to a file whose sole difference is that
+  column.

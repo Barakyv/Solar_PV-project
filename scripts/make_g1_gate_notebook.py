@@ -19,7 +19,7 @@ from _notebook import code, md, write_notebook
 from solarpv.config.cli import no_options
 from solarpv.config.paths import DOCS_DIR, OUTPUTS_DIR, REPO_ROOT
 from solarpv.figures._data import W6_DEV_RUN
-from solarpv.figures.s09_w6 import explained_reason
+from solarpv.figures.s09_w6 import explained_group, explained_reason
 
 no_options("python scripts/make_g1_gate_notebook.py", __doc__)  # X62: --help runs nothing
 
@@ -35,9 +35,10 @@ REPRO_REL = REPRO.relative_to(REPO_ROOT).as_posix()
 CV = REPO_ROOT / W6_DEV_RUN / "cv" / "cv_summary.csv"
 AB = REPO_ROOT / W6_DEV_RUN / "ablation" / "ablation_summary.csv"
 RESUME = OUTPUTS_DIR / "g1_audit" / "resume_check.json"  # scripts/g1_resume_check.py (D-38)
+PROBE = OUTPUTS_DIR / "g1_audit" / "gpu_peak_probe.txt"  # X99: the peak of the GPU memory
 SOURCES = [LEAKAGE, AUDIT / "test_access.json", AUDIT / "lookahead_clean.csv",
            AUDIT / "lookahead_clock.csv", AUDIT / "lookahead_polled.csv", INCIDENT, REPRO, CV, AB,
-           RESUME]
+           RESUME, PROBE]
 
 
 def table_rows(text: str, start: str, stop: str, width: int) -> pd.DataFrame:
@@ -58,8 +59,15 @@ INC = json.loads(INCIDENT.read_text(encoding="utf-8"))
 REC = json.loads(REPRO.read_text(encoding="utf-8"))
 assert REC.get("result"), f"{REPRO} is not a finished reproduction record"
 UNEXPLAINED = [(s["step"], r["path"]) for s in REC["steps"] for r in s["failing"]
-               if not explained_reason(s["step"], r["path"])]
+               if not explained_reason(s["step"], r["path"], r.get("detail") or "")]
 N_FAIL = sum(len(s["failing"]) for s in REC["steps"])
+N_GROUP = {g: sum(1 for s in REC["steps"] for r in s["failing"]
+                  if explained_group(s["step"], r["path"], r.get("detail") or "") == g)
+           for g in ("laptop", "reports", "gpu_peak")}
+PROBE_ROWS = re.findall(r"diff vs reference=([+-][0-9.]+) MB\s+weights equal=(True|False)",
+                        PROBE.read_text(encoding="utf-8").split("# Output of the probe:")[1])
+assert PROBE_ROWS and all(w == "True" for _, w in PROBE_ROWS), PROBE_ROWS
+PROBE_DIFF = [float(d) for d, _ in PROBE_ROWS]
 CVS = pd.read_csv(CV)
 ABS = pd.read_csv(AB)
 GFS = ABS[ABS["mode"] == "no_nwp_gfs"]["mean_delta_pp"]
@@ -197,12 +205,28 @@ raw files to the two development runs of the runner (all six models), each stage
 with this checkout's by content. Result recorded by the script: **{REC.get('result')}**, because
 {N_FAIL} files differ.
 
-**What it means.** {N_FAIL - len(UNEXPLAINED)} of the {N_FAIL} are explained by a documented fix:
-the decision checks of stage 6 and 6b were run on the laptop and give other numbers on this machine
-with the same decisions (X66), and the reports of the neural development run differ by the warning
-that the step now emits (X45) and by row order. {len(UNEXPLAINED)} are unexplained. By D-34 this
-is a consistency check, and the explained differences are listed and never made to pass by a wider
-rule."""),
+**What it means.** {N_FAIL - len(UNEXPLAINED)} of the {N_FAIL} are explained, each by its cause:
+{N_GROUP['laptop']} are the decision checks of stage 6 and 6b, run on the laptop, which give other
+numbers on this machine with the same decisions (X66); {N_GROUP['reports']} are report tables that
+differ by the warning that the step now emits (X45), by row order, and by the column `n_resumed` of
+the checkpoints (D-38); {N_GROUP['gpu_peak']} are learning-curve and trial tables of the TFT models
+in which only the column `gpu_peak_mb` differs (X99): the peak of the GPU memory moves with the
+timing of Python's garbage collector when any code changes, while the weights stay equal bit for
+bit (the probe below). {len(UNEXPLAINED)} are unexplained. By D-34 this is a consistency check, and
+the explained differences are listed and never made to pass by a wider rule."""),
+    code("""PROBE = REPO_ROOT / "outputs" / "g1_audit" / "gpu_peak_probe.txt"
+print(PROBE.read_text(encoding="utf-8").split("# Output of the probe:")[1].strip())"""),
+    md(f"""**What it shows.** After a reference run, the probe trains the same TFT on the same
+synthetic windows {len(PROBE_ROWS)} more times (the last with the cyclic collector switched off);
+the only thing that changes between the runs is how many Python container objects are alive before
+the fit, which moves the moments at which the collector runs.
+
+**What it means.** The weights are equal bit for bit in all {len(PROBE_ROWS)} runs, while the peak
+of the GPU memory moves from {min(PROBE_DIFF):+.2f} to {max(PROBE_DIFF):+.2f} MB against the
+reference. So the peak is a property of the timing of the host, not of the computation, and a
+change of code that creates Python objects (the checkpoints of D-38 do) can move it by the few
+kilobytes seen in the reproduction. It was equal in the earlier reproduction, before D-38, and no
+decision uses it."""),
     md("## 6. The two analyses that train models (D-36)"),
     code("""RUN = REPO_ROOT / "@RUN@"
 cv = pd.read_csv(RUN / "cv" / "cv_summary.csv")
