@@ -71,34 +71,43 @@ PIPELINE = [
     ("GFS forecasts", "{gfs_runs:,} runs", "done"),
     ("Feature selection", "{sel_ind} / {sel_dir} inputs at D+1", "done"),
     ("Evaluation layer", "3 references", "done"),
-    ("Light models", "XGB-dev, runner", "current"),
-    ("Gate G-1", "end-to-end audit", "pending"),
-    ("Final training", "six models", "pending"),
-    ("Report", "figures, errata", "pending"),
+    ("Light models", "XGB-dev, runner", "done"),
+    ("Gate G-1", "audit, tag g1-frozen", "done"),
+    ("Final training", "six models, {n_ok} steps ok", "done"),
+    ("Report", "v7, {n_report_figs} figures", "done"),
 ]
+FINAL_RUN = "outputs/runs/20261114T083930Z_final/run.json"
+REPORT_FIGURES = "docs/report_v7_figures.csv"
+SPLIT_TABLE = "outputs/03_eda/tables/table_splits.csv"
 
 
 @register(
     "S01-01", "1", "pipeline", "The pipeline, stage by stage",
     "What are the stages from the raw export to the report, and what does each one produce?",
-    "Twelve boxes in reading order, each with the stage's main output; finished stages solid, "
-    "the current stage outlined in orange, later stages hatched.",
+    "Twelve boxes in reading order, each with the stage's main output. Every stage is complete; "
+    "the final training ran once, on the code frozen at gate G-1.",
     "From {n_files} raw files to {minutes:,} UTC minutes, {hours:,} hourly rows, "
     "{f1} / {f2} / {f3} candidate features per horizon plus {gfs_runs:,} weather-forecast runs, "
-    "and {sel_ind} (indirect) and {sel_dir} (direct) model inputs at D+1. The final training "
-    "of the six models comes only after the gate.",
+    "and {sel_ind} (indirect) and {sel_dir} (direct) model inputs at D+1. The final run completed "
+    "{n_ok} steps on the frozen code, and the report holds {n_report_figs} figures.",
     "Each stage is built and checked before the next one starts; the final training runs once "
     "on frozen code after gate G-1 (D-08).",
-    (INVENTORY, INGEST_MANIFEST, FEATURES_MANIFEST, GFS_MANIFEST, MODEL_INPUTS))
+    (INVENTORY, INGEST_MANIFEST, FEATURES_MANIFEST, GFS_MANIFEST, MODEL_INPUTS, FINAL_RUN,
+     REPORT_FIGURES))
 def s01_pipeline():
     ing, feat, gfs, mi = (D.jload(INGEST_MANIFEST), D.jload(FEATURES_MANIFEST),
                           D.jload(GFS_MANIFEST), D.jload(MODEL_INPUTS))
     fph = feat["features_per_horizon"]
+    steps = D.jload(FINAL_RUN)["steps"]
+    figs = D.csv(REPORT_FIGURES, dtype=str, keep_default_na=False)
+    n_figs = int((figs["figure_id"] != "").sum())  # rows without an id: v6 figures not redrawn
+    assert all(v["status"] == "ok" for v in steps.values())  # X114: the stages are drawn as done
     facts = {"n_files": int(len(D.csv(INVENTORY))), "minutes": int(ing["rows"]),
              "hours": int(feat["rows_per_horizon"]["D1"]),
              "f1": len(fph["D1"]), "f2": len(fph["D2"]), "f3": len(fph["D3"]),
              "gfs_runs": int(gfs["runs"]), "sel_ind": int(mi["indirect_D1"]["n_features"]),
-             "sel_dir": int(mi["direct_D1"]["n_features"])}
+             "sel_dir": int(mi["direct_D1"]["n_features"]), "n_ok": len(steps),
+             "n_report_figs": n_figs}
     fig, ax = subplots(width=7.4, height=3.6)
     blank(ax)
     w, h, gx = 0.21, 0.2, 0.043
@@ -121,7 +130,7 @@ def s01_pipeline():
             arrow(ax, x0 + w / 2, y0, x0 + w / 2, y0 - 0.06)
             ax.plot([x0 + w / 2, x1 + w / 2], [y0 - 0.06, y0 - 0.06], color=C["grey"], lw=0.9)
             arrow(ax, x1 + w / 2, y0 - 0.06, x1 + w / 2, y1 + h)
-    ax.set_title("The pipeline, stage by stage (solid: done, orange: current, hatched: to come)")
+    ax.set_title("The pipeline, stage by stage (every stage complete)")
     return fig, facts
 
 
@@ -139,15 +148,22 @@ SPLITS = [("train", DATA_START_UTC, TRAIN_END), ("validation", VAL_START, VAL_EN
     "({test_d:,} daytime). Every selection and tuning step uses train and validation only.",
     "The split fixed the evaluation rule of every later stage: decisions on validation, the test "
     "period opened once in the final run after the code is frozen (D-08).",
-    ())
+    (SPLIT_TABLE,))
 def s01_splits():
+    # X113: the hours are the rows of the hourly table (the split table of stage 3), not the
+    # calendar hours of the split window: the test window runs 3 UTC hours past the last data hour.
+    table = D.csv(SPLIT_TABLE).set_index("split").rename(index={"val": "validation"})
     facts = {}
     fig, ax = subplots(height=2.0)
     for _i, (name, a, b) in enumerate(SPLITS):
         start = pd.Timestamp(a, tz="UTC").floor("h")
-        idx = pd.date_range(start, pd.Timestamp(b, tz="UTC").floor("h"), freq="h")
-        facts[f"{name}_h"] = int(len(idx))
-        facts[f"{name}_d"] = int(daytime_mask(idx).sum())
+        last_row = pd.Timestamp(table.loc[name, "end_utc"]) - pd.Timedelta(hours=1)
+        end = min(pd.Timestamp(b, tz="UTC").floor("h"), last_row)
+        idx = pd.date_range(start, end, freq="h")
+        assert len(idx) == int(table.loc[name, "hours"]), name
+        assert int(daytime_mask(idx).sum()) == int(table.loc[name, "daytime_hours"]), name
+        facts[f"{name}_h"] = int(table.loc[name, "hours"])
+        facts[f"{name}_d"] = int(table.loc[name, "daytime_hours"])
         ax.barh(0, (idx[-1] - idx[0]).days + 1 / 24, left=D.naive_utc(idx[:1])[0],
                 color=SPLIT_COLOURS[name], alpha=0.85, height=0.5,
                 hatch="////" if name == "test" else None, edgecolor="white")

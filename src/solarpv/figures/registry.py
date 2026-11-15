@@ -104,12 +104,14 @@ WORK_ITEMS = {
                "S11-17")),
         "B": ("The report sections, the traceability and the old against new results",
               ("S11-18", "S11-19", "C-11", "C-12")),
+        "C": ("The final report v7 with its figures", ("S11-20",)),
     },
 }
 TASK_PLANS = {"S09-W1": "docs/stage9_plan.md §10", "S09-W2": "docs/stage9_plan.md §13–§16",
               "S09-W3": "docs/stage9_plan.md §17", "S09-W4": "docs/stage9_plan.md §18",
               "S09-W5": "docs/stage9_plan.md §19", "S09-W6": "docs/stage9_plan.md §20–§23",
-              "S11-A": "docs/stage11_plan.md", "S11-B": "docs/stage11_plan.md section 5"}
+              "S11-A": "docs/stage11_plan.md", "S11-B": "docs/stage11_plan.md section 5",
+              "S11-C": "docs/stage11_plan.md section 6"}
 CORRECTION_TASK = "corrections"
 
 
@@ -168,6 +170,7 @@ def load_all() -> list[FigureSpec]:
         s10_final,
         s11_part_a,
         s11_part_b,
+        s11_part_c,
     )
     order = {s: i for i, s in enumerate(STAGES)}
     ids = [f.id for f in REGISTRY]

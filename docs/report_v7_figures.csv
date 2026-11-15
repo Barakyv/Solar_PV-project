@@ -1,0 +1,38 @@
+number,figure_id,section,title,v6_figure,relation,file
+1,S01-01,3.2,"The pipeline, stage by stage",,added,outputs/figures/stage_01/S01-01_pipeline.png
+2,S05-02,3.2,Operationally limited daytime hours per month,,added,outputs/figures/stage_05/S05-02_operational_flags.png
+3,S06-01,3.3,From power to the clear-sky index on two days,,added,outputs/figures/stage_06/S06-01_target_construction.png
+4,S6b-01,3.4,Forecast runs public before the issuance time,,added,outputs/figures/stage_6b/S6b-01_forecast_availability.png
+5,S07-01,3.6,"Selected sets against the full candidate pool, inside train",,added,outputs/figures/stage_07/S07-01_inner_train_check.png
+6,S07-02,3.6,Model inputs per route and horizon,22,counterpart of the v6 figure,outputs/figures/stage_07/S07-02_model_inputs.png
+7,S09-35,3.7,When the information of each input is known,24,counterpart of the v6 figure,outputs/figures/stage_09/S09-35_issuance_windows.png
+8,S01-02,3.8,"Train, validation and test periods",11,counterpart of the v6 figure,outputs/figures/stage_01/S01-02_splits.png
+9,S06-04,3.9,Which past days each horizon may use,,added,outputs/figures/stage_06/S06-04_history_per_horizon.png
+10,S11-16,5,"The six models of the final run: inputs, budgets and time",12,counterpart of the v6 figure,outputs/figures/stage_11/S11-16_model_cards_final.png
+11,S08-01,6.1,Which hours are scored,,added,outputs/figures/stage_08/S08-01_evaluation_hours.png
+12,S11-01,7.1,The benchmark in kW with 95 % intervals,1,counterpart of the v6 figure,outputs/figures/stage_11/S11-01_benchmark_intervals.png
+13,S11-03,7.3,Forecast against observed power on the test split,13,counterpart of the v6 figure,outputs/figures/stage_11/S11-03_scatter_test.png
+14,S11-02,7.5,"Error against the horizon, validation and test",2,counterpart of the v6 figure,outputs/figures/stage_11/S11-02_horizon_robustness.png
+15,S10-03,7.6,From validation to test: where the extra error is,,added,outputs/figures/stage_10/S10-03_val_test_views.png
+16,S10-04,8.1,Every model and reference against XGB: Diebold-Mariano in kW on test,5,counterpart of the v6 figure,outputs/figures/stage_10/S10-04_test_dm_vs_xgb.png
+17,S11-04,9.1,"Error by season, validation and test",3,counterpart of the v6 figure,outputs/figures/stage_11/S11-04_seasonal_heatmap.png
+18,S11-05,9.2,Error by local hour and season on the test split,4,counterpart of the v6 figure,outputs/figures/stage_11/S11-05_hour_season.png
+19,S11-17,9.2,"The same, in the hours of normal operation",,added,outputs/figures/stage_11/S11-17_hour_season_normal.png
+20,S11-06,10,"Indirect route against direct route, validation and test",10,counterpart of the v6 figure,outputs/figures/stage_11/S11-06_route_comparison.png
+21,S11-07,11.1,XGB: what the SHAP values attribute the forecast to,6,counterpart of the v6 figure,outputs/figures/stage_11/S11-07_shap_groups.png
+22,S11-08,11.2,TFT: how the attention is spread over the encoder window,7,counterpart of the v6 figure,outputs/figures/stage_11/S11-08_tft_attention.png
+23,S11-09,11.3,TFT encoder of 168 hours against 96 hours,,added,outputs/figures/stage_11/S11-09_encoder_length.png
+24,S11-14,11.4,PatchTST against XGB and against climatology,,added,outputs/figures/stage_11/S11-14_patchtst_gap.png
+25,S11-10,11.5,TFT-96: how the search converged and what mattered,8,counterpart of the v6 figure,outputs/figures/stage_11/S11-10_tft96_search.png
+26,S10-05,12.1,Seed spread in kW against the rule of stage 10,17,counterpart of the v6 figure,outputs/figures/stage_10/S10-05_seed_spread.png
+27,S10-06,12.2,"XGB: the five-fold CV on train, validation and test",18,counterpart of the v6 figure,outputs/figures/stage_10/S10-06_cv_val_test.png
+28,S11-11,12.3,"Bias² and variance of the error, and the bias in normal operation",9,counterpart of the v6 figure,outputs/figures/stage_11/S11-11_bias_variance.png
+29,S11-12,12.4,"XGB: the mean error by production quintile, two ways",16,counterpart of the v6 figure,outputs/figures/stage_11/S11-12_production_quintiles.png
+30,S11-13,12.5,"XGB: feature-group ablation, validation and test",15,counterpart of the v6 figure,outputs/figures/stage_11/S11-13_ablation_final.png
+31,S11-19,16,The rebuild from the frozen predictions,,added,outputs/figures/stage_11/S11-19_rebuild_chain.png
+,,,,14,not redrawn: radar of the seasonal errors: the same numbers as the heatmap (C-84),
+,,,,19,"not redrawn: three-method consensus pipeline: replaced by the selection protocol on train only (D-23, F-26)",
+,,,,20,"not redrawn: SHAP backward-elimination curves: replaced by the selection protocol on train only (D-23, F-26)",
+,,,,21,"not redrawn: stability-selection probabilities: replaced by the selection protocol on train only (D-23, F-26)",
+,,,,23,"not redrawn: mutual information against stability: replaced by the selection protocol on train only (D-23, F-26)",
+,,,,25,"not redrawn: stability-floor sensitivity: replaced by the selection protocol on train only (D-23, F-26)",

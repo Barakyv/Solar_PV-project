@@ -35,7 +35,8 @@ def _strip_ids(text: str) -> str:
     t = re.sub(r"\d{4}-\d{2}(?:-\d{2})?(?:\.\.\d{4}-\d{2})?", " ", t)  # ISO dates and month spans
     t = re.sub(r"\b(?:stage|stages|phase|seed|step)s? \d+(?: and \d+)?", " ", t)  # names of steps and seeds
     t = re.sub(r"\b[A-Za-z]+[-+]?\d+(?:[a-z])?(?:[-–]\d+)?\b", " ", t)  # D-37, S11-05, F-30, D+1, C1, X100
-    t = re.sub(r"\b(?:section|chapter)s? \d+(?:\.\d+)?", " ", t)
+    # section references, also lists of them ("sections 3.4 and 3.7", "Chapters 7 to 12"; part C)
+    t = re.sub(r"\b(?:[Ss]ection|[Cc]hapter)s? \d+(?:\.\d+)?(?:(?:,| and| to)\s+\d+(?:\.\d+)?)*", " ", t)
     t = re.sub(r"\(\d+\.\d+\)", " ", t)
     return t
 

@@ -1,157 +1,385 @@
 claim,value_old,value_new,file,script,verified_on
-cells per comparison (target x horizon),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-old test daytime hours,,"2,580",submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
-test daytime hours with a measured output,,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-"park size, MW",40,40,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
-park inverters,25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
-"AC capacity, kW",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-14
-park inverters (table),25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
-"AC capacity, kW (table)",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-14
-"panel tilt, deg",,21,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
-"panel azimuth, deg",,185,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
-one-minute rows,,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
-hourly rows,,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
-train hours,,"21,195",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-train daytime valid,,"9,656",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-val hours,,"5,832",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-val daytime valid,,"2,901",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test hours,,"5,829",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test daytime valid (table),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-train op-limited,,379,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-val op-limited,,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test op-limited,,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test hours polled or mixed,,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-rows 1min (milestones),,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
-hourly rows (milestones),,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-14
-op-limited daytime hours all,,711,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-daytime hours all,,"15,180",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-MEAN_DAYTIME_K,0.6279,0.788157,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-14
-GFS runs,,"1,371",outputs/06b_gfs/gfs_manifest.json,scripts/make_report_v7.py,2026-11-14
-indirect inputs per horizon,,28 to 32,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-14
-direct inputs per horizon,,82 to 96,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-14
-GPU hours,,7.6,outputs/runs/20261114T083930Z_final/report/report_steps.csv,scripts/make_report_v7.py,2026-11-14
-test scoring events,,1,outputs/07_evaluation/test_access_log.csv,scripts/make_report_v7.py,2026-11-14
-"v6 PatchTST gap, points",1.2,1.2,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-"PatchTST minus XGB, pp",,1.36 to 2.31,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST vs XGB significant cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST vs XGB cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-"PatchTST minus climatology, pp",,0.05 to 1.26,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST vs climatology significant cells,,8,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST vs climatology cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-14
-"ablation no_nwp_gfs validation, pp",,0.96 to 1.44,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-14
-"ablation no_nwp_gfs test, pp",,0.95 to 1.21,outputs/runs/20261114T083930Z_final/report/report_ablation_test.csv,scripts/make_report_v7.py,2026-11-14
-"ablation other groups max validation, pp",,0.14,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-14
-"GFS share of mean absolute SHAP, validation, %",,56 to 75,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_groups.csv,scripts/make_report_v7.py,2026-11-14
-"GFS share of mean absolute SHAP, test, %",,64 to 74,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_groups_test.csv,scripts/make_report_v7.py,2026-11-14
-"v6 route advantage, points",1.66 to 2.10,1.66 to 2.10,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-"direct better pairs, validation",,16,evaluate/val/route_comparison.csv; test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-model-horizon pairs,,18,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-"direct better pairs, test",,11,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-model-horizon pairs (test),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-"route difference min, pp",,-0.69,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-"route difference max, pp",,+0.24,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-pairs with a changed sign,,7,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-pairs (sign),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-"cells where XGB lowest, test",,1,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-"cells where XGB lowest, validation",,5,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-"BiLSTM significant cells, test",,3,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"TFT-96 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"TFT-168 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"TFT baseline significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"encoder diff validation min, pp",,-0.02,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-"encoder diff validation max, pp",,+0.10,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-"encoder diff test min, pp",,-0.27,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-"encoder diff test max, pp",,+0.33,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-encoder significant cells,,1,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-encoder cells,,12,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-14
-same-hour attention ratio,,0.82 to 1.07,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-14
-first-position attention ratio,,0.49 to 1.37,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-14
-v6 lags,"-24, -48 and -168","-24, -48 and -168",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-"v6 BiLSTM alignment, points",13,13,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-"statistical power of the MDE, %",,80,src/solarpv/evaluation/stats_tests.py,scripts/make_report_v7.py,2026-11-14
-"climatology significant cells, test",,1,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-climatology cells,,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"climatology significant cells, validation",,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-14
-climatology cells (validation),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-14
-"climatology effect, percent of MDE",,75 to 109,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-test hours (power),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-old underpowered pairs,,12,submission_evidence/02_statistical_tests/detectable_effect_summary.csv,scripts/make_report_v7.py,2026-11-14
-old pairs with an MDE,,12,submission_evidence/02_statistical_tests/detectable_effect_summary.csv,scripts/make_report_v7.py,2026-11-14
-old significant pairs,,21,submission_evidence/02_statistical_tests/dm_tests.csv,scripts/make_report_v7.py,2026-11-14
-old DM pairs,,30,submission_evidence/02_statistical_tests/dm_tests.csv,scripts/make_report_v7.py,2026-11-14
-"v6 summer estimate, points",5 to 8,5 to 8,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-"XGB Fall validation, %",,3.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"XGB Fall test, %",,14.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"climatology Fall validation, %",,4.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"climatology Fall test, %",,13.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"Fall op-limited share test, %",,10,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"Fall op-limited share validation, %",,2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"XGB Spring validation, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-"XGB Spring test, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-14
-XGB test indirect D1,29.09,11.28,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-BiLSTM test indirect D1,,11.61,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-TFT-96 test indirect D1,,11.45,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-TFT-168 test indirect D1,,11.21,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-TFT baseline test indirect D1,,11.39,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST test indirect D1,,13.44,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-XGB val indirect D1,,6.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-BiLSTM val indirect D1,,6.99,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-TFT-96 val indirect D1,,6.74,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-TFT-168 val indirect D1,,6.82,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-TFT baseline val indirect D1,,6.83,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST val indirect D1,,8.77,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-climatology test indirect D1,,12.37,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-persistence test indirect D1,,15.71,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-climatology val indirect D1,,8.06,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-persistence val indirect D1,,9.68,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-14
-"mean rise val to test, pp",,4.8,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-14
-old XGB indirect D1 (C1),,29.09,submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
-old TFT baseline indirect D1 (C1),,31.76,submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-14
-direct better validation (C2),,16,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-pairs (C2),,18,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-direct better test (C2),,11,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-pairs (C2 test),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-14
-"pairs with D3<D1, validation",,10,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
-pairs for horizons,,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
-"pairs with D3>D1, test",,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
-pairs for horizons (test),,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
-"largest D3 minus D1, pp",,0.38,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-14
-"rank correlation minimum, validation",,0.85,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_rank_stability.csv,scripts/make_report_v7.py,2026-11-14
-"rank correlation minimum, test",,0.77,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_rank_stability_test.csv,scripts/make_report_v7.py,2026-11-14
-"quintile 1 observed, kW",,+263,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
-"quintile 5 observed, kW",,-98,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
-"quintile 1 forecast, kW",,+4,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
-"quintile 5 forecast, kW",,+162,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-14
-"control quintile 1, kW",,+263,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-14
-"control quintile 5, kW",,-170,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-14
-"mean error all hours, kW",,+52 to +125,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
-"mean error normal operation, kW",,-11 to +12,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
-"PatchTST mean error normal operation, kW",,+64,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
-test op-limited hours (bias),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-"bias2 share max, validation, %",,4.6,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
-"bias2 share max, test, %",,6.0,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-14
-"seed variance share max, %",,2.8,outputs/11_analyses/decomposition_seeds.csv,scripts/make_report_v7.py,2026-11-14
-"v6 downtime share, %",13.5,13.5,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-v6 zero-output hours,339,339,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-14
-test op-limited (D1),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test daytime hours (D1),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-val op-limited (D1),,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-val daytime hours (D1),,"2,902",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-v6 TFT hidden size,16,16,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-14
-TFT-96 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-14
-TFT-96 hidden direct,,64,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-14
-TFT-168 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-14
-TFT-168 hidden direct,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-14
-studies with a value on the edge,,22,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-studies in the final run,,28,outputs/runs/20261114T083930Z_final/report/report_studies.csv,scripts/make_report_v7.py,2026-11-14
-"BiLSTM final fit minus best trial, pp",,0.16 to 0.25,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST best step direct,,"4,100",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST best step indirect,,"4,900",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-PatchTST step budget,,"5,000",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-XGB trials at their cap,,13,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-XGB trials,,"1,080",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-14
-Newey-West lags,,24,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-14
-"XGB seed std max, pp",,0.079,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-14
-"BiLSTM seed std max, pp",,0.074,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-14
-test hours polled or mixed (D6),,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
-test daytime hours (D6),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-14
+cells per comparison (target x horizon),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+year of the report,2026,2026,submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+"AC capacity, kW (abstract)",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-15
+"six models, test, range of the seed-mean nRMSE, %",,11.12 to 13.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+"six models, validation, range of the seed-mean nRMSE, %",,6.44 to 8.90,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+"climatology, test, range, %",,12.37 to 12.52,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+"persistence, test, range, %",,15.71 to 17.57,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+"climatology significant cells, test (abstract)",,1,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"share of the rise of XGB-Opt in the op-limited hours, % (abstract)",,66,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+test op-limited hours (abstract),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+old test daytime hours,,"2,580",submission_evidence/01_benchmark/benchmark_summary.csv,scripts/make_report_v7.py,2026-11-15
+test daytime hours with a measured output,,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+citation mellit,"Mellit & Pavan, 2010","Mellit & Pavan, 2010",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation chen,"Chen & Guestrin, 2016","Chen & Guestrin, 2016",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation nespoli,"Nespoli et al., 2022","Nespoli et al., 2022",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation hochreiter,"Hochreiter & Schmidhuber, 1997","Hochreiter & Schmidhuber, 1997",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation wang,"Wang et al., 2019","Wang et al., 2019",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation graves,"Graves & Schmidhuber, 2005","Graves & Schmidhuber, 2005",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation lim,"Lim et al., 2021","Lim et al., 2021",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation nie,"Nie et al., 2023","Nie et al., 2023",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation antonanzas,"Antonanzas et al., 2016","Antonanzas et al., 2016",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation li,"Li et al., 2016","Li et al., 2016",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation sweeney,"Sweeney et al., 2020","Sweeney et al., 2020",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+"daytime threshold, degrees",,5,src/solarpv/evaluation/daytime.py,scripts/make_report_v7.py,2026-11-15
+citation efron,"Efron & Tibshirani, 1993","Efron & Tibshirani, 1993",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+"park size, MW",40,40,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-15
+park inverters,25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-15
+"AC capacity, kW",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-15
+park inverters (table),25,25,PROJECT_MASTER.md,scripts/make_report_v7.py,2026-11-15
+"AC capacity, kW (table)",,"3,449",outputs/07_feature_selection/selection_manifest.json,scripts/make_report_v7.py,2026-11-15
+"panel tilt, deg",,21,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-15
+"panel azimuth, deg",,185,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-15
+one-minute rows,,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-15
+hourly rows,,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-15
+train hours,,"21,195",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+train daytime valid,,"9,656",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+val hours,,"5,832",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+val daytime valid,,"2,901",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test hours,,"5,829",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test daytime valid (table),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+train op-limited,,379,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+val op-limited,,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test op-limited,,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test hours polled or mixed,,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S01-01 in the report,,1,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S05-02 in the report,,2,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S01-01 in the report,,1,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S01-01,,../outputs/figures/stage_01/S01-01_pipeline.png,outputs/figures/stage_01/S01-01_pipeline.png,scripts/make_report_v7.py,2026-11-15
+title of figure S01-01,,"The pipeline, stage by stage",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S01-01 (takeaway of its builder),,"From 45 raw files to 1,971,360 UTC minutes, 32,856 hourly rows, 74 / 67 / 60 candidate features per horizon plus 1,371 weather-forecast runs, and 31 (indirect) and 96 (direct) model inputs at D+1. The final run completed 14 steps on the frozen code, and the report holds 31 figures.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S05-02 in the report,,2,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S05-02,,../outputs/figures/stage_05/S05-02_operational_flags.png,outputs/figures/stage_05/S05-02_operational_flags.png,scripts/make_report_v7.py,2026-11-15
+title of figure S05-02,,Operationally limited daytime hours per month,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S05-02 (takeaway of its builder),,"379 flagged daytime hours in train, 146 in validation and 186 in test: 218 curtailment, 157 stops and 336 partial outages in total.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+MEAN_DAYTIME_K (3.3),,0.788157,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-15
+number of figure S06-01 in the report,,3,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S06-01 in the report,,3,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S06-01,,../outputs/figures/stage_06/S06-01_target_construction.png,outputs/figures/stage_06/S06-01_target_construction.png,scripts/make_report_v7.py,2026-11-15
+title of figure S06-01,,From power to the clear-sky index on two days,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S06-01 (takeaway of its builder),,"On the clear day (2022-03-13) the measured power follows the clear-sky curve: the daily k is 0.94, with hourly values from 0.87 to 1.25 (the highest at low sun). On the cloudy day (2022-03-15) the daily k is 0.54 and the hourly k drops to 0.30. Dividing by the clear-sky power removes the daily and seasonal shape and leaves the weather.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+GFS runs,,"1,371",outputs/06b_gfs/gfs_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S6b-01 in the report,,4,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S6b-01 in the report,,4,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S6b-01,,../outputs/figures/stage_6b/S6b-01_forecast_availability.png,outputs/figures/stage_6b/S6b-01_forecast_availability.png,scripts/make_report_v7.py,2026-11-15
+title of figure S6b-01,,Forecast runs public before the issuance time,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S6b-01 (takeaway of its builder),,"1,369 issuance days; the run used was uploaded 1.1 to 12.0 hours before issuance (median 5.1 h). 2 days use the earlier 06Z run, because their 12Z files had been uploaded again after issuance.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+rows 1min (milestones),,"1,971,360",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-15
+hourly rows (milestones),,"32,856",outputs/05_cleaning/cleaning_manifest.json,scripts/make_report_v7.py,2026-11-15
+op-limited daytime hours all,,711,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+daytime hours all,,"15,180",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+MEAN_DAYTIME_K,0.6279,0.788157,configs/derived_constants.yaml,scripts/make_report_v7.py,2026-11-15
+GFS runs (milestones),,"1,371",outputs/06b_gfs/gfs_manifest.json,scripts/make_report_v7.py,2026-11-15
+indirect inputs per horizon,,28 to 32,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-15
+direct inputs per horizon,,82 to 96,outputs/runs/20261114T083930Z_final/select/sets/model_inputs.json,scripts/make_report_v7.py,2026-11-15
+GPU hours,,7.6,outputs/runs/20261114T083930Z_final/report/report_steps.csv,scripts/make_report_v7.py,2026-11-15
+test scoring events,,1,outputs/07_evaluation/test_access_log.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S07-01 in the report,,5,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S07-02 in the report,,6,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S07-01 in the report,,5,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S07-01,,../outputs/figures/stage_07/S07-01_inner_train_check.png,outputs/figures/stage_07/S07-01_inner_train_check.png,scripts/make_report_v7.py,2026-11-15
+title of figure S07-01,,"Selected sets against the full candidate pool, inside train",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S07-01 (takeaway of its builder),,"Indirect route: the selected set passes in 6 of 6 checks (difference -0.07 to +0.05 points). Direct route: it fails in 6 of 6 (the selected set is worse by 0.10 to 0.71 points), because its importance is concentrated in a few features and the stability floor kept too few.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S07-02 in the report,,6,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S07-02,,../outputs/figures/stage_07/S07-02_model_inputs.png,outputs/figures/stage_07/S07-02_model_inputs.png,scripts/make_report_v7.py,2026-11-15
+title of figure S07-02,,Model inputs per route and horizon,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S07-02 (takeaway of its builder),,"Indirect route: 31 / 28 / 32 inputs at D+1 / D+2 / D+3, of which 16 are weather-forecast variables at D+1. Direct route: 96 / 89 / 82 (the full pool, 21 forecast variables at D+1).",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S09-35 in the report,,7,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S09-35 in the report,,7,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S09-35,,../outputs/figures/stage_09/S09-35_issuance_windows.png,outputs/figures/stage_09/S09-35_issuance_windows.png,scripts/make_report_v7.py,2026-11-15
+title of figure S09-35,,When the information of each input is known,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S09-35 (takeaway of its builder),,"No measured input reads an hour that ends after T0, at any horizon: the newest lag is 1, 2, 3 days at D+1, D+2 and D+3, and it ends exactly at T0, as do the rolling windows and the encoders. The GFS run starts 9–16 h before T0 and its last file arrives at least 1.1 h before T0 on every train row. Only deterministic inputs (calendar, clear sky, geometry) and that GFS run describe the forecast days.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S01-02 in the report,,8,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S01-02 in the report,,8,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S01-02,,../outputs/figures/stage_01/S01-02_splits.png,outputs/figures/stage_01/S01-02_splits.png,scripts/make_report_v7.py,2026-11-15
+title of figure S01-02,,"Train, validation and test periods",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S01-02 (takeaway of its builder),,"Chronological split without shuffling: train 21,195 hours (9,698 daytime), validation 5,832 (2,902 daytime), test 5,829 (2,580 daytime). Every selection and tuning step uses train and validation only.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S06-04 in the report,,9,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S06-04 in the report,,9,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S06-04,,../outputs/figures/stage_06/S06-04_history_per_horizon.png,outputs/figures/stage_06/S06-04_history_per_horizon.png,scripts/make_report_v7.py,2026-11-15
+title of figure S06-04,,Which past days each horizon may use,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S06-04 (takeaway of its builder),,"Lags allowed, in days back from the target day: D+1: 1, 2, 3, 7, 14; D+2: 2, 3, 7, 14; D+3: 3, 7, 14. The same-hour windows always end on the last day before issuance (day 0), whatever the horizon.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+citation akiba,"Akiba et al., 2019","Akiba et al., 2019",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+XGB trials per study,,60,outputs/runs/20261114T083930Z_final/config.yaml,scripts/make_report_v7.py,2026-11-15
+XGB seeds,,3,outputs/runs/20261114T083930Z_final/config.yaml,scripts/make_report_v7.py,2026-11-15
+TFT trials per study,,20,outputs/runs/20261114T083930Z_final/config.yaml,scripts/make_report_v7.py,2026-11-15
+studies in the final run (4.1),,28,outputs/runs/20261114T083930Z_final/report/report_studies.csv,scripts/make_report_v7.py,2026-11-15
+"interval level, %",,95,src/solarpv/evaluation/metrics.py,scripts/make_report_v7.py,2026-11-15
+citation efron,"Efron & Tibshirani, 1993","Efron & Tibshirani, 1993",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+"bootstrap block, daytime hours",,24,src/solarpv/config/constants.py,scripts/make_report_v7.py,2026-11-15
+bootstrap replicates,,"1,000",src/solarpv/config/constants.py,scripts/make_report_v7.py,2026-11-15
+citation diebold,"Diebold & Mariano, 1995","Diebold & Mariano, 1995",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation harvey,"Harvey et al., 1997","Harvey et al., 1997",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation newey,"Newey & West, 1987","Newey & West, 1987",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+Newey-West lags (4.2),,24,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"statistical power of the MDE, %",,80,src/solarpv/evaluation/stats_tests.py,scripts/make_report_v7.py,2026-11-15
+number of figure S11-16 in the report,,10,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+citation chen,"Chen & Guestrin, 2016","Chen & Guestrin, 2016",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation graves,"Graves & Schmidhuber, 2005","Graves & Schmidhuber, 2005",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation lim,"Lim et al., 2021","Lim et al., 2021",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+citation nie,"Nie et al., 2023","Nie et al., 2023",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+GPU hours (5),,7.6,outputs/runs/20261114T083930Z_final/report/report_steps.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-16 in the report,,10,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-16,,../outputs/figures/stage_11/S11-16_model_cards_final.png,outputs/figures/stage_11/S11-16_model_cards_final.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-16,,"The six models of the final run: inputs, budgets and time",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-16 (takeaway of its builder),,"The final run used the budgets of the submitted study: 60 trials and 3 seeds for XGB and BiLSTM, 20 trials per route for the two tuned TFTs, fixed settings for the TFT baseline and PatchTST. The five neural models took 7.6 hours of GPU time in total and XGB 0.9 hours of CPU time.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S08-01 in the report,,11,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S08-01 in the report,,11,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S08-01,,../outputs/figures/stage_08/S08-01_evaluation_hours.png,outputs/figures/stage_08/S08-01_evaluation_hours.png,scripts/make_report_v7.py,2026-11-15
+title of figure S08-01,,Which hours are scored,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S08-01 (takeaway of its builder),,"An hour is scored when the sun is above 5 degrees at its middle: 10 hours on 2024-02-15 and 13 on 2024-06-21. Validation has 2,901 scored hours with a measured truth; every model and reference is scored on exactly these hours.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+citation schenker,"Schenker & Gentleman, 2001","Schenker & Gentleman, 2001",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+number of figure S11-01 in the report,,12,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"interval level, % (7.1)",,95,src/solarpv/evaluation/metrics.py,scripts/make_report_v7.py,2026-11-15
+"six models, test, range (7.1)",,11.12 to 13.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+"six models, validation, range (7.1)",,6.44 to 8.90,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+"width of the test intervals of the six models, pp",,3.61 to 4.10,outputs/11_analyses/benchmark_ci_kw.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-01 in the report,,12,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-01,,../outputs/figures/stage_11/S11-01_benchmark_intervals.png,outputs/figures/stage_11/S11-01_benchmark_intervals.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-01,,The benchmark in kW with 95 % intervals,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-01 (takeaway of its builder),,"On test the interval of a single score is about 1.93 pp on each side, and the six models differ by at most 2.30 pp in a cell; on validation the figures are 1.17 and 2.30 pp. The intervals of all six models overlap in 6 of 6 cells on test and in 6 of 6 on validation. These intervals are not paired, so overlap is not a test of a difference: the paired test of S10-04 separates PatchTST from XGB in every cell although the intervals overlap.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+XGB test indirect D1,29.09,11.28,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+BiLSTM test indirect D1,,11.61,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT-96 test indirect D1,,11.45,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT-168 test indirect D1,,11.21,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT baseline test indirect D1,,11.39,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST test indirect D1,,13.44,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+XGB val indirect D1,,6.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+BiLSTM val indirect D1,,6.99,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT-96 val indirect D1,,6.74,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT-168 val indirect D1,,6.82,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT baseline val indirect D1,,6.83,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST val indirect D1,,8.77,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+climatology test indirect D1,,12.37,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+persistence test indirect D1,,15.71,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+climatology val indirect D1,,8.06,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+persistence val indirect D1,,9.68,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+XGB test direct D1,,11.24,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+BiLSTM test direct D1,,11.41,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT-96 test direct D1,,11.12,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT-168 test direct D1,,11.41,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+TFT baseline test direct D1,,11.43,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST test direct D1,,12.74,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+XGB val direct D1,,6.62,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+BiLSTM val direct D1,,6.63,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT-96 val direct D1,,6.66,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT-168 val direct D1,,6.76,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+TFT baseline val direct D1,,6.87,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST val direct D1,,8.09,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+"cells where XGB lowest, test",,1,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+"cells where XGB lowest, validation",,5,outputs/runs/20261114T083930Z_final/report/report_benchmark_val.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-03 in the report,,13,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-03 in the report,,13,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-03,,../outputs/figures/stage_11/S11-03_scatter_test.png,outputs/figures/stage_11/S11-03_scatter_test.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-03,,Forecast against observed power on the test split,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-03 (takeaway of its builder),,The correlation between forecast and observation on test is between 0.846 and 0.879 for the six models. In every panel a group of hours lies above the diagonal at observed values near zero: forecasts of high power while the plant delivered little. Some of these hours are operation-limited (D-22; S11-12).,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+"common-mask hours, test",,"2,575",outputs/runs/20261114T083930Z_final/test/test/common_mask_summary.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-02 in the report,,14,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"largest D3 minus D1, pp",,0.38,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-15
+"pairs with D3<D1, validation",,10,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-15
+pairs for horizons,,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-15
+"pairs with D3>D1, test",,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-15
+pairs for horizons (test),,12,outputs/11_analyses/horizon_robustness.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-02 in the report,,14,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-02,,../outputs/figures/stage_11/S11-02_horizon_robustness.png,outputs/figures/stage_11/S11-02_horizon_robustness.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-02,,"Error against the horizon, validation and test",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-02 (takeaway of its builder),,"On validation the error at D+3 is lower than at D+1 for 10 of the 12 pairs of a model and a route (change -0.22 to +0.20 pp); on test it is higher for 12 of 12 (change +0.12 to +0.38 pp). The sign of the horizon effect reverses between the two periods, and its size is at most 0.38 pp, so the order of the horizons is a property of the period and not of the horizon.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+"mean rise val to test, pp",,4.8,outputs/runs/20261114T083930Z_final/report/report_benchmark_test.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S10-03 in the report,,15,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"XGB all hours, validation",,6.65,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB all hours, test",,11.39,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB normal operation, validation",,4.93,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB normal operation, test",,6.55,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology all hours, validation",,8.05,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology all hours, test",,12.45,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology normal operation, validation",,6.76,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology normal operation, test",,8.95,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+test op-limited hours (7.6),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+"share of the rise of XGB-Opt in the op-limited hours, %",,66,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+"share of the rise in the op-limited hours, all models and references, %",,18 to 68,outputs/11_analyses/metrics_kw.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S10-03 in the report,,15,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S10-03,,../outputs/figures/stage_10/S10-03_val_test_views.png,outputs/figures/stage_10/S10-03_val_test_views.png,scripts/make_report_v7.py,2026-11-15
+title of figure S10-03,,From validation to test: where the extra error is,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S10-03 (takeaway of its builder),,"Every model and reference rises from validation to test: XGB 6.65 to 11.39 on all hours, climatology 8.05 to 12.45. On the hours of normal operation the rise is smaller (XGB 4.93 to 6.55, climatology 6.76 to 8.95): the 186 operation-limited hours of the test split account for 18% to 68% of the rise, and the rest is a shift of the period that every model and reference shares.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S10-04 in the report,,16,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"BiLSTM significant cells, test",,3,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"TFT-96 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"TFT-168 significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"TFT baseline significant cells, test",,0,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S10-04 in the report,,16,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S10-04,,../outputs/figures/stage_10/S10-04_test_dm_vs_xgb.png,outputs/figures/stage_10/S10-04_test_dm_vs_xgb.png,scripts/make_report_v7.py,2026-11-15
+title of figure S10-04,,Every model and reference against XGB: Diebold-Mariano in kW on test,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S10-04 (takeaway of its builder),,"XGB is significantly better than persistence in 6 of 6 cells, than clear sky x k in 6, than PatchTST in 6 and than climatology in 1; the climatology effect is 75 to 109 per cent of the minimum detectable effect, so the test has too little power to separate them. BiLSTM is significantly worse than XGB in 3 cells; the three TFTs in 0. XGB is significantly worse than no model (0).",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+"climatology significant cells, test",,1,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+climatology cells,,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+"climatology significant cells, validation",,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-15
+climatology cells (validation),,6,outputs/runs/20261114T083930Z_final/report/report_dm_kw_val.csv,scripts/make_report_v7.py,2026-11-15
+"climatology effect, percent of MDE",,75 to 109,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+test hours (power),,"2,575",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-04 in the report,,17,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"XGB Fall validation, %",,3.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB Fall test, %",,14.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology Fall validation, %",,4.2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"climatology Fall test, %",,13.7,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"Fall op-limited share test, %",,10,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"Fall op-limited share validation, %",,2,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB Spring validation, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+"XGB Spring test, %",,8.9,outputs/11_analyses/seasonal_kw.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-04 in the report,,17,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-04,,../outputs/figures/stage_11/S11-04_seasonal_heatmap.png,outputs/figures/stage_11/S11-04_seasonal_heatmap.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-04,,"Error by season, validation and test",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-04 (takeaway of its builder),,"The test split has no summer, and its autumn is 2024-10..2024-11 against 2024-09..2024-09 on validation, so a season is not the same weather in the two periods. XGB's error is highest in Winter on validation (10.05 per cent) and in Fall on test (14.19 per cent). From validation to test the error of XGB changes by +1.6 (Winter), -0.1 (Spring) and +10.5 (Fall) points, and that of climatology by -0.8, +0.7 and +9.5: the rise of the test period is concentrated in the autumn, where 10% of the test hours are operation-limited against 2% of the validation hours; Spring is almost unchanged.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-05 in the report,,18,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-17 in the report,,19,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-05 in the report,,18,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-05,,../outputs/figures/stage_11/S11-05_hour_season.png,outputs/figures/stage_11/S11-05_hour_season.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-05,,Error by local hour and season on the test split,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-05 (takeaway of its builder),,"The largest cell of each model is in the local hour(s) 11, and the largest cell of the figure is Fall at 11:00 (24.0 per cent of the capacity, PatchTST). Averaged over the seasons, the XGB error changes by 17.3 points between the hours of the day, and the six models differ by at most 3.1 points within an hour: the shape over the day is shared by the models. For XGB in the autumn at 11:00 the error is 22.9 per cent on all hours and 4.4 in normal operation; 18% of those hours are operation-limited (S11-17).",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-17 in the report,,19,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-17,,../outputs/figures/stage_11/S11-17_hour_season_normal.png,outputs/figures/stage_11/S11-17_hour_season_normal.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-17,,"The same, in the hours of normal operation",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-17 (takeaway of its builder),,"In normal operation the largest cell of each model is in the local hour(s) 10, 11, and the largest cell is Winter at 11:00 (14.6 per cent, PatchTST). For XGB in the autumn at 11:00 the error falls from 22.9 per cent on all hours to 4.4 in normal operation: the autumn peak of S11-05 is mostly the operation-limited hours.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-06 in the report,,20,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"direct better pairs, validation",,16,evaluate/val/route_comparison.csv; test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+model-horizon pairs,,18,evaluate/val/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+"direct better pairs, test",,11,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+model-horizon pairs (test),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+"route difference min, pp",,-0.69,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+"route difference max, pp",,+0.24,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+pairs with a changed sign,,7,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+pairs (sign),,18,outputs/runs/20261114T083930Z_final/test/test/route_comparison.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-06 in the report,,20,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-06,,../outputs/figures/stage_11/S11-06_route_comparison.png,outputs/figures/stage_11/S11-06_route_comparison.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-06,,"Indirect route against direct route, validation and test",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-06 (takeaway of its builder),,"The direct route is better in 16 of the 18 pairs of a model and a horizon on validation and in 11 of 18 on test. The differences are between -0.69 and +0.24 pp, and the sign differs between the two periods for 7 of the 18 pairs: the direct route is nominally better on validation, and the evidence on test is mixed.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-07 in the report,,21,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"GFS share of mean absolute SHAP, validation, %",,56 to 75,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_groups.csv,scripts/make_report_v7.py,2026-11-15
+"GFS share of mean absolute SHAP, test, %",,64 to 74,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_groups_test.csv,scripts/make_report_v7.py,2026-11-15
+"rank correlation minimum, validation",,0.85,outputs/runs/20261114T083930Z_final/explain/xgb/xgb_shap_rank_stability.csv,scripts/make_report_v7.py,2026-11-15
+"rank correlation minimum, test",,0.77,outputs/runs/20261114T083930Z_final/test/shap_test/xgb_shap_rank_stability_test.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-07 in the report,,21,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-07,,../outputs/figures/stage_11/S11-07_shap_groups.png,outputs/figures/stage_11/S11-07_shap_groups.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-07,,XGB: what the SHAP values attribute the forecast to,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-07 (takeaway of its builder),,"The group with the largest share is the same on validation and on test in 6 of the 6 cells (nwp_gfs). The share of the weather-forecast group (GFS) is between 56 and 75 per cent. The rank correlation between two horizons, or between two seeds, is at least 0.85 on validation and 0.77 on test.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-08 in the report,,22,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+same-hour attention ratio,,0.82 to 1.07,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-15
+first-position attention ratio,,0.49 to 1.37,outputs/runs/20261114T083930Z_final/explain/tft/tft_attention_summary.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-08 in the report,,22,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-08,,../outputs/figures/stage_11/S11-08_tft_attention.png,outputs/figures/stage_11/S11-08_tft_attention.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-08,,TFT: how the attention is spread over the encoder window,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-08 (takeaway of its builder),,"The mean attention over the encoder positions is almost entirely a daily cycle: the 24-hour pattern accounts for 76% to 100% of its variance in the six cases (76% for TFT-96 indirect), and the clock hour of the strongest attention differs between the cases (from 6 to 20). The attention on the clock hour of the forecast hour is 0.82 to 1.07 times what a uniform attention would give, and the weight on the oldest encoder position relative to uniform is between 0.49 and 1.37; only the TFT-168 indirect model is above one. The attention of a model is descriptive: it does not show that the model uses those hours.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-09 in the report,,23,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"encoder diff validation min, pp",,-0.02,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+"encoder diff validation max, pp",,+0.10,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+"encoder diff test min, pp",,-0.27,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+"encoder diff test max, pp",,+0.33,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+encoder significant cells,,1,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+encoder cells,,12,outputs/11_analyses/encoder_length.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-09 in the report,,23,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-09,,../outputs/figures/stage_11/S11-09_encoder_length.png,outputs/figures/stage_11/S11-09_encoder_length.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-09,,TFT encoder of 168 hours against 96 hours,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-09 (takeaway of its builder),,"On validation the difference is between -0.02 and +0.10 pp, and no cell is significant. On test it is between -0.27 and +0.33 pp, with the sign negative for the indirect route in 3 of 3 horizons and positive for the direct route in 3 of 3; the number of significant cells is 1 of 12. A consistent advantage of the shorter window is not found: the sign depends on the route.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-14 in the report,,24,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"PatchTST minus XGB, pp",,1.36 to 2.31,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST vs XGB significant cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST vs XGB cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+"PatchTST minus climatology, pp",,0.05 to 1.26,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST vs climatology significant cells,,8,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST vs climatology cells,,12,outputs/11_analyses/patchtst_gap.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-14 in the report,,24,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-14,,../outputs/figures/stage_11/S11-14_patchtst_gap.png,outputs/figures/stage_11/S11-14_patchtst_gap.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-14,,PatchTST against XGB and against climatology,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-14 (takeaway of its builder),,"PatchTST is worse than XGB by 1.36 to 2.31 pp, significantly in 12 of 12 cells. Against climatology the gap is +0.05 to +1.26 pp, significant in 8 of 12 cells, all of them in the worse direction. A gap of this size does not support the reading of PatchTST as a lower bound within about one point of XGB.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-10 in the report,,25,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+TFT-96 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-15
+TFT-96 hidden direct,,64,outputs/runs/20261114T083930Z_final/tft96/best_params.json,scripts/make_report_v7.py,2026-11-15
+TFT-168 hidden indirect,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-15
+TFT-168 hidden direct,,32,outputs/runs/20261114T083930Z_final/tft168/best_params.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-10 in the report,,25,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-10,,../outputs/figures/stage_11/S11-10_tft96_search.png,outputs/figures/stage_11/S11-10_tft96_search.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-10,,TFT-96: how the search converged and what mattered,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-10 (takeaway of its builder),,The best trial is number 8 of 20 for the indirect route and number 19 for the direct route; a winner that late means that the direct search had not visibly converged. The most important hyper-parameter is attention_head_size for the indirect route (48 per cent) and learning_rate for the direct route (80 per cent). With 20 trials the importance model has few points; the values are descriptive.,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S10-05 in the report,,26,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"XGB seed std max, pp",,0.079,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-15
+"BiLSTM seed std max, pp",,0.074,outputs/runs/20261114T083930Z_final/report/report_seed_spread.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S10-05 in the report,,26,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S10-05,,../outputs/figures/stage_10/S10-05_seed_spread.png,outputs/figures/stage_10/S10-05_seed_spread.png,scripts/make_report_v7.py,2026-11-15
+title of figure S10-05,,Seed spread in kW against the rule of stage 10,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S10-05 (takeaway of its builder),,"The largest spread is 0.079 pp for XGB and 0.074 pp for BiLSTM, against the rule of 0.15 pp; 0 of 12 cells are above it. PatchTST, TFT baseline, TFT-168, TFT-96 have one seed each, so their spread is unknown; the differences among models of a similar level (S10-02) are read with that caveat.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S10-06 in the report,,27,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"test minus CV mean, pp",,3.5 to 4.0,outputs/runs/20261114T083930Z_final/report/report_cv_vs_test.csv,scripts/make_report_v7.py,2026-11-15
+"CV mean minus validation, pp",,0.6 to 1.7,outputs/runs/20261114T083930Z_final/report/report_cv_vs_test.csv,scripts/make_report_v7.py,2026-11-15
+"mean CV std, pp",,2.4,outputs/runs/20261114T083930Z_final/report/report_cv_vs_test.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S10-06 in the report,,27,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S10-06,,../outputs/figures/stage_10/S10-06_cv_val_test.png,outputs/figures/stage_10/S10-06_cv_val_test.png,scripts/make_report_v7.py,2026-11-15
+title of figure S10-06,,"XGB: the five-fold CV on train, validation and test",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S10-06 (takeaway of its builder),,"The test error is 3.5 to 4.0 pp above the train CV in every one of the 18 fits, and validation lies 0.6 to 1.7 pp below it. The mean spread between folds is 2.4 pp, so the folds themselves differ by a large part of the gap; the references rise from validation to test as well (S10-03).",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-11 in the report,,28,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"mean error all hours, kW",,+52 to +125,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-15
+"mean error normal operation, kW",,-11 to +12,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-15
+"PatchTST mean error normal operation, kW",,+64,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-15
+test op-limited hours (bias),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+"bias2 share max, validation, %",,1.6,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-15
+"bias2 share max, test, %",,3.6,outputs/11_analyses/decomposition.csv,scripts/make_report_v7.py,2026-11-15
+"seed variance share max, %",,1.8,outputs/11_analyses/decomposition_seeds.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-11 in the report,,28,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-11,,../outputs/figures/stage_11/S11-11_bias_variance.png,outputs/figures/stage_11/S11-11_bias_variance.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-11,,"Bias² and variance of the error, and the bias in normal operation",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-11 (takeaway of its builder),,"Bias² is below 1.6% of the squared error for the six models on validation and below 3.6% on test, except PatchTST (8.0% on test). Every model has a positive mean error on all hours, +52 to +125 kW on test; on the hours of normal operation it is -11 to +12 kW for XGB, BiLSTM and the three TFTs, so nearly all of their positive mean error is made on the 186 operation-limited hours; PatchTST keeps +64 kW in normal operation. The variance between seeds is at most 1.8% of the squared error.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-12 in the report,,29,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"quintile 1 observed, kW",,+263,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-15
+"quintile 5 observed, kW",,-98,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-15
+"quintile 1 forecast, kW",,+4,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-15
+"quintile 5 forecast, kW",,+162,outputs/11_analyses/quintiles.csv,scripts/make_report_v7.py,2026-11-15
+"control quintile 1, kW",,+263,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-15
+"control quintile 5, kW",,-170,outputs/11_analyses/quintile_control.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-12 in the report,,29,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-12,,../outputs/figures/stage_11/S11-12_production_quintiles.png,outputs/figures/stage_11/S11-12_production_quintiles.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-12,,"XGB: the mean error by production quintile, two ways",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-12 (takeaway of its builder),,"Binned by the observed power the lowest bin has a mean error of +263 kW and the highest -98 kW on test (direct route): a positive then negative pattern. Binned by the forecast it is +4 and +162 kW: the signs are the opposite at both ends. The control forecast, unbiased by construction on validation, gives +263 and -170 kW in the same observed bins on test, so binning by the outcome produces the first pattern without any conditional bias in the model. In the lowest observed bin 14% of the test hours are operation-limited against 2% on validation.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+number of figure S11-13 in the report,,30,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+"ablation no_nwp_gfs validation, pp",,0.96 to 1.44,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-15
+"ablation no_nwp_gfs test, pp",,0.95 to 1.21,outputs/runs/20261114T083930Z_final/report/report_ablation_test.csv,scripts/make_report_v7.py,2026-11-15
+"ablation other groups max validation, pp",,0.14,outputs/runs/20261114T083930Z_final/report/report_ablation.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-13 in the report,,30,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-13,,../outputs/figures/stage_11/S11-13_ablation_final.png,outputs/figures/stage_11/S11-13_ablation_final.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-13,,"XGB: feature-group ablation, validation and test",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-13 (takeaway of its builder),,"Removing all but the minimal set raises the error by 1.18 to 1.50 pp on validation, and the GFS group by 0.96 to 1.44 pp; the other groups change it by at most 0.14 pp. The verdicts agree between validation and test in 45 of 49 cells.",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+test op-limited (D1),,186,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test daytime hours (D1),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+val op-limited (D1),,146,outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+val daytime hours (D1),,"2,902",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+studies with a value on the edge,,22,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+studies in the final run,,28,outputs/runs/20261114T083930Z_final/report/report_studies.csv,scripts/make_report_v7.py,2026-11-15
+"BiLSTM final fit minus best trial, pp",,0.16 to 0.25,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST best step direct,,"4,100",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST best step indirect,,"4,900",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+PatchTST step budget,,"5,000",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+XGB trials at their cap,,13,outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+XGB trials,,"1,080",outputs/runs/20261114T083930Z_final/report/report_g1_points.csv,scripts/make_report_v7.py,2026-11-15
+Newey-West lags,,24,outputs/runs/20261114T083930Z_final/report/report_dm_kw_test.csv,scripts/make_report_v7.py,2026-11-15
+test hours polled or mixed (D6),,"1,071",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+test daytime hours (D6),,"2,580",outputs/03_eda/tables/table_splits.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-19 in the report,,31,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+number of figure S11-19 in the report,,31,docs/report_v7_figures.csv,scripts/make_report_v7.py,2026-11-15
+file of figure S11-19,,../outputs/figures/stage_11/S11-19_rebuild_chain.png,outputs/figures/stage_11/S11-19_rebuild_chain.png,scripts/make_report_v7.py,2026-11-15
+title of figure S11-19,,The rebuild from the frozen predictions,outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+caption of figure S11-19 (takeaway of its builder),,"The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 384 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37).",outputs/figures/figures_manifest.json,scripts/make_report_v7.py,2026-11-15
+reference akiba,"Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation hyperparameter optimization framework. KDD 2019.","Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation hyperparameter optimization framework. KDD 2019.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference antonanzas,"Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. (2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78–111.","Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. (2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78–111.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference chen,"Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. KDD 2016.","Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. KDD 2016.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference diebold,"Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business & Economic Statistics, 13(3), 253–263.","Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business & Economic Statistics, 13(3), 253–263.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference efron,"Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman & Hall.","Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman & Hall.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference graves,"Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5–6), 602–610.","Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5–6), 602–610.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference harvey,"Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared errors. International Journal of Forecasting, 13(2), 281–291.","Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared errors. International Journal of Forecasting, 13(2), 281–291.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference hochreiter,"Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780.","Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference li,"Li, J., Ward, J. K., Tong, J., Collins, L., & Platt, G. (2016). Machine learning for solar irradiance forecasting of photovoltaic system. Renewable Energy, 90, 542–553.","Li, J., Ward, J. K., Tong, J., Collins, L., & Platt, G. (2016). Machine learning for solar irradiance forecasting of photovoltaic system. Renewable Energy, 90, 542–553.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference lim,"Lim, B., Arık, S. Ö., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748–1764.","Lim, B., Arık, S. Ö., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748–1764.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference mellit,"Mellit, A., & Pavan, A. M. (2010). A 24-h forecast of solar irradiance using artificial neural network. Renewable Energy, 35(11), 2603–2616.","Mellit, A., & Pavan, A. M. (2010). A 24-h forecast of solar irradiance using artificial neural network. Renewable Energy, 35(11), 2603–2616.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference nespoli,"Nespoli, A., Niccolai, A., Ogliari, E., Perego, G., Collino, E., & Ronzio, D. (2022). Machine learning techniques for solar irradiance and power forecasting. Energies, 15(21), 8129.","Nespoli, A., Niccolai, A., Ogliari, E., Perego, G., Collino, E., & Ronzio, D. (2022). Machine learning techniques for solar irradiance and power forecasting. Energies, 15(21), 8129.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference newey,"Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite, heteroskedasticity and autocorrelation consistent covariance matrix. Econometrica, 55(3), 703–708.","Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite, heteroskedasticity and autocorrelation consistent covariance matrix. Econometrica, 55(3), 703–708.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference nie,"Nie, Y., Nguyen, N. H., Sinthong, P., & Kalagnanam, J. (2023). A time series is worth 64 words: Long-term forecasting with transformers. ICLR 2023.","Nie, Y., Nguyen, N. H., Sinthong, P., & Kalagnanam, J. (2023). A time series is worth 64 words: Long-term forecasting with transformers. ICLR 2023.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference schenker,"Schenker, N., & Gentleman, J. F. (2001). On judging the significance of differences by examining the overlap between confidence intervals. The American Statistician, 55(3), 182–186.","Schenker, N., & Gentleman, J. F. (2001). On judging the significance of differences by examining the overlap between confidence intervals. The American Statistician, 55(3), 182–186.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference sweeney,"Sweeney, C., Bessa, R. J., Browell, J., & Pinson, P. (2020). The future of forecasting for renewable energy. Wiley Interdisciplinary Reviews: Energy and Environment, 9(2), e365.","Sweeney, C., Bessa, R. J., Browell, J., & Pinson, P. (2020). The future of forecasting for renewable energy. Wiley Interdisciplinary Reviews: Energy and Environment, 9(2), e365.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15
+reference wang,"Wang, H., Yi, H., Peng, J., Wang, G., Liu, Y., Jiang, H., & Liu, W. (2019). Deterministic and probabilistic forecasting of photovoltaic power based on deep convolutional neural network. Energy Conversion and Management, 195, 1150–1163.","Wang, H., Yi, H., Peng, J., Wang, G., Liu, Y., Jiang, H., & Liu, W. (2019). Deterministic and probabilistic forecasting of photovoltaic power based on deep convolutional neural network. Energy Conversion and Management, 195, 1150–1163.",submission_evidence/13_report/Solar_PV_Forecasting_Report_CORRECTED_v6.docx,scripts/make_report_v7.py,2026-11-15

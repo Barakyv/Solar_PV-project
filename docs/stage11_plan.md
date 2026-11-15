@@ -150,3 +150,45 @@ the five neural models have one seed); the Diebold-Mariano test against climatol
 and the report says so; the positive bias is made in the operation-limited hours (F-30); no budget, seed or rule
 changes because of a test number; the quintile profile of v6 is not written as physics (M45).
 Not done in part B: the dust-day split (Q-29, dropped), the radar (C-84) and `--xgb-only` (training).
+
+## 6. Part C: the final report v7 with its figures (2026-11-15)
+
+Same frame as parts A and B: run `20261114T083930Z_final`, tag `g1-frozen`, no model trained, the step `test` not run
+again, no file outside the D-36 list edited (the changes are in `scripts/make_report_v7.py`, `src/solarpv/figures/`,
+`tests/` and `docs/`). Before the work: the tag is present, `git log` shows `a407f85` and `ee4c08b` above `a5167f0`, no
+tracked change, `python -m solarpv.pipeline status` lists 14 steps `ok` with outputs as recorded, and
+`tests/contracts/test_after_tag.py` passed (3).
+
+**Decision of the user (2026-11-15).** The figures of the report follow the figures of the submitted report as closely as
+possible, with figures added where they complete the understanding of what was done; the report presents the work as
+closed, without raising open questions. The choice was delegated to the session, with that rule.
+
+**How the figures were chosen.** Each of the 25 figures of v6 (`submission_evidence/13_report`, the figure column of
+`docs/scope_register.md`) was mapped to its counterpart in the figure book: 19 have one and are in the report. Six are not
+redrawn: five drew the three-method feature selection of v6, which read the validation and test periods and was replaced
+(F-26, D-23), and one repeated the seasonal numbers as a radar (C-84). Twelve process figures are added where a section
+of v6 had a sentence and no figure, or where the method needs one (pipeline, operation-limited hours, target, GFS
+availability, the selection check, issuance windows, lags, scored hours, validation against test, normal operation,
+encoder length, PatchTST, the rebuild chain). Not chosen: the correction figures (C-xx, defense notes only), figures whose
+takeaway describes a state before the final run (S09-37, S09-38), and the comparison with the literature (S11-15, a
+comparison across normalisations and climates that the report does not need). The map is `docs/report_v7_figures.csv`
+and figure S11-20.
+
+**What part C writes.** `docs/report_v7.md`, the whole report in the chapter order of v6 (abstract, chapters 1 to 17,
+appendices) with 31 figures, each placed in the section it supports, referenced in the text, and captioned with the
+takeaway of its builder; `docs/report_v7_README.md` (the correction note of D-02, data and code availability, the
+appendices, and the decisions still open: Q-09, references for SHAP and GFS, `--xgb-only`, the backup);
+`docs/report_v7_figures.csv`; figure S11-20 (task S11-C); notebook `11_stage11_part_c.ipynb`; OP-68; T-185 to T-189.
+
+**Self-review before the text.** The original (`submission_evidence/13_report`): **M58**, section 2.1 cites Ding et al.
+(2011) with no entry in the reference list and attaches Mellit & Pavan (2010), a neural-network paper, to support vector
+regression (C-92). The abstract and introduction of v6 state the route advantage and the agreement of SHAP and attention
+as contributions (C2, C6 of C-11); v7 states the contributions that the rebuild supports. My own earlier work: S01-02
+counted calendar hours (X113), S01-01 drew the status of stage 9 (X114), the bias shares of section 12.3 used another
+aggregation than S11-11 (X115), and first-draft claims of the new chapters were not asserted (X116).
+
+**Rules for the numbers.** As in part B (T-178 to T-184), and: every figure of the report is placed once, numbered in
+order and referenced (T-185); every caption is the current takeaway of its builder (T-186); the 25 figures of v6 are each
+accounted for (T-187); the README holds the note, the availability, the appendices and the open decisions, and the report
+holds no coordinates (T-188); the text and S11-11 give the same shares (T-189).
+

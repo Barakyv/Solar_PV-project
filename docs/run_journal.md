@@ -2245,3 +2245,24 @@ hashes, numbers) and the commit messages are the record:
   `src/solarpv/figures/`, `tests/`, `docs/`, `notebooks/`, `outputs/` and `PROJECT_MASTER.md`), and nothing was pushed.
 - **Open:** the choice of the report figures by the user from `outputs/figures/gallery.html`; `--xgb-only` (training,
   Q-30, the end of stage 11); the backup outside the VDI.
+
+### 2026-11-15 · R11-03 · Part C: the final report v7 with its figures
+
+- **Before the work:** `g1-frozen` present; `git log` shows `a407f85` and `ee4c08b` above `a5167f0`; no tracked change;
+  `python -m solarpv.pipeline status` lists 14 steps `ok`, outputs as recorded; `tests/contracts/test_after_tag.py`
+  passed (3). `git` and `python` through `PortableGit` and the `solar` environment.
+- **Decision of the user:** follow the figures of the submitted report, add the figures that complete the understanding,
+  present the work as closed; the choice of the figures was delegated to the session with that rule. The backup outside
+  the VDI is still open; `--xgb-only` is left for a separate session.
+- **What ran:** `python scripts/make_report_v7.py`, `python -m solarpv.figures build`, `python -m solarpv.figures task
+  S11-C`, `python -m solarpv.figures catalog`, `python scripts/make_stage11_part_c_notebook.py`, `python
+  scripts/build_data_record.py`. No model was trained, the step `test` was not run, `analyses11` was not run again.
+- **Looking at every figure chosen for the report** found two stale figures of mine: S01-02 counted the calendar hours
+  of the test window (5,832 instead of the 5,829 rows, X113), and S01-01 drew the status of stage 9 (X114). Both builders
+  now read the files and assert. Takeaways describing the state at gate G-1 (S09-37, S09-38) kept those figures out.
+- **Reading the generated report** found that section 12.3 (part B text) used another aggregation of the bias shares than
+  S11-11 (4.6 against 1.6 per cent, X115, now T-189), and that first-draft sentences of the new chapters stated claims no
+  code checked (X116); each kept claim is now asserted. In v6, section 2.1 cites a paper with no entry in the reference
+  list (M58, C-92).
+- **Result:** `docs/report_v7.md` with 31 figures (19 counterparts of v6 figures, 12 added; 6 v6 figures not redrawn,
+  S11-20), `docs/report_v7_README.md` with Q-09 listed as open, OP-68, T-185 to T-189, notebook `11_stage11_part_c.ipynb`.

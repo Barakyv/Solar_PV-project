@@ -415,3 +415,23 @@ in `docs/errata.md`; `docs/run_journal.md` R11-02; OP-67; errata C-85 to C-91.
   (Q-29, the user's decision)."
 - **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's action); `--xgb-only`
   (a training run) is left for the end of the stage.
+
+## 17. Stage 11, part C: the final report v7 and its figures
+
+The report (`docs/report_v7.md`) follows the chapters and the figures of the submitted report. Of its 25 figures, 19 are
+redrawn from the final run and 12 process figures are added (`docs/report_v7_figures.csv`, figure S11-20). The
+differences a committee may ask about, and the answer:
+
+- **Why six figures of v6 are not in the report.** Figures 19 to 21, 23 and 25 drew the three-method feature selection of
+  v6, which read the validation and test periods (F-26, C-05); it was replaced by a selection on train only (D-23), whose
+  outcome is figures 5 and 6 of v7. Figure 14, the radar, repeated the numbers of the seasonal heatmap (C-84).
+- **Why the report has no correction figure.** The report presents the rebuilt study; the differences from v6 are in the
+  errata (with the table "Old vs new results") and in this document (C-01 to C-12).
+- **Section 2.1 of v6** cited Ding et al. (2011) with no entry in the reference list, and attached Mellit & Pavan (2010), a
+  neural-network paper, to support vector regression (M58, C-92). v7 cites Mellit & Pavan for neural networks only.
+- **The abstract and the contributions of v6** named the route advantage and the agreement of SHAP and attention; neither
+  is supported (C-11, C-12), so v7 names the contributions the rebuild supports: issuance-time inputs, selection on train,
+  identical scored hours, both routes against the same truth, paired tests with the minimum detectable effect, traceability.
+- **Two earlier figures were stale** and are redrawn: S01-02 gave the test split 5,832 hours instead of the 5,829 of the
+  data (X113), and S01-01 still drew the status of stage 9 (X114).
+

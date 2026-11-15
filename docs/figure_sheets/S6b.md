@@ -16,7 +16,7 @@ Figures: 3 (3 process, 0 correction).
 - **Led to:** Only runs public before issuance enter the features (T-17); the check reads the upload time of every file, not the nominal run time.
 - **File:** `outputs/figures/stage_6b/S6b-01_forecast_availability.png`
 - **Inputs:** `data/processed/06b_gfs/gfs_features_D1.parquet`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### S6b-02. Forecast agreement with the measured clear-sky index
 
@@ -28,7 +28,7 @@ Figures: 3 (3 process, 0 correction).
 - **Led to:** The forecast variables became candidates for feature selection, after the value test of S6b-03.
 - **File:** `outputs/figures/stage_6b/S6b-02_gfs_agreement.png`
 - **Inputs:** `outputs/06b_gfs/horizon_skill.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### S6b-03. Value of the weather forecasts on validation
 
@@ -40,4 +40,4 @@ Figures: 3 (3 process, 0 correction).
 - **Led to:** The forecasts were accepted (D-12) and entered feature selection as candidates.
 - **File:** `outputs/figures/stage_6b/S6b-03_gfs_value.png`
 - **Inputs:** `outputs/06b_gfs/value_check.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`

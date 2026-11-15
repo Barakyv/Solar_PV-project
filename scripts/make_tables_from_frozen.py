@@ -11,8 +11,10 @@ outside the D-36 list and is not edited; this script is new and only reads outpu
 2. `python -m solarpv.figures.analyses11`: the 13 tables of `outputs/11_analyses/` (reads the saved forecasts
    and the stage-6 truth table; every read of test rows is appended to the test access log).
 3. `python -m solarpv.figures build --stage 11` and the correction figures C-11 and C-12: the figures of stage 11.
-4. `python scripts/make_report_v7.py`: the report sections, `docs/traceability.csv`, `docs/old_vs_new.csv`
-   and the table of old against new results in `docs/errata.md`.
+4. `python scripts/make_report_v7.py`: the report v7 and its README, `docs/report_v7_figures.csv`,
+   `docs/traceability.csv`, `docs/old_vs_new.csv` and the table of old against new results in `docs/errata.md`.
+5. The figures that read the files of step 4 (S01-01, S11-18, S11-19, S11-20), then the report once more, so that
+   every caption of the report is the current takeaway of its builder (T-186; part C).
 
 It never runs the step `test`, never trains a model and never changes a budget, a seed or a rule (D-37).
 The run that trains XGB-Opt from the raw data is a separate, long job that is left for the end of the
@@ -37,6 +39,9 @@ STEPS = [
                                          "C-11,C-12"]),
     ("the report sections, traceability and the table of old against new",
      [sys.executable, "scripts/make_report_v7.py"]),
+    ("the figures that read the report files", [sys.executable, "-m", "solarpv.figures", "build", "--only",
+                                              "S01-01,S11-18,S11-19,S11-20"]),
+    ("the report with the current captions", [sys.executable, "scripts/make_report_v7.py"]),
 ]
 
 for what, cmd in STEPS:

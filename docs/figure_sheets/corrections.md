@@ -16,7 +16,7 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** Every v6 result was computed on the shifted data (F-01); the rebuild converts the export to UTC at ingestion and checks the production centre against the sun every month (T-08).
 - **File:** `outputs/figures/correction/C-01_time_shift_profile.png`
 - **Inputs:** `data/processed/06_features/features_1H_D1.parquet`, `outputs/03_eda/tables/table_time_bug.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### C-02. Zero-output daytime hours by label hour
 
@@ -28,7 +28,7 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** The disclosure about inverter downtime is rewritten from the corrected data (C-13); real stops are now flagged from the inverter data (F1, F3).
 - **File:** `outputs/figures/correction/C-02_false_downtime.png`
 - **Inputs:** `submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### C-03. Clear-sky index of the submission and of the rebuild
 
@@ -40,7 +40,7 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** k is now an hourly ratio of means against the panel-plane clear-sky power, never clipped, and converts back to kW exactly (F-06, T-11).
 - **File:** `outputs/figures/correction/C-03_k_clipping.png`
 - **Inputs:** `submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv`, `data/processed/06_features/features_1H_D1.parquet`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### C-04. Same-hour windows per horizon, submitted and fixed
 
@@ -52,7 +52,7 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** Horizon-aware windows (F-07), with a test that plants the submitted window and must fail (T-09, T-18).
 - **File:** `outputs/figures/correction/C-04_rolling_windows.png`
 - **Inputs:** drawn from the code
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### C-05. Feature selection of the submission: periods and dominance
 
@@ -64,7 +64,7 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** The rebuild selects on train only and admits features from an allow-list (F-26, F-27).
 - **File:** `outputs/figures/correction/C-05_selection_leaks.png`
 - **Inputs:** `00_data_audit/original_backup_2026-11-01/selection_shap_direct_top.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`
 
 ### C-06. Submitted weather series: correlation by time shift
 
@@ -76,4 +76,4 @@ Figures: 6 (0 process, 6 correction).
 - **Led to:** The rebuild uses real forecast runs published before issuance and aligned in true UTC (F-28, D-12).
 - **File:** `outputs/figures/correction/C-06_weather_alignment.png`
 - **Inputs:** `00_data_audit/original_backup_2026-11-01/weather_lag_scan.csv`
-- **Built at commit:** `123b2fb`
+- **Built at commit:** `a407f85+dirty`

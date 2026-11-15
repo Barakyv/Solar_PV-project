@@ -1456,6 +1456,26 @@ stored data file changed).**
 - *Original:* the submitted report typed its numbers by hand; of the 125 claims of its own claim matrix
   (`submission_evidence/11_audit/REPORT_CLAIM_EVIDENCE_MATRIX.csv`) 9 are marked contradicted and 25 need manual review.
 
+**OP-68 — Stage 11, part C: the final report v7 with its figures (no stored data file changed).**
+- *Why:* PROJECT_MASTER §7, stage 11: the final version of the report with the figures. User decision of 2026-11-15:
+  follow the figures of the submitted report, add the figures that complete the understanding of what was done, and
+  present the work as closed.
+- *Method:* `python scripts/make_report_v7.py` now writes the whole report in the chapter order of v6 (abstract,
+  chapters 1 to 17, appendices), `docs/report_v7_README.md` and `docs/report_v7_figures.csv`. Each figure is placed in
+  the section it supports, referenced in the text and captioned with the takeaway of its builder from
+  `outputs/figures/figures_manifest.json`; every claim of the new chapters is asserted before it is written. The 25
+  figures of v6 were mapped to the figure book through the figure column of `docs/scope_register.md`. Figures S01-01
+  and S01-02 were redrawn (X113, X114); the new figure S11-20 draws the map.
+- *Parameters:* none; the bootstrap (circular blocks of 24 daytime hours, 1,000 replicates) and the tests are those
+  of the run.
+- *Result:* the report with 31 figures (19 counterparts of v6 figures, 12 added) and the registered numbers of
+  `docs/traceability.csv`; 6 v6 figures not redrawn (five of the replaced selection protocol, one radar); the notebook
+  `11_stage11_part_c.ipynb`. Findings: M58 (C-92) and X113 to X116.
+- *Verification:* T-185 to T-189 (placement, numbering and references of the figures, current captions, every v6 figure
+  accounted for, the README, the shares of section 12.3 equal to the facts of S11-11), with T-178 to T-184.
+- *Original:* the submitted report had 25 figures, typed captions, and five figures of a selection that read the
+  validation and test periods (F-26).
+
 ## 17. Differences from the original data pipeline
 
 | Topic | Original | Rebuild | Ref. |
