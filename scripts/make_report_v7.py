@@ -256,6 +256,9 @@ def fig(fid: str) -> str:
 
 
 # ── references (the list of v6, chapter 17; M58: one citation of v6 had no entry and is not used) ──────────
+# Two entries added by the user's decision of 2026-11-15 (R11-04): the method of the SHAP values and the source of the
+# weather forecasts, which v6 used without an entry. Each is checked against the code and data record (explain.py uses
+# shap.TreeExplainer; stage 6b reads the bucket noaa-gfs-bdp-pds).
 REFS_V6 = {
     "akiba": ("Akiba et al., 2019", "Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation hyperparameter optimization framework. KDD 2019."),
     "antonanzas": ("Antonanzas et al., 2016", "Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. (2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78–111."),
@@ -265,6 +268,9 @@ REFS_V6 = {
     "graves": ("Graves & Schmidhuber, 2005", "Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5–6), 602–610."),
     "harvey": ("Harvey et al., 1997", "Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared errors. International Journal of Forecasting, 13(2), 281–291."),
     "hochreiter": ("Hochreiter & Schmidhuber, 1997", "Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780."),
+    "lundberg2017": ("Lundberg & Lee, 2017", "Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems 30 (NIPS 2017), 4765–4774."),
+    "lundberg2020": ("Lundberg et al., 2020", "Lundberg, S. M., Erion, G., Chen, H., DeGrave, A., Prutkin, J. M., Nair, B., Katz, R., Himmelfarb, J., Bansal, N., & Lee, S.-I. (2020). From local explanations to global understanding with explainable AI for trees. Nature Machine Intelligence, 2(1), 56–67."),
+    "noaa": ("NOAA NCEP, GFS", "NOAA National Centers for Environmental Prediction (NCEP). NOAA Global Forecast System (GFS), 1.0° global forecast grids. NOAA Open Data Dissemination, Registry of Open Data on AWS, bucket noaa-gfs-bdp-pds. https://registry.opendata.aws/noaa-gfs-bdp-pds/"),
     "li": ("Li et al., 2016", "Li, J., Ward, J. K., Tong, J., Collins, L., & Platt, G. (2016). Machine learning for solar irradiance forecasting of photovoltaic system. Renewable Energy, 90, 542–553."),
     "lim": ("Lim et al., 2021", "Lim, B., Arık, S. Ö., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748–1764."),
     "mellit": ("Mellit & Pavan, 2010", "Mellit, A., & Pavan, A. M. (2010). A 24-h forecast of solar irradiance using artificial neural network. Renewable Energy, 35(11), 2603–2616."),
@@ -504,7 +510,7 @@ the same hour, and both routes are scored in kW.
 w("## 3.4 Feature engineering\n")
 w(f"""The candidate features are calendar and solar-geometry encodings, the clear-sky power, lags and rolling statistics of
 the measured power at the days that each horizon may use (section 3.9), and the weather forecast. The weather forecast is
-the GFS run of the day before the issuance, interpolated to the site and to the panel plane
+the GFS run of the day before the issuance {c('noaa')}, interpolated to the site and to the panel plane
 ({F.n('GFS runs', GFS['runs'] if isinstance(GFS['runs'], int) else len(GFS['runs']), 'outputs/06b_gfs/gfs_manifest.json', ',d')} runs, D-12).
 {fr('S6b-01')} shows that every run used was public before the issuance: a run whose files were uploaded again after the
 issuance is replaced by the earlier run of the same day (F-28).
@@ -794,7 +800,8 @@ seed and period uncertainty, and the choice between them can follow operational 
 w("## 11. Interpretability Analysis\n")
 w(f"""### 11.1 XGBoost SHAP: feature-group importance
 
-{fr('S11-07')} shows what the SHAP values of XGB-Opt attribute the forecast to, on validation and on test. The
+{fr('S11-07')} shows what the SHAP values {c('lundberg2017')} of XGB-Opt, computed exactly for the trees with
+TreeSHAP {c('lundberg2020')}, attribute the forecast to, on validation and on test. The
 weather-forecast group holds
 {F.span('GFS share of mean absolute SHAP, validation, %', *share_range(SHV, 'nwp_gfs'), PT_ + '/explain/xgb/xgb_shap_groups.csv', '.0f')}
 percent of the mean absolute SHAP value on validation and
@@ -1135,12 +1142,15 @@ and the figure `S11-20`.
 
 ## Decisions still open (the user's)
 
-- **Q-09: disclosure of the site coordinates in the final report.** The report does not publish them (T-45); whether the
-  final report discloses them is the user's decision and is not decided here.
-- **References for SHAP and for GFS.** The reference list is the list of v6, which has no entry for either; an entry is
-  added only after the citation is verified.
-- **`--xgb-only` (Q-30).** A training run, left for a separate session.
+- **`--xgb-only` (Q-30).** A training run, left for the user's decision.
 - **Backup of the repository and the archive outside the VDI.** Not done yet.
+
+## Decisions taken by the user (2026-11-15)
+
+- **Q-09: the site coordinates are not disclosed.** The report describes the plant without its coordinates, which stay in
+  the private configuration (T-45).
+- **References for SHAP and for GFS are added** to the reference list of v6: Lundberg & Lee (2017), Lundberg et al.
+  (2020) and the NOAA GFS archive that stage 6b read (R11-04).
 """
 assert not any(b in README for b in BANNED)
 

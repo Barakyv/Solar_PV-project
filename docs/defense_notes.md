@@ -434,4 +434,9 @@ differences a committee may ask about, and the answer:
   identical scored hours, both routes against the same truth, paired tests with the minimum detectable effect, traceability.
 - **Two earlier figures were stale** and are redrawn: S01-02 gave the test split 5,832 hours instead of the 5,829 of the
   data (X113), and S01-01 still drew the status of stage 9 (X114).
+- **Three references are added to the list of v6** (user, 2026-11-15, R11-04): v6 used SHAP and the GFS forecasts with
+  no entry for either. v7 cites Lundberg & Lee (2017) for the SHAP values, Lundberg et al. (2020) for TreeSHAP, the
+  explainer the code uses, and the NOAA GFS archive on AWS that stage 6b read (sections 3.4 and 11.1).
+- **The site coordinates are not published** (Q-09, user, 2026-11-15): the report describes the plant without its
+  coordinates, and the code reads them from a private configuration (T-45).
 

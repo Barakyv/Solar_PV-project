@@ -39,9 +39,12 @@ and the figure `S11-20`.
 
 ## Decisions still open (the user's)
 
-- **Q-09: disclosure of the site coordinates in the final report.** The report does not publish them (T-45); whether the
-  final report discloses them is the user's decision and is not decided here.
-- **References for SHAP and for GFS.** The reference list is the list of v6, which has no entry for either; an entry is
-  added only after the citation is verified.
-- **`--xgb-only` (Q-30).** A training run, left for a separate session.
+- **`--xgb-only` (Q-30).** A training run, left for the user's decision.
 - **Backup of the repository and the archive outside the VDI.** Not done yet.
+
+## Decisions taken by the user (2026-11-15)
+
+- **Q-09: the site coordinates are not disclosed.** The report describes the plant without its coordinates, which stay in
+  the private configuration (T-45).
+- **References for SHAP and for GFS are added** to the reference list of v6: Lundberg & Lee (2017), Lundberg et al.
+  (2020) and the NOAA GFS archive that stage 6b read (R11-04).

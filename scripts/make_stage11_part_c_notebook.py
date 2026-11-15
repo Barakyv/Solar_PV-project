@@ -109,13 +109,12 @@ pd.Series([ln[3:] for ln in readme.splitlines() if ln.startswith("## ")], name="
     md(f"""**What it shows.** The sections of `docs/report_v7_README.md`.
 
 **What it means.** The README holds the correction note of D-02, the availability of the code and the data (S-45), the
-appendices (errata, traceability, data processing record, figure book), the figure map, and the decisions still open:
-Q-09 (the coordinates) {'is listed and not decided' if 'Q-09' in readme and 'is not decided here' in readme else 'MISSING'},
-the references for SHAP and GFS, `--xgb-only` and the backup."""),
+appendices (errata, traceability, data processing record, figure book), the figure map, the decisions still open
+(`--xgb-only` and the backup) and the decisions the user took on 2026-11-15: Q-09, the coordinates
+{'are not disclosed' if 'Q-09: the site coordinates are not disclosed' in readme else 'MISSING'}, and the references for
+SHAP and GFS {'are added' if 'noaa-gfs-bdp-pds' in report else 'MISSING'} (R11-04)."""),
     md("""## 6. What part C did not do
 
-- **Q-09.** The disclosure of the site coordinates is the user's decision; the report publishes none (T-45).
-- **New references.** SHAP and GFS have no entry in the reference list of v6; an entry is added only after it is verified.
 - **`--xgb-only` (Q-30).** A training run, left for a separate session.
 - **The interval coverage of the quantile models (L-14)** is future work in the report."""),
 ]

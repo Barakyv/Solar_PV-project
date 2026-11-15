@@ -2266,3 +2266,15 @@ hashes, numbers) and the commit messages are the record:
   list (M58, C-92).
 - **Result:** `docs/report_v7.md` with 31 figures (19 counterparts of v6 figures, 12 added; 6 v6 figures not redrawn,
   S11-20), `docs/report_v7_README.md` with Q-09 listed as open, OP-68, T-185 to T-189, notebook `11_stage11_part_c.ipynb`.
+
+### 2026-11-15 · R11-04 · Part C: the user's decisions on Q-09 and on the references
+
+- **Decision of the user:** the site coordinates are not disclosed (Q-09 closed); references for SHAP and for GFS are
+  added to the reference list of v6. The user asked what `--xgb-only` is for; the answer is in the reply, the decision
+  (Q-30) stays with the user.
+- **What changed:** `scripts/make_report_v7.py` adds three entries, each checked against the project's own code and
+  data record: Lundberg & Lee (2017) for the SHAP values, Lundberg et al. (2020) for TreeSHAP (`explain.py` uses
+  `shap.TreeExplainer`), and the NOAA GFS archive on AWS (`noaa-gfs-bdp-pds`, stage 6b). They are cited in sections 3.4
+  and 11.1. The README moves Q-09 and the references to the decisions taken. T-188 updated, T-190 added; the figures
+  that read the report (S01-01, S11-18, S11-19, S11-20) and the report were rebuilt twice to convergence.
+- **Not done:** no model was trained, the step `test` was not run, no code outside the D-36 list was edited.

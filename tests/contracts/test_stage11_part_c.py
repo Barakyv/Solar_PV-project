@@ -59,6 +59,21 @@ def test_t187_the_figures_follow_those_of_the_submitted_report():
     assert not re.search(r"!\[C-\d+\]", _report()), "no correction figure in the report"
 
 
+def test_t190_the_shap_and_gfs_references_are_cited_and_listed():
+    """R11-04 (user, 2026-11-15): the method of the SHAP values and the source of the weather forecasts have entries."""
+    t = _report()
+    refs = t.split("## 17. References", 1)[1].split("## Appendices", 1)[0]
+    body = t.split("## 17. References", 1)[0]
+    for cite, entry in (("Lundberg & Lee, 2017", "A unified approach to interpreting model predictions"),
+                        ("Lundberg et al., 2020", "explainable AI for trees"),
+                        ("NOAA NCEP, GFS", "noaa-gfs-bdp-pds")):
+        assert f"[{cite}]" in body, cite
+        assert entry in refs, entry
+    src = (REPO_ROOT / "src/solarpv/pipeline/explain.py").read_text(encoding="utf-8")
+    assert "shap.TreeExplainer" in src, "the TreeSHAP citation names the explainer the code uses"
+    assert "noaa-gfs-bdp-pds" in (DOCS / "data_processing_record.md").read_text(encoding="utf-8")
+
+
 def test_t189_the_text_and_the_figure_give_the_same_shares_of_bias_and_seed_variance():
     """X115: section 12.3 uses the aggregation of S11-11 (mean over the cells, then the maximum over the models)."""
     figs = json.loads((REPO_ROOT / "outputs/figures/figures_manifest.json").read_text(encoding="utf-8"))["figures"]
@@ -73,10 +88,10 @@ def test_t188_the_readme_holds_the_note_the_availability_the_appendices_and_the_
     r = (DOCS / "report_v7_README.md").read_text(encoding="utf-8")
     for must in ("## Correction note (D-02)", "## Data and code availability (S-45", "docs/errata.md",
                  "docs/traceability.csv", "docs/data_processing_record.md", "## Decisions still open",
-                 "Q-09", "is not decided here"):
+                 "## Decisions taken by the user", "Q-09: the site coordinates are not disclosed"):
         assert must in r, must
     t = _report()
     assert "## 16. Data and Code Availability" in t and "## 17. References" in t
-    assert "Q-09" not in t, "the open decision Q-09 is listed in the README, not in the report"
+    assert "Q-09" not in t, "the decision Q-09 is recorded in the README, not in the report"
     # no coordinates in the report (T-45): no decimal degrees of the form 29.xxxx or 35.xxxx
     assert not re.search(r"\b(?:29|30|34|35)\.\d{3,}\b", t)

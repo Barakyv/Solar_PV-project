@@ -177,7 +177,7 @@ the same hour, and both routes are scored in kW.
 
 The candidate features are calendar and solar-geometry encodings, the clear-sky power, lags and rolling statistics of
 the measured power at the days that each horizon may use (section 3.9), and the weather forecast. The weather forecast is
-the GFS run of the day before the issuance, interpolated to the site and to the panel plane
+the GFS run of the day before the issuance [NOAA NCEP, GFS], interpolated to the site and to the panel plane
 (1,371 runs, D-12).
 Figure 4 shows that every run used was public before the issuance: a run whose files were uploaded again after the
 issuance is replaced by the earlier run of the same day (F-28).
@@ -525,7 +525,8 @@ seed and period uncertainty, and the choice between them can follow operational 
 
 ### 11.1 XGBoost SHAP: feature-group importance
 
-Figure 21 shows what the SHAP values of XGB-Opt attribute the forecast to, on validation and on test. The
+Figure 21 shows what the SHAP values [Lundberg & Lee, 2017] of XGB-Opt, computed exactly for the trees with
+TreeSHAP [Lundberg et al., 2020], attribute the forecast to, on validation and on test. The
 weather-forecast group holds
 56 to 75
 percent of the mean absolute SHAP value on validation and
@@ -829,7 +830,7 @@ every model, and every file that differed had a documented reason (X99).
 
 ![S11-19](../outputs/figures/stage_11/S11-19_rebuild_chain.png)
 
-**Figure 31. The rebuild from the frozen predictions.** The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 384 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37). *(Figure book: `S11-19`.)*
+**Figure 31. The rebuild from the frozen predictions.** The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 390 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37). *(Figure book: `S11-19`.)*
 
 ## 17. References
 
@@ -843,10 +844,13 @@ every model, and every file that differed had a documented reason (X99).
 - Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780.
 - Li, J., Ward, J. K., Tong, J., Collins, L., & Platt, G. (2016). Machine learning for solar irradiance forecasting of photovoltaic system. Renewable Energy, 90, 542–553.
 - Lim, B., Arık, S. Ö., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748–1764.
+- Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems 30 (NIPS 2017), 4765–4774.
+- Lundberg, S. M., Erion, G., Chen, H., DeGrave, A., Prutkin, J. M., Nair, B., Katz, R., Himmelfarb, J., Bansal, N., & Lee, S.-I. (2020). From local explanations to global understanding with explainable AI for trees. Nature Machine Intelligence, 2(1), 56–67.
 - Mellit, A., & Pavan, A. M. (2010). A 24-h forecast of solar irradiance using artificial neural network. Renewable Energy, 35(11), 2603–2616.
 - Nespoli, A., Niccolai, A., Ogliari, E., Perego, G., Collino, E., & Ronzio, D. (2022). Machine learning techniques for solar irradiance and power forecasting. Energies, 15(21), 8129.
 - Newey, W. K., & West, K. D. (1987). A simple, positive semi-definite, heteroskedasticity and autocorrelation consistent covariance matrix. Econometrica, 55(3), 703–708.
 - Nie, Y., Nguyen, N. H., Sinthong, P., & Kalagnanam, J. (2023). A time series is worth 64 words: Long-term forecasting with transformers. ICLR 2023.
+- NOAA National Centers for Environmental Prediction (NCEP). NOAA Global Forecast System (GFS), 1.0° global forecast grids. NOAA Open Data Dissemination, Registry of Open Data on AWS, bucket noaa-gfs-bdp-pds. https://registry.opendata.aws/noaa-gfs-bdp-pds/
 - Schenker, N., & Gentleman, J. F. (2001). On judging the significance of differences by examining the overlap between confidence intervals. The American Statistician, 55(3), 182–186.
 - Sweeney, C., Bessa, R. J., Browell, J., & Pinson, P. (2020). The future of forecasting for renewable energy. Wiley Interdisciplinary Reviews: Energy and Environment, 9(2), e365.
 - Wang, H., Yi, H., Peng, J., Wang, G., Liu, Y., Jiang, H., & Liu, W. (2019). Deterministic and probabilistic forecasting of photovoltaic power based on deep convolutional neural network. Energy Conversion and Management, 195, 1150–1163.

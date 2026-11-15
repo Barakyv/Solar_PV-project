@@ -51,7 +51,7 @@
     "n_report_figs": 31
    },
    "takeaway": "From 45 raw files to 1,971,360 UTC minutes, 32,856 hourly rows, 74 / 67 / 60 candidate features per horizon plus 1,371 weather-forecast runs, and 31 (indirect) and 96 (direct) model inputs at D+1. The final run completed 14 steps on the frozen code, and the report holds 31 figures.",
-   "git_commit": "c263a41"
+   "git_commit": "8f65022+dirty"
   },
   "S01-02": {
    "stage": "1",
@@ -2082,43 +2082,43 @@
    "kind": "process",
    "title": "Where every number of the report comes from",
    "file": "outputs/figures/stage_11/S11-18_number_sources.png",
-   "file_sha256": "98aed28a6e19ad9bcf6c1aa72e2789cadc4e0e8bdffa78083d8cf7f197d62294",
+   "file_sha256": "04990cc5ab71c145c1609da3c5e630f2da1f342af4c0231d991df257c7176cbc",
    "inputs": {
-    "docs/traceability.csv": "307fe67d11482bfdf67b43f33b9612e2a44062944847c3fd9d4bd609d1212ae5"
+    "docs/traceability.csv": "a908260ed0cea8be76ec17eb7216343f6c7171fe50d9938ac836c8b326e7014c"
    },
    "facts": {
-    "n_rows": 384,
+    "n_rows": 390,
     "n_files": 79,
     "n_run": 155,
     "n_ana": 49,
     "n_data": 137,
-    "n_quoted": 43
+    "n_quoted": 49
    },
-   "takeaway": "The 384 registered numbers of the report are read from 79 files: 155 from the tables and explanations of the final run, 49 from the tables of the analyses of part A, 137 from the data stages and constants, and 43 are quotations of the submitted report or of the project documents. Every row names the script that formats it; a test fails when a number of the text has no row.",
-   "git_commit": "c263a41"
+   "takeaway": "The 390 registered numbers of the report are read from 79 files: 155 from the tables and explanations of the final run, 49 from the tables of the analyses of part A, 137 from the data stages and constants, and 49 are quotations of the submitted report or of the project documents. Every row names the script that formats it; a test fails when a number of the text has no row.",
+   "git_commit": "8f65022+dirty"
   },
   "S11-19": {
    "stage": "11",
    "kind": "process",
    "title": "The rebuild from the frozen predictions",
    "file": "outputs/figures/stage_11/S11-19_rebuild_chain.png",
-   "file_sha256": "90dc45055bd952e1e9527feef376d84bc4fb735b1ab40f9dc7d24fd308625e1b",
+   "file_sha256": "83bbe96d639c62cc321364c1dd358779ddffd2301fd78bdc8406f09cbe702c32",
    "inputs": {
     "outputs/runs/20261114T083930Z_final/run.json": "2bb56acd44cf1ce14869cf6a0cdbe89892c56653796c1f09ec76e54176f9b465",
     "outputs/11_analyses/manifest.json": "55c2701f7663c53f7ad19ccb32687bb9734946d9d9249b8021379665951f2f70",
-    "docs/traceability.csv": "307fe67d11482bfdf67b43f33b9612e2a44062944847c3fd9d4bd609d1212ae5",
+    "docs/traceability.csv": "a908260ed0cea8be76ec17eb7216343f6c7171fe50d9938ac836c8b326e7014c",
     "docs/old_vs_new.csv": "02ed1f339f06de4118425a59f1ad73f938dd3ebb203df4f21f19de1825983519",
     "outputs/07_evaluation/test_access_log.csv": "98df1f92c50a5a1908bda2e20603b0918b37b331c18444f0b0dd43394c450e3d"
    },
    "facts": {
     "n_steps": 14,
     "n_tables": 13,
-    "n_rows": 384,
+    "n_rows": 390,
     "n_ovn": 92,
     "n_test_scored": 1
    },
-   "takeaway": "The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 384 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37).",
-   "git_commit": "c263a41"
+   "takeaway": "The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 390 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37).",
+   "git_commit": "8f65022+dirty"
   },
   "S11-20": {
    "stage": "11",
@@ -2142,7 +2142,7 @@
     "n_radar": 1
    },
    "takeaway": "The report has 31 figures in 10 chapters: 19 are the counterparts of v6 figures and 12 are added where they complete the account of the method or answer a sentence of v6 that had no figure (sections 3.2, 3.3, 3.4, 3.6, 3.9, 6.1, 7.6, 9.2, 11.3, 11.4, 16). Of the 25 figures of v6, 19 are redrawn from the final run and 6 are not: 5 drew the feature-selection protocol of v6, which was replaced (F-26, D-23), and 1 repeated the seasonal numbers as a radar (C-84).",
-   "git_commit": "c263a41"
+   "git_commit": "8f65022+dirty"
   },
   "C-01": {
    "stage": "correction",
