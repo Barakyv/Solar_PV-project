@@ -2278,3 +2278,12 @@ hashes, numbers) and the commit messages are the record:
   and 11.1. The README moves Q-09 and the references to the decisions taken. T-188 updated, T-190 added; the figures
   that read the report (S01-01, S11-18, S11-19, S11-20) and the report were rebuilt twice to convergence.
 - **Not done:** no model was trained, the step `test` was not run, no code outside the D-36 list was edited.
+
+### 2026-11-16 · R11-05 · Q-30 closed: `--xgb-only` is not implemented
+
+- **Decision of the user:** follow the recommendation. `--xgb-only` was the CPU-only path of the submitted reproduction
+  script. It is not implemented: the final run trained all six models, the reproduction from the raw data at gate G-1
+  matched the reference runs (X99), and `scripts/make_tables_from_frozen.py` rebuilds the tables, figures and report
+  without training. Editing `scripts/reproduce_paper_results.py` is outside the D-36 list and would reopen G-1.
+- **Changed:** the README of the report, the notebook of part C, the scope register (S-45), the defense notes and
+  PROJECT_MASTER (stage 11 closed; the backup outside the VDI stays with the user). No code of the pipeline, no training.

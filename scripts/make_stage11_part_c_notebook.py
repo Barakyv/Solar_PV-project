@@ -110,12 +110,13 @@ pd.Series([ln[3:] for ln in readme.splitlines() if ln.startswith("## ")], name="
 
 **What it means.** The README holds the correction note of D-02, the availability of the code and the data (S-45), the
 appendices (errata, traceability, data processing record, figure book), the figure map, the decisions still open
-(`--xgb-only` and the backup) and the decisions the user took on 2026-11-15: Q-09, the coordinates
+(the backup) and the decisions the user took on 2026-11-15: Q-09, the coordinates
 {'are not disclosed' if 'Q-09: the site coordinates are not disclosed' in readme else 'MISSING'}, and the references for
 SHAP and GFS {'are added' if 'noaa-gfs-bdp-pds' in report else 'MISSING'} (R11-04)."""),
     md("""## 6. What part C did not do
 
-- **`--xgb-only` (Q-30).** A training run, left for a separate session.
+- **`--xgb-only` (Q-30).** Not implemented, by the user's decision (R11-05): the rebuild without training is
+  `scripts/make_tables_from_frozen.py`.
 - **The interval coverage of the quantile models (L-14)** is future work in the report."""),
 ]
 

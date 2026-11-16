@@ -39,12 +39,15 @@ and the figure `S11-20`.
 
 ## Decisions still open (the user's)
 
-- **`--xgb-only` (Q-30).** A training run, left for the user's decision.
 - **Backup of the repository and the archive outside the VDI.** Not done yet.
 
 ## Decisions taken by the user (2026-11-15)
 
 - **Q-09: the site coordinates are not disclosed.** The report describes the plant without its coordinates, which stay in
   the private configuration (T-45).
+- **Q-30: `--xgb-only` is not implemented.** It was the CPU-only path of the submitted reproduction script. The final
+  run trained all six models, the reproduction from the raw data at gate G-1 matched them, and
+  `scripts/make_tables_from_frozen.py` rebuilds every table, figure and report section without training. Editing
+  `reproduce_paper_results.py` would reopen G-1 and train again with nothing new to show (R11-05).
 - **References for SHAP and for GFS are added** to the reference list of v6: Lundberg & Lee (2017), Lundberg et al.
   (2020) and the NOAA GFS archive that stage 6b read (R11-04).

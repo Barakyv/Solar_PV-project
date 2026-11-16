@@ -413,8 +413,8 @@ in `docs/errata.md`; `docs/run_journal.md` R11-02; OP-67; errata C-85 to C-91.
 - **Likely question:** "What about dust days?" **Answer:** "The project holds no aerosol record, and a label made from the
   measured deficit would be made from the outcome. The season half of the analysis is done; the dust half is future work
   (Q-29, the user's decision)."
-- **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's action); `--xgb-only`
-  (a training run) is left for the end of the stage.
+- **Open:** the copy of the archive off the VDI and the backup of the whole project (the user's action); `--xgb-only` is not implemented (Q-30, R11-05): the
+  frozen run trained all six models and the tables are rebuilt without training.
 
 ## 17. Stage 11, part C: the final report v7 and its figures
 
