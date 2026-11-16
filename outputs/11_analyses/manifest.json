@@ -1,6 +1,6 @@
 {
   "run": "outputs/runs/20261114T083930Z_final",
-  "git_commit": "42e99ae+dirty",
+  "git_commit": "d6050fb",
   "inputs_sha256": {
     "outputs/runs/20261114T083930Z_final/baselines/predictions_clearsky_k.csv": "a1bdb7ed42a0242718979f7c05982e6ad8919126c7a2f61dbf645c45b6197f1d",
     "outputs/runs/20261114T083930Z_final/baselines/predictions_climatology.csv": "ed6c096afee6d4d1e6473562b05cb4de83799d95f8f61e3246b2d16c7bc43d56",
