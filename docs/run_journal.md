@@ -2320,4 +2320,10 @@ hashes, numbers) and the commit messages are the record:
   every tracked text file. A forecast value in one old prediction file of the submission outputs began with the same
   digits; it is a longer number, not a coordinate, and T-193 does not match it. The earlier commits still hold the two
   documents as they were.
+- **Push (user request, 2026-11-16):** the user decided that documentation of the coordinates in the repository and
+  its history is acceptable and that only the final report must not hold them (T-188). `main` and every tag, including
+  `g1-frozen`, were pushed to the user's private GitHub repository after the user signed in through the Git Credential
+  Manager; `git ls-remote` shows `main` at `e1046af` and `g1-frozen` at `10611a6`, as here. The repository holds no raw
+  data and no prediction or quantile files of the runs (ignored by git): the raw data and the archive of the final run
+  still need a copy outside the VDI.
 - **Not done:** no model was trained, the step `test` was not run, no path outside the D-36 list was edited.
