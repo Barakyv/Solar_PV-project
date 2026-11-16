@@ -39,7 +39,20 @@ and the figure `S11-20`.
 
 ## Decisions still open (the user's)
 
-- **Backup of the repository and the archive outside the VDI.** Not done yet.
+- **Backup outside the VDI.** The repository is pushed to a private GitHub repository (2026-11-16). The raw data and the
+  archive of the final run, which holds the prediction and quantile files that git does not track, are not backed up yet.
+
+## Decisions taken by the user (2026-11-16)
+
+- **The sorting of the quantiles is documented in section 6.5, with its sources.** The share of hours with crossed
+  quantiles and the cost of sorting them come from `outputs/11_analyses/quantile_crossing.csv`; the monotone
+  rearrangement and the quantile loss cite Chernozhukov, Fernández-Val & Galichon (2010) and Koenker & Bassett (1978),
+  both checked against Crossref and OpenAlex (R11-06).
+- **The questions to the operator are closed without an answer.** The model of the inverters is not known (Q-11), it is
+  not known whether the SCADA system was replaced in February 2025 (Q-12), and no record of the meaning of the inverter
+  status codes 5 and 6 is left (Q-13). The orientation measured from the data (F-23), the reconstruction of the polled
+  period (F-18, R-12) and the flag of partial outages (F-22) stay as they are, and each stays a stated limitation.
+- **The potential skill of the quantile-loss models (L-14) is future work**, with the analysis of the intervals.
 
 ## Decisions taken by the user (2026-11-15)
 

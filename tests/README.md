@@ -66,6 +66,9 @@ IDs follow PROJECT_MASTER.md §8.2. Run with `pytest`; `pytest -m "not slow"` fo
 | T-175 | The literature numbers are those of `docs/literature_review.md` | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
 | T-176 | Every read of the test rows by the analyses is in the access log | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
 | T-177 | The G-1 checklist figure does not count a final run as an unaudited run, and still fails for any other run the audit did not see (X106) | `contracts/test_stage11_part_a.py` | ✅ (2026-11-14) |
+| T-191 | The quantile crossing on a frame worked out by hand: shares, distances to the sorted median, losses raw and sorted, a factor that is not positive refused | `contracts/test_stage11_part_d.py` | ✅ (2026-11-16) |
+| T-192 | The crossing table is on the scored hours; the report (section 6.5) and S11-21 give its numbers; the two sources are cited, listed and recorded with their DOIs | `contracts/test_stage11_part_d.py` | ✅ (2026-11-16) |
+| T-193 | No tracked text file holds the site coordinates (read from the private file when present; failures name files only) | `contracts/test_private_coordinates.py` | ✅ (2026-11-16) |
 
 Stage-5 test plan: `docs/stage5_test_plan.md`. Mutation check (do the tests catch a wrong cleaning?): `00_data_audit/cleaning_2026-10-15/mutation_check.py`.
 

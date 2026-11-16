@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\204323141\repro_g1\r2\src\solarpv\eda\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\204323141\repro_g1\r2\src\solarpv\eda\figures.py", line 548, in main
+    manifest = run()
+               ^^^^^
+  File "C:\Users\204323141\repro_g1\r2\src\solarpv\eda\figures.py", line 524, in run
+    inputs = {p.relative_to(OUTPUTS_DIR.parent).as_posix(): sha256(p) for p in (
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\204323141\repro_g1\r2\src\solarpv\eda\figures.py", line 524, in <dictcomp>
+    inputs = {p.relative_to(OUTPUTS_DIR.parent).as_posix(): sha256(p) for p in (
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\204323141\miniforge3\envs\solar\Lib\pathlib.py", line 730, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: 'C:\\Users\\204323141\\Desktop\\solar\\Raw data\\2112.CSV' is not in the subpath of 'C:\\Users\\204323141\\repro_g1\\r2' OR one path is relative and the other is absolute.

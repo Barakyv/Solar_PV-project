@@ -1,0 +1,27 @@
+{
+  "figures": [
+    "fig01_overview.png",
+    "fig02_time_bug.png",
+    "fig03_clock.png",
+    "fig04_polled.png",
+    "fig05_cleaning.png",
+    "fig06_diurnal.png",
+    "fig07_power_irradiance.png",
+    "fig08_variability.png",
+    "fig09_operations.png",
+    "fig10_sensors.png"
+  ],
+  "split_hours": {
+    "train": 21195,
+    "val": 5832,
+    "test": 5829,
+    "all": 32856
+  },
+  "time_bug_median_offset_min": {
+    "winter (Dec 2021, UTC+2) | original (local stamps read as UTC)": 120.4,
+    "winter (Dec 2021, UTC+2) | rebuild (true UTC, clock-corrected)": 1.9,
+    "summer (Jul 2022, UTC+3) | original (local stamps read as UTC)": 173.6,
+    "summer (Jul 2022, UTC+3) | rebuild (true UTC, clock-corrected)": 2.6
+  },
+  "temperature_coefficient_pct_per_K": -0.421
+}

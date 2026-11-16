@@ -287,8 +287,8 @@ Figure 10 compares the six models: their inputs, budgets and training time in th
 
 - **XGB-Opt** [Chen & Guestrin, 2016]: gradient-boosted trees on the selected tabular inputs, with a monotone constraint on the
   clear-sky input (D-15); one model per target and horizon; on the CPU.
-- **BiLSTM-Opt** [Graves & Schmidhuber, 2005]: a bidirectional encoder-decoder over the hourly sequence with a quantile loss; one
-  forecast origin per local day (D-25).
+- **BiLSTM-Opt** [Graves & Schmidhuber, 2005]: a bidirectional encoder-decoder over the hourly sequence with a quantile loss
+  [Koenker & Bassett, 1978]; one forecast origin per local day (D-25).
 - **TFT-96 and TFT-168** [Lim et al., 2021]: the Temporal Fusion Transformer with an encoder of 96 or 168 hours and the known
   future inputs of the decoder (D-26), tuned per route.
 - **TFT baseline**: the same architecture with fixed settings.
@@ -329,6 +329,34 @@ saving time), climatology (the mean of the same calendar hour on train), and the
 
 Intervals and paired tests follow section 4.2. Overlapping marginal intervals do not imply that a paired test is not
 significant [Schenker & Gentleman, 2001], so the comparisons of models rest on the paired test.
+
+### 6.5 Quantile outputs
+
+The BiLSTM-Opt forecasts 3 quantiles of the power and the TFTs
+7; the point forecast of each model is its
+0.5 quantile, as in v6, and only the point
+forecast is scored in this report (D-33). The quantile heads of the TFT are separate outputs of one layer, and nothing in
+the training keeps them in order. On the scored hours, averaged over the horizons, the quantiles of the TFTs are out of
+order on 0.7 to
+83.5 percent of the hours on
+validation and on 0.7 to
+65.2 percent on test, depending on
+the model and route, most often for TFT-96 on the direct route; the quantiles of the BiLSTM-Opt are never out of order.
+
+Wherever the quantiles are read as a distribution, they are first sorted per hour: the monotone rearrangement
+[Chernozhukov et al., 2010]. The quantile loss [Koenker & Bassett, 1978] of an hour never rises when its quantiles are sorted, because the
+part of the loss that depends on their order is smallest when they rise with their levels; on this run sorting lowers
+the mean quantile loss in kW by at most 4.6 percent (TFT-96,
+direct route, validation). The point forecast is not sorted, so no score or test of this report changes. The cost is
+that on some hours the point forecast is not the median of the sorted distribution: on up to
+61.0
+percent of the hours of a model and route on validation and
+33.3 percent
+on test, by 19.2
+kW on average on validation and 20.7
+kW on test, and by at most 102.2 kW
+(2.96 percent
+of the capacity). Training that keeps the quantiles in order is future work (section 14).
 
 ## 7. Main Results
 
@@ -830,18 +858,20 @@ every model, and every file that differed had a documented reason (X99).
 
 ![S11-19](../outputs/figures/stage_11/S11-19_rebuild_chain.png)
 
-**Figure 31. The rebuild from the frozen predictions.** The chain starts from the 14 steps of the final run that are `ok` and writes 13 tables of analyses, the figures of stage 11, 390 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37). *(Figure book: `S11-19`.)*
+**Figure 31. The rebuild from the frozen predictions.** The chain starts from the 14 steps of the final run that are `ok` and writes 14 tables of analyses, the figures of stage 11, 409 registered numbers and 92 rows of old against new results. It never runs the step `test` (the test split was scored once, 1 time in the access log), never trains a model and never changes a budget, a seed or a rule (D-37). *(Figure book: `S11-19`.)*
 
 ## 17. References
 
 - Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation hyperparameter optimization framework. KDD 2019.
 - Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. (2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78–111.
 - Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. KDD 2016.
+- Chernozhukov, V., Fernández-Val, I., & Galichon, A. (2010). Quantile and probability curves without crossing. Econometrica, 78(3), 1093–1125.
 - Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business & Economic Statistics, 13(3), 253–263.
 - Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman & Hall.
 - Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5–6), 602–610.
 - Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared errors. International Journal of Forecasting, 13(2), 281–291.
 - Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780.
+- Koenker, R., & Bassett, G. (1978). Regression quantiles. Econometrica, 46(1), 33–50.
 - Li, J., Ward, J. K., Tong, J., Collins, L., & Platt, G. (2016). Machine learning for solar irradiance forecasting of photovoltaic system. Renewable Energy, 90, 542–553.
 - Lim, B., Arık, S. Ö., Loeff, N., & Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. International Journal of Forecasting, 37(4), 1748–1764.
 - Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems 30 (NIPS 2017), 4765–4774.

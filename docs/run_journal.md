@@ -2287,3 +2287,37 @@ hashes, numbers) and the commit messages are the record:
   without training. Editing `scripts/reproduce_paper_results.py` is outside the D-36 list and would reopen G-1.
 - **Changed:** the README of the report, the notebook of part C, the scope register (S-45), the defense notes and
   PROJECT_MASTER (stage 11 closed; the backup outside the VDI stays with the user). No code of the pipeline, no training.
+
+### 2026-11-16 · R11-06 · Part D: the quantile crossing in the report, with its sources
+
+- **Request of the user:** document the sorting of the quantiles (D-33) in the report with its sources; for the rest,
+  follow the session's recommendations (close L-14 as future work, close the questions to the operator with the answers
+  given). Plan and self-review: `docs/stage11_plan.md` section 7 (X117, X118).
+- **What ran:** `python -m solarpv.figures.analyses11` with the new table `quantile_crossing.csv`, read from the six
+  frozen quantile files of `20261114T083930Z_final` (each equal to the SHA-256 of its step record; the read of their test
+  rows is in the access log). The thirteen earlier tables came out byte-identical. Then `python scripts/make_report_v7.py`
+  (section 6.5, two references), `python -m solarpv.figures task S11-D` (S11-21) and the notebooks 11 and 12.
+- **Result:** on the scored hours, mean over the horizons, the quantiles of the TFTs are out of order on 0.7 to 83.5 % of
+  the hours of a model and route on validation and 0.7 to 65.2 % on test, most often for TFT-96 on the direct route;
+  those of the BiLSTM-Opt (three quantiles) never are. On up to 61.0 % (validation) and 33.3 % (test) of the hours of a
+  model and route, the point forecast is not the median of the sorted quantiles, by 19.2 and 20.7 kW on average on those
+  hours and at most 102.2 kW. Sorting lowers the mean quantile loss in kW in all 36 cells of the TFTs, by at most 4.6 %
+  (TFT-96, direct, validation), and leaves the 36 cells of the BiLSTM-Opt unchanged. Compared with the development run
+  (S09-29: 66 % and 56 % of the direct-route validation hours for TFT-96 and the TFT baseline), the final TFT-96 crosses
+  more often (83.5 %) and the baseline about as often (56.1 %).
+- **Sources, checked with the user's approval (2026-11-16):** Crossref and OpenAlex give Chernozhukov, V., Fernández-Val,
+  I., & Galichon, A. (2010), "Quantile and probability curves without crossing", Econometrica 78(3), 1093–1125,
+  doi:10.3982/ECTA7880 (Crossref holds no authors for this record; OpenAlex gives the three), and Koenker, R., & Bassett,
+  G. (1978), "Regression quantiles", Econometrica 46(1), first page 33 (Crossref), doi:10.2307/1913643. Only the two
+  DOIs were sent; the responses were saved outside the repository and read with `python -I`.
+- **Decisions of the user (2026-11-16):** Q-11 (the model of the inverters is not known), Q-12 (whether the SCADA
+  system was replaced is not known) and Q-13 (the user once asked about the status codes; no record is left) are closed
+  without an answer, and each stays a stated limitation. Following the recommendations: Q-03 and Q-14 are closed as no
+  longer needed, L-14 is future work, and the untracked logs of the earlier reproductions are committed as evidence.
+- **Before the push (X119):** a scan of every tracked file against `configs/site.private.yaml` (the values read by a
+  script and never printed in the repository) found the coordinates in `PROJECT_MASTER.md` (six places) and
+  `docs/data_processing_record.md` (one place). They are replaced by a pointer to the private file, and T-193 now scans
+  every tracked text file. A forecast value in one old prediction file of the submission outputs began with the same
+  digits; it is a longer number, not a coordinate, and T-193 does not match it. The earlier commits still hold the two
+  documents as they were.
+- **Not done:** no model was trained, the step `test` was not run, no path outside the D-36 list was edited.

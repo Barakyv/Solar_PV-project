@@ -192,3 +192,37 @@ order and referenced (T-185); every caption is the current takeaway of its build
 accounted for (T-187); the README holds the note, the availability, the appendices and the open decisions, and the report
 holds no coordinates (T-188); the text and S11-11 give the same shares (T-189).
 
+## 7. Part D: the quantile crossing in the report, with its sources (2026-11-16)
+
+**Request of the user (2026-11-16).** Document the sorting of the quantiles (D-33) in the report, with its sources; follow
+the session's recommendations for the rest (close L-14 as future work; close Q-03, Q-11 to Q-14 with the answers given).
+Same frame as parts A to C: run `20261114T083930Z_final`, tag `g1-frozen`, no model trained, the step `test` not run, only
+paths of the D-36 list edited (`src/solarpv/figures/`, `scripts/make_report_v7.py`, `tests/`, `docs/`).
+
+**Self-review before the code.** The original: the scope register of v6 (S-01 to S-45) lists the quantile loss of the
+BiLSTM-Opt (S-17) and of the TFTs, and no interval or quantile result, so there is no number of v6 to correct here; the
+order of the quantiles was never checked in v6, and the point forecast of its neural models was the 0.5 head as here.
+My own earlier work: **X117**, D-33 (2026-11-12) committed the report to state the share of hours with crossed quantiles
+and its cost (on those hours the point forecast is not the median of the sorted distribution); parts B and C wrote only
+a line of future work, and the share was measured only on the validation hours of the development run (S09-29), never on
+the final run and never on test. **X118**, L-14 (the potential skill of the quantile-loss models) still read "stage 11"
+with no decision, and the demonstration in the defence list of PROJECT_MASTER §11 still named
+`reproduce_paper_results.py --skip-train`, which Q-30 replaced by `scripts/make_tables_from_frozen.py`.
+
+**What part D computes.** `solarpv.figures.analyses11` writes `quantile_crossing.csv`: for every model with quantiles
+(BiLSTM-Opt, three seeds; TFT-96, TFT-168, TFT baseline), route, horizon and split, on the scored hours of `load_frame`
+(daytime with truth; the counts equal those of `metrics_kw.csv`): the share of hours whose quantiles are out of order;
+the share on which the 0.5 head is not the median of the sorted quantiles, and the mean and largest distance between the
+two in kW; and the mean quantile loss in kW, raw and sorted. XGB-Opt and PatchTST forecast a point only.
+
+**Rules for the numbers.** The order is read on the model's own output (k on the indirect route, kW on the direct one),
+as in S09-29; the distances and the quantile loss are in kW through the evaluation's `to_kw`, which is monotone, so
+sorting and converting commute (asserted). The 0.5 head equals `y_pred` of the prediction file on every row (asserted).
+The quantile files are checked against the SHA-256 of their step records, and their test rows are read from the saved
+files only and logged (X101). Sorting never raises the quantile loss (asserted per cell). Nothing is decided from the
+table: no score, no point forecast and no test changes. The sources are verified against Crossref and OpenAlex with the
+user's approval (2026-11-16): Chernozhukov, Fernández-Val & Galichon (2010), Econometrica 78(3), 1093–1125,
+doi:10.3982/ECTA7880, for the monotone rearrangement; Koenker & Bassett (1978), Econometrica 46(1), 33–50,
+doi:10.2307/1913643, for the quantile loss. T-191 checks the arithmetic on a synthetic frame, T-192 the table, the
+report text and the two references. Figure S11-21 (task S11-D) draws the table.
+

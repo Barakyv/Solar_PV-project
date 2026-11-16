@@ -1,0 +1,81 @@
+[     0.0s] RUN     stage 06_features
+[     0.0s] RUN     command: python -m solarpv.features.decide_k
+[     0.2s] RUN     git commit: e262fe3
+[     0.2s] RUN     started (UTC): 2026-11-13T12:20:24+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     0.4s] STEP    criterion 1: share of k > 1 (train, daytime, valid) ...
+[     0.4s] NOTE    ghi: {'k>1.0': 0.32446, 'k>1.2': 0.12541, 'k>1.5': 0.00994}
+[     0.4s] NOTE    poa: {'k>1.0': 0.05437, 'k>1.2': 0.00611, 'k>1.5': 0.00041}
+[     0.4s] STEP    criterion 1: share of k > 1 (train, daytime, valid) done in 0.0s
+[     0.4s] STEP    criterion 2: clear-day k flatness across train months ...
+[     9.9s] VALUE   clear_days = 154
+[     9.9s] NOTE    ghi: monthly median clear-day k 0.763..1.176 (spread 0.413)
+[     9.9s] NOTE    poa: monthly median clear-day k 0.781..0.889 (spread 0.108)
+[     9.9s] STEP    criterion 2: clear-day k flatness across train months done in 9.5s
+[     9.9s] STEP    criterion 3: nRMSE in kW on validation (fixed XGBoost, D+1) ...
+[    15.8s] NOTE    ghi: validation nRMSE 8.125 +/- 0.082 % of 3,449 kW over seeds (42, 123, 777) (2901 daytime hours)
+[    21.0s] NOTE    poa: validation nRMSE 8.015 +/- 0.105 % of 3,449 kW over seeds (42, 123, 777) (2901 daytime hours)
+[    21.0s] STEP    criterion 3: nRMSE in kW on validation (fixed XGBoost, D+1) done in 11.2s
+[    21.0s] NOTE    share_k_above_1: poa wins (0.32446 vs 0.05437)
+[    21.0s] NOTE    clear_day_k_spread: poa wins (0.4127 vs 0.1079)
+[    21.0s] NOTE    val_nrmse_kw_pct: poa wins (8.1247 vs 8.0146)
+[    21.0s] VALUE   d11_decision = poa
+[    21.0s] VALUE   d11_wins = {'ghi': 0, 'poa': 3}
+[    21.0s] STEP    L-04: k by sun elevation, and the training threshold on theo ...
+[    26.2s] NOTE    training threshold theo > 50 kW: validation nRMSE 8.015 +/- 0.105 % (3 seeds)
+[    31.3s] NOTE    training threshold theo > 100 kW: validation nRMSE 8.004 +/- 0.038 % (3 seeds)
+[    36.5s] NOTE    training threshold theo > 150 kW: validation nRMSE 7.928 +/- 0.070 % (3 seeds)
+[    36.5s] VALUE   l04_training_min_theo_kw = 50.0
+[    36.5s] NOTE    best threshold 150 kW gains 0.087 pp; needed > 0.152 pp (max of 0.05 and twice the pooled seed std): training threshold 50 kW
+[    36.5s] STEP    L-04: k by sun elevation, and the training threshold on theo done in 15.5s
+[    37.2s] OUTPUT  outputs/06_features/d11_criteria.csv sha256=10ad152f60f5f1cb
+[    37.2s] OUTPUT  outputs/06_features/l04_k_by_elevation.csv sha256=c78c98c38ef56fa4
+[    37.2s] OUTPUT  outputs/06_features/l04_training_threshold.csv sha256=89f198b4e2bba505
+[    37.2s] OUTPUT  outputs/06_features/d11_l04.png sha256=c7799ca6450b28dc
+[    37.2s] OUTPUT  configs/target.yaml sha256=b0e7a6fce71d42ec
+{
+  "k_denominator": "poa",
+  "training_min_theo_kw": 50.0,
+  "evaluation_min_theo_kw": 50.0,
+  "decided_on": "2026-10-20",
+  "rule": "majority of the three D-11 criteria (fixed before criteria 2 and 3)",
+  "wins": {
+    "ghi": 0,
+    "poa": 3
+  },
+  "criteria": {
+    "ghi": {
+      "share_k_above_1": 0.32446,
+      "share_k_above_1.2": 0.12541,
+      "clear_day_k_spread": 0.4127,
+      "clear_day_k_monthly_std": 0.1549,
+      "val_nrmse_kw_pct": 8.1247,
+      "val_nrmse_kw_seed_std": 0.0819
+    },
+    "poa": {
+      "share_k_above_1": 0.05437,
+      "share_k_above_1.2": 0.00611,
+      "clear_day_k_spread": 0.1079,
+      "clear_day_k_monthly_std": 0.0335,
+      "val_nrmse_kw_pct": 8.0146,
+      "val_nrmse_kw_seed_std": 0.1047
+    }
+  },
+  "l04_rule": "mean over 3 seeds lower than at 50 kW by more than max(0.05 pp, 2 x pooled seed std)",
+  "l04_needed_gain_pp": 0.1522,
+  "l04_validation_nrmse_by_threshold": {
+    "50.0": 8.0146,
+    "100.0": 8.0035,
+    "150.0": 7.928
+  },
+  "l04_seed_std_by_threshold": {
+    "50.0": 0.1047,
+    "100.0": 0.0385,
+    "150.0": 0.0702
+  },
+  "git_commit": "e262fe3"
+}
+[    37.2s] RUN     warnings: 0
+[    37.2s] RUN     status: ok; duration 37.2s

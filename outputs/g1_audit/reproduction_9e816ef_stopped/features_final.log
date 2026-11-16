@@ -1,0 +1,55 @@
+[     0.0s] RUN     stage 06_features
+[     0.0s] RUN     command: python -m solarpv.features.build
+[     0.2s] RUN     git commit: 9e816ef
+[     0.2s] RUN     started (UTC): 2026-11-13T19:39:34+00:00
+[     1.5s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     1.5s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     2.1s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     2.1s] NOTE    panel plane 21.0/185.0 (haydavies); D-11 decision: poa
+[     2.2s] STEP    load stage-5 hourly data and minute flags ...
+[     2.3s] VALUE   hours = 32856
+[     2.3s] STEP    load stage-5 hourly data and minute flags done in 0.1s
+[     2.3s] STEP    geometry, clear sky, calendar, targets ...
+C:\Users\204323141\repro_g1\r6\src\solarpv\features\build.py:228: Pandas4Warning: DatetimeIndex.dayofweek is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_week instead.
+  "is_weekend": np.isin(local.dayofweek, WEEKEND_DAYS).astype(int),
+C:\Users\204323141\repro_g1\r6\src\solarpv\features\build.py:230: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  "doy_sin": np.sin(2 * np.pi * local.dayofyear / 365.25),
+C:\Users\204323141\repro_g1\r6\src\solarpv\features\build.py:231: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  "doy_cos": np.cos(2 * np.pi * local.dayofyear / 365.25),
+C:\Users\204323141\repro_g1\r6\src\solarpv\features\build.py:237: Pandas4Warning: DatetimeIndex.dayofweek is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_week instead.
+  "day_of_week": local.dayofweek,
+[    26.1s] NOTE    k_ghi: valid daytime train hours 9656; shares above 1 / 1.2 / 1.5: {'k>1.0': 0.32446, 'k>1.2': 0.12541, 'k>1.5': 0.00994}
+[    26.1s] NOTE    k_poa: valid daytime train hours 9656; shares above 1 / 1.2 / 1.5: {'k>1.0': 0.05437, 'k>1.2': 0.00611, 'k>1.5': 0.00041}
+[    26.1s] STEP    geometry, clear sky, calendar, targets done in 23.8s
+[    26.1s] STEP    D-22 masks ...
+[    26.2s] NOTE    s01_inv1_AC_kW: 474 hours masked before past-day features
+[    26.2s] NOTE    s01_inv2_AC_kW: 548 hours masked before past-day features
+[    26.2s] NOTE    site_total_AC_kW: 733 hours masked before past-day features
+[    26.2s] STEP    D-22 masks done in 0.1s
+[    26.2s] STEP    past-day features and table for D+1 ...
+[    27.4s] VALUE   D1_dst_guard_removed_values = 28
+[    27.4s] VALUE   D1_max_imputed_share = 0.03564
+[    27.4s] VALUE   D1_features = 74
+[    27.4s] STEP    past-day features and table for D+1 done in 1.2s
+[    27.4s] STEP    past-day features and table for D+2 ...
+[    28.3s] VALUE   D2_dst_guard_removed_values = 56
+[    28.3s] VALUE   D2_max_imputed_share = 0.03564
+[    28.3s] VALUE   D2_features = 67
+[    28.3s] STEP    past-day features and table for D+2 done in 1.0s
+[    28.3s] STEP    past-day features and table for D+3 ...
+[    29.2s] VALUE   D3_dst_guard_removed_values = 84
+[    29.2s] VALUE   D3_max_imputed_share = 0.03564
+[    29.2s] VALUE   D3_features = 60
+[    29.2s] STEP    past-day features and table for D+3 done in 0.8s
+[    29.2s] STEP    write outputs ...
+[    29.9s] VALUE   mean_daytime_k = 0.788157
+[    30.0s] NOTE    target checks: {'daytime_min_theo_kw': 62.2, 'valid_hours': 15809, 'max_inversion_error_kw': 2.2737367544323206e-13, 'k_suspect_hours': {'train': 9, 'val': 7, 'test': 7}, 'k_suspect_in_daytime': 8, 'k_suspect_op_limited': 0, 'k_suspect_sun_elevation_deg': [1.4, 9.7], 'k_suspect_max_theo_kw': 198.5, 'partial_ac_daytime_hours': {'train': 7, 'val': 0, 'test': 19}, 'partial_ac_min_minutes': 46}
+[    30.0s] STEP    write outputs done in 0.8s
+[    30.0s] OUTPUT  data/processed/06_features/features_1H_D1.parquet sha256=bc1bd58a3d630bf9
+[    30.1s] OUTPUT  data/processed/06_features/features_1H_D2.parquet sha256=eba522012738d2d5
+[    30.1s] OUTPUT  data/processed/06_features/features_1H_D3.parquet sha256=75f6b60a07db2dc9
+[    30.1s] OUTPUT  outputs/06_features/feature_dictionary.csv sha256=2a14b8f130285951
+[    30.1s] OUTPUT  configs/derived_constants.yaml sha256=c4156747717471a9
+[    30.3s] NOTE    manifest written to data/processed/06_features and outputs/06_features
+[    30.3s] RUN     warnings: 0
+[    30.3s] RUN     status: ok; duration 30.3s

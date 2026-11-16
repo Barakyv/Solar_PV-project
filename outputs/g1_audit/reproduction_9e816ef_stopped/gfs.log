@@ -1,0 +1,1282 @@
+[     0.0s] RUN     stage 06b_gfs
+[     0.0s] RUN     command: python -m solarpv.nwp.gfs
+[     0.2s] RUN     git commit: 9e816ef
+[     0.2s] RUN     started (UTC): 2026-11-13T19:40:13+00:00
+[     1.6s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     1.6s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     1.6s] INPUT   data/processed/05_clean/scada_1H_clean.parquet sha256=c1329ab3b209a290
+[     1.7s] STEP    load runs ...
+[    34.6s] VALUE   runs = 1371
+[    34.6s] VALUE   fallback_runs = 2
+[    34.6s] STEP    load runs done in 32.9s
+[    34.6s] STEP    hourly reconstruction and features per horizon ...
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear
+C:\Users\204323141\repro_g1\r6\src\solarpv\nwp\gfs.py:193: Pandas4Warning: DatetimeIndex.dayofyear is deprecated and will be removed in a future version. Use DatetimeIndex.day_of_year instead.
+  doy = h.index.dayofyear

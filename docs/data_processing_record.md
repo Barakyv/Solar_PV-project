@@ -91,8 +91,8 @@ stage 5). These are handled in stage 5, not here.
 ## 4. Site and panel geometry
 
 **OP-06 — Site location (F-12, D-05).** The two inverters are 2 of the 25 inverters of the
-40 MW Ketura Solar park; solar geometry uses the park centre (29.96523 N, 35.07446 E, 101 m),
-kept in the git-ignored `configs/site.private.yaml`. The old point lay inside the kibbutz; the
+40 MW Ketura Solar park; solar geometry uses the park centre (101 m above sea level), whose
+coordinates are kept in the git-ignored `configs/site.private.yaml`. The old point lay inside the kibbutz; the
 evaluation mask is identical at both points (F-02: 2,580 test daytime hours).
 
 **OP-07 — Panel orientation measured from the data (F-13).**
@@ -1475,6 +1475,29 @@ stored data file changed).**
   accounted for, the README, the shares of section 12.3 equal to the facts of S11-11), with T-178 to T-184.
 - *Original:* the submitted report had 25 figures, typed captions, and five figures of a selection that read the
   validation and test periods (F-26).
+
+**OP-69 — Stage 11, part D: the quantile crossing of the final run, in the report (no stored data file changed).**
+- *Why:* D-33 (2026-11-12) sorts the quantiles of the neural models wherever they are read as a distribution, keeps the
+  point forecast as the 0.5 head, and committed the report to state how often the quantiles cross and what that costs;
+  the report did not (X117). User request of 2026-11-16: document it in the report, with its sources.
+- *Method:* `solarpv.figures.analyses11` reads the six quantile files of `20261114T083930Z_final` (BiLSTM-Opt seeds 42,
+  123, 777; TFT-96, TFT-168, TFT baseline seed 42), each checked against the SHA-256 of its step record, on the scored
+  rows of the other tables (daytime with a measured output, validation and test; the counts equal `metrics_kw.csv`). The
+  order is read on the model's own output (k on the indirect route, kW on the direct one); the distances and the
+  quantile loss are in kW through the evaluation's `to_kw`, which is monotone, so sorting and converting commute
+  (asserted). The 0.5 head equals the point forecast of the prediction file on every row (asserted). The read of the
+  test rows is logged in `outputs/07_evaluation/test_access_log.csv`.
+- *Parameters:* none.
+- *Result:* `outputs/11_analyses/quantile_crossing.csv`, 72 rows (four models, seeds, two routes, three horizons, two
+  splits): the share of hours crossed, the share on which the point is not the sorted median, the mean and largest
+  distance between the two, and the quantile loss raw and sorted. Section 6.5 of `docs/report_v7.md` states the shares
+  and the cost and cites Chernozhukov et al. (2010) and Koenker & Bassett (1978), verified against Crossref and OpenAlex;
+  figure S11-21 and the notebook `12_stage11_part_d.ipynb`. The thirteen earlier tables are byte-identical.
+- *Verification:* T-191 (the arithmetic on a frame worked out by hand, including a crossing removed by the clip to 0 kW
+  and a factor that is not positive), T-192 (the table on the scored hours, the report and the figure on the same
+  numbers, the two sources cited, listed and recorded with their DOIs), with T-173 and T-178.
+- *Original:* v6 trained the BiLSTM-Opt and the TFTs with a quantile loss and reported the point forecast only; the order
+  of the quantiles was not checked.
 
 ## 17. Differences from the original data pipeline
 

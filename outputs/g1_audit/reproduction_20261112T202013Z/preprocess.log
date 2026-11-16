@@ -1,0 +1,23 @@
+{
+  "polled_source": {
+    "first_day": "2025-02-26",
+    "era_start": "2025-03-03"
+  },
+  "rows_1H": 32856,
+  "hourly_nan_daytime": {
+    "site_total_AC_kW": 0,
+    "s01_inv1_AC_kW": 0,
+    "s01_inv2_AC_kW": 0,
+    "irradiance": 0,
+    "mod_temp1": 0,
+    "mod_temp2": 0,
+    "ambient_temp": 0
+  },
+  "site_total_AC_kW": {
+    "max_hourly": 3271.9,
+    "p99_99_hourly": 2909.5,
+    "hours_above_capacity": 0,
+    "daytime_hours_zero": 24,
+    "daytime_hours": 15180
+  }
+}

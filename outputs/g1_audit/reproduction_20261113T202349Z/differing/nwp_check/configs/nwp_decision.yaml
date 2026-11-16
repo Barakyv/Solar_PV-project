@@ -1,0 +1,56 @@
+# D-12 value check; written by python -m solarpv.nwp.check
+decision: D-12
+admitted: true
+rule: fixed XGBoost of D-11, 3 seeds, validation nRMSE in kW; gain at D+1 > max(0.05
+  pp, 2 x pooled seed std) for both targets, and not worse by more than that margin
+  at D+2 and D+3
+results:
+  indirect_D1:
+    gain_pp: 1.2002
+    margin_pp: 0.1519
+    passes: true
+  indirect_D2:
+    gain_pp: 1.043
+    margin_pp: 0.0858
+    passes: true
+  indirect_D3:
+    gain_pp: 1.7348
+    margin_pp: 0.12
+    passes: true
+  direct_D1:
+    gain_pp: 0.82
+    margin_pp: 0.0956
+    passes: true
+  direct_D2:
+    gain_pp: 1.0424
+    margin_pp: 0.0803
+    passes: true
+  direct_D3:
+    gain_pp: 1.6042
+    margin_pp: 0.05
+    passes: true
+candidates:
+- fcst_gfs_ghi
+- fcst_gfs_kt
+- fcst_gfs_poa
+- fcst_gfs_kt_poa
+- fcst_gfs_kt_poa_ma3
+- fcst_gfs_kt_poa_daymean
+- fcst_gfs_tcc
+- fcst_gfs_lcc
+- fcst_gfs_mcc
+- fcst_gfs_hcc
+- fcst_gfs_tcc_mean3x3
+- fcst_gfs_tcc_std3x3
+- fcst_gfs_tcc_daymean
+- fcst_gfs_t2m
+- fcst_gfs_rh2m
+- fcst_gfs_pwat
+- fcst_gfs_wind10
+- fcst_gfs_sunsd
+- fcst_gfs_tcell
+- fcst_gfs_pv_kw
+- fcst_gfs_k_phys
+- irradiance_clear_index_prevday
+git_commit: ac63bb0
+run_log: outputs/06b_gfs/runs/20261113T204016Z.log

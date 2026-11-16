@@ -1,0 +1,32 @@
+[     0.0s] RUN     stage 06_features
+[     0.0s] RUN     command: python 00_data_audit/orientation_2026-10-20/orientation_check.py
+[     0.5s] RUN     git commit: e262fe3
+[     0.5s] RUN     started (UTC): 2026-11-13T12:18:44+00:00
+[     2.0s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     2.6s] INPUT   data/processed/05_clean/scada_1min_clean.parquet sha256=120efa8cd47e9d90
+[     2.6s] INPUT   outputs/03_eda/tables/table_physics.csv sha256=7e456bdff8feb7e7
+[     2.6s] VALUE   temperature_coefficient_per_K = -0.00421
+[     2.6s] STEP    10-minute data and clear days (train) ...
+[     4.8s] VALUE   clear_days = 174
+[     4.8s] NOTE    clear days per month: 6 (smooth, top-40 % energy, no op-limited minute, DC complete); months covered: 29
+[     4.8s] STEP    10-minute data and clear days (train) done in 2.2s
+[     5.2s] VALUE   ten_minute_samples = 9852
+[     5.2s] STEP    grid fits (M1 one scale, M2 scale per day, M0 sensor) ...
+[    53.9s] NOTE    M1 DC one scale: tilt 21.0, azimuth 185.0 (within 1 %: tilt 20.0-21.5, azimuth 183.5-186.5)
+[    53.9s] NOTE    M2 DC scale per day: tilt 15.5, azimuth 186.5 (within 1 %: tilt 12.0-19.0, azimuth 185.0-188.5)
+[    53.9s] NOTE    M0 sensor scale per day: tilt 16.5, azimuth 180.5 (within 1 %: tilt 13.0-20.0, azimuth 179.0-181.5)
+[    53.9s] STEP    grid fits (M1 one scale, M2 scale per day, M0 sensor) done in 48.7s
+[    53.9s] STEP    M3 production centre vs clear-sky centre ...
+[    54.4s] NOTE    M3: median offset of the DC centre against the clear-sky POA centre is +3.04 min at azimuth 180; zero at azimuth 184.7
+[    54.4s] STEP    M3 production centre vs clear-sky centre done in 0.5s
+[    54.4s] VALUE   decision = use the panel plane 21.0/185.0
+[    55.1s] OUTPUT  00_data_audit/orientation_2026-10-20/orientation_results.csv sha256=33fc2464f2df351b
+[    55.1s] OUTPUT  00_data_audit/orientation_2026-10-20/orientation_summary.json sha256=d0d03cf776199478
+[    55.1s] OUTPUT  00_data_audit/orientation_2026-10-20/orientation_fit.png sha256=790bef0305da173e
+                          method  tilt  azimuth   nrmse tilt_range_1pct azimuth_range_1pct
+                 M1 DC one scale  21.0    185.0 0.04948       20.0-21.5        183.5-186.5
+             M2 DC scale per day  15.5    186.5 0.03436       12.0-19.0        185.0-188.5
+         M0 sensor scale per day  16.5    180.5 0.03291       13.0-20.0        179.0-181.5
+M3 DC centre vs clear-sky centre  21.0    184.7     NaN                                   
+[    55.1s] RUN     warnings: 0
+[    55.1s] RUN     status: ok; duration 55.1s

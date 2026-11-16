@@ -1,0 +1,8 @@
+﻿checksums: exit 0, 2.7 s, 0 files, 0 failing
+ingest: exit 0, 50.8 s, 4 files, 0 failing
+clock: exit 0, 97.2 s, 8 files, 0 failing
+preprocess: exit 0, 173.6 s, 3 files, 0 failing
+clean: exit 0, 40.3 s, 6 files, 0 failing
+eda: exit 1, 33.9 s, 15 files, 0 failing
+NOT reproduced; record in outputs\g1_audit\reproduction_20261112T202013Z
+exit 1

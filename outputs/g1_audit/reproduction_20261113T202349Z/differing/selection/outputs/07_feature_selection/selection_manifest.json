@@ -1,0 +1,166 @@
+{
+  "stage": "07_feature_selection",
+  "git_commit": "ac63bb0+dirty",
+  "run_log": "outputs/07_feature_selection/runs/20261113T204204Z.log",
+  "rows": {
+    "indirect_D1": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "indirect_D2": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "indirect_D3": {
+      "fit": 9575,
+      "score": 9508
+    },
+    "direct_D1": {
+      "fit": 20393,
+      "score": 9508
+    },
+    "direct_D2": {
+      "fit": 20393,
+      "score": 9508
+    },
+    "direct_D3": {
+      "fit": 20393,
+      "score": 9508
+    }
+  },
+  "splits_read_for_selection": [
+    "train"
+  ],
+  "validation_read": "not yet (S8 pending)",
+  "selection_model": {
+    "indirect": "the fixed XGBoost of D-11 (R7-04)",
+    "direct": "the fixed XGBoost of D-11 (Q-17, R7-04)"
+  },
+  "counts": {
+    "indirect_D1": {
+      "pool": 96,
+      "after filters": 94,
+      "after RFE (05c start)": 42,
+      "05c elbow": 17,
+      "stability votes": 31,
+      "MI votes": 42,
+      "05e consensus": 31,
+      "05f recommended": 31
+    },
+    "indirect_D2": {
+      "pool": 89,
+      "after filters": 87,
+      "after RFE (05c start)": 42,
+      "05c elbow": 10,
+      "stability votes": 28,
+      "MI votes": 42,
+      "05e consensus": 28,
+      "05f recommended": 31
+    },
+    "indirect_D3": {
+      "pool": 82,
+      "after filters": 80,
+      "after RFE (05c start)": 42,
+      "05c elbow": 30,
+      "stability votes": 27,
+      "MI votes": 42,
+      "05e consensus": 32,
+      "05f recommended": 33
+    },
+    "direct_D1": {
+      "pool": 96,
+      "after filters": 89,
+      "after RFE (05c start)": 42,
+      "05c elbow": 16,
+      "stability votes": 12,
+      "MI votes": 42,
+      "05e consensus": 18,
+      "05f recommended": 13
+    },
+    "direct_D2": {
+      "pool": 89,
+      "after filters": 83,
+      "after RFE (05c start)": 42,
+      "05c elbow": 15,
+      "stability votes": 11,
+      "MI votes": 42,
+      "05e consensus": 19,
+      "05f recommended": 13
+    },
+    "direct_D3": {
+      "pool": 82,
+      "after filters": 74,
+      "after RFE (05c start)": 42,
+      "05c elbow": 1,
+      "stability votes": 15,
+      "MI votes": 42,
+      "05e consensus": 15,
+      "05f recommended": 16
+    }
+  },
+  "k_history": {
+    "decision": "D-24",
+    "admitted": false,
+    "results": {
+      "indirect_D1": {
+        "gain_pp": 0.0482,
+        "margin_pp": 0.05,
+        "passes": false
+      },
+      "indirect_D2": {
+        "gain_pp": 0.059,
+        "margin_pp": 0.05,
+        "passes": true
+      },
+      "indirect_D3": {
+        "gain_pp": 0.0199,
+        "margin_pp": 0.0761,
+        "passes": true
+      }
+    }
+  },
+  "red_flags": {
+    "indirect_D1": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "indirect_D2": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "indirect_D3": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D1": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D2": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    },
+    "direct_D3": {
+      "dominant_feature": false,
+      "no_gfs_irradiance_in_05e": false
+    }
+  },
+  "inner_train_passes": {
+    "direct_D1": false,
+    "direct_D2": false,
+    "direct_D3": false,
+    "indirect_D1": true,
+    "indirect_D2": true,
+    "indirect_D3": true
+  },
+  "validation_red_flags": {},
+  "model_input": {
+    "indirect_D1": "pending",
+    "indirect_D2": "pending",
+    "indirect_D3": "pending",
+    "direct_D1": "full pool",
+    "direct_D2": "full pool",
+    "direct_D3": "full pool"
+  },
+  "capacity_kw": 3449.0
+}

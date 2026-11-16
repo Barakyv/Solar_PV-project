@@ -1,0 +1,1080 @@
+{
+ "stamp": "20261113T192622Z",
+ "workdir": "C:\\Users\\204323141\\repro_g1\\r6",
+ "options": {
+  "with_eda": true,
+  "rerun_selection": true,
+  "neural": true
+ },
+ "plan": [
+  "checksums",
+  "ingest",
+  "clock",
+  "preprocess",
+  "clean",
+  "eda",
+  "quality",
+  "orientation",
+  "features",
+  "decide_k",
+  "features_final",
+  "gfs",
+  "nwp_check",
+  "evaluate",
+  "fixture",
+  "selection",
+  "sequence_data",
+  "dev_xgb",
+  "dev_neural"
+ ],
+ "steps": [
+  {
+   "step": "checksums",
+   "command": "python scripts/make_checksums.py --verify C:\\Users\\204323141\\Desktop\\solar\\Raw data",
+   "exit": 0,
+   "seconds": 3.0,
+   "reads_validation": false,
+   "compared": [],
+   "failing": [],
+   "counts": {}
+  },
+  {
+   "step": "ingest",
+   "command": "python -m solarpv.data.ingest",
+   "exit": 0,
+   "seconds": 51.9,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "data/processed/01_ingest/ingest_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "data/processed/01_ingest/ingest_qa.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "8 numeric cells differ (max abs 7.28e-12, max rel 2.02e-16), 0 other cells, in ['min', 'p50', 'max']; DataFrame.iloc[:, 4] (column name=\"min\") are different DataFrame.iloc[:, 4] (column name=\"min\") values are different (3.7037 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, ",
+     "cells": 8,
+     "other_cells": 0,
+     "max_abs": 7.275957614183426e-12,
+     "max_rel": 2.017994575456959e-16,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/ingest/data/processed/01_ingest/ingest_qa.csv"
+    },
+    {
+     "path": "data/processed/01_ingest/scada_1min_utc.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "6669577 numeric cells differ (max abs 7.28e-12, max rel 9.74e-14), 0 other cells, in ['iec_mode', 'iec_sp_w', 'iec_sp_q', 'iec_sp_v', 'iec_sp_pf', 'ambient_temp']; DataFrame.iloc[:, 0] (column name=\"iec_mode\") are different DataFrame.iloc[:, 0] (column name=\"iec_mode\") values are different (0.00061 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 21:01:00+00:0",
+     "cells": 6669577,
+     "other_cells": 0,
+     "max_abs": 7.275957614183426e-12,
+     "max_rel": 9.737797865048907e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/ingest/data/processed/01_ingest/scada_1min_utc.parquet"
+    },
+    {
+     "path": "data/processed/01_ingest/tag_map.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 1,
+    "data": 1,
+    "table": 2
+   }
+  },
+  {
+   "step": "clock",
+   "command": "python scripts/estimate_clock_drift.py",
+   "exit": 0,
+   "seconds": 99.9,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "configs/clock_offsets.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/clock_fit_summary.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/daily_estimates_minute_after.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "1768 numeric cells differ (max abs 1.84e-12, max rel 3.24e-12), 0 other cells, in ['tau_met', 'clear_rel_rmse', 'clear_ratio', 'tau_dc', 'dc_rel_rmse']; DataFrame.iloc[:, 1] (column name=\"tau_met\") are different DataFrame.iloc[:, 1] (column name=\"tau_met\") values are different (53.64135 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+     "cells": 1768,
+     "other_cells": 0,
+     "max_abs": 1.84385839929746e-12,
+     "max_rel": 3.238051946774443e-12,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/clock/00_data_audit/clock_drift_2026-10-14/daily_estimates_minute_after.csv"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/daily_estimates_minute_before.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "1529 numeric cells differ (max abs 2.75e-12, max rel 1.91e-12), 0 other cells, in ['tau_met', 'clear_rel_rmse', 'clear_ratio', 'tau_dc', 'dc_rel_rmse']; DataFrame.iloc[:, 1] (column name=\"tau_met\") are different DataFrame.iloc[:, 1] (column name=\"tau_met\") values are different (40.25059 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+     "cells": 1529,
+     "other_cells": 0,
+     "max_abs": 2.7533531010703882e-12,
+     "max_rel": 1.9110557657515792e-12,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/clock/00_data_audit/clock_drift_2026-10-14/daily_estimates_minute_before.csv"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/daily_estimates_polled_after.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "94 numeric cells differ (max abs 1.88e-13, max rel 3.3e-14), 0 other cells, in ['tau_met', 'clear_rel_rmse', 'clear_ratio', 'tau_dc', 'dc_rel_rmse']; DataFrame.iloc[:, 1] (column name=\"tau_met\") are different DataFrame.iloc[:, 1] (column name=\"tau_met\") values are different (46.83544 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+     "cells": 94,
+     "other_cells": 0,
+     "max_abs": 1.8829382497642655e-13,
+     "max_rel": 3.2998734926380886e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/clock/00_data_audit/clock_drift_2026-10-14/daily_estimates_polled_after.csv"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/daily_estimates_polled_before.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "94 numeric cells differ (max abs 8.12e-13, max rel 6.56e-14), 0 other cells, in ['tau_met', 'clear_rel_rmse', 'clear_ratio', 'tau_dc', 'dc_rel_rmse']; DataFrame.iloc[:, 1] (column name=\"tau_met\") are different DataFrame.iloc[:, 1] (column name=\"tau_met\") values are different (48.10127 %) [index]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15",
+     "cells": 94,
+     "other_cells": 0,
+     "max_abs": 8.117950756059145e-13,
+     "max_rel": 6.564099011005877e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/clock/00_data_audit/clock_drift_2026-10-14/daily_estimates_polled_before.csv"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/monthly_minute_before_after.csv",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes"
+    },
+    {
+     "path": "00_data_audit/clock_drift_2026-10-14/monthly_polled_before_after.csv",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 1,
+    "data": 1,
+    "table": 6
+   }
+  },
+  {
+   "step": "preprocess",
+   "command": "python -m solarpv.data.preprocess",
+   "exit": 0,
+   "seconds": 172.9,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "data/processed/04_preprocess/preprocess_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "data/processed/04_preprocess/scada_1H_utc.parquet",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes (parquet writer)"
+    },
+    {
+     "path": "data/processed/04_preprocess/scada_1min_true_utc.parquet",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes (parquet writer)"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "data": 1,
+    "table": 2
+   }
+  },
+  {
+   "step": "clean",
+   "command": "python -m solarpv.data.clean",
+   "exit": 0,
+   "seconds": 40.3,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "data/processed/05_clean/cleaning_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "data/processed/05_clean/scada_1H_clean.parquet",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes (parquet writer)"
+    },
+    {
+     "path": "data/processed/05_clean/scada_1min_clean.parquet",
+     "kind": "table",
+     "equal": true,
+     "detail": "same content, other bytes (parquet writer)"
+    },
+    {
+     "path": "outputs/05_cleaning/cleaning_log.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/05_cleaning/cleaning_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/05_cleaning/cleaning_policy_applied.yaml",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 2,
+    "data": 2,
+    "table": 2
+   }
+  },
+  {
+   "step": "eda",
+   "command": "python -m solarpv.eda",
+   "exit": 0,
+   "seconds": 35.9,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "outputs/03_eda/eda_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig01_overview.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig02_time_bug.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig03_clock.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig04_polled.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig05_cleaning.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig06_diurnal.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig07_power_irradiance.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig08_variability.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig09_operations.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/figures/fig10_sensors.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03_eda/tables/table_physics.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03_eda/tables/table_sensors.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03_eda/tables/table_splits.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03_eda/tables/table_time_bug.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03_eda/tables/table_variability.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 5,
+    "data": 1,
+    "not compared": 10
+   }
+  },
+  {
+   "step": "quality",
+   "command": "python -m solarpv.eda.quality",
+   "exit": 0,
+   "seconds": 116.7,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "outputs/03b_quality/figures/q02_held_values.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q03_sampling_regime.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q04_distributions.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q05_range_limits.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q06_range_margin.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q07_night_offset.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q08_frozen_runs.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q09_freeze_events.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q10_freeze_resume.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q11_night.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q12_dc_consistency.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q13_scale_fault.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q14_downtime.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q15_curtailment.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q16_derate.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q17_hourly_thresholds.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q18_changes.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q19_distributions.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q20_energy.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q21_missing_after.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q22_residual.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q23_inverter_ceiling.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q24_temperature_sensors.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q25_correlations.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q26_lags.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q27_sky_conditions.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q28_weekday.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q29_long_term.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q30_unused_tags.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/figures/q31_splits.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/03b_quality/quality_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q01_inventory.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q02_held_values.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q03_sampling_regime.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q04_distributions.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q05_range_limits.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q06_range_margin.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q07_night_offset.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q08_frozen_runs.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q09_freeze_events.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q10_freeze_resume.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q11_night.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q12_dc_consistency.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q13_scale_fault.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q14_downtime.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q15_curtailment.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q16_derate.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q17_hourly_thresholds.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q18_changes.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q19_distributions.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q20_energy.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q21_missing_after.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q22_residual.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q23_inverter_ceiling.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q24_temperature_sensors.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q25_correlations.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q26_lags.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q27_sky_conditions.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q28_weekday.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q29_long_term.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q30_unused_tags.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/03b_quality/tables/q31_splits.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 31,
+    "data": 1,
+    "not compared": 30
+   }
+  },
+  {
+   "step": "orientation",
+   "command": "python 00_data_audit/orientation_2026-10-20/orientation_check.py",
+   "exit": 0,
+   "seconds": 58.9,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "00_data_audit/orientation_2026-10-20/orientation_fit.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "00_data_audit/orientation_2026-10-20/orientation_results.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "00_data_audit/orientation_2026-10-20/orientation_summary.json",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 2,
+    "not compared": 1
+   }
+  },
+  {
+   "step": "features",
+   "command": "python -m solarpv.features.build",
+   "exit": 0,
+   "seconds": 33.0,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "data/processed/06_features/features_1H_D1.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features/data/processed/06_features/features_1H_D1.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_1H_D2.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features/data/processed/06_features/features_1H_D2.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_1H_D3.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features/data/processed/06_features/features_1H_D3.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/06_features/feature_dictionary.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/06_features/features_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/06_features/runs/20261113T193808Z.log",
+     "kind": "new",
+     "equal": null,
+     "detail": "no reference file"
+    },
+    {
+     "path": "configs/derived_constants.yaml",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 2,
+    "data": 2,
+    "new": 1,
+    "table": 3
+   }
+  },
+  {
+   "step": "decide_k",
+   "command": "python -m solarpv.features.decide_k",
+   "exit": 0,
+   "seconds": 44.7,
+   "reads_validation": true,
+   "compared": [
+    {
+     "path": "configs/target.yaml",
+     "kind": "data",
+     "equal": null,
+     "detail": "/criteria/ghi/val_nrmse_kw_pct: 8.0931 != 8.1247; /criteria/ghi/val_nrmse_kw_seed_std: 0.0561 != 0.0819; /criteria/poa/val_nrmse_kw_pct: 7.9406 != 8.0146; /criteria/poa/val_nrmse_kw_seed_std: 0.0878 != 0.1047; /l04_needed_gain_pp: 0.1188 != 0.1522; /l04_seed_std_by_threshold/100.0: 0.0213 != 0.0385; /l04_seed_std_by_threshold/150.0: 0.0492 != 0.0702; /l04_seed_std_by_threshold/50.0: 0.0878 != 0.1047",
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/configs/target.yaml"
+    },
+    {
+     "path": "outputs/06_features/d11_criteria.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "4 numeric cells differ (max abs 0.074, max rel 0.46), 0 other cells, in ['val_nrmse_kw_pct', 'val_nrmse_kw_seed_std']; DataFrame.iloc[:, 5] (column name=\"val_nrmse_kw_pct\") are different DataFrame.iloc[:, 5] (column name=\"val_nrmse_kw_pct\") values are different (100.0 %) [index]: [0, 1] [left]: [8.0931, 7.9406] [right",
+     "cells": 4,
+     "other_cells": 0,
+     "max_abs": 0.07399999999999984,
+     "max_rel": 0.4598930481283423,
+     "float_noise": false,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/outputs/06_features/d11_criteria.csv"
+    },
+    {
+     "path": "outputs/06_features/d11_l04.png",
+     "kind": "not compared",
+     "equal": null,
+     "detail": ".png"
+    },
+    {
+     "path": "outputs/06_features/l04_k_by_elevation.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/06_features/l04_training_threshold.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "6 numeric cells differ (max abs 0.074, max rel 0.808), 0 other cells, in ['val_nrmse_kw_pct_mean', 'val_nrmse_kw_pct_seed_std']; DataFrame.iloc[:, 1] (column name=\"val_nrmse_kw_pct_mean\") are different DataFrame.iloc[:, 1] (column name=\"val_nrmse_kw_pct_mean\") values are different (100.0 %) [index]: [0, 1, 2] [left]: [7.9406, 8",
+     "cells": 6,
+     "other_cells": 0,
+     "max_abs": 0.07399999999999984,
+     "max_rel": 0.8075117370892019,
+     "float_noise": false,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/outputs/06_features/l04_training_threshold.csv"
+    },
+    {
+     "path": "outputs/06_features/runs/20261113T193849Z.log",
+     "kind": "new",
+     "equal": null,
+     "detail": "no reference file"
+    }
+   ],
+   "failing": [
+    {
+     "path": "configs/target.yaml",
+     "kind": "data",
+     "equal": null,
+     "detail": "/criteria/ghi/val_nrmse_kw_pct: 8.0931 != 8.1247; /criteria/ghi/val_nrmse_kw_seed_std: 0.0561 != 0.0819; /criteria/poa/val_nrmse_kw_pct: 7.9406 != 8.0146; /criteria/poa/val_nrmse_kw_seed_std: 0.0878 != 0.1047; /l04_needed_gain_pp: 0.1188 != 0.1522; /l04_seed_std_by_threshold/100.0: 0.0213 != 0.0385; /l04_seed_std_by_threshold/150.0: 0.0492 != 0.0702; /l04_seed_std_by_threshold/50.0: 0.0878 != 0.1047",
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/configs/target.yaml"
+    },
+    {
+     "path": "outputs/06_features/d11_criteria.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "4 numeric cells differ (max abs 0.074, max rel 0.46), 0 other cells, in ['val_nrmse_kw_pct', 'val_nrmse_kw_seed_std']; DataFrame.iloc[:, 5] (column name=\"val_nrmse_kw_pct\") are different DataFrame.iloc[:, 5] (column name=\"val_nrmse_kw_pct\") values are different (100.0 %) [index]: [0, 1] [left]: [8.0931, 7.9406] [right",
+     "cells": 4,
+     "other_cells": 0,
+     "max_abs": 0.07399999999999984,
+     "max_rel": 0.4598930481283423,
+     "float_noise": false,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/outputs/06_features/d11_criteria.csv"
+    },
+    {
+     "path": "outputs/06_features/l04_training_threshold.csv",
+     "kind": "table",
+     "equal": false,
+     "detail": "6 numeric cells differ (max abs 0.074, max rel 0.808), 0 other cells, in ['val_nrmse_kw_pct_mean', 'val_nrmse_kw_pct_seed_std']; DataFrame.iloc[:, 1] (column name=\"val_nrmse_kw_pct_mean\") are different DataFrame.iloc[:, 1] (column name=\"val_nrmse_kw_pct_mean\") values are different (100.0 %) [index]: [0, 1, 2] [left]: [7.9406, 8",
+     "cells": 6,
+     "other_cells": 0,
+     "max_abs": 0.07399999999999984,
+     "max_rel": 0.8075117370892019,
+     "float_noise": false,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/decide_k/outputs/06_features/l04_training_threshold.csv"
+    }
+   ],
+   "counts": {
+    "bytes": 1,
+    "data": 1,
+    "new": 1,
+    "not compared": 1,
+    "table": 2
+   }
+  },
+  {
+   "step": "features_final",
+   "command": "python -m solarpv.features.build",
+   "exit": 0,
+   "seconds": 33.2,
+   "reads_validation": false,
+   "compared": [
+    {
+     "path": "data/processed/06_features/features_1H_D1.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features_final/data/processed/06_features/features_1H_D1.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_1H_D2.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features_final/data/processed/06_features/features_1H_D2.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_1H_D3.parquet",
+     "kind": "table",
+     "equal": false,
+     "detail": "156127 numeric cells differ (max abs 1.82e-12, max rel 2.75e-14), 0 other cells, in ['theo_ghi_kw', 'k_ghi', 'theo_poa_kw', 'k_poa', 'ghi_clearsky', 'dhi_clearsky']; DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") are different DataFrame.iloc[:, 2] (column name=\"theo_ghi_kw\") values are different (21.52118 %) [index]: [2021-08-31 21:00:00+00:00, 2021-08-31 22:00:",
+     "cells": 156127,
+     "other_cells": 0,
+     "max_abs": 1.8189894035458565e-12,
+     "max_rel": 2.7507030664196424e-14,
+     "float_noise": true,
+     "kept": "outputs/g1_audit/reproduction_20261113T192622Z/differing/features_final/data/processed/06_features/features_1H_D3.parquet"
+    },
+    {
+     "path": "data/processed/06_features/features_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/06_features/feature_dictionary.csv",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    },
+    {
+     "path": "outputs/06_features/features_manifest.json",
+     "kind": "data",
+     "equal": true,
+     "detail": "same data (volatile keys left out)"
+    },
+    {
+     "path": "outputs/06_features/runs/20261113T193934Z.log",
+     "kind": "new",
+     "equal": null,
+     "detail": "no reference file"
+    },
+    {
+     "path": "configs/derived_constants.yaml",
+     "kind": "bytes",
+     "equal": true,
+     "detail": "identical bytes"
+    }
+   ],
+   "failing": [],
+   "counts": {
+    "bytes": 2,
+    "data": 2,
+    "new": 1,
+    "table": 3
+   }
+  }
+ ],
+ "commit": "9e816ef32285ae414e647a25b87f02efdbec5e58",
+ "imported": "C:\\Users\\204323141\\repro_g1\\r6\\src\\solarpv\\__init__.py",
+ "environments": {
+  "solar": {
+   "python": "3.11.18",
+   "executable": "C:\\Users\\204323141\\miniforge3\\envs\\solar\\python.exe",
+   "pinned": 306,
+   "differs_from_lock": {
+    "pyside6": {
+     "lock": "6.11.3",
+     "installed": "6.11.3 "
+    },
+    "tzdata": {
+     "lock": "2026e",
+     "installed": "2026.6"
+    }
+   }
+  },
+  "solar_gpu": {
+   "python": "C:\\Users\\204323141\\miniforge3\\envs\\solar-gpu\\python.exe",
+   "pinned": 43,
+   "differs": {}
+  },
+  "installed_anything": false
+ }
+}

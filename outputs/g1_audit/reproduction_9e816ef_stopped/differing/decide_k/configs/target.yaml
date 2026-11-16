@@ -1,0 +1,37 @@
+# D-11 decision and the L-04 training threshold; written by
+# python -m solarpv.features.decide_k (stage 6). Evidence: outputs/06_features/
+k_denominator: poa
+training_min_theo_kw: 50.0
+evaluation_min_theo_kw: 50.0
+decided_on: '2026-10-20'
+rule: majority of the three D-11 criteria (fixed before criteria 2 and 3)
+wins:
+  ghi: 0
+  poa: 3
+criteria:
+  ghi:
+    share_k_above_1: 0.32446
+    share_k_above_1.2: 0.12541
+    clear_day_k_spread: 0.4127
+    clear_day_k_monthly_std: 0.1549
+    val_nrmse_kw_pct: 8.1247
+    val_nrmse_kw_seed_std: 0.0819
+  poa:
+    share_k_above_1: 0.05437
+    share_k_above_1.2: 0.00611
+    clear_day_k_spread: 0.1079
+    clear_day_k_monthly_std: 0.0335
+    val_nrmse_kw_pct: 8.0146
+    val_nrmse_kw_seed_std: 0.1047
+l04_rule: mean over 3 seeds lower than at 50 kW by more than max(0.05 pp, 2 x pooled
+  seed std)
+l04_needed_gain_pp: 0.1522
+l04_validation_nrmse_by_threshold:
+  '50.0': 8.0146
+  '100.0': 8.0035
+  '150.0': 7.928
+l04_seed_std_by_threshold:
+  '50.0': 0.1047
+  '100.0': 0.0385
+  '150.0': 0.0702
+git_commit: 9e816ef

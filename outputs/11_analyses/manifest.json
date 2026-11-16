@@ -1,6 +1,6 @@
 {
   "run": "outputs/runs/20261114T083930Z_final",
-  "git_commit": "fff0e5c",
+  "git_commit": "42e99ae+dirty",
   "inputs_sha256": {
     "outputs/runs/20261114T083930Z_final/baselines/predictions_clearsky_k.csv": "a1bdb7ed42a0242718979f7c05982e6ad8919126c7a2f61dbf645c45b6197f1d",
     "outputs/runs/20261114T083930Z_final/baselines/predictions_climatology.csv": "ed6c096afee6d4d1e6473562b05cb4de83799d95f8f61e3246b2d16c7bc43d56",
@@ -14,7 +14,13 @@
     "outputs/runs/20261114T083930Z_final/tft96/predictions_tft_96_seed42.csv": "254cd711c5865a924b656a8b72905a906dc9d965505639ce01342349f865af62",
     "outputs/runs/20261114T083930Z_final/tft168/predictions_tft_168_seed42.csv": "e8c7887f1736bffd3282272a0421e164c24ff29cb27f1ebafbf94a3345fdf8a2",
     "outputs/runs/20261114T083930Z_final/tftbase/predictions_tft_seed42.csv": "24d3b99b38dbdd75a25fc87d51c63215a1920df19f2d3ab5766d33e632ae32d9",
-    "outputs/runs/20261114T083930Z_final/patchtst/predictions_patchtst_seed42.csv": "837fca71eb3fd4cfb035bdefd19276dfa8b8a754457136ccdfb9931f7a834476"
+    "outputs/runs/20261114T083930Z_final/patchtst/predictions_patchtst_seed42.csv": "837fca71eb3fd4cfb035bdefd19276dfa8b8a754457136ccdfb9931f7a834476",
+    "outputs/runs/20261114T083930Z_final/bilstm/quantiles_lstm_sota_seed42.csv": "b31f1887f1a11f871abd7da0666d86c1c57f2c5045e9ddfb2fb5c0521ad02eb6",
+    "outputs/runs/20261114T083930Z_final/bilstm/quantiles_lstm_sota_seed123.csv": "7644080b296cb7b2237e2bb80959cb48eaafd70d5015608e906cb9299268bffe",
+    "outputs/runs/20261114T083930Z_final/bilstm/quantiles_lstm_sota_seed777.csv": "b7f2b9fa2f865f813c3dc4773ceb61f352d08b4bdb0650c0bb8904f26a978782",
+    "outputs/runs/20261114T083930Z_final/tft96/quantiles_tft_96_seed42.csv": "808ebd5e2c1ada600fb311f356629371639d8780e622a191eb1623c8cf0f39d9",
+    "outputs/runs/20261114T083930Z_final/tft168/quantiles_tft_168_seed42.csv": "725949ba77972e818d374e24f14f7837ec2e7318c37756d879dd1bcc85a4a74f",
+    "outputs/runs/20261114T083930Z_final/tftbase/quantiles_tft_seed42.csv": "730dad6d59028ad853d4dc837e9134d4855fe88c7f3606e29a90acde6484afa5"
   },
   "max_abs_diff_vs_report_nRMSE_kW_pct": 4.993161066835228e-07,
   "max_rel_identity_error_bias2_plus_variance": 4.0112548984285693e-16,
@@ -31,7 +37,8 @@
     "benchmark_ci_kw": 156,
     "scatter_hist": 7679,
     "horizon_robustness": 36,
-    "literature_alignment": 41
+    "literature_alignment": 41,
+    "quantile_crossing": 72
   },
   "outputs_sha256": {
     "outputs/11_analyses/metrics_kw.csv": "009508e96cfc21fc0129f5c07d7f449de7d70aded605fe846b98d10198d7c8e5",
@@ -46,7 +53,8 @@
     "outputs/11_analyses/benchmark_ci_kw.csv": "422273348b100b34782ee48cce712cdec56d1d54e2821d667cfee36c2cfa8dbb",
     "outputs/11_analyses/scatter_hist.csv": "83a69e357595b4a0e63b596c2a04ef2da6a69600b4a06fda819d6ab17b1c1af4",
     "outputs/11_analyses/horizon_robustness.csv": "874eb64ee78df17074ca592f7dbd749524be7b0e441c446138dc27c72b5d5e56",
-    "outputs/11_analyses/literature_alignment.csv": "4255ac6c89a6db1c359eb7ed7fa3bd5fe5218fa97c3a61b4207307360e19c43e"
+    "outputs/11_analyses/literature_alignment.csv": "4255ac6c89a6db1c359eb7ed7fa3bd5fe5218fa97c3a61b4207307360e19c43e",
+    "outputs/11_analyses/quantile_crossing.csv": "65e49222a2fd782ff2ff4abab2509f047dcd68408412d12fc9637b59ff1a18a7"
   },
   "min_hours_per_cell_masked": 20
 }

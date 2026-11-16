@@ -263,11 +263,15 @@ REFS_V6 = {
     "akiba": ("Akiba et al., 2019", "Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A next-generation hyperparameter optimization framework. KDD 2019."),
     "antonanzas": ("Antonanzas et al., 2016", "Antonanzas, J., Osorio, N., Escobar, R., Urraca, R., Martinez-de-Pison, F. J., & Antonanzas-Torres, F. (2016). Review of photovoltaic power forecasting. Solar Energy, 136, 78–111."),
     "chen": ("Chen & Guestrin, 2016", "Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. KDD 2016."),
+    # Two entries added at the user's request of 2026-11-16 (R11-06), for the sorting of the quantiles (D-33); both
+    # checked against Crossref and OpenAlex with the user's approval: doi:10.3982/ECTA7880 and doi:10.2307/1913643.
+    "chernozhukov": ("Chernozhukov et al., 2010", "Chernozhukov, V., Fernández-Val, I., & Galichon, A. (2010). Quantile and probability curves without crossing. Econometrica, 78(3), 1093–1125."),
     "diebold": ("Diebold & Mariano, 1995", "Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business & Economic Statistics, 13(3), 253–263."),
     "efron": ("Efron & Tibshirani, 1993", "Efron, B., & Tibshirani, R. J. (1993). An Introduction to the Bootstrap. Chapman & Hall."),
     "graves": ("Graves & Schmidhuber, 2005", "Graves, A., & Schmidhuber, J. (2005). Framewise phoneme classification with bidirectional LSTM and other neural network architectures. Neural Networks, 18(5–6), 602–610."),
     "harvey": ("Harvey et al., 1997", "Harvey, D., Leybourne, S., & Newbold, P. (1997). Testing the equality of prediction mean squared errors. International Journal of Forecasting, 13(2), 281–291."),
     "hochreiter": ("Hochreiter & Schmidhuber, 1997", "Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural Computation, 9(8), 1735–1780."),
+    "koenker": ("Koenker & Bassett, 1978", "Koenker, R., & Bassett, G. (1978). Regression quantiles. Econometrica, 46(1), 33–50."),
     "lundberg2017": ("Lundberg & Lee, 2017", "Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems 30 (NIPS 2017), 4765–4774."),
     "lundberg2020": ("Lundberg et al., 2020", "Lundberg, S. M., Erion, G., Chen, H., DeGrave, A., Prutkin, J. M., Nair, B., Katz, R., Himmelfarb, J., Bansal, N., & Lee, S.-I. (2020). From local explanations to global understanding with explainable AI for trees. Nature Machine Intelligence, 2(1), 56–67."),
     "noaa": ("NOAA NCEP, GFS", "NOAA National Centers for Environmental Prediction (NCEP). NOAA Global Forecast System (GFS), 1.0° global forecast grids. NOAA Open Data Dissemination, Registry of Open Data on AWS, bucket noaa-gfs-bdp-pds. https://registry.opendata.aws/noaa-gfs-bdp-pds/"),
@@ -598,8 +602,8 @@ w(f"""{fr('S11-16')} compares the six models: their inputs, budgets and training
 
 - **XGB-Opt** {c('chen')}: gradient-boosted trees on the selected tabular inputs, with a monotone constraint on the
   clear-sky input (D-15); one model per target and horizon; on the CPU.
-- **BiLSTM-Opt** {c('graves')}: a bidirectional encoder-decoder over the hourly sequence with a quantile loss; one
-  forecast origin per local day (D-25).
+- **BiLSTM-Opt** {c('graves')}: a bidirectional encoder-decoder over the hourly sequence with a quantile loss
+  {c('koenker')}; one forecast origin per local day (D-25).
 - **TFT-96 and TFT-168** {c('lim')}: the Temporal Fusion Transformer with an encoder of 96 or 168 hours and the known
   future inputs of the decoder (D-26), tuned per route.
 - **TFT baseline**: the same architecture with fixed settings.
@@ -608,6 +612,38 @@ w(f"""{fr('S11-16')} compares the six models: their inputs, budgets and training
 The five neural models took {F.n('GPU hours (5)', hours_gpu, PT_ + '/report/report_steps.csv', '.1f')} hours of GPU time in
 the final run.
 {fig('S11-16')}""")
+
+# the quantile outputs (D-33, X117): how often the quantiles cross, and the cost of sorting them
+QCRF = "outputs/11_analyses/quantile_crossing.csv"
+QCR = rd(QCRF)
+TFTS = ["tft_96", "tft_168", "tft"]
+assert set(QCR["model"]) == {"lstm_sota", *TFTS} and set(QCR["split"]) == {"val", "test"}
+assert (QCR[QCR["model"] == "lstm_sota"]["crossed_pct"] == 0).all()  # the BiLSTM never crosses
+assert (QCR["pinball_sorted_kw"] <= QCR["pinball_raw_kw"] + 1e-9).all()  # the rearrangement never raises the loss
+_qt = QCR[QCR["model"].isin(TFTS)]
+_qm = _qt.groupby(["model", "target", "split"])[["crossed_pct", "point_not_median_pct"]].mean()  # over horizons
+QCRS = {}
+for _s in ("val", "test"):
+    _c = _qm.xs(_s, level="split")
+    assert _c["crossed_pct"].idxmax() == ("tft_96", "direct"), _s  # most often TFT-96, direct route
+    _g = _qt[_qt["split"] == _s]
+    _off = _g["point_not_median_pct"] / 100 * _g["n"]  # hours on which the point is not the sorted median
+    QCRS[_s] = {"lo": float(_c["crossed_pct"].min()), "hi": float(_c["crossed_pct"].max()),
+               "pnm": float(_c["point_not_median_pct"].max()),
+               "gap": float((_g["gap_mean_kw"] * _off).sum() / _off.sum()), "gmax": float(_g["gap_max_kw"].max())}
+_drop = 100 * (1 - QCR["pinball_sorted_kw"] / QCR["pinball_raw_kw"])
+_top = QCR.loc[_drop.idxmax()]
+assert (_top["model"], _top["target"], _top["split"]) == ("tft_96", "direct", "val")
+QCR_DROP = float(_drop.max())
+QCR_GMAX = max(QCRS["val"]["gmax"], QCRS["test"]["gmax"])
+NQ_LSTM = int(QCR[QCR["model"] == "lstm_sota"]["n_quantiles"].iloc[0])
+NQ_TFT = int(_qt["n_quantiles"].iloc[0])
+assert (_qt["n_quantiles"] == NQ_TFT).all()
+
+
+def qx(claim: str, value: float, fmt: str = ".1f") -> str:
+    return F.n(f"quantile outputs: {claim}", value, QCRF, fmt)
+
 
 # ── 6. Evaluation framework ──────────────────────────────────────────────────
 w("## 6. Evaluation Framework\n")
@@ -633,6 +669,34 @@ saving time), climatology (the mean of the same calendar hour on train), and the
 
 Intervals and paired tests follow section 4.2. Overlapping marginal intervals do not imply that a paired test is not
 significant {c('schenker')}, so the comparisons of models rest on the paired test.
+
+### 6.5 Quantile outputs
+
+The BiLSTM-Opt forecasts {qx('quantiles of the BiLSTM-Opt', NQ_LSTM, 'd')} quantiles of the power and the TFTs
+{qx('quantiles of the TFTs', NQ_TFT, 'd')}; the point forecast of each model is its
+{F.s('level of the point forecast', '0.5', 'src/solarpv/evaluation/quantiles.py')} quantile, as in v6, and only the point
+forecast is scored in this report (D-33). The quantile heads of the TFT are separate outputs of one layer, and nothing in
+the training keeps them in order. On the scored hours, averaged over the horizons, the quantiles of the TFTs are out of
+order on {qx('share of hours crossed, TFTs, validation, lowest model and route, %', QCRS['val']['lo'])} to
+{qx('share of hours crossed, TFTs, validation, highest model and route, %', QCRS['val']['hi'])} percent of the hours on
+validation and on {qx('share of hours crossed, TFTs, test, lowest model and route, %', QCRS['test']['lo'])} to
+{qx('share of hours crossed, TFTs, test, highest model and route, %', QCRS['test']['hi'])} percent on test, depending on
+the model and route, most often for TFT-96 on the direct route; the quantiles of the BiLSTM-Opt are never out of order.
+
+Wherever the quantiles are read as a distribution, they are first sorted per hour: the monotone rearrangement
+{c('chernozhukov')}. The quantile loss {c('koenker')} of an hour never rises when its quantiles are sorted, because the
+part of the loss that depends on their order is smallest when they rise with their levels; on this run sorting lowers
+the mean quantile loss in kW by at most {qx('largest drop of the mean quantile loss by sorting, %', QCR_DROP)} percent (TFT-96,
+direct route, validation). The point forecast is not sorted, so no score or test of this report changes. The cost is
+that on some hours the point forecast is not the median of the sorted distribution: on up to
+{qx('share of hours with the point not the sorted median, validation, highest model and route, %', QCRS['val']['pnm'])}
+percent of the hours of a model and route on validation and
+{qx('share of hours with the point not the sorted median, test, highest model and route, %', QCRS['test']['pnm'])} percent
+on test, by {qx('mean distance between the point and the sorted median on those hours, validation, kW', QCRS['val']['gap'])}
+kW on average on validation and {qx('mean distance between the point and the sorted median on those hours, test, kW', QCRS['test']['gap'])}
+kW on test, and by at most {qx('largest distance between the point and the sorted median, kW', QCR_GMAX)} kW
+({qx('largest distance between the point and the sorted median, % of the capacity', 100 * QCR_GMAX / CAP, '.2f')} percent
+of the capacity). Training that keeps the quantiles in order is future work (section 14).
 """)
 
 # ── 7. Main results ──────────────────────────────────────────────────────────
@@ -1142,7 +1206,20 @@ and the figure `S11-20`.
 
 ## Decisions still open (the user's)
 
-- **Backup of the repository and the archive outside the VDI.** Not done yet.
+- **Backup outside the VDI.** The repository is pushed to a private GitHub repository (2026-11-16). The raw data and the
+  archive of the final run, which holds the prediction and quantile files that git does not track, are not backed up yet.
+
+## Decisions taken by the user (2026-11-16)
+
+- **The sorting of the quantiles is documented in section 6.5, with its sources.** The share of hours with crossed
+  quantiles and the cost of sorting them come from `outputs/11_analyses/quantile_crossing.csv`; the monotone
+  rearrangement and the quantile loss cite Chernozhukov, Fernández-Val & Galichon (2010) and Koenker & Bassett (1978),
+  both checked against Crossref and OpenAlex (R11-06).
+- **The questions to the operator are closed without an answer.** The model of the inverters is not known (Q-11), it is
+  not known whether the SCADA system was replaced in February 2025 (Q-12), and no record of the meaning of the inverter
+  status codes 5 and 6 is left (Q-13). The orientation measured from the data (F-23), the reconstruction of the polled
+  period (F-18, R-12) and the flag of partial outages (F-22) stay as they are, and each stays a stated limitation.
+- **The potential skill of the quantile-loss models (L-14) is future work**, with the analysis of the intervals.
 
 ## Decisions taken by the user (2026-11-15)
 

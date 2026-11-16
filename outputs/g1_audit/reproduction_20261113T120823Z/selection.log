@@ -1,0 +1,115 @@
+[     0.0s] RUN     stage 07_feature_selection
+[     0.0s] RUN     command: python -m solarpv.selection.run --skip-validation
+[     0.2s] RUN     git commit: e262fe3
+[     0.2s] RUN     started (UTC): 2026-11-13T12:27:15+00:00
+[     0.2s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.2s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.3s] INPUT   data/processed/06_features/features_1H_D2.parquet sha256=3d8d5ed4e6815dc7
+[     0.3s] INPUT   data/processed/06_features/features_1H_D3.parquet sha256=21f18314bce5bb34
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D1.parquet sha256=fbc6d2120ce75112
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D2.parquet sha256=4be70cdc30cbd39d
+[     0.3s] INPUT   data/processed/06b_gfs/gfs_features_D3.parquet sha256=177d11abbf3bf733
+[     0.3s] STEP    tables (train only) and k history ...
+[     0.9s] STEP    tables (train only) and k history done in 0.6s
+[     0.9s] STEP    S0 k history (D-24, inside train) ...
+[    63.5s] NOTE    S0 D+1: gain +0.048 pp, margin 0.050 pp, passes False
+[   118.5s] NOTE    S0 D+2: gain +0.059 pp, margin 0.050 pp, passes True
+[   170.4s] NOTE    S0 D+3: gain +0.020 pp, margin 0.076 pp, passes True
+[   170.6s] VALUE   k_history_admitted = False
+[   170.6s] STEP    S0 k history (D-24, inside train) done in 169.6s
+[   170.6s] STEP    S1-S7 indirect D+1 ...
+[   177.2s] NOTE    indirect D+1: pool 96, variance -0, MI -2 -> 94; 75 pairs with |r| > 0.98 (reported, not removed)
+[   288.0s] NOTE      RFE 84 left, score 7.679
+[   389.2s] NOTE      RFE 74 left, score 7.578
+[   483.2s] NOTE      RFE 64 left, score 7.684
+[   569.2s] NOTE      RFE 54 left, score 7.656
+[   652.9s] NOTE      RFE 44 left, score 7.623
+[  1015.5s] NOTE    indirect D+1: RFE 42, 05c elbow 17 (score 7.544 at 42), stability 31, MI 42, consensus 31; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  1015.5s] STEP    S1-S7 indirect D+1 done in 845.0s
+[  1015.5s] STEP    S1-S7 indirect D+2 ...
+[  1021.7s] NOTE    indirect D+2: pool 89, variance -0, MI -2 -> 87; 68 pairs with |r| > 0.98 (reported, not removed)
+[  1127.4s] NOTE      RFE 77 left, score 7.890
+[  1224.9s] NOTE      RFE 67 left, score 7.972
+[  1313.4s] NOTE      RFE 57 left, score 7.909
+[  1393.2s] NOTE      RFE 47 left, score 7.938
+[  1777.9s] NOTE    indirect D+2: RFE 42, 05c elbow 10 (score 7.895 at 42), stability 28, MI 42, consensus 28; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  1777.9s] STEP    S1-S7 indirect D+2 done in 762.3s
+[  1777.9s] STEP    S1-S7 indirect D+3 ...
+[  1783.6s] NOTE    indirect D+3: pool 82, variance -0, MI -2 -> 80; 61 pairs with |r| > 0.98 (reported, not removed)
+[  1882.8s] NOTE      RFE 70 left, score 8.250
+[  1973.2s] NOTE      RFE 60 left, score 8.241
+[  2053.5s] NOTE      RFE 50 left, score 8.332
+[  2446.4s] NOTE    indirect D+3: RFE 42, 05c elbow 30 (score 8.158 at 42), stability 27, MI 42, consensus 32; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  2446.4s] STEP    S1-S7 indirect D+3 done in 668.6s
+[  2446.4s] STEP    S1-S7 direct D+1 ...
+[  2453.2s] NOTE    direct D+1: pool 96, variance -0, MI -7 -> 89; 82 pairs with |r| > 0.98 (reported, not removed)
+[  2580.7s] NOTE      RFE 79 left, score 7.858
+[  2697.6s] NOTE      RFE 69 left, score 7.814
+[  2802.7s] NOTE      RFE 59 left, score 7.852
+[  2897.0s] NOTE      RFE 49 left, score 7.828
+[  3353.5s] NOTE    direct D+1: RFE 42, 05c elbow 16 (score 7.910 at 42), stability 12, MI 42, consensus 18; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  3353.5s] STEP    S1-S7 direct D+1 done in 907.1s
+[  3353.5s] STEP    S1-S7 direct D+2 ...
+[  3359.7s] NOTE    direct D+2: pool 89, variance -0, MI -6 -> 83; 75 pairs with |r| > 0.98 (reported, not removed)
+[  3480.0s] NOTE      RFE 73 left, score 8.045
+[  3591.6s] NOTE      RFE 63 left, score 7.955
+[  3692.5s] NOTE      RFE 53 left, score 7.977
+[  3784.1s] NOTE      RFE 43 left, score 8.015
+[  4178.1s] NOTE    direct D+2: RFE 42, 05c elbow 15 (score 8.023 at 42), stability 11, MI 42, consensus 19; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  4178.1s] STEP    S1-S7 direct D+2 done in 824.6s
+[  4178.1s] STEP    S1-S7 direct D+3 ...
+[  4183.7s] NOTE    direct D+3: pool 82, variance -0, MI -8 -> 74; 68 pairs with |r| > 0.98 (reported, not removed)
+[  4295.1s] NOTE      RFE 64 left, score 8.432
+[  4396.1s] NOTE      RFE 54 left, score 8.459
+[  4486.1s] NOTE      RFE 44 left, score 8.438
+[  4896.1s] NOTE    direct D+3: RFE 42, 05c elbow 1 (score 8.531 at 42), stability 15, MI 42, consensus 15; flags {'dominant_feature': False, 'no_gfs_irradiance_in_05e': False}
+[  4896.1s] STEP    S1-S7 direct D+3 done in 718.0s
+[  4896.1s] STEP    inside-train check (R7-04) ...
+[  4936.2s] NOTE    inner indirect D+1 date folds: 05e minus full -0.058 pp (margin 0.050)
+[  4946.1s] NOTE    inner indirect D+1 inner hold-out: 05e minus full -0.012 pp (margin 0.050)
+[  4982.9s] NOTE    inner indirect D+2 date folds: 05e minus full -0.074 pp (margin 0.081)
+[  4991.3s] NOTE    inner indirect D+2 inner hold-out: 05e minus full +0.054 pp (margin 0.093)
+[  5027.3s] NOTE    inner indirect D+3 date folds: 05e minus full -0.014 pp (margin 0.053)
+[  5035.3s] NOTE    inner indirect D+3 inner hold-out: 05e minus full -0.029 pp (margin 0.067)
+[  5079.6s] NOTE    inner direct D+1 date folds: 05e minus full +0.287 pp (margin 0.050)
+[  5089.6s] NOTE    inner direct D+1 inner hold-out: 05e minus full +0.206 pp (margin 0.050)
+[  5130.3s] NOTE    inner direct D+2 date folds: 05e minus full +0.102 pp (margin 0.064)
+[  5139.7s] NOTE    inner direct D+2 inner hold-out: 05e minus full +0.131 pp (margin 0.070)
+[  5177.5s] NOTE    inner direct D+3 date folds: 05e minus full +0.714 pp (margin 0.170)
+[  5186.2s] NOTE    inner direct D+3 inner hold-out: 05e minus full +0.202 pp (margin 0.082)
+[  5186.2s] STEP    inside-train check (R7-04) done in 290.1s
+[  5186.2s] NOTE    S8 not run: python -m solarpv.selection.run --validation-only
+[  5186.2s] STEP    outputs ...
+[  5190.6s] STEP    outputs done in 4.4s
+[  5190.6s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D1.json sha256=56c6d26ab2b90afa
+[  5190.6s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D1_05f.json sha256=bc66d71606edd581
+[  5190.6s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D2.json sha256=e00c69fb95f6de8d
+[  5190.6s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D2_05f.json sha256=94050a59735c82d6
+[  5190.6s] OUTPUT  outputs/07_feature_selection/final_features_indirect_D3.json sha256=dc4eab283083195d
+[  5190.6s] OUTPUT  outputs/07_feature_selection/refined_features_indirect_D3_05f.json sha256=8efb32f76022ffe9
+[  5190.6s] OUTPUT  outputs/07_feature_selection/final_features_direct_D1.json sha256=e6ec06473241d71e
+[  5190.7s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D1_05f.json sha256=6060e9a0af2e7221
+[  5190.7s] OUTPUT  outputs/07_feature_selection/final_features_direct_D2.json sha256=30a9ad2065d9cdef
+[  5190.7s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D2_05f.json sha256=df6978a3b220bdc9
+[  5190.7s] OUTPUT  outputs/07_feature_selection/final_features_direct_D3.json sha256=3aa261906d0a6fb6
+[  5190.7s] OUTPUT  outputs/07_feature_selection/refined_features_direct_D3_05f.json sha256=e32debc4d942096d
+[  5190.7s] OUTPUT  outputs/07_feature_selection/base_stage.csv sha256=17f83ddcbc650c86
+[  5190.7s] OUTPUT  outputs/07_feature_selection/correlated_pairs.csv sha256=736c1e10ecd3d5ac
+[  5190.7s] OUTPUT  outputs/07_feature_selection/rfe_history.csv sha256=00b987c4f7c390e7
+[  5190.7s] OUTPUT  outputs/07_feature_selection/shap_elimination_curves.csv sha256=fb845698f0a33a7b
+[  5190.7s] OUTPUT  outputs/07_feature_selection/selection_votes.csv sha256=fc0f9132637bf62e
+[  5190.8s] OUTPUT  outputs/07_feature_selection/feature_availability_classification.csv sha256=69679712162329c9
+[  5190.8s] OUTPUT  outputs/07_feature_selection/k_history_check.csv sha256=87848a41e99851da
+[  5190.8s] OUTPUT  outputs/07_feature_selection/inner_train_check.csv sha256=c457837a60b2831e
+[  5190.8s] OUTPUT  outputs/07_feature_selection/model_inputs.json sha256=cd6677edb5d3e14c
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig19_pipeline.png sha256=3b4bd989240088ed
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig20_shap_elimination.png sha256=2c2ff369affa69e7
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig21_stability.png sha256=26df1879dfe4d3fc
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig22_counts.png sha256=c3f826c1a7297986
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig23_mi_stability.png sha256=a3b8e86b16df665f
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig24_availability.png sha256=3a20d5a8a15aaeeb
+[  5190.8s] OUTPUT  outputs/07_feature_selection/figures/fig25_floor_sensitivity.png sha256=2fb3cedae941d4a4
+[  5190.9s] OUTPUT  outputs/07_feature_selection/selection_manifest.json sha256=e1108388fd2ca90a
+[  5190.9s] OUTPUT  configs/k_history_decision.yaml sha256=1ea3a96eb1dd9b9c
+[  5190.9s] RUN     warnings: 0
+[  5190.9s] RUN     status: ok; duration 5190.9s

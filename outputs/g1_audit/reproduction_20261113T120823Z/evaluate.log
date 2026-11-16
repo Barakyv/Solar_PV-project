@@ -1,0 +1,54 @@
+[     0.0s] RUN     stage 07_evaluation
+[     0.0s] RUN     command: python -m solarpv.evaluation.evaluate
+[     0.2s] RUN     git commit: e262fe3
+[     0.2s] RUN     started (UTC): 2026-11-13T12:26:56+00:00
+[     0.7s] RUN     versions: {"python": "3.11.18", "numpy": "2.4.6", "pandas": "3.1.0", "pvlib": "0.16.1", "xgboost": "3.4.2", "sklearn": "1.9.1"}
+[     0.7s] NOTE    split val; MEAN_DAYTIME_K 0.788157; 0 prediction file(s); references computed from the truth table
+[     0.8s] INPUT   data/processed/06_features/features_1H_D1.parquet sha256=b740b2c45feb7f16
+[     0.8s] STEP    load truth ...
+[     0.8s] STEP    load truth done in 0.1s
+[     0.8s] STEP    evaluate ...
+[     1.3s] NOTE    val: 3 models (clearsky_k, climatology, persistence); daytime rows per model/target/horizon: 2901
+[     7.0s] OUTPUT  outputs/07_evaluation/val/benchmark_summary.csv sha256=c0a46b505c4cecc3
+[     7.0s] OUTPUT  outputs/07_evaluation/val/dm_tests.csv sha256=cb8794f0a66746a5
+[     7.0s] OUTPUT  outputs/07_evaluation/val/seasonal_metrics.csv sha256=bb65cdfacfd7254a
+[     7.0s] OUTPUT  outputs/07_evaluation/val/common_mask_summary.csv sha256=d19d559660328a8c
+[     7.0s] OUTPUT  outputs/07_evaluation/val/benchmark_views.csv sha256=7fe97d0a502f4a88
+[     7.0s] OUTPUT  outputs/07_evaluation/val/common_mask_sensitivity.csv sha256=7f16277b15d35c5a
+[     7.0s] OUTPUT  outputs/07_evaluation/val/route_comparison.csv sha256=b97d76fa8bd27f2c
+[     7.0s] OUTPUT  outputs/07_evaluation/val/seed_variability_summary.csv sha256=c84c28b853c2e48d
+[     7.0s] OUTPUT  outputs/07_evaluation/val/dm_tests_kw.csv sha256=01ecd9d7a85e3ec2
+[     7.0s] OUTPUT  outputs/07_evaluation/val/manifest.json sha256=44dcf8bd951d9638
+[     7.0s] STEP    evaluate done in 6.2s
+[     7.0s] VALUE   rows_benchmark_summary = 18
+[     7.0s] VALUE   rows_dm_tests = 12
+[     7.0s] VALUE   rows_seasonal_metrics = 72
+[     7.0s] VALUE   rows_common_mask_summary = 18
+[     7.0s] VALUE   rows_benchmark_views = 72
+[     7.0s] VALUE   rows_common_mask_sensitivity = 18
+[     7.0s] VALUE   rows_route_comparison = 18
+[     7.0s] VALUE   rows_seed_variability_summary = 0
+[     7.0s] VALUE   rows_dm_tests_kw = 12
+[     7.0s] RUN     warnings: 0
+[     7.0s] RUN     status: ok; duration 7.0s
+      model              label  seed   target  horizon    n  nRMSE_pct        MAE        R2       RMSE  nRMSE_CI_lo  nRMSE_CI_hi  nRMSE_kW_pct  nRMSE_mean_pct  skill_score  n_skill  skill_cliper  skill_score_kw  skill_cliper_kw
+ clearsky_k Clear sky x MEAN_K    -1   direct        1 2901   8.958970 181.981276  0.841045 308.994862     7.659029    10.339479      8.958970       20.446157     0.074059   2901.0      0.046060        0.074059         0.046060
+ clearsky_k Clear sky x MEAN_K    -1   direct        2 2901   8.958970 181.981276  0.841045 308.994862     7.659029    10.339479      8.958970       20.446157     0.172115   2901.0      0.138102        0.172115         0.138102
+ clearsky_k Clear sky x MEAN_K    -1   direct        3 2901   8.958970 181.981276  0.841045 308.994862     7.659029    10.339479      8.958970       20.446157     0.164313   2901.0      0.134593        0.164313         0.134593
+ clearsky_k Clear sky x MEAN_K    -1 indirect        1 2901  19.395637   0.104730 -0.002860   0.152868    17.452993    21.486123      8.958970       20.446157     0.034231   2901.0     -0.139930        0.074743         0.046060
+ clearsky_k Clear sky x MEAN_K    -1 indirect        2 2901  19.395637   0.104730 -0.002860   0.152868    17.452993    21.486123      8.958970       20.446157     0.130095   2901.0     -0.075097        0.173583         0.138102
+ clearsky_k Clear sky x MEAN_K    -1 indirect        3 2901  19.395637   0.104730 -0.002860   0.152868    17.452993    21.486123      8.958970       20.446157     0.137629   2901.0     -0.069333        0.167298         0.134593
+climatology        Climatology    -1   direct        1 2901   8.041087 148.741862  0.871948 277.337103     6.760590     9.397475      8.041087       18.351367     0.168926   2901.0      0.143795        0.168926         0.143795
+climatology        Climatology    -1   direct        2 2901   8.041087 148.741862  0.871948 277.337103     6.760590     9.397475      8.041087       18.351367     0.256935   2901.0      0.226407        0.256935         0.226407
+climatology        Climatology    -1   direct        3 2901   8.041087 148.741862  0.871948 277.337103     6.760590     9.397475      8.041087       18.351367     0.249932   2901.0      0.223258        0.249932         0.223258
+climatology        Climatology    -1 indirect        1 2901  17.078642   0.080929  0.222431   0.134607    14.827707    19.419608      8.062482       18.400193     0.149601   2901.0     -0.003755        0.167330         0.141517
+climatology        Climatology    -1 indirect        2 2901  17.078642   0.080929  0.222431   0.134607    14.827707    19.419608      8.062482       18.400193     0.234013   2901.0      0.053334        0.256279         0.224348
+climatology        Climatology    -1 indirect        3 2901  17.078642   0.080929  0.222431   0.134607    14.827707    19.419608      8.062482       18.400193     0.240647   2901.0      0.058409        0.250623         0.221191
+persistence        Persistence    -1   direct        1 2901   9.675535 160.329876  0.814601 333.709192     8.317358    11.115792      9.675535       22.081502          NaN      NaN     -0.030238             NaN        -0.030238
+persistence        Persistence    -1   direct        2 2901  10.821510 190.525563  0.768082 373.233881     9.307403    12.276247     10.821510       24.696846          NaN      NaN     -0.041084             NaN        -0.041084
+persistence        Persistence    -1   direct        3 2901  10.720478 196.576967  0.772393 369.749298     9.270941    12.169252     10.720478       24.466272          NaN      NaN     -0.035563             NaN        -0.035563
+persistence        Persistence    -1 indirect        1 2901  20.083104   0.085146 -0.075212   0.158286    17.463946    22.764776      9.682681       22.097811          NaN      NaN     -0.180335             NaN        -0.030999
+persistence        Persistence    -1 indirect        2 2901  22.296265   0.099287 -0.325246   0.175730    19.352015    25.093062     10.840732       24.740714          NaN      NaN     -0.235878             NaN        -0.042933
+persistence        Persistence    -1 indirect        3 2901  22.491051   0.103159 -0.348503   0.177265    19.677692    25.379312     10.758909       24.553978          NaN      NaN     -0.239992             NaN        -0.039275
+
+written to C:\Users\204323141\repro_g1\r5\outputs\07_evaluation\val

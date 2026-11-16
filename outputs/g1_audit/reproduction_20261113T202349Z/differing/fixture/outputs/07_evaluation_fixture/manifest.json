@@ -1,0 +1,27 @@
+{
+  "inputs": [
+    "submission_evidence/08_lstm_alignment/predictions_lstm_sota_aligned.csv"
+  ],
+  "inputs_sha256": {
+    "predictions_lstm_sota_aligned.csv": "7185b1b82b3e3b1d9c29d0377a828b120e6f57485247621e3aa515394bd64ce3"
+  },
+  "git_commit": "ac63bb0",
+  "mode": "fixture (prediction-file truth)",
+  "split": "test (fixture)",
+  "mean_daytime_k": 0.6279,
+  "dm_reference": "persistence",
+  "references": "computed from the truth",
+  "truth": "prediction files",
+  "truth_sha256": null,
+  "cliper_rmse": null,
+  "site_private": true,
+  "strict": true,
+  "checks": {},
+  "rows": {
+    "benchmark_summary": 12,
+    "dm_tests": 6,
+    "seasonal_metrics": 36,
+    "common_mask_summary": 12
+  },
+  "run_log": null
+}

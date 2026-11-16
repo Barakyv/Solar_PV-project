@@ -1,0 +1,21 @@
+﻿checksums: exit 0, 2.6 s, 0 files, 0 failing
+ingest: exit 0, 50.2 s, 4 files, 0 failing
+clock: exit 0, 98.7 s, 8 files, 0 failing
+preprocess: exit 0, 176.7 s, 3 files, 0 failing
+clean: exit 0, 44.3 s, 6 files, 0 failing
+eda: exit 0, 35.6 s, 16 files, 0 failing
+quality: exit 0, 133.7 s, 62 files, 0 failing
+orientation: exit 0, 57.5 s, 3 files, 0 failing
+features: exit 0, 32.8 s, 9 files, 0 failing
+decide_k: exit 0, 41.9 s, 6 files, 3 failing
+features_final: exit 0, 32.2 s, 8 files, 0 failing
+gfs: exit 0, 225.0 s, 7 files, 0 failing
+nwp_check: exit 0, 82.8 s, 6 files, 2 failing
+evaluate: exit 0, 10.4 s, 10 files, 0 failing
+fixture: exit 0, 5.5 s, 5 files, 0 failing
+selection: exit 0, 4549.5 s, 31 files, 0 failing
+sequence_data: exit 0, 29.7 s, 3 files, 0 failing
+dev_xgb: exit 0, 397.9 s, 71 files, 1 failing
+dev_neural: exit 0, 10517.5 s, 173 files, 2 failing
+NOT reproduced; record in outputs\g1_audit\reproduction_20261112T202955Z
+exit 1

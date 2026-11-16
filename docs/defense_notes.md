@@ -440,3 +440,20 @@ differences a committee may ask about, and the answer:
 - **The site coordinates are not published** (Q-09, user, 2026-11-15): the report describes the plant without its
   coordinates, and the code reads them from a private configuration (T-45).
 
+
+## 18. Stage 11, part D: the quantile outputs of the neural models
+
+The submitted report trained the BiLSTM-Opt and the TFTs with a quantile loss and reported their point forecasts only;
+the order of the quantiles was never checked. The rebuild checks it (S09-29 on the development run, S11-21 on the final
+run) and reports it in section 6.5 (D-33, X117). The questions a committee may ask, and the answer:
+
+- **Why are the quantiles of the TFT out of order?** Its quantile heads are separate outputs of one layer, and nothing in
+  the quantile loss keeps them in order. The BiLSTM-Opt, with three quantiles, never crosses on the scored hours.
+- **Does it change any result?** No. The point forecast is the 0.5 head, as in v6, and it is the only output that is
+  scored or tested. Wherever the quantiles are read as a distribution they are sorted per hour, the monotone
+  rearrangement of Chernozhukov, Fernández-Val & Galichon (2010); the quantile loss of Koenker & Bassett (1978) of an hour
+  never rises when its quantiles are sorted, and on the final run it falls in every cell of the TFTs.
+- **What does it cost?** On the hours where sorting moves the median, the point forecast is not the median of the sorted
+  distribution; section 6.5 gives how often and by how many kW. Training that keeps the quantiles in order is future work.
+- **Why are the intervals not evaluated?** The submitted report did not evaluate them either; their coverage and the
+  potential skill of the quantile-loss models (L-14) are future work, by the user's decision of 2026-11-16.

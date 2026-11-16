@@ -1,0 +1,73 @@
+          rule            column  minutes  daytime_minutes  hours_touched  kwh_changed
+      R1_range      ambient_temp     2698              335             70          NaN
+     R3_frozen      ambient_temp     7823             3309            144          NaN
+     R2_offset        irradiance    57738                2           2283          NaN
+     R3_frozen        irradiance     8993             3655            169          NaN
+      R1_range         mod_temp1     2139              278             53          NaN
+     R3_frozen         mod_temp1     7991             3462            154          NaN
+      R1_range         mod_temp2     2093              278             53          NaN
+     R3_frozen         mod_temp2     7948             3426            152          NaN
+     R3_frozen       pyranometer     8460             3340            157          NaN
+R7_scale_fault       pyranometer   409160           178857           6826          NaN
+      R1_range    s01_inv1_AC_kW        6                6              2       1304.3
+     R3_frozen    s01_inv1_AC_kW     5693             2356            106      60962.3
+ R4_night_zero    s01_inv1_AC_kW     4980                0           1486        128.2
+      R1_range    s01_inv1_DC_kW       16               16              5          NaN
+     R3_frozen    s01_inv1_DC_kW     3127             1599             61          NaN
+ R4_night_zero    s01_inv1_DC_kW      123                0             25          NaN
+    R6_dc_dead    s01_inv1_DC_kW     7056             6805            139          NaN
+      R1_range    s01_inv2_AC_kW        6                6              2        367.5
+     R3_frozen    s01_inv2_AC_kW     5643             2305            104      60282.5
+ R4_night_zero    s01_inv2_AC_kW     4475                0           1513        109.7
+      R1_range    s01_inv2_DC_kW        6                6              2          NaN
+     R3_frozen    s01_inv2_DC_kW     3169             1645             63          NaN
+ R4_night_zero    s01_inv2_DC_kW       53                0             17          NaN
+    R6_dc_dead    s01_inv2_DC_kW       46                4              8          NaN
+     R3_frozen site_ambient_temp     7589             3102            137          NaN
+      R1_range        wind_speed       61               58              9          NaN
+{
+  "flag_minutes": {
+    "downtime_inv1_flag": 4182,
+    "downtime_inv2_flag": 4404,
+    "curtail_flag": 10152,
+    "derate_inv1_flag": 7094,
+    "derate_inv2_flag": 11937,
+    "op_limited_flag": 35039
+  },
+  "hours_by_split": {
+    "train": {
+      "daytime_hours": 9698,
+      "op_limited_hours": 379,
+      "hours_with_downtime": 110,
+      "hours_with_curtailment": 59,
+      "hours_with_derate": 245,
+      "target_nan_hours": 42,
+      "polled_hours": 0,
+      "mixed_hours": 0
+    },
+    "val": {
+      "daytime_hours": 2902,
+      "op_limited_hours": 146,
+      "hours_with_downtime": 18,
+      "hours_with_curtailment": 90,
+      "hours_with_derate": 43,
+      "target_nan_hours": 1,
+      "polled_hours": 0,
+      "mixed_hours": 0
+    },
+    "test": {
+      "daytime_hours": 2580,
+      "op_limited_hours": 186,
+      "hours_with_downtime": 37,
+      "hours_with_curtailment": 73,
+      "hours_with_derate": 93,
+      "target_nan_hours": 5,
+      "polled_hours": 1001,
+      "mixed_hours": 70
+    }
+  },
+  "site_total_AC_kW": {
+    "max_hourly": 2948.4,
+    "p99_99_hourly": 2894.6
+  }
+}

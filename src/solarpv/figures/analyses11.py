@@ -43,6 +43,11 @@ INPUTS = (
     ("tft96", "tft_96", (42,)), ("tft168", "tft_168", (42,)), ("tftbase", "tft", (42,)),
     ("patchtst", "patchtst", (42,)),
 )
+# the models that write quantiles (D-33); XGB-Opt and PatchTST forecast a point only
+QUANTILE_INPUTS = (
+    ("bilstm", "lstm_sota", (42, 123, 777)), ("tft96", "tft_96", (42,)),
+    ("tft168", "tft_168", (42,)), ("tftbase", "tft", (42,)),
+)
 REFERENCES = ("clearsky_k", "climatology", "persistence")
 ENSEMBLE_MODELS = ("xgb_sota", "lstm_sota")  # the models with three seeds
 SEED_ORDER_FIRST = {"xgb_sota": 42, "lstm_sota": 42}
@@ -69,10 +74,16 @@ def prediction_files() -> list[tuple[str, str, int, str]]:
     return out
 
 
+def quantile_files() -> list[tuple[str, str, int, str]]:
+    """(step, model, seed, repo-relative path) of every quantile file the analyses read."""
+    return [(step, model, seed, f"{RUN}/{step}/quantiles_{model}_seed{seed}.csv")
+            for step, model, seeds in QUANTILE_INPUTS for seed in seeds]
+
+
 def verify_inputs() -> dict[str, str]:
-    """SHA-256 of every prediction file, equal to the one its step record wrote."""
+    """SHA-256 of every prediction and quantile file, equal to the one its step record wrote."""
     shas = {}
-    for step, _, _, rel in prediction_files():
+    for step, _, _, rel in prediction_files() + quantile_files():
         record = json.loads((REPO_ROOT / RUN / step / "step.json").read_text(encoding="utf-8"))
         name = rel.rsplit("/", 1)[1]
         digest = sha256(REPO_ROOT / rel)
@@ -414,12 +425,93 @@ def literature_alignment(metrics: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([ours, lit], ignore_index=True)
 
 
+# ── the quantile crossing (D-33, X117) ──────────────────────────────────────
+
+CROSS_KEYS = ["model", "seed", "target", "horizon", "split"]
+
+
+def crossing_table(q: pd.DataFrame, theo_kw: np.ndarray, y_kw: np.ndarray) -> pd.DataFrame:
+    """Per model, seed, route, horizon and split: the share of hours whose quantiles are out of
+    order, read on the model's own output (k on the indirect route, kW on the direct one) as in
+    S09-29; the share of hours on which the 0.5 head is not the median of the sorted quantiles,
+    with the mean (over those hours) and largest distance between the two in kW; and the mean
+    quantile loss in kW, raw and sorted (D-33). `q` holds the quantile columns and CROSS_KEYS;
+    `theo_kw` and the observed `y_kw` are aligned with its rows. The kW go through the
+    evaluation's `to_kw`, which is monotone, so sorting and converting commute (asserted)."""
+    from solarpv.evaluation import quantiles as Q
+    from solarpv.evaluation.units import to_kw
+
+    q = q.reset_index(drop=True)
+    cols = Q.quantile_columns(q)
+    mid = cols.index("q0.5")
+    raw = q[cols].to_numpy(dtype=float)
+    ind = (q["target"] == "indirect").to_numpy()
+    theo = np.asarray(theo_kw, dtype=float)[ind][:, None]
+    assert (theo > 0).all(), "a factor that is not positive would change the order"
+    kw = raw.copy()
+    kw[ind] = to_kw("indirect", raw[ind], theo)
+    srt = np.sort(kw, axis=1)
+    assert np.array_equal(srt[ind], to_kw("indirect", np.sort(raw[ind], axis=1), theo))
+    crossed = (np.diff(raw, axis=1) < 0).any(axis=1)
+    gap = np.abs(kw[:, mid] - srt[:, mid])
+    taus = np.array([Q.level(c) for c in cols])
+
+    def loss(v: np.ndarray) -> np.ndarray:
+        d = np.asarray(y_kw, dtype=float)[:, None] - v
+        return np.maximum(taus * d, (taus - 1) * d).mean(axis=1)
+
+    raw_loss, sorted_loss = loss(kw), loss(srt)
+    rows = []
+    for key, idx in q.groupby(CROSS_KEYS, sort=True).indices.items():
+        g = gap[idx]
+        off = g > 0
+        rows.append({**dict(zip(CROSS_KEYS, key, strict=True)), "n": len(idx),
+                     "n_quantiles": len(cols), "crossed_pct": 100.0 * float(crossed[idx].mean()),
+                     "point_not_median_pct": 100.0 * float(off.mean()),
+                     "gap_mean_kw": float(g[off].mean()) if off.any() else 0.0,
+                     "gap_max_kw": float(g.max()),
+                     "pinball_raw_kw": float(raw_loss[idx].mean()),
+                     "pinball_sorted_kw": float(sorted_loss[idx].mean())})
+    out = pd.DataFrame(rows)
+    assert (out["pinball_sorted_kw"] <= out["pinball_raw_kw"] + 1e-9).all()  # the rearrangement
+    assert (out["point_not_median_pct"] <= out["crossed_pct"] + 1e-9).all()
+    return out
+
+
+def quantile_crossing(truth: pd.DataFrame) -> pd.DataFrame:
+    """`crossing_table` of every quantile file of the run, on the scored rows of `load_frame`
+    (daytime with truth, validation and test). The 0.5 head is the point forecast of the
+    prediction file on every row (D-33)."""
+    parts = []
+    for step, model, seed, rel in quantile_files():
+        q = pd.read_csv(REPO_ROOT / rel)
+        q["timestamp"] = pd.to_datetime(q["timestamp"], utc=True)
+        q = q[q["split"].isin(SPLITS)]
+        p = E.load_predictions(REPO_ROOT / f"{RUN}/{step}/predictions_{model}_seed{seed}.csv")
+        m = q.merge(p[["timestamp", "target", "horizon", "y_pred"]],
+                    on=["timestamp", "target", "horizon"], validate="one_to_one")
+        assert len(m) == len(q), f"{rel}: a quantile row has no point forecast"
+        ts = pd.DatetimeIndex(m["timestamp"])
+        y = truth["direct"].reindex(ts).to_numpy(dtype=float)
+        keep = truth["daytime"].reindex(ts).to_numpy(dtype=bool) & np.isfinite(y)
+        m = m[keep].reset_index(drop=True)
+        assert np.allclose(m["q0.5"], m["y_pred"]), f"{rel}: the point is not the 0.5 head"
+        m["model"], m["seed"] = model, seed
+        theo = truth["theo_kw"].reindex(pd.DatetimeIndex(m["timestamp"])).to_numpy(dtype=float)
+        parts.append(crossing_table(m, theo, y[keep]))
+    return pd.concat(parts, ignore_index=True)
+
+
 # ── run ─────────────────────────────────────────────────────────────────────
 
 def run(out: str = OUT) -> dict[str, pd.DataFrame]:
     shas = verify_inputs()
-    frame, _ = load_frame()
+    frame, truth = load_frame()
     metrics = metrics_table(frame)
+    crossing = quantile_crossing(truth)
+    n_all = metrics[metrics["view"] == "all"].set_index(CROSS_KEYS)["n"]
+    assert (crossing.set_index(CROSS_KEYS)["n"] == n_all.reindex(
+        crossing.set_index(CROSS_KEYS).index)).all(), "the crossing is not on the scored hours"
     worst_report = check_against_report(metrics)
     dec, ens, worst_identity = decomposition(frame)
     quint = quintiles(frame)
@@ -436,6 +528,7 @@ def run(out: str = OUT) -> dict[str, pd.DataFrame]:
         "benchmark_ci_kw": benchmark_ci(frame), "scatter_hist": scatter_hist(frame),
         "horizon_robustness": horizon_robustness(metrics),
         "literature_alignment": literature_alignment(metrics),
+        "quantile_crossing": crossing,
     }
     folder = REPO_ROOT / out
     folder.mkdir(parents=True, exist_ok=True)
